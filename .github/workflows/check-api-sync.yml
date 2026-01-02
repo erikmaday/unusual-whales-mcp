@@ -1,0 +1,27 @@
+name: Check API Sync
+
+on:
+  schedule:
+    # Run weekly on Mondays at 9am UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual triggers
+
+jobs:
+  check-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check API sync
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run check-api

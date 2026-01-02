@@ -1,0 +1,23 @@
+# Source files (dist is published)
+src/
+tsconfig.json
+
+# Development files
+scripts/
+.github/
+uw-api-spec.yaml
+
+# Documentation (README is auto-included)
+CONTRIBUTING.md
+
+# Git and IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Misc
+*.log
+.DS_Store
+.env
+.env.local

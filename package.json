@@ -1,0 +1,58 @@
+{
+  "name": "unusual-whales-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for UnusualWhales API - access options flow, dark pool, congress trades, and more",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "unusual-whales-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erikmaday/unusual-whales-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/erikmaday/unusual-whales-mcp/issues"
+  },
+  "homepage": "https://github.com/erikmaday/unusual-whales-mcp#readme",
+  "license": "MIT",
+  "author": "Erik Maday",
+  "keywords": [
+    "mcp",
+    "unusual-whales",
+    "options",
+    "trading",
+    "dark-pool",
+    "congress-trades",
+    "ai",
+    "llm"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "check-api": "node scripts/check-api-sync.js",
+    "prepublishOnly": "npm run lint && npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.51.0",
+    "@typescript-eslint/parser": "^8.51.0",
+    "eslint": "^9.39.2",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.51.0",
+    "yaml": "^2.8.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
