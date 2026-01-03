@@ -32,7 +32,7 @@ Get your API key from [Unusual Whales](https://unusualwhales.com).
 ### Claude Code
 
 ```bash
-claude mcp add unusualwhales -e UW_API_KEY=your_api_key -- npx -y unusual-whales-mcp
+claude mcp add unusualwhales -e UW_API_KEY=your_api_key -- npx -y @erikmaday/unusual-whales-mcp
 ```
 
 ### Claude Desktop
@@ -47,27 +47,13 @@ Add to your config file:
   "mcpServers": {
     "unusualwhales": {
       "command": "npx",
-      "args": ["-y", "unusual-whales-mcp"],
+      "args": ["-y", "@erikmaday/unusual-whales-mcp"],
       "env": {
         "UW_API_KEY": "your_api_key"
       }
     }
   }
 }
-```
-
-### Manual Installation
-
-```bash
-git clone https://github.com/erikmaday/unusual-whales-mcp.git
-cd unusual-whales-mcp
-npm install
-npm run build
-```
-
-Then for Claude Code:
-```bash
-claude mcp add unusualwhales -e UW_API_KEY=your_api_key -- node /path/to/unusual-whales-mcp/dist/index.js
 ```
 
 ## Usage
