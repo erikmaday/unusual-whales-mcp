@@ -2,17 +2,21 @@ name: Check API Sync
 
 on:
   schedule:
-    # Run weekly on Mondays at 9am UTC
-    - cron: '0 9 * * 1'
+    # Run daily at 9am UTC
+    - cron: '0 9 * * *'
   workflow_dispatch: # Allow manual triggers
 
-permissions:
-  contents: write
-  issues: write
+concurrency:
+  group: api-sync
+  cancel-in-progress: true
 
 jobs:
-  check-sync:
+  fetch-spec:
+    name: 🌐 Fetch OpenAPI Spec
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
 
     steps:
       - name: 📥 Checkout repository
@@ -22,6 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: 📦 Install dependencies
         run: npm ci
@@ -29,7 +34,7 @@ jobs:
       - name: 🌐 Fetch latest OpenAPI spec
         run: npm run fetch-spec
 
-      - name: 💾 Commit spec if changed
+      - name: 💾 Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -37,7 +42,72 @@ jobs:
           git diff --staged --quiet || git commit -m "chore: update OpenAPI spec"
           git push || true
 
-      - name: 🔍 Check API sync
+  check-sync:
+    name: 🔍 Check API Sync
+    runs-on: ubuntu-latest
+    needs: fetch-spec
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      has_changes: ${{ steps.check.outputs.has_changes }}
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: 🔄 Pull latest changes
+        run: git pull --ff-only
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Compare endpoints
+        id: check
+        run: |
+          if npm run check-api; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+  create-issues:
+    name: 📝 Create GitHub Issues
+    runs-on: ubuntu-latest
+    needs: check-sync
+    if: needs.check-sync.outputs.has_changes == 'true'
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: 🔄 Pull latest changes
+        run: git pull --ff-only
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 📝 Create issues for API changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run check-api
+        run: npm run check-api || true
