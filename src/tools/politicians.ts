@@ -8,18 +8,27 @@ Available actions:
 - people: List all politicians
 - portfolio: Get a politician's portfolio (politician_id required)
 - recent_trades: Get recent politician trades
-- holders: Get politicians holding a ticker (ticker required)`,
+- holders: Get politicians holding a ticker (ticker required)
+- disclosures: Get annual disclosure file records (optional: politician_id, latest_only, year)`,
   inputSchema: {
     type: "object" as const,
     properties: {
       action: {
         type: "string",
         description: "The action to perform",
-        enum: ["people", "portfolio", "recent_trades", "holders"],
+        enum: ["people", "portfolio", "recent_trades", "holders", "disclosures"],
       },
       politician_id: {
         type: "string",
-        description: "Politician ID (for portfolio action)",
+        description: "Politician ID (for portfolio or disclosures action)",
+      },
+      latest_only: {
+        type: "boolean",
+        description: "Return only most recent disclosure per politician (for disclosures action)",
+      },
+      year: {
+        type: "number",
+        description: "Filter by disclosure year (for disclosures action)",
       },
       ticker: {
         type: "string",
@@ -49,7 +58,7 @@ Available actions:
  * @returns JSON string with politician portfolio data or error message
  */
 export async function handlePoliticians(args: Record<string, unknown>): Promise<string> {
-  const { action, politician_id, ticker, limit, page } = args
+  const { action, politician_id, ticker, limit, page, latest_only, year } = args
 
   switch (action) {
     case "people":
@@ -68,6 +77,13 @@ export async function handlePoliticians(args: Record<string, unknown>): Promise<
     case "holders":
       if (!ticker) return formatError("ticker is required")
       return formatResponse(await uwFetch(`/api/politician-portfolios/holders/${encodePath(ticker)}`))
+
+    case "disclosures":
+      return formatResponse(await uwFetch("/api/politician-portfolios/disclosures", {
+        politician_id: politician_id as string,
+        latest_only: latest_only as boolean,
+        year: year as number,
+      }))
 
     default:
       return formatError(`Unknown action: ${action}`)

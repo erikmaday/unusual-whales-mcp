@@ -137,16 +137,6 @@ function getEndpointCategory(endpoint) {
   return match ? match[1] : 'unknown'
 }
 
-function formatEndpointName(endpoint) {
-  // Convert /api/politician-portfolios/disclosures -> "politician portfolios disclosures"
-  return endpoint
-    .replace(/^\/api\//, '')
-    .replace(/[/-]/g, ' ')
-    .replace(/\{[^}]+\}/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
 async function createGitHubIssue(missing, extra) {
   const token = process.env.GITHUB_TOKEN
   const repo = process.env.GITHUB_REPOSITORY
@@ -161,7 +151,6 @@ async function createGitHubIssue(missing, extra) {
   // Create an issue for each missing endpoint
   for (const endpoint of missing) {
     const category = getEndpointCategory(endpoint)
-    const name = formatEndpointName(endpoint)
 
     const title = `Implement new endpoint: ${endpoint}`
 
@@ -172,7 +161,7 @@ async function createGitHubIssue(missing, extra) {
     body += `### Category\n\n`
     body += `\`${category}\`\n\n`
     body += `### Action Required\n\n`
-    body += `1. Check the [Unusual Whales API documentation](https://docs.unusualwhales.com) for endpoint details\n`
+    body += `1. Check the [Unusual Whales API documentation](https://api.unusualwhales.com/docs) for endpoint details\n`
     body += `2. Add the endpoint to the appropriate tool file in \`src/tools/\`\n`
     body += `3. Update tests if applicable\n\n`
     body += `---\n*This issue was automatically created by the API sync checker.*`
