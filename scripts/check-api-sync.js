@@ -131,6 +131,22 @@ function compareEndpoints(specEndpoints, implementedEndpoints) {
   return { missing, extra }
 }
 
+function getEndpointCategory(endpoint) {
+  // Extract category from endpoint path like /api/congress/... -> congress
+  const match = endpoint.match(/^\/api\/([^/]+)/)
+  return match ? match[1] : 'unknown'
+}
+
+function formatEndpointName(endpoint) {
+  // Convert /api/politician-portfolios/disclosures -> "politician portfolios disclosures"
+  return endpoint
+    .replace(/^\/api\//, '')
+    .replace(/[/-]/g, ' ')
+    .replace(/\{[^}]+\}/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 async function createGitHubIssue(missing, extra) {
   const token = process.env.GITHUB_TOKEN
   const repo = process.env.GITHUB_REPOSITORY
@@ -140,50 +156,76 @@ async function createGitHubIssue(missing, extra) {
     return false
   }
 
-  const title = `API Sync: ${missing.length} new endpoints, ${extra.length} removed`
+  const issues = []
 
-  let body = `## API Changes Detected\n\n`
-  body += `The UnusualWhales API has changed. Please review and update the MCP server.\n\n`
+  // Create an issue for each missing endpoint
+  for (const endpoint of missing) {
+    const category = getEndpointCategory(endpoint)
+    const name = formatEndpointName(endpoint)
 
-  if (missing.length > 0) {
-    body += `### New Endpoints (${missing.length})\n\n`
-    body += `These endpoints exist in the API but are not implemented:\n\n`
-    body += missing.map(ep => `- \`${ep}\``).join('\n')
-    body += '\n\n'
+    const title = `Implement new endpoint: ${endpoint}`
+
+    let body = `## New API Endpoint Detected\n\n`
+    body += `The Unusual Whales API has a new endpoint that needs to be implemented in this MCP server.\n\n`
+    body += `### Endpoint\n\n`
+    body += `\`${endpoint}\`\n\n`
+    body += `### Category\n\n`
+    body += `\`${category}\`\n\n`
+    body += `### Action Required\n\n`
+    body += `1. Check the [Unusual Whales API documentation](https://docs.unusualwhales.com) for endpoint details\n`
+    body += `2. Add the endpoint to the appropriate tool file in \`src/tools/\`\n`
+    body += `3. Update tests if applicable\n\n`
+    body += `---\n*This issue was automatically created by the API sync checker.*`
+
+    issues.push({ title, body, labels: ['api-sync', 'new-endpoint', category] })
   }
 
-  if (extra.length > 0) {
-    body += `### Possibly Removed Endpoints (${extra.length})\n\n`
-    body += `These endpoints are implemented but not found in the current API spec:\n\n`
-    body += extra.map(ep => `- \`${ep}\``).join('\n')
-    body += '\n\n'
+  // Create an issue for each extra/removed endpoint
+  for (const endpoint of extra) {
+    const category = getEndpointCategory(endpoint)
+
+    const title = `Review removed endpoint: ${endpoint}`
+
+    let body = `## Endpoint May Have Been Removed\n\n`
+    body += `This endpoint is implemented in the MCP server but was not found in the current Unusual Whales API spec.\n\n`
+    body += `### Endpoint\n\n`
+    body += `\`${endpoint}\`\n\n`
+    body += `### Category\n\n`
+    body += `\`${category}\`\n\n`
+    body += `### Action Required\n\n`
+    body += `1. Verify if this endpoint has been removed or renamed in the API\n`
+    body += `2. If removed, deprecate or remove the endpoint from the MCP server\n`
+    body += `3. If renamed, update the implementation to use the new endpoint path\n\n`
+    body += `---\n*This issue was automatically created by the API sync checker.*`
+
+    issues.push({ title, body, labels: ['api-sync', 'removed-endpoint', category] })
   }
 
-  body += `---\n*This issue was automatically created by the API sync checker.*`
+  // Create all issues
+  let created = 0
+  for (const issue of issues) {
+    const response = await fetch(`https://api.github.com/repos/${repo}/issues`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(issue),
+    })
 
-  const response = await fetch(`https://api.github.com/repos/${repo}/issues`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      title,
-      body,
-      labels: ['api-sync', 'automated'],
-    }),
-  })
-
-  if (!response.ok) {
-    const error = await response.text()
-    console.error('Failed to create GitHub issue:', error)
-    return false
+    if (!response.ok) {
+      const error = await response.text()
+      console.error(`Failed to create GitHub issue "${issue.title}":`, error)
+    } else {
+      const result = await response.json()
+      console.log(`Created issue: ${result.html_url}`)
+      created++
+    }
   }
 
-  const issue = await response.json()
-  console.log(`\nCreated GitHub issue: ${issue.html_url}`)
-  return true
+  console.log(`\nCreated ${created}/${issues.length} GitHub issues`)
+  return created > 0
 }
 
 async function main() {
