@@ -16,8 +16,7 @@ import YAML from 'yaml'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = join(__dirname, '..')
-
-const OPENAPI_URL = 'https://api.unusualwhales.com/api/openapi'
+const SPEC_FILE = join(ROOT_DIR, 'uw-api-spec.yaml')
 
 // Endpoints we intentionally don't implement (WebSocket, etc.)
 const IGNORED_ENDPOINTS = [
@@ -29,13 +28,9 @@ const IGNORED_ENDPOINTS = [
   '/api/socket/price',
 ]
 
-async function fetchOpenAPISpec() {
-  console.log('Fetching OpenAPI spec from UnusualWhales...')
-  const response = await fetch(OPENAPI_URL)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch OpenAPI spec: ${response.status}`)
-  }
-  const text = await response.text()
+function loadOpenAPISpec() {
+  console.log('Loading OpenAPI spec from uw-api-spec.yaml...')
+  const text = readFileSync(SPEC_FILE, 'utf-8')
   return YAML.parse(text)
 }
 
@@ -219,7 +214,7 @@ async function createGitHubIssue(missing, extra) {
 
 async function main() {
   try {
-    const spec = await fetchOpenAPISpec()
+    const spec = loadOpenAPISpec()
     const specEndpoints = extractSpecEndpoints(spec)
     console.log(`Found ${specEndpoints.length} endpoints in API spec`)
 

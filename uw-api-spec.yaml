@@ -329,6 +329,63 @@ components:
     Analyst Sector:
       description: A financial sector.
       title: Analyst Sector
+    Annual Disclosure:
+      properties:
+        chamber:
+          description: The chamber (house, senate, executive).
+          enum:
+            - house
+            - senate
+            - executive
+          type: string
+        disclosure_year:
+          description: The year covered by the disclosure.
+          type: integer
+        filing_date:
+          description: The date the disclosure was filed.
+          format: date
+          type: string
+        id:
+          description: The file record ID.
+          format: uuid
+          type: string
+        name:
+          description: The filer name as it appears on the disclosure.
+          type: string
+        politician_id:
+          description: The politician's ID.
+          format: uuid
+          type: string
+        politician_name:
+          description: The politician's name.
+          type: string
+        url:
+          description: The URL to the disclosure PDF.
+          type: string
+        version:
+          description: The version number of the disclosure.
+          type: integer
+      title: Annual Disclosure
+      type: object
+    Annual Disclosures List:
+      example:
+        data:
+          - chamber: house
+            disclosure_year: 2024
+            filing_date: 2024-05-15
+            id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+            name: Warren Davidson
+            politician_id: e138f347-ae92-4cfb-8f41-7036ff09a213
+            politician_name: Warren Davidson
+            url: https://disclosures-clerk.house.gov/public_disc/financial-pdfs/2024/10067467.pdf
+            version: 1
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Annual Disclosure'
+          type: array
+      title: Annual Disclosures List
+      type: object
     Avg Price:
       description: ''
       example: '23.49'
@@ -926,12 +983,6 @@ components:
       minimum: 0
       title: DynLimitAglrizahlaixloxbmeagqjjyseprymmprzxozzndbjzxcedvvux
       type: integer
-    DynLimitAhkdhwawzfshtuqvfgvqrsdzpwdwgudrpsxgwqbfovjaxxqkldg:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAhkdhwawzfshtuqvfgvqrsdzpwdwgudrpsxgwqbfovjaxxqkldg
-      type: boolean
     DynLimitAhomldehwnhewskqqhemmslqfwbmnlmtaarnmxippimtslblykl:
       default: true
       description: Boolean flag whether a transaction is ask side.
@@ -950,17 +1001,17 @@ components:
       example: true
       title: DynLimitAmcyopkxjebmpznsleupobvmjlthajcfusbqrkmwmkdkuuavnkp
       type: boolean
-    DynLimitAnpjdhkutxnghuvqatcgrltuunpurbaurkgzxcbkayrzlsffxoi:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAnpjdhkutxnghuvqatcgrltuunpurbaurkgzxcbkayrzlsffxoi
-      type: boolean
     DynLimitApgtmcbkxuqtpisumkzjwcjljwbxrgaitcsolyxoaaprpsgzhhx:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
       title: DynLimitApgtmcbkxuqtpisumkzjwcjljwbxrgaitcsolyxoaaprpsgzhhx
+      type: boolean
+    DynLimitAqeqmamrufgnhxyinjpmbvlvfklnadzbhaeavvskoizrkxxqhmx:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAqeqmamrufgnhxyinjpmbvlvfklnadzbhaeavvskoizrkxxqhmx
       type: boolean
     DynLimitAqiinljimiudbowgxjbmggahntvklxnkdiblmvcvmghqqoxgwbm:
       default: true
@@ -980,6 +1031,12 @@ components:
       minimum: 0
       title: DynLimitAqpmukvtnqzjopoweoyvpeharwijcwnkajzocucgocoqugeobql
       type: integer
+    DynLimitAtxohuywwqrdwcrfzuvsdsvzzbgswuvabtgrsyyhiceixqnkmdi:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAtxohuywwqrdwcrfzuvsdsvzzbgswuvabtgrsyyhiceixqnkmdi
+      type: boolean
     DynLimitAvaeipmocfyuzgsdjomzahaezgrqrgqjzusbxjtbqnkywntzzgf:
       default: true
       description: Boolean flag whether a transaction is a put.
@@ -11604,6 +11661,57 @@ paths:
       summary: Full Tape
       tags:
         - option-trade
+  /api/politician-portfolios/disclosures:
+    get:
+      callbacks: {}
+      description: |
+        Returns all annual disclosure file records for politicians.
+        Can be filtered by politician_id and/or limited to latest per politician.
+        
+        This is an enterprise only endpoint. Contact dan@unusualwhales.com for details about accessing this data.
+      operationId: PublicApi.PoliticianPortfoliosController.disclosures
+      parameters:
+        - description: Filter by politician ID
+          in: query
+          name: politician_id
+          required: false
+          schema:
+            format: uuid
+            type: string
+        - description: If true, returns only the most recent disclosure per politician
+          in: query
+          name: latest_only
+          required: false
+          schema:
+            type: boolean
+        - description: Filter by disclosure year
+          in: query
+          name: year
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annual Disclosures List'
+          description: Annual Disclosures
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Annual Disclosures List
+      tags:
+        - politician_portfolios
   /api/politician-portfolios/holders/{ticker}:
     get:
       callbacks: {}
@@ -14027,13 +14135,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhkdhwawzfshtuqvfgvqrsdzpwdwgudrpsxgwqbfovjaxxqkldg'
+            $ref: '#/components/schemas/DynLimitAqeqmamrufgnhxyinjpmbvlvfklnadzbhaeavvskoizrkxxqhmx'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAnpjdhkutxnghuvqatcgrltuunpurbaurkgzxcbkayrzlsffxoi'
+            $ref: '#/components/schemas/DynLimitAtxohuywwqrdwcrfzuvsdsvzzbgswuvabtgrsyyhiceixqnkmdi'
       responses:
         '200':
           content:
