@@ -18,6 +18,8 @@ const institutionsInputSchema = z.object({
   order_direction: orderSchema.describe("Order direction (asc or desc)").optional(),
   min_total_value: z.number().describe("Minimum total value filter").optional(),
   max_total_value: z.number().describe("Maximum total value filter").optional(),
+  min_share_value: z.number().describe("Minimum share value filter").optional(),
+  max_share_value: z.number().describe("Maximum share value filter").optional(),
   tags: z.string().describe("Institution tags filter").optional(),
   security_types: z.string().describe("Security types filter").optional(),
 })
@@ -66,6 +68,8 @@ export async function handleInstitutions(args: Record<string, unknown>): Promise
     order_direction,
     min_total_value,
     max_total_value,
+    min_share_value,
+    max_share_value,
     tags,
     security_types,
   } = parsed.data
@@ -76,6 +80,8 @@ export async function handleInstitutions(args: Record<string, unknown>): Promise
         name,
         min_total_value,
         max_total_value,
+        min_share_value,
+        max_share_value,
         "tags[]": tags,
         order,
         order_direction,
