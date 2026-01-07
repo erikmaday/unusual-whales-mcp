@@ -14,6 +14,8 @@ import {
   oiFilterSchema,
   dteFilterSchema,
   flowTradeFiltersSchema,
+  flowAlertsExtendedFiltersSchema,
+  netFlowExpiryFiltersSchema,
   formatZodError,
 } from "../schemas.js"
 
@@ -33,6 +35,8 @@ const flowInputSchema = z.object({
   .merge(oiFilterSchema)
   .merge(dteFilterSchema)
   .merge(flowTradeFiltersSchema)
+  .merge(flowAlertsExtendedFiltersSchema)
+  .merge(netFlowExpiryFiltersSchema)
 
 
 export const flowTool = {
@@ -90,6 +94,51 @@ export async function handleFlow(args: Record<string, unknown>): Promise<string>
     is_golden_sweep,
     side,
     order,
+    // Extended flow alerts filters
+    min_volume,
+    max_volume,
+    min_open_interest,
+    max_open_interest,
+    all_opening,
+    is_call,
+    is_put,
+    is_ask_side,
+    is_bid_side,
+    is_otm,
+    size_greater_oi,
+    vol_greater_oi,
+    "rule_name[]": rule_name,
+    "issue_types[]": issue_types,
+    min_diff,
+    max_diff,
+    min_volume_oi_ratio,
+    max_volume_oi_ratio,
+    min_ask_perc,
+    max_ask_perc,
+    min_bid_perc,
+    max_bid_perc,
+    min_bull_perc,
+    max_bull_perc,
+    min_bear_perc,
+    max_bear_perc,
+    min_skew,
+    max_skew,
+    min_price,
+    max_price,
+    min_iv_change,
+    max_iv_change,
+    min_size_vol_ratio,
+    max_size_vol_ratio,
+    min_spread,
+    max_spread,
+    min_marketcap,
+    max_marketcap,
+    newer_than,
+    older_than,
+    // Net flow expiry filters
+    moneyness,
+    tide_type,
+    expiration,
   } = parsed.data
 
   switch (action) {
@@ -113,6 +162,47 @@ export async function handleFlow(args: Record<string, unknown>): Promise<string>
         is_golden_sweep,
         side,
         order,
+        // Extended filters
+        min_volume,
+        max_volume,
+        min_open_interest,
+        max_open_interest,
+        all_opening,
+        is_call,
+        is_put,
+        is_ask_side,
+        is_bid_side,
+        is_otm,
+        size_greater_oi,
+        vol_greater_oi,
+        "rule_name[]": rule_name,
+        "issue_types[]": issue_types,
+        min_diff,
+        max_diff,
+        min_volume_oi_ratio,
+        max_volume_oi_ratio,
+        min_ask_perc,
+        max_ask_perc,
+        min_bid_perc,
+        max_bid_perc,
+        min_bull_perc,
+        max_bull_perc,
+        min_bear_perc,
+        max_bear_perc,
+        min_skew,
+        max_skew,
+        min_price,
+        max_price,
+        min_iv_change,
+        max_iv_change,
+        min_size_vol_ratio,
+        max_size_vol_ratio,
+        min_spread,
+        max_spread,
+        min_marketcap,
+        max_marketcap,
+        newer_than,
+        older_than,
       }))
 
     case "full_tape":
@@ -120,7 +210,7 @@ export async function handleFlow(args: Record<string, unknown>): Promise<string>
       return formatResponse(await uwFetch(`/api/option-trades/full-tape/${encodePath(date)}`))
 
     case "net_flow_expiry":
-      return formatResponse(await uwFetch("/api/net-flow/expiry", { date }))
+      return formatResponse(await uwFetch("/api/net-flow/expiry", { date, moneyness, tide_type, expiration }))
 
     case "group_greek_flow":
       if (!flow_group) return formatError("flow_group is required")
