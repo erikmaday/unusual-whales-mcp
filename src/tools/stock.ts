@@ -65,6 +65,7 @@ const stockInputSchema = z.object({
   sector: z.string().describe("Market sector (for tickers_by_sector action)").optional(),
   date: dateSchema.optional(),
   expiry: expirySchema.optional(),
+  expirations: z.array(expirySchema).describe("Array of expiration dates in YYYY-MM-DD format (for spot_exposures_by_expiry_strike action)").optional(),
   candle_size: candleSizeSchema.optional(),
   strike: strikeSchema.optional(),
   min_strike: z.number().describe("Minimum strike price filter").optional(),
@@ -111,7 +112,7 @@ Available actions:
 - stock_price_levels: Get stock price levels (ticker required; date optional)
 - stock_volume_price_levels: Get volume price levels (ticker required; date optional)
 - spot_exposures: Get spot exposures (ticker required; date optional)
-- spot_exposures_by_expiry_strike: Get spot exposures by expiry/strike (ticker required; date optional)
+- spot_exposures_by_expiry_strike: Get spot exposures by expiry/strike (ticker, expirations required; date optional)
 - spot_exposures_by_strike: Get spot exposures by strike (ticker required; date optional)
 - spot_exposures_expiry_strike: Get spot exposures for specific expiry (ticker, expiry required; date optional)
 - historical_risk_reversal_skew: Get risk reversal skew (ticker required; timeframe optional)
@@ -142,7 +143,7 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
     return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
   }
 
-  const { action, ticker, sector, date, expiry, candle_size, strike, min_strike, max_strike, option_type, limit, timeframe } = parsed.data
+  const { action, ticker, sector, date, expiry, expirations, candle_size, strike, min_strike, max_strike, option_type, limit, timeframe } = parsed.data
 
   // Encode path parameters once if they exist
   const safeTicker = ticker ? encodePath(ticker) : ""
@@ -293,8 +294,11 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
       return formatResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures`, { date }))
 
     case "spot_exposures_by_expiry_strike":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/expiry-strike`, { date }))
+      if (!ticker || !expirations || expirations.length === 0) return formatError("ticker and expirations are required")
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/expiry-strike`, {
+        "expirations[]": expirations,
+        date,
+      }))
 
     case "spot_exposures_by_strike":
       if (!ticker) return formatError("ticker is required")
