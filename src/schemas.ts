@@ -203,3 +203,26 @@ export const candleSizeSchema = z.enum([
 // ============================================================================
 
 export const timeframeSchema = z.string().describe("Timeframe for historical data")
+
+// ============================================================================
+// Insider transaction filter schemas
+// ============================================================================
+
+export const insiderTransactionFiltersSchema = z.object({
+  // Market cap filters
+  min_marketcap: z.number().int().nonnegative("Market cap cannot be negative").describe("Minimum market cap filter").optional(),
+  max_marketcap: z.number().int().nonnegative("Market cap cannot be negative").describe("Maximum market cap filter").optional(),
+  market_cap_size: z.string().describe("Size category of company market cap (small, mid, large)").optional(),
+
+  // Earnings DTE filters
+  min_earnings_dte: z.number().int().nonnegative("DTE cannot be negative").describe("Minimum days to earnings").optional(),
+  max_earnings_dte: z.number().int().nonnegative("DTE cannot be negative").describe("Maximum days to earnings").optional(),
+
+  // Share amount filters
+  min_amount: z.number().int().nonnegative("Amount cannot be negative").describe("Minimum number of shares in transaction").optional(),
+  max_amount: z.number().int().nonnegative("Amount cannot be negative").describe("Maximum number of shares in transaction").optional(),
+
+  // Security type filters
+  common_stock_only: z.boolean().describe("Only include common stock transactions").optional(),
+  security_ad_codes: z.string().describe("Filter by security acquisition disposition codes").optional(),
+})
