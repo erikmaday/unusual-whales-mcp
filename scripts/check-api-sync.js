@@ -414,7 +414,7 @@ async function createGitHubIssues(results) {
   const repo = process.env.GITHUB_REPOSITORY
 
   if (!token || !repo) {
-    console.log('\nGitHub credentials not found. Run in GitHub Actions to auto-create issues.')
+    console.log('\nGitHub credentials not found. Set GITHUB_TOKEN and GITHUB_REPOSITORY to create issues.')
     return
   }
 
@@ -529,13 +529,13 @@ async function main() {
 
     const hasIssues = printResults(results)
 
-    // Create GitHub issues if running in CI
-    if (process.env.GITHUB_ACTIONS && hasIssues) {
+    // Create GitHub issues if explicitly enabled (via CREATE_ISSUES env var)
+    if (process.env.CREATE_ISSUES === 'true' && hasIssues) {
       await createGitHubIssues(results)
     }
 
-    // Always exit successfully - issues are created for tracking problems
-    process.exit(0)
+    // Exit with non-zero code if issues found (so workflow can detect changes)
+    process.exit(hasIssues ? 1 : 0)
 
   } catch (error) {
     console.error('Error:', error.message)
