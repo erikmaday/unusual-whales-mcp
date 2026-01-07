@@ -1,4 +1,15 @@
+import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { toJsonSchema, formatZodError,
+} from "../schemas.js"
+
+const optionsActions = ["flow", "historic", "intraday", "volume_profile"] as const
+
+const optionsInputSchema = z.object({
+  action: z.enum(optionsActions).describe("The action to perform"),
+  id: z.string().describe("Option contract ID/symbol (e.g., AAPL240119C00150000)"),
+})
+
 
 export const optionsTool = {
   name: "uw_options",
@@ -11,21 +22,7 @@ Available actions:
 - volume_profile: Get volume profile for option contract (id required)
 
 The 'id' parameter is the option contract symbol (e.g., AAPL240119C00150000).`,
-  inputSchema: {
-    type: "object" as const,
-    properties: {
-      action: {
-        type: "string",
-        description: "The action to perform",
-        enum: ["flow", "historic", "intraday", "volume_profile"],
-      },
-      id: {
-        type: "string",
-        description: "Option contract ID/symbol (e.g., AAPL240119C00150000)",
-      },
-    },
-    required: ["action", "id"],
-  },
+  inputSchema: toJsonSchema(optionsInputSchema),
   annotations: {
     readOnlyHint: true,
     openWorldHint: true,
@@ -39,12 +36,12 @@ The 'id' parameter is the option contract symbol (e.g., AAPL240119C00150000).`,
  * @returns JSON string with option contract data or error message
  */
 export async function handleOptions(args: Record<string, unknown>): Promise<string> {
-  const { action, id } = args
-
-  if (!id) {
-    return formatError("id (option contract symbol) is required")
+  const parsed = optionsInputSchema.safeParse(args)
+  if (!parsed.success) {
+    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
   }
 
+  const { action, id } = parsed.data
   const safeId = encodePath(id)
 
   switch (action) {

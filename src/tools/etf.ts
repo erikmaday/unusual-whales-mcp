@@ -1,4 +1,15 @@
+import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { toJsonSchema, tickerSchema, formatZodError,
+} from "../schemas.js"
+
+const etfActions = ["info", "holdings", "exposure", "in_outflow", "weights"] as const
+
+const etfInputSchema = z.object({
+  action: z.enum(etfActions).describe("The action to perform"),
+  ticker: tickerSchema.describe("ETF ticker symbol (e.g., SPY, QQQ)"),
+})
+
 
 export const etfTool = {
   name: "uw_etf",
@@ -10,21 +21,7 @@ Available actions:
 - exposure: Get ETFs that hold a ticker (ticker required)
 - in_outflow: Get ETF inflow/outflow data (ticker required)
 - weights: Get sector and country weights (ticker required)`,
-  inputSchema: {
-    type: "object" as const,
-    properties: {
-      action: {
-        type: "string",
-        description: "The action to perform",
-        enum: ["info", "holdings", "exposure", "in_outflow", "weights"],
-      },
-      ticker: {
-        type: "string",
-        description: "ETF ticker symbol (e.g., SPY, QQQ)",
-      },
-    },
-    required: ["action", "ticker"],
-  },
+  inputSchema: toJsonSchema(etfInputSchema),
   annotations: {
     readOnlyHint: true,
     openWorldHint: true,
@@ -38,12 +35,12 @@ Available actions:
  * @returns JSON string with ETF data or error message
  */
 export async function handleEtf(args: Record<string, unknown>): Promise<string> {
-  const { action, ticker } = args
-
-  if (!ticker) {
-    return formatError("ticker is required")
+  const parsed = etfInputSchema.safeParse(args)
+  if (!parsed.success) {
+    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
   }
 
+  const { action, ticker } = parsed.data
   const safeTicker = encodePath(ticker)
 
   switch (action) {

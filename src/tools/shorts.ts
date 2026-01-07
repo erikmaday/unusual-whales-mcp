@@ -1,4 +1,15 @@
+import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { toJsonSchema, tickerSchema, formatZodError,
+} from "../schemas.js"
+
+const shortsActions = ["data", "ftds", "interest_float", "volume_ratio", "volumes_by_exchange"] as const
+
+const shortsInputSchema = z.object({
+  action: z.enum(shortsActions).describe("The action to perform"),
+  ticker: tickerSchema,
+})
+
 
 export const shortsTool = {
   name: "uw_shorts",
@@ -10,21 +21,7 @@ Available actions:
 - interest_float: Get short interest as percent of float (ticker required)
 - volume_ratio: Get short volume and ratio (ticker required)
 - volumes_by_exchange: Get short volumes by exchange (ticker required)`,
-  inputSchema: {
-    type: "object" as const,
-    properties: {
-      action: {
-        type: "string",
-        description: "The action to perform",
-        enum: ["data", "ftds", "interest_float", "volume_ratio", "volumes_by_exchange"],
-      },
-      ticker: {
-        type: "string",
-        description: "Ticker symbol",
-      },
-    },
-    required: ["action", "ticker"],
-  },
+  inputSchema: toJsonSchema(shortsInputSchema),
   annotations: {
     readOnlyHint: true,
     openWorldHint: true,
@@ -38,12 +35,12 @@ Available actions:
  * @returns JSON string with short interest data or error message
  */
 export async function handleShorts(args: Record<string, unknown>): Promise<string> {
-  const { action, ticker } = args
-
-  if (!ticker) {
-    return formatError("ticker is required")
+  const parsed = shortsInputSchema.safeParse(args)
+  if (!parsed.success) {
+    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
   }
 
+  const { action, ticker } = parsed.data
   const safeTicker = encodePath(ticker)
 
   switch (action) {

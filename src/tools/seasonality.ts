@@ -1,4 +1,16 @@
+import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { toJsonSchema, tickerSchema, formatZodError,
+} from "../schemas.js"
+
+const seasonalityActions = ["market", "performers", "monthly", "year_month"] as const
+
+const seasonalityInputSchema = z.object({
+  action: z.enum(seasonalityActions).describe("The action to perform"),
+  ticker: tickerSchema.optional(),
+  month: z.number().min(1).max(12).describe("Month number (1-12)").optional(),
+})
+
 
 export const seasonalityTool = {
   name: "uw_seasonality",
@@ -9,27 +21,7 @@ Available actions:
 - performers: Get top/bottom performers for a month (month required, 1-12)
 - monthly: Get monthly seasonality for a ticker (ticker required)
 - year_month: Get year-month breakdown for a ticker (ticker required)`,
-  inputSchema: {
-    type: "object" as const,
-    properties: {
-      action: {
-        type: "string",
-        description: "The action to perform",
-        enum: ["market", "performers", "monthly", "year_month"],
-      },
-      ticker: {
-        type: "string",
-        description: "Ticker symbol",
-      },
-      month: {
-        type: "number",
-        description: "Month number (1-12)",
-        minimum: 1,
-        maximum: 12,
-      },
-    },
-    required: ["action"],
-  },
+  inputSchema: toJsonSchema(seasonalityInputSchema),
   annotations: {
     readOnlyHint: true,
     openWorldHint: true,
@@ -43,17 +35,19 @@ Available actions:
  * @returns JSON string with seasonality data or error message
  */
 export async function handleSeasonality(args: Record<string, unknown>): Promise<string> {
-  const { action, ticker, month } = args
+  const parsed = seasonalityInputSchema.safeParse(args)
+  if (!parsed.success) {
+    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
+  }
+
+  const { action, ticker, month } = parsed.data
 
   switch (action) {
     case "market":
       return formatResponse(await uwFetch("/api/seasonality/market"))
 
     case "performers":
-      if (!month) return formatError("month is required (1-12)")
-      if (typeof month !== "number" || month < 1 || month > 12) {
-        return formatError("month must be a number between 1 and 12")
-      }
+      if (month === undefined) return formatError("month is required (1-12)")
       return formatResponse(await uwFetch(`/api/seasonality/${month}/performers`))
 
     case "monthly":

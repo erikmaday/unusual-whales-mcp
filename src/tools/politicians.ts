@@ -1,4 +1,20 @@
+import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { toJsonSchema, tickerSchema, limitSchema, formatZodError,
+} from "../schemas.js"
+
+const politiciansActions = ["people", "portfolio", "recent_trades", "holders", "disclosures"] as const
+
+const politiciansInputSchema = z.object({
+  action: z.enum(politiciansActions).describe("The action to perform"),
+  politician_id: z.string().describe("Politician ID (for portfolio or disclosures action)").optional(),
+  latest_only: z.boolean().describe("Return only most recent disclosure per politician (for disclosures action)").optional(),
+  year: z.number().describe("Filter by disclosure year (for disclosures action)").optional(),
+  ticker: tickerSchema.describe("Ticker symbol (for holders action)").optional(),
+  limit: limitSchema.optional(),
+  page: z.number().describe("Page number for pagination").optional(),
+})
+
 
 export const politiciansTool = {
   name: "uw_politicians",
@@ -10,41 +26,7 @@ Available actions:
 - recent_trades: Get recent politician trades
 - holders: Get politicians holding a ticker (ticker required)
 - disclosures: Get annual disclosure file records (optional: politician_id, latest_only, year)`,
-  inputSchema: {
-    type: "object" as const,
-    properties: {
-      action: {
-        type: "string",
-        description: "The action to perform",
-        enum: ["people", "portfolio", "recent_trades", "holders", "disclosures"],
-      },
-      politician_id: {
-        type: "string",
-        description: "Politician ID (for portfolio or disclosures action)",
-      },
-      latest_only: {
-        type: "boolean",
-        description: "Return only most recent disclosure per politician (for disclosures action)",
-      },
-      year: {
-        type: "number",
-        description: "Filter by disclosure year (for disclosures action)",
-      },
-      ticker: {
-        type: "string",
-        description: "Ticker symbol (for holders action)",
-      },
-      limit: {
-        type: "number",
-        description: "Maximum number of results",
-      },
-      page: {
-        type: "number",
-        description: "Page number for pagination",
-      },
-    },
-    required: ["action"],
-  },
+  inputSchema: toJsonSchema(politiciansInputSchema),
   annotations: {
     readOnlyHint: true,
     openWorldHint: true,
@@ -58,7 +40,12 @@ Available actions:
  * @returns JSON string with politician portfolio data or error message
  */
 export async function handlePoliticians(args: Record<string, unknown>): Promise<string> {
-  const { action, politician_id, ticker, limit, page, latest_only, year } = args
+  const parsed = politiciansInputSchema.safeParse(args)
+  if (!parsed.success) {
+    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
+  }
+
+  const { action, politician_id, ticker, limit, page, latest_only, year } = parsed.data
 
   switch (action) {
     case "people":
@@ -70,8 +57,8 @@ export async function handlePoliticians(args: Record<string, unknown>): Promise<
 
     case "recent_trades":
       return formatResponse(await uwFetch("/api/politician-portfolios/recent_trades", {
-        limit: limit as number,
-        page: page as number,
+        limit,
+        page,
       }))
 
     case "holders":
@@ -80,9 +67,9 @@ export async function handlePoliticians(args: Record<string, unknown>): Promise<
 
     case "disclosures":
       return formatResponse(await uwFetch("/api/politician-portfolios/disclosures", {
-        politician_id: politician_id as string,
-        latest_only: latest_only as boolean,
-        year: year as number,
+        politician_id,
+        latest_only,
+        year,
       }))
 
     default:

@@ -1,4 +1,30 @@
+import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { toJsonSchema, tickerSchema, limitSchema, formatZodError,
+} from "../schemas.js"
+
+const insiderActions = ["transactions", "sector_flow", "ticker_flow", "insiders"] as const
+
+const insiderInputSchema = z.object({
+  action: z.enum(insiderActions).describe("The action to perform"),
+  ticker: tickerSchema.optional(),
+  sector: z.string().describe("Market sector").optional(),
+  limit: limitSchema.optional(),
+  page: z.number().describe("Page number for pagination").optional(),
+  min_value: z.number().describe("Minimum transaction value").optional(),
+  max_value: z.number().describe("Maximum transaction value").optional(),
+  min_price: z.number().describe("Minimum stock price").optional(),
+  max_price: z.number().describe("Maximum stock price").optional(),
+  owner_name: z.string().describe("Name of insider").optional(),
+  sectors: z.string().describe("Filter by sectors").optional(),
+  industries: z.string().describe("Filter by industries").optional(),
+  is_director: z.boolean().describe("Filter for directors").optional(),
+  is_officer: z.boolean().describe("Filter for officers").optional(),
+  is_ten_percent_owner: z.boolean().describe("Filter for 10% owners").optional(),
+  is_s_p_500: z.boolean().describe("Only S&P 500 companies").optional(),
+  transaction_codes: z.string().describe("Transaction codes (P=Purchase, S=Sale)").optional(),
+})
+
 
 export const insiderTool = {
   name: "uw_insider",
@@ -9,81 +35,7 @@ Available actions:
 - sector_flow: Get aggregated insider flow for a sector (sector required)
 - ticker_flow: Get aggregated insider flow for a ticker (ticker required)
 - insiders: Get all insiders for a ticker (ticker required)`,
-  inputSchema: {
-    type: "object" as const,
-    properties: {
-      action: {
-        type: "string",
-        description: "The action to perform",
-        enum: ["transactions", "sector_flow", "ticker_flow", "insiders"],
-      },
-      ticker: {
-        type: "string",
-        description: "Ticker symbol",
-      },
-      sector: {
-        type: "string",
-        description: "Market sector",
-      },
-      limit: {
-        type: "number",
-        description: "Maximum number of results",
-      },
-      page: {
-        type: "number",
-        description: "Page number for pagination",
-      },
-      min_value: {
-        type: "number",
-        description: "Minimum transaction value",
-      },
-      max_value: {
-        type: "number",
-        description: "Maximum transaction value",
-      },
-      min_price: {
-        type: "number",
-        description: "Minimum stock price",
-      },
-      max_price: {
-        type: "number",
-        description: "Maximum stock price",
-      },
-      owner_name: {
-        type: "string",
-        description: "Name of insider",
-      },
-      sectors: {
-        type: "string",
-        description: "Filter by sectors",
-      },
-      industries: {
-        type: "string",
-        description: "Filter by industries",
-      },
-      is_director: {
-        type: "boolean",
-        description: "Filter for directors",
-      },
-      is_officer: {
-        type: "boolean",
-        description: "Filter for officers",
-      },
-      is_ten_percent_owner: {
-        type: "boolean",
-        description: "Filter for 10% owners",
-      },
-      is_s_p_500: {
-        type: "boolean",
-        description: "Only S&P 500 companies",
-      },
-      transaction_codes: {
-        type: "string",
-        description: "Transaction codes (P=Purchase, S=Sale)",
-      },
-    },
-    required: ["action"],
-  },
+  inputSchema: toJsonSchema(insiderInputSchema),
   annotations: {
     readOnlyHint: true,
     openWorldHint: true,
@@ -97,6 +49,11 @@ Available actions:
  * @returns JSON string with insider trading data or error message
  */
 export async function handleInsider(args: Record<string, unknown>): Promise<string> {
+  const parsed = insiderInputSchema.safeParse(args)
+  if (!parsed.success) {
+    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
+  }
+
   const {
     action,
     ticker,
@@ -115,26 +72,26 @@ export async function handleInsider(args: Record<string, unknown>): Promise<stri
     is_ten_percent_owner,
     is_s_p_500,
     transaction_codes,
-  } = args
+  } = parsed.data
 
   switch (action) {
     case "transactions":
       return formatResponse(await uwFetch("/api/insider/transactions", {
-        ticker_symbol: ticker as string,
-        limit: limit as number,
-        page: page as number,
-        min_value: min_value as number,
-        max_value: max_value as number,
-        min_price: min_price as number,
-        max_price: max_price as number,
-        owner_name: owner_name as string,
-        sectors: sectors as string,
-        industries: industries as string,
-        is_director: is_director as boolean,
-        is_officer: is_officer as boolean,
-        is_ten_percent_owner: is_ten_percent_owner as boolean,
-        is_s_p_500: is_s_p_500 as boolean,
-        "transaction_codes[]": transaction_codes as string,
+        ticker_symbol: ticker,
+        limit,
+        page,
+        min_value,
+        max_value,
+        min_price,
+        max_price,
+        owner_name,
+        sectors,
+        industries,
+        is_director,
+        is_officer,
+        is_ten_percent_owner,
+        is_s_p_500,
+        "transaction_codes[]": transaction_codes,
       }))
 
     case "sector_flow":

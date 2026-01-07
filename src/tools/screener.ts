@@ -1,4 +1,46 @@
+import { z } from "zod"
 import { uwFetch, formatResponse, formatError } from "../client.js"
+import {
+  toJsonSchema,
+  tickerSchema,
+  expirySchema,
+  limitSchema,
+  optionTypeSchema,
+  orderSchema,
+  premiumFilterSchema,
+  oiFilterSchema,
+  dteFilterSchema,
+  volumeFilterSchema,
+  formatZodError,
+} from "../schemas.js"
+
+const screenerActions = ["stocks", "option_contracts", "analysts"] as const
+
+const screenerInputSchema = z.object({
+  action: z.enum(screenerActions).describe("The action to perform"),
+  ticker: tickerSchema.optional(),
+  limit: limitSchema.optional(),
+  page: z.number().describe("Page number for pagination").optional(),
+  order: z.string().describe("Order by field").optional(),
+  order_direction: orderSchema.describe("Order direction").optional(),
+  // Stock screener filters
+  sector: z.string().describe("Market sector filter").optional(),
+  min_marketcap: z.number().describe("Minimum market cap").optional(),
+  max_marketcap: z.number().describe("Maximum market cap").optional(),
+  min_price: z.number().describe("Minimum stock price").optional(),
+  max_price: z.number().describe("Maximum stock price").optional(),
+  // Option contract screener filters
+  expiry: expirySchema.optional(),
+  option_type: optionTypeSchema.optional(),
+  is_otm: z.boolean().describe("Filter for OTM options").optional(),
+  // Analyst screener filters
+  recommendation: z.enum(["buy", "hold", "sell"]).describe("Analyst recommendation (buy, hold, sell)").optional(),
+  analyst_action: z.enum(["initiated", "reiterated", "downgraded", "upgraded", "maintained"]).describe("Analyst action type").optional(),
+}).merge(premiumFilterSchema)
+  .merge(oiFilterSchema)
+  .merge(dteFilterSchema)
+  .merge(volumeFilterSchema)
+
 
 export const screenerTool = {
   name: "uw_screener",
@@ -8,116 +50,7 @@ Available actions:
 - stocks: Screen stocks with various filters
 - option_contracts: Screen option contracts with filters
 - analysts: Screen analyst ratings`,
-  inputSchema: {
-    type: "object" as const,
-    properties: {
-      action: {
-        type: "string",
-        description: "The action to perform",
-        enum: ["stocks", "option_contracts", "analysts"],
-      },
-      ticker: {
-        type: "string",
-        description: "Ticker symbol filter",
-      },
-      limit: {
-        type: "number",
-        description: "Maximum number of results",
-      },
-      page: {
-        type: "number",
-        description: "Page number for pagination",
-      },
-      order: {
-        type: "string",
-        description: "Order by field",
-      },
-      order_direction: {
-        type: "string",
-        description: "Order direction",
-        enum: ["asc", "desc"],
-      },
-      // Stock screener filters
-      sector: {
-        type: "string",
-        description: "Market sector filter",
-      },
-      min_marketcap: {
-        type: "number",
-        description: "Minimum market cap",
-      },
-      max_marketcap: {
-        type: "number",
-        description: "Maximum market cap",
-      },
-      min_price: {
-        type: "number",
-        description: "Minimum stock price",
-      },
-      max_price: {
-        type: "number",
-        description: "Maximum stock price",
-      },
-      min_volume: {
-        type: "number",
-        description: "Minimum volume",
-      },
-      max_volume: {
-        type: "number",
-        description: "Maximum volume",
-      },
-      // Option contract screener filters
-      expiry: {
-        type: "string",
-        description: "Option expiry date",
-      },
-      min_dte: {
-        type: "number",
-        description: "Minimum days to expiration",
-      },
-      max_dte: {
-        type: "number",
-        description: "Maximum days to expiration",
-      },
-      min_premium: {
-        type: "number",
-        description: "Minimum premium",
-      },
-      max_premium: {
-        type: "number",
-        description: "Maximum premium",
-      },
-      min_oi: {
-        type: "number",
-        description: "Minimum open interest",
-      },
-      max_oi: {
-        type: "number",
-        description: "Maximum open interest",
-      },
-      option_type: {
-        type: "string",
-        description: "Option type (call or put)",
-        enum: ["call", "put"],
-      },
-      is_otm: {
-        type: "boolean",
-        description: "Filter for OTM options",
-      },
-      // Analyst screener filters
-      recommendation: {
-        type: "string",
-        description: "Analyst recommendation (buy, hold, sell)",
-        enum: ["buy", "hold", "sell"],
-      },
-      analyst_action: {
-        type: "string",
-        description: "Analyst action type",
-        enum: ["initiated", "reiterated", "downgraded", "upgraded", "maintained"],
-      },
-    },
-    required: ["action"],
-  },
+  inputSchema: toJsonSchema(screenerInputSchema),
   annotations: {
     readOnlyHint: true,
     openWorldHint: true,
@@ -131,6 +64,11 @@ Available actions:
  * @returns JSON string with screener results or error message
  */
 export async function handleScreener(args: Record<string, unknown>): Promise<string> {
+  const parsed = screenerInputSchema.safeParse(args)
+  if (!parsed.success) {
+    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
+  }
+
   const {
     action,
     ticker,
@@ -156,52 +94,52 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
     is_otm,
     recommendation,
     analyst_action,
-  } = args
+  } = parsed.data
 
   switch (action) {
     case "stocks":
       return formatResponse(await uwFetch("/api/screener/stocks", {
-        ticker: ticker as string,
-        sector: sector as string,
-        min_marketcap: min_marketcap as number,
-        max_marketcap: max_marketcap as number,
-        min_price: min_price as number,
-        max_price: max_price as number,
-        min_volume: min_volume as number,
-        max_volume: max_volume as number,
-        order: order as string,
-        order_direction: order_direction as string,
-        limit: limit as number,
-        page: page as number,
+        ticker,
+        sector,
+        min_marketcap,
+        max_marketcap,
+        min_price,
+        max_price,
+        min_volume,
+        max_volume,
+        order,
+        order_direction,
+        limit,
+        page,
       }))
 
     case "option_contracts":
       return formatResponse(await uwFetch("/api/screener/option-contracts", {
-        ticker: ticker as string,
-        expiry: expiry as string,
-        min_dte: min_dte as number,
-        max_dte: max_dte as number,
-        min_premium: min_premium as number,
-        max_premium: max_premium as number,
-        min_oi: min_oi as number,
-        max_oi: max_oi as number,
-        option_type: option_type as string,
-        is_otm: is_otm as boolean,
-        order: order as string,
-        order_direction: order_direction as string,
-        limit: limit as number,
-        page: page as number,
+        ticker,
+        expiry,
+        min_dte,
+        max_dte,
+        min_premium,
+        max_premium,
+        min_oi,
+        max_oi,
+        option_type,
+        is_otm,
+        order,
+        order_direction,
+        limit,
+        page,
       }))
 
     case "analysts":
       return formatResponse(await uwFetch("/api/screener/analysts", {
-        ticker: ticker as string,
-        recommendation: recommendation as string,
-        action: analyst_action as string,
-        order: order as string,
-        order_direction: order_direction as string,
-        limit: limit as number,
-        page: page as number,
+        ticker,
+        recommendation,
+        action: analyst_action,
+        order,
+        order_direction,
+        limit,
+        page,
       }))
 
     default:

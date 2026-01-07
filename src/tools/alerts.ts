@@ -1,4 +1,20 @@
+import { z } from "zod"
 import { uwFetch, formatResponse, formatError } from "../client.js"
+import { toJsonSchema, tickerSchema, limitSchema, formatZodError } from "../schemas.js"
+
+const alertsActions = ["alerts", "configurations"] as const
+
+const alertsInputSchema = z.object({
+  action: z.enum(alertsActions).describe("The action to perform"),
+  limit: limitSchema.optional(),
+  ticker: tickerSchema.describe("Filter by ticker symbol").optional(),
+  intraday_only: z.boolean().describe("Only show intraday alerts").optional(),
+  config_ids: z.string().describe("Filter by configuration IDs").optional(),
+  noti_types: z.string().describe("Filter by notification types").optional(),
+  newer_than: z.string().describe("Filter alerts newer than timestamp (ISO format or unix)").optional(),
+  older_than: z.string().describe("Filter alerts older than timestamp (ISO format or unix)").optional(),
+})
+
 
 export const alertsTool = {
   name: "uw_alerts",
@@ -7,45 +23,7 @@ export const alertsTool = {
 Available actions:
 - alerts: Get triggered alerts for the user
 - configurations: Get alert configurations`,
-  inputSchema: {
-    type: "object" as const,
-    properties: {
-      action: {
-        type: "string",
-        description: "The action to perform",
-        enum: ["alerts", "configurations"],
-      },
-      limit: {
-        type: "number",
-        description: "Maximum number of results",
-      },
-      ticker: {
-        type: "string",
-        description: "Filter by ticker symbol",
-      },
-      intraday_only: {
-        type: "boolean",
-        description: "Only show intraday alerts",
-      },
-      config_ids: {
-        type: "string",
-        description: "Filter by configuration IDs",
-      },
-      noti_types: {
-        type: "string",
-        description: "Filter by notification types",
-      },
-      newer_than: {
-        type: "string",
-        description: "Filter alerts newer than timestamp (ISO format or unix)",
-      },
-      older_than: {
-        type: "string",
-        description: "Filter alerts older than timestamp (ISO format or unix)",
-      },
-    },
-    required: ["action"],
-  },
+  inputSchema: toJsonSchema(alertsInputSchema),
   annotations: {
     readOnlyHint: true,
     openWorldHint: true,
@@ -59,18 +37,23 @@ Available actions:
  * @returns JSON string with alert data or error message
  */
 export async function handleAlerts(args: Record<string, unknown>): Promise<string> {
-  const { action, limit, ticker, intraday_only, config_ids, noti_types, newer_than, older_than } = args
+  const parsed = alertsInputSchema.safeParse(args)
+  if (!parsed.success) {
+    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
+  }
+
+  const { action, limit, ticker, intraday_only, config_ids, noti_types, newer_than, older_than } = parsed.data
 
   switch (action) {
     case "alerts":
       return formatResponse(await uwFetch("/api/alerts", {
-        limit: limit as number,
-        ticker_symbols: ticker as string,
-        intraday_only: intraday_only as boolean,
-        "config_ids[]": config_ids as string,
-        "noti_types[]": noti_types as string,
-        newer_than: newer_than as string,
-        older_than: older_than as string,
+        limit,
+        ticker_symbols: ticker,
+        intraday_only,
+        "config_ids[]": config_ids,
+        "noti_types[]": noti_types,
+        newer_than,
+        older_than,
       }))
 
     case "configurations":
