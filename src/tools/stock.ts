@@ -10,6 +10,7 @@ import {
   optionTypeSchema,
   candleSizeSchema,
   timeframeSchema,
+  deltaSchema,
   formatZodError,
 } from "../schemas.js"
 
@@ -73,6 +74,7 @@ const stockInputSchema = z.object({
   option_type: optionTypeSchema.optional(),
   limit: limitSchema.optional(),
   timeframe: timeframeSchema.optional(),
+  delta: deltaSchema.optional(),
 })
 
 
@@ -115,7 +117,7 @@ Available actions:
 - spot_exposures_by_expiry_strike: Get spot exposures by expiry/strike (ticker, expirations required; date optional)
 - spot_exposures_by_strike: Get spot exposures by strike (ticker required; date optional)
 - spot_exposures_expiry_strike: Get spot exposures for specific expiry (ticker, expiry required; date optional)
-- historical_risk_reversal_skew: Get risk reversal skew (ticker required; timeframe optional)
+- historical_risk_reversal_skew: Get risk reversal skew (ticker, expiry, delta required; date, timeframe optional)
 - volatility_realized: Get realized volatility (ticker required; timeframe optional)
 - volatility_stats: Get volatility stats (ticker required)
 - volatility_term_structure: Get term structure (ticker required; date optional)
@@ -309,8 +311,8 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
       return formatResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/${safeExpiry}/strike`, { date }))
 
     case "historical_risk_reversal_skew":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/historical-risk-reversal-skew`, { timeframe }))
+      if (!ticker || !expiry || !delta) return formatError("ticker, expiry, and delta are required")
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/historical-risk-reversal-skew`, { expiry, delta, date, timeframe }))
 
     case "volatility_realized":
       if (!ticker) return formatError("ticker is required")
