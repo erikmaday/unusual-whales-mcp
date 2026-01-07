@@ -11,6 +11,7 @@
  * 2. Extra endpoints (implemented but not in spec)
  * 3. Missing required parameters (will cause API errors)
  * 4. Missing optional parameters (reduced functionality)
+ * 5. Extra parameters (implemented but not in spec - may be removed/renamed)
  *
  * When run in GitHub Actions with GITHUB_TOKEN, creates issues for problems.
  */
@@ -59,6 +60,7 @@ function extractSpecEndpointsWithParams(spec) {
       required: [],
       optional: [],
       path: [],
+      operationId: getMethod.operationId || null,
     }
 
     for (const param of getMethod.parameters || []) {
@@ -232,12 +234,14 @@ function compareAll(specEndpoints, implEndpoints) {
     extraEndpoints: [],
     missingRequiredParams: [],
     missingOptionalParams: [],
+    extraParams: [],
     summary: {
       totalSpecEndpoints: Object.keys(specEndpoints).length,
       totalImplEndpoints: Object.keys(implEndpoints).length,
       endpointsCovered: 0,
       requiredParamsMissing: 0,
       optionalParamsMissing: 0,
+      extraParams: 0,
     },
   }
 
@@ -254,7 +258,10 @@ function compareAll(specEndpoints, implEndpoints) {
   // Find missing endpoints (in spec but not implemented)
   for (const [normalized, specEp] of normalizedSpecMap) {
     if (!normalizedImplMap.has(normalized)) {
-      results.missingEndpoints.push(specEp)
+      results.missingEndpoints.push({
+        endpoint: specEp,
+        operationId: specEndpoints[specEp].operationId,
+      })
     }
   }
 
@@ -283,6 +290,7 @@ function compareAll(specEndpoints, implEndpoints) {
           endpoint: specEndpoint,
           param: reqParam,
           file: implData.file,
+          operationId: specParams.operationId,
         })
         results.summary.requiredParamsMissing++
       }
@@ -296,8 +304,29 @@ function compareAll(specEndpoints, implEndpoints) {
           endpoint: specEndpoint,
           param: optParam,
           file: implData.file,
+          operationId: specParams.operationId,
         })
         results.summary.optionalParamsMissing++
+      }
+    }
+
+    // Check for extra params (implemented but not in spec)
+    const allSpecParams = [
+      ...specParams.required,
+      ...specParams.optional,
+      ...specParams.path,
+    ].map(p => p.replace('[]', ''))
+
+    for (const passedParam of passedParams) {
+      const paramName = passedParam.replace('[]', '')
+      if (!allSpecParams.includes(paramName)) {
+        results.extraParams.push({
+          endpoint: specEndpoint,
+          param: passedParam,
+          file: implData.file,
+          operationId: specParams.operationId,
+        })
+        results.summary.extraParams++
       }
     }
   }
@@ -311,10 +340,18 @@ function getEndpointCategory(endpoint) {
 }
 
 /**
+ * Build a documentation link for an endpoint
+ */
+function buildDocLink(operationId) {
+  if (!operationId) return null
+  return `https://api.unusualwhales.com/docs#/operations/${operationId}`
+}
+
+/**
  * Print results to console
  */
 function printResults(results) {
-  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, summary } = results
+  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, summary } = results
 
   console.log('\n' + '='.repeat(60))
   console.log('API SYNC CHECK RESULTS')
@@ -325,8 +362,9 @@ function printResults(results) {
   // Missing endpoints
   if (missingEndpoints.length > 0) {
     console.log(`\n❌ Missing Endpoints (${missingEndpoints.length}):`)
-    for (const ep of missingEndpoints) {
-      console.log(`   - ${ep}`)
+    for (const { endpoint, operationId } of missingEndpoints) {
+      const docLink = buildDocLink(operationId)
+      console.log(`   - ${endpoint}${docLink ? ` (${docLink})` : ''}`)
     }
   } else {
     console.log('\n✅ All spec endpoints are implemented')
@@ -371,6 +409,23 @@ function printResults(results) {
     console.log('\n✅ All optional parameters are implemented')
   }
 
+  // Extra params (implemented but not in spec)
+  if (extraParams.length > 0) {
+    console.log(`\n⚠️  Extra Parameters (${extraParams.length}) - not in spec:`)
+    const byFile = groupBy(extraParams, 'file')
+    for (const [file, params] of Object.entries(byFile)) {
+      console.log(`\n   ${file}:`)
+      const byEndpoint = groupBy(params, 'endpoint')
+      for (const [endpoint, eps] of Object.entries(byEndpoint)) {
+        const paramNames = eps.map(e => e.param).join(', ')
+        console.log(`      ${endpoint}`)
+        console.log(`         Extra: ${paramNames}`)
+      }
+    }
+  } else {
+    console.log('\n✅ No extra parameters found')
+  }
+
   // Summary
   console.log('\n' + '='.repeat(60))
   console.log('SUMMARY')
@@ -381,10 +436,12 @@ function printResults(results) {
   console.log(`Extra endpoints:        ${extraEndpoints.length}`)
   console.log(`Missing required params: ${summary.requiredParamsMissing}`)
   console.log(`Missing optional params: ${summary.optionalParamsMissing}`)
+  console.log(`Extra params:           ${summary.extraParams}`)
 
   const hasIssues = missingEndpoints.length > 0 ||
     missingRequiredParams.length > 0 ||
-    missingOptionalParams.length > 0
+    missingOptionalParams.length > 0 ||
+    extraParams.length > 0
 
   if (!hasIssues) {
     console.log('\n✅ API is fully in sync!')
@@ -421,22 +478,25 @@ async function createGitHubIssues(results) {
   const issues = []
 
   // Create issues for missing endpoints (one per endpoint)
-  for (const endpoint of results.missingEndpoints) {
+  for (const { endpoint, operationId } of results.missingEndpoints) {
     const category = getEndpointCategory(endpoint)
+    const docLink = buildDocLink(operationId)
     issues.push({
       title: `Implement new endpoint: ${endpoint}`,
       body: `## New API Endpoint Detected\n\n` +
         `The Unusual Whales API has a new endpoint that needs to be implemented.\n\n` +
         `### Endpoint\n\n\`${endpoint}\`\n\n` +
         `### Category\n\n\`${category}\`\n\n` +
+        (docLink ? `### Documentation\n\n[View API Docs](${docLink})\n\n` : '') +
         `---\n*Auto-generated by API sync checker*`,
       labels: ['api-sync', 'new-endpoint', category],
     })
   }
 
   // Create an issue for EACH missing required param (critical)
-  for (const { endpoint, param, file } of results.missingRequiredParams) {
+  for (const { endpoint, param, file, operationId } of results.missingRequiredParams) {
     const category = getEndpointCategory(endpoint)
+    const docLink = buildDocLink(operationId)
     issues.push({
       title: `Missing required parameter: ${param} for ${endpoint}`,
       body: `## Missing Required Parameter\n\n` +
@@ -444,8 +504,9 @@ async function createGitHubIssues(results) {
         `### Details\n\n` +
         `- **Endpoint:** \`${endpoint}\`\n` +
         `- **Parameter:** \`${param}\`\n` +
-        `- **File:** \`src/tools/${file}\`\n\n` +
-        `### Action Required\n\n` +
+        `- **File:** \`src/tools/${file}\`\n` +
+        (docLink ? `- **API Docs:** [View Documentation](${docLink})\n` : '') +
+        `\n### Action Required\n\n` +
         `1. Add the \`${param}\` parameter to the tool's input schema\n` +
         `2. Pass the parameter to the \`uwFetch\` call\n` +
         `3. Update the tool description if needed\n\n` +
@@ -465,7 +526,11 @@ async function createGitHubIssues(results) {
       `Adding these would improve filtering and functionality.\n\n`
 
     for (const [endpoint, eps] of Object.entries(byEndpoint)) {
+      const docLink = buildDocLink(eps[0]?.operationId)
       body += `### \`${endpoint}\`\n\n`
+      if (docLink) {
+        body += `[View API Docs](${docLink})\n\n`
+      }
       for (const p of eps) {
         body += `- \`${p.param}\`\n`
       }
@@ -479,6 +544,42 @@ async function createGitHubIssues(results) {
       title: `Add ${paramCount} missing optional parameters to ${toolName} tool`,
       body,
       labels: ['api-sync', 'enhancement', 'missing-parameter', toolName],
+    })
+  }
+
+  // Create ONE issue per tool for extra params (not in spec)
+  const extraByFile = groupBy(results.extraParams, 'file')
+  for (const [file, params] of Object.entries(extraByFile)) {
+    const byEndpoint = groupBy(params, 'endpoint')
+    const paramCount = params.length
+
+    let body = `## Extra Parameters Not In API Spec\n\n` +
+      `The following parameters are being passed in \`src/tools/${file}\` but are not documented in the API spec.\n` +
+      `These parameters may have been removed from the API or may be incorrectly named.\n\n`
+
+    for (const [endpoint, eps] of Object.entries(byEndpoint)) {
+      const docLink = buildDocLink(eps[0]?.operationId)
+      body += `### \`${endpoint}\`\n\n`
+      if (docLink) {
+        body += `[View API Docs](${docLink})\n\n`
+      }
+      for (const p of eps) {
+        body += `- \`${p.param}\`\n`
+      }
+      body += '\n'
+    }
+
+    body += `### Action Required\n\n` +
+      `1. Verify if these parameters are still supported by the API\n` +
+      `2. If removed, remove them from the tool's input schema and uwFetch call\n` +
+      `3. If renamed, update to the new parameter name\n\n` +
+      `---\n*Auto-generated by API sync checker*`
+
+    const toolName = file.replace('.ts', '')
+    issues.push({
+      title: `Remove ${paramCount} extra parameters from ${toolName} tool`,
+      body,
+      labels: ['api-sync', 'cleanup', 'extra-parameter', toolName],
     })
   }
 
