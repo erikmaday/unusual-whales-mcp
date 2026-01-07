@@ -66,7 +66,7 @@ const stockInputSchema = z.object({
   sector: z.string().describe("Market sector (for tickers_by_sector action)").optional(),
   date: dateSchema.optional(),
   expiry: expirySchema.optional(),
-  expirations: z.array(expirySchema).describe("Array of expiration dates in YYYY-MM-DD format (for spot_exposures_by_expiry_strike action)").optional(),
+  expirations: z.array(expirySchema).describe("Array of expiration dates in YYYY-MM-DD format (for atm_chains and spot_exposures_by_expiry_strike actions)").optional(),
   candle_size: candleSizeSchema.optional(),
   strike: strikeSchema.optional(),
   min_strike: z.number().describe("Minimum strike price filter").optional(),
@@ -102,7 +102,7 @@ Available actions:
 - oi_per_strike: Get OI per strike (ticker required; expiry, date optional)
 - options_volume: Get options volume (ticker required; date optional)
 - volume_oi_expiry: Get volume/OI by expiry (ticker required; date optional)
-- atm_chains: Get ATM chains (ticker required; date optional)
+- atm_chains: Get ATM chains for given expirations (ticker, expirations[] required)
 - expiry_breakdown: Get expiry breakdown (ticker required; date optional)
 - flow_alerts: Get flow alerts for ticker (ticker required; date optional)
 - flow_per_expiry: Get flow per expiry (ticker required; date optional)
@@ -145,7 +145,7 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
     return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
   }
 
-  const { action, ticker, sector, date, expiry, expirations, candle_size, strike, min_strike, max_strike, option_type, limit, timeframe } = parsed.data
+  const { action, ticker, sector, date, expiry, expirations, candle_size, strike, min_strike, max_strike, option_type, limit, timeframe, delta } = parsed.data
 
   // Encode path parameters once if they exist
   const safeTicker = ticker ? encodePath(ticker) : ""
@@ -246,7 +246,8 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
 
     case "atm_chains":
       if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/atm-chains`, { date }))
+      if (!expirations || expirations.length === 0) return formatError("expirations[] is required")
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/atm-chains`, { "expirations[]": expirations }))
 
     case "expiry_breakdown":
       if (!ticker) return formatError("ticker is required")
