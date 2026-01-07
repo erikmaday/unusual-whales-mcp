@@ -203,3 +203,6 @@ export const candleSizeSchema = z.enum([
 // ============================================================================
 
 export const timeframeSchema = z.string().describe("Timeframe for historical data")
+
+/** Delta value for risk reversal skew (10 or 25) */
+export const deltaSchema = z.enum(["10", "25"]).describe("Delta value for risk reversal skew (10 or 25, representing 0.10 or 0.25)")
