@@ -1,4 +1,27 @@
+import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { toJsonSchema, tickerSchema, dateSchema, limitSchema, orderSchema, formatZodError,
+} from "../schemas.js"
+
+const institutionsActions = ["list", "holdings", "activity", "sectors", "ownership", "latest_filings"] as const
+
+const institutionsInputSchema = z.object({
+  action: z.enum(institutionsActions).describe("The action to perform"),
+  name: z.string().describe("Institution name").optional(),
+  ticker: tickerSchema.describe("Ticker symbol (for ownership)").optional(),
+  date: dateSchema.describe("Report date in YYYY-MM-DD format").optional(),
+  start_date: z.string().describe("Start date for date range").optional(),
+  end_date: z.string().describe("End date for date range").optional(),
+  limit: limitSchema.optional(),
+  page: z.number().describe("Page number for pagination").optional(),
+  order: z.string().describe("Order by field").optional(),
+  order_direction: orderSchema.describe("Order direction (asc or desc)").optional(),
+  min_total_value: z.number().describe("Minimum total value filter").optional(),
+  max_total_value: z.number().describe("Maximum total value filter").optional(),
+  tags: z.string().describe("Institution tags filter").optional(),
+  security_types: z.string().describe("Security types filter").optional(),
+})
+
 
 export const institutionsTool = {
   name: "uw_institutions",
@@ -11,70 +34,7 @@ Available actions:
 - sectors: Get sector exposure for an institution (name required)
 - ownership: Get institutional ownership of a ticker (ticker required)
 - latest_filings: Get latest institutional filings`,
-  inputSchema: {
-    type: "object" as const,
-    properties: {
-      action: {
-        type: "string",
-        description: "The action to perform",
-        enum: ["list", "holdings", "activity", "sectors", "ownership", "latest_filings"],
-      },
-      name: {
-        type: "string",
-        description: "Institution name",
-      },
-      ticker: {
-        type: "string",
-        description: "Ticker symbol (for ownership)",
-      },
-      date: {
-        type: "string",
-        description: "Report date in YYYY-MM-DD format",
-      },
-      start_date: {
-        type: "string",
-        description: "Start date for date range",
-      },
-      end_date: {
-        type: "string",
-        description: "End date for date range",
-      },
-      limit: {
-        type: "number",
-        description: "Maximum number of results",
-      },
-      page: {
-        type: "number",
-        description: "Page number for pagination",
-      },
-      order: {
-        type: "string",
-        description: "Order by field",
-      },
-      order_direction: {
-        type: "string",
-        description: "Order direction (asc or desc)",
-        enum: ["asc", "desc"],
-      },
-      min_total_value: {
-        type: "number",
-        description: "Minimum total value filter",
-      },
-      max_total_value: {
-        type: "number",
-        description: "Maximum total value filter",
-      },
-      tags: {
-        type: "string",
-        description: "Institution tags filter",
-      },
-      security_types: {
-        type: "string",
-        description: "Security types filter",
-      },
-    },
-    required: ["action"],
-  },
+  inputSchema: toJsonSchema(institutionsInputSchema),
   annotations: {
     readOnlyHint: true,
     openWorldHint: true,
@@ -88,6 +48,11 @@ Available actions:
  * @returns JSON string with institution data or error message
  */
 export async function handleInstitutions(args: Record<string, unknown>): Promise<string> {
+  const parsed = institutionsInputSchema.safeParse(args)
+  if (!parsed.success) {
+    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
+  }
+
   const {
     action,
     name,
@@ -103,71 +68,71 @@ export async function handleInstitutions(args: Record<string, unknown>): Promise
     max_total_value,
     tags,
     security_types,
-  } = args
+  } = parsed.data
 
   switch (action) {
     case "list":
       return formatResponse(await uwFetch("/api/institutions", {
-        name: name as string,
-        min_total_value: min_total_value as number,
-        max_total_value: max_total_value as number,
-        "tags[]": tags as string,
-        order: order as string,
-        order_direction: order_direction as string,
-        limit: limit as number,
-        page: page as number,
+        name,
+        min_total_value,
+        max_total_value,
+        "tags[]": tags,
+        order,
+        order_direction,
+        limit,
+        page,
       }))
 
     case "holdings":
       if (!name) return formatError("name is required")
       return formatResponse(await uwFetch(`/api/institution/${encodePath(name)}/holdings`, {
-        date: date as string,
-        start_date: start_date as string,
-        end_date: end_date as string,
-        security_types: security_types as string,
-        limit: limit as number,
-        page: page as number,
-        order: order as string,
-        order_direction: order_direction as string,
+        date,
+        start_date,
+        end_date,
+        security_types,
+        limit,
+        page,
+        order,
+        order_direction,
       }))
 
     case "activity":
       if (!name) return formatError("name is required")
       return formatResponse(await uwFetch(`/api/institution/${encodePath(name)}/activity`, {
-        date: date as string,
-        limit: limit as number,
-        page: page as number,
+        date,
+        limit,
+        page,
       }))
 
     case "sectors":
       if (!name) return formatError("name is required")
       return formatResponse(await uwFetch(`/api/institution/${encodePath(name)}/sectors`, {
-        date: date as string,
-        limit: limit as number,
-        page: page as number,
+        date,
+        limit,
+        page,
       }))
 
     case "ownership":
       if (!ticker) return formatError("ticker is required")
       return formatResponse(await uwFetch(`/api/institution/${encodePath(ticker)}/ownership`, {
-        date: date as string,
-        start_date: start_date as string,
-        end_date: end_date as string,
-        "tags[]": tags as string,
-        order: order as string,
-        order_direction: order_direction as string,
-        limit: limit as number,
-        page: page as number,
+        date,
+        start_date,
+        end_date,
+        "tags[]": tags,
+        order,
+        order_direction,
+        limit,
+        page,
       }))
 
     case "latest_filings":
       return formatResponse(await uwFetch("/api/institutions/latest_filings", {
-        name: name as string,
-        date: date as string,
-        order: order as string,
-        order_direction: order_direction as string,
-        limit: limit as number,
-        page: page as number,
+        name,
+        date,
+        order,
+        order_direction,
+        limit,
+        page,
       }))
 
     default:

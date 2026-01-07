@@ -75,6 +75,33 @@ npm run start     # Run server
 npm run check-api # Check for API changes
 ```
 
+### Debugging with MCP Inspector
+
+To test and debug the server locally, use the [MCP Inspector](https://github.com/modelcontextprotocol/inspector):
+
+```bash
+npm run build
+UW_API_KEY=your_api_key npx @modelcontextprotocol/inspector node ./dist/index.js
+```
+
+This opens a web UI where you can browse available tools, test them interactively, and inspect request/response payloads.
+
+### Testing with Claude Code
+
+To test your local build with Claude Code directly:
+
+```bash
+npm run build
+claude mcp add unusualwhales-dev -e UW_API_KEY=your_api_key -- node /absolute/path/to/unusual-whales-mcp/dist/index.js
+```
+
+Use a different name (like `unusualwhales-dev`) to avoid conflicts with the published package. After making changes, rebuild and restart Claude Code to pick them up.
+
+```bash
+claude mcp list                      # Check server status
+claude mcp remove unusualwhales-dev  # Remove when done
+```
+
 ## License
 
 MIT

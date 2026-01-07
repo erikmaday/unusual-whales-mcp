@@ -1,4 +1,18 @@
+import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { toJsonSchema, tickerSchema, dateSchema, limitSchema, formatZodError,
+} from "../schemas.js"
+
+const earningsActions = ["premarket", "afterhours", "ticker"] as const
+
+const earningsInputSchema = z.object({
+  action: z.enum(earningsActions).describe("The action to perform"),
+  ticker: tickerSchema.describe("Ticker symbol (for ticker action)").optional(),
+  date: dateSchema.optional(),
+  limit: limitSchema.optional(),
+  page: z.number().describe("Page number for pagination").optional(),
+})
+
 
 export const earningsTool = {
   name: "uw_earnings",
@@ -8,33 +22,7 @@ Available actions:
 - premarket: Get premarket earnings for a date
 - afterhours: Get afterhours earnings for a date
 - ticker: Get historical earnings for a ticker (ticker required)`,
-  inputSchema: {
-    type: "object" as const,
-    properties: {
-      action: {
-        type: "string",
-        description: "The action to perform",
-        enum: ["premarket", "afterhours", "ticker"],
-      },
-      ticker: {
-        type: "string",
-        description: "Ticker symbol (for ticker action)",
-      },
-      date: {
-        type: "string",
-        description: "Date in YYYY-MM-DD format",
-      },
-      limit: {
-        type: "number",
-        description: "Maximum number of results",
-      },
-      page: {
-        type: "number",
-        description: "Page number for pagination",
-      },
-    },
-    required: ["action"],
-  },
+  inputSchema: toJsonSchema(earningsInputSchema),
   annotations: {
     readOnlyHint: true,
     openWorldHint: true,
@@ -48,21 +36,26 @@ Available actions:
  * @returns JSON string with earnings data or error message
  */
 export async function handleEarnings(args: Record<string, unknown>): Promise<string> {
-  const { action, ticker, date, limit, page } = args
+  const parsed = earningsInputSchema.safeParse(args)
+  if (!parsed.success) {
+    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
+  }
+
+  const { action, ticker, date, limit, page } = parsed.data
 
   switch (action) {
     case "premarket":
       return formatResponse(await uwFetch("/api/earnings/premarket", {
-        date: date as string,
-        limit: limit as number,
-        page: page as number,
+        date,
+        limit,
+        page,
       }))
 
     case "afterhours":
       return formatResponse(await uwFetch("/api/earnings/afterhours", {
-        date: date as string,
-        limit: limit as number,
-        page: page as number,
+        date,
+        limit,
+        page,
       }))
 
     case "ticker":
