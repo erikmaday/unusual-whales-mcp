@@ -1,10 +1,22 @@
+import { SlidingWindowRateLimiter } from "./rate-limiter.js"
+
 const BASE_URL = "https://api.unusualwhales.com"
-const REQUEST_TIMEOUT_MS = 30000
+const REQUEST_TIMEOUT_MS = 30_000
+const DEFAULT_RATE_LIMIT_PER_MINUTE = 120
 
 export interface ApiResponse<T = unknown> {
   data?: T
   error?: string
 }
+
+// Initialize rate limiter from environment variable or default
+const rateLimitPerMinute = parseInt(
+  process.env.UW_RATE_LIMIT_PER_MINUTE || String(DEFAULT_RATE_LIMIT_PER_MINUTE),
+  10,
+)
+const rateLimiter = new SlidingWindowRateLimiter(
+  isNaN(rateLimitPerMinute) ? DEFAULT_RATE_LIMIT_PER_MINUTE : rateLimitPerMinute,
+)
 
 /**
  * Safely encode a value for use in a URL path segment.
@@ -43,6 +55,15 @@ export async function uwFetch<T = unknown>(
     return { error: "UW_API_KEY environment variable is not set" }
   }
 
+  // Check rate limit before making request
+  const rateCheck = rateLimiter.tryAcquire()
+  if (!rateCheck.allowed) {
+    const waitSeconds = Math.ceil((rateCheck.waitMs || 0) / 1000)
+    return {
+      error: `Rate limit exceeded (${rateLimitPerMinute}/min). Try again in ${waitSeconds} seconds.`,
+    }
+  }
+
   const url = new URL(endpoint, BASE_URL)
 
   if (params) {
@@ -71,6 +92,15 @@ export async function uwFetch<T = unknown>(
     clearTimeout(timeout)
 
     if (!response.ok) {
+      // Special handling for rate limit responses from the API
+      if (response.status === 429) {
+        const retryAfter = response.headers.get("retry-after")
+        const waitInfo = retryAfter ? ` Retry after ${retryAfter} seconds.` : ""
+        return {
+          error: `API rate limit exceeded (429).${waitInfo} You may be approaching your daily limit.`,
+        }
+      }
+
       const errorText = await response.text()
       return {
         error: `API error (${response.status}): ${errorText}`,
