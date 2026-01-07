@@ -47,7 +47,7 @@ export function encodePath(value: unknown): string {
  */
 export async function uwFetch<T = unknown>(
   endpoint: string,
-  params?: Record<string, string | number | boolean | undefined>,
+  params?: Record<string, string | number | boolean | string[] | undefined>,
 ): Promise<ApiResponse<T>> {
   const apiKey = process.env.UW_API_KEY
 
@@ -72,7 +72,14 @@ export async function uwFetch<T = unknown>(
       if (value === undefined || value === null || value === "" || value === false) {
         return
       }
-      url.searchParams.append(key, String(value))
+      // Handle array values (e.g., rule_name[], issue_types[])
+      if (Array.isArray(value)) {
+        value.forEach((item) => {
+          url.searchParams.append(key, String(item))
+        })
+      } else {
+        url.searchParams.append(key, String(value))
+      }
     })
   }
 

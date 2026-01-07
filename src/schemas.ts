@@ -108,6 +108,80 @@ export const flowTradeFiltersSchema = z.object({
   is_golden_sweep: z.boolean().describe("Filter for golden sweep trades").optional(),
 })
 
+export const flowAlertsExtendedFiltersSchema = z.object({
+  // Volume and OI filters
+  min_volume: z.number().int().nonnegative("Volume cannot be negative").describe("Minimum volume filter").optional(),
+  max_volume: z.number().int().nonnegative("Volume cannot be negative").describe("Maximum volume filter").optional(),
+  min_open_interest: z.number().int().nonnegative("Open interest cannot be negative").describe("Minimum open interest filter").optional(),
+  max_open_interest: z.number().int().nonnegative("Open interest cannot be negative").describe("Maximum open interest filter").optional(),
+
+  // Boolean trade type filters
+  all_opening: z.boolean().describe("Filter for opening trades only").optional(),
+  is_call: z.boolean().describe("Filter for call options").optional(),
+  is_put: z.boolean().describe("Filter for put options").optional(),
+  is_ask_side: z.boolean().describe("Filter for ask-side trades").optional(),
+  is_bid_side: z.boolean().describe("Filter for bid-side trades").optional(),
+  is_otm: z.boolean().describe("Filter for out-of-the-money options").optional(),
+  size_greater_oi: z.boolean().describe("Filter for trades where size > open interest").optional(),
+  vol_greater_oi: z.boolean().describe("Filter for trades where volume > open interest").optional(),
+
+  // Array filters
+  "rule_name[]": z.array(z.string()).describe("Filter by rule names").optional(),
+  "issue_types[]": z.array(z.string()).describe("Filter by issue types").optional(),
+
+  // Diff filters
+  min_diff: z.number().describe("Minimum diff filter").optional(),
+  max_diff: z.number().describe("Maximum diff filter").optional(),
+
+  // Volume/OI ratio filters
+  min_volume_oi_ratio: z.number().nonnegative().describe("Minimum volume/OI ratio").optional(),
+  max_volume_oi_ratio: z.number().nonnegative().describe("Maximum volume/OI ratio").optional(),
+
+  // Percentage filters
+  min_ask_perc: z.number().describe("Minimum ask percentage").optional(),
+  max_ask_perc: z.number().describe("Maximum ask percentage").optional(),
+  min_bid_perc: z.number().describe("Minimum bid percentage").optional(),
+  max_bid_perc: z.number().describe("Maximum bid percentage").optional(),
+  min_bull_perc: z.number().describe("Minimum bullish percentage").optional(),
+  max_bull_perc: z.number().describe("Maximum bullish percentage").optional(),
+  min_bear_perc: z.number().describe("Minimum bearish percentage").optional(),
+  max_bear_perc: z.number().describe("Maximum bearish percentage").optional(),
+
+  // Skew filters
+  min_skew: z.number().describe("Minimum skew filter").optional(),
+  max_skew: z.number().describe("Maximum skew filter").optional(),
+
+  // Price filters
+  min_price: z.number().nonnegative("Price cannot be negative").describe("Minimum price filter").optional(),
+  max_price: z.number().nonnegative("Price cannot be negative").describe("Maximum price filter").optional(),
+
+  // IV change filters
+  min_iv_change: z.number().describe("Minimum IV change filter").optional(),
+  max_iv_change: z.number().describe("Maximum IV change filter").optional(),
+
+  // Size/volume ratio filters
+  min_size_vol_ratio: z.number().nonnegative().describe("Minimum size/volume ratio").optional(),
+  max_size_vol_ratio: z.number().nonnegative().describe("Maximum size/volume ratio").optional(),
+
+  // Spread filters
+  min_spread: z.number().nonnegative().describe("Minimum spread filter").optional(),
+  max_spread: z.number().nonnegative().describe("Maximum spread filter").optional(),
+
+  // Market cap filters
+  min_marketcap: z.number().nonnegative("Market cap cannot be negative").describe("Minimum market cap filter").optional(),
+  max_marketcap: z.number().nonnegative("Market cap cannot be negative").describe("Maximum market cap filter").optional(),
+
+  // Time filters
+  newer_than: z.string().describe("Filter for trades newer than this timestamp").optional(),
+  older_than: z.string().describe("Filter for trades older than this timestamp").optional(),
+})
+
+export const netFlowExpiryFiltersSchema = z.object({
+  moneyness: z.string().describe("Filter by moneyness (e.g., ITM, OTM, ATM)").optional(),
+  tide_type: z.string().describe("Filter by tide type").optional(),
+  expiration: z.string().regex(dateRegex, "Expiration must be in YYYY-MM-DD format").describe("Filter by specific expiration date").optional(),
+})
+
 export const flowGroupSchema = z.enum([
   "airline", "bank", "basic materials", "china", "communication services",
   "consumer cyclical", "consumer defensive", "crypto", "cyber", "energy",
