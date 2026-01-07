@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, limitSchema, formatZodError,
+import { toJsonSchema, tickerSchema, limitSchema, formatZodError, insiderTransactionFiltersSchema,
 } from "../schemas.js"
 
 const insiderActions = ["transactions", "sector_flow", "ticker_flow", "insiders"] as const
@@ -23,7 +23,7 @@ const insiderInputSchema = z.object({
   is_ten_percent_owner: z.boolean().describe("Filter for 10% owners").optional(),
   is_s_p_500: z.boolean().describe("Only S&P 500 companies").optional(),
   transaction_codes: z.string().describe("Transaction codes (P=Purchase, S=Sale)").optional(),
-})
+}).merge(insiderTransactionFiltersSchema)
 
 
 export const insiderTool = {
@@ -72,6 +72,15 @@ export async function handleInsider(args: Record<string, unknown>): Promise<stri
     is_ten_percent_owner,
     is_s_p_500,
     transaction_codes,
+    min_marketcap,
+    max_marketcap,
+    market_cap_size,
+    min_earnings_dte,
+    max_earnings_dte,
+    min_amount,
+    max_amount,
+    common_stock_only,
+    security_ad_codes,
   } = parsed.data
 
   switch (action) {
@@ -92,6 +101,15 @@ export async function handleInsider(args: Record<string, unknown>): Promise<stri
         is_ten_percent_owner,
         is_s_p_500,
         "transaction_codes[]": transaction_codes,
+        min_marketcap,
+        max_marketcap,
+        market_cap_size,
+        min_earnings_dte,
+        max_earnings_dte,
+        min_amount,
+        max_amount,
+        common_stock_only,
+        security_ad_codes,
       }))
 
     case "sector_flow":
