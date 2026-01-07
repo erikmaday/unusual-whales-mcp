@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createRequire } from "module"
 import { Server } from "@modelcontextprotocol/sdk/server/index.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import {
@@ -9,8 +10,11 @@ import {
 import { formatError } from "./client.js"
 import { tools, handlers } from "./tools/index.js"
 
+const require = createRequire(import.meta.url)
+const { version } = require("../package.json") as { version: string }
+
 const SERVER_NAME = "unusual-whales"
-const SERVER_VERSION = "1.0.0"
+const SERVER_VERSION = version
 
 const server = new Server(
   {
