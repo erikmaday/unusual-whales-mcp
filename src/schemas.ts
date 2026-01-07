@@ -226,3 +226,6 @@ export const insiderTransactionFiltersSchema = z.object({
   common_stock_only: z.boolean().describe("Only include common stock transactions").optional(),
   security_ad_codes: z.string().describe("Filter by security acquisition disposition codes").optional(),
 })
+
+/** Delta value for risk reversal skew (10 or 25) */
+export const deltaSchema = z.enum(["10", "25"]).describe("Delta value for risk reversal skew (10 or 25, representing 0.10 or 0.25)")
