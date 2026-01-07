@@ -56,6 +56,17 @@ Add to your config file:
 }
 ```
 
+## Configuration
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `UW_API_KEY` | Your Unusual Whales API key (required) | - |
+| `UW_RATE_LIMIT_PER_MINUTE` | Max requests per minute | `120` |
+
+The server includes a sliding window rate limiter to prevent exceeding API limits. The Unusual Whales API allows 120 requests/minute and 15,000 requests/day by default (some plans may differ). If you have a custom rate limit or want to adjust the MCP server's limit, set `UW_RATE_LIMIT_PER_MINUTE` accordingly.
+
 ## Usage
 
 Once configured, ask Claude about market data:
