@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2026-01-08
+
+### Added
+
+- **Rate Limiting**: Sliding window rate limiter for API requests (60 requests/minute) to prevent hitting API limits
+- **Schema Validation**: Zod schema validation for all MCP tools ensuring type-safe parameter handling
+- **Missing Parameters**: Added numerous missing optional parameters across tools:
+  - 43 parameters to flow tool
+  - 9 parameters to insider tool
+  - 7 parameters to seasonality performers
+  - Parameters to options, news headlines, stock atm-chains, spot-exposures, and historical risk reversal skew endpoints
+
+### Changed
+
+- Aligned all schema descriptions with OpenAPI spec for consistency
+- Improved schema descriptions with detailed API spec information
+- Renamed `ticker` to `ticker_symbols` in alerts tool to match API spec
+
+### Fixed
+
+- Removed 15 extra parameters from stock tool that weren't in the API spec
+- Removed unsupported parameters from flow tool
+- Added missing `ticker_symbol` parameter for insider transactions
+
 ## [0.1.2] - 2026-01-05
 
 ### Added
