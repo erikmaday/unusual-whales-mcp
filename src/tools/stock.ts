@@ -145,6 +145,7 @@ Available actions:
   inputSchema: toJsonSchema(stockInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }

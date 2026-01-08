@@ -50,6 +50,7 @@ Flow alerts filtering options include: ticker, premium range, volume range, OI r
   inputSchema: toJsonSchema(flowInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }

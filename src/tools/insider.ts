@@ -38,6 +38,7 @@ Available actions:
   inputSchema: toJsonSchema(insiderInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }

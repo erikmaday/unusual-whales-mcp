@@ -39,6 +39,7 @@ Available actions:
   inputSchema: toJsonSchema(institutionsInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }

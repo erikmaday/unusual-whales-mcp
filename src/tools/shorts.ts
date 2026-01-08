@@ -24,6 +24,7 @@ Available actions:
   inputSchema: toJsonSchema(shortsInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }
