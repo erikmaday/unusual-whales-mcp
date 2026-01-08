@@ -104,8 +104,6 @@ export const flowTradeFiltersSchema = z.object({
   is_floor: z.boolean().describe("Filter for floor trades").optional(),
   is_sweep: z.boolean().describe("Filter for sweep trades").optional(),
   is_multi_leg: z.boolean().describe("Filter for multi-leg trades").optional(),
-  is_unusual: z.boolean().describe("Filter for unusual trades").optional(),
-  is_golden_sweep: z.boolean().describe("Filter for golden sweep trades").optional(),
 })
 
 export const flowAlertsExtendedFiltersSchema = z.object({

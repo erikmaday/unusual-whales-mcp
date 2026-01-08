@@ -6,12 +6,9 @@ import {
   dateSchema,
   expirySchema,
   limitSchema,
-  optionTypeSchema,
-  orderSchema,
   flowGroupSchema,
   premiumFilterSchema,
   sizeFilterSchema,
-  oiFilterSchema,
   dteFilterSchema,
   flowTradeFiltersSchema,
   flowAlertsExtendedFiltersSchema,
@@ -28,11 +25,8 @@ const flowInputSchema = z.object({
   expiry: expirySchema.optional(),
   ticker: tickerSchema.describe("Ticker symbol filter").optional(),
   limit: limitSchema.optional(),
-  side: optionTypeSchema.describe("Trade side (call or put)").optional(),
-  order: orderSchema.optional(),
 }).merge(premiumFilterSchema)
   .merge(sizeFilterSchema)
-  .merge(oiFilterSchema)
   .merge(dteFilterSchema)
   .merge(flowTradeFiltersSchema)
   .merge(flowAlertsExtendedFiltersSchema)
@@ -83,17 +77,11 @@ export async function handleFlow(args: Record<string, unknown>): Promise<string>
     max_premium,
     min_size,
     max_size,
-    min_oi,
-    max_oi,
     min_dte,
     max_dte,
     is_floor,
     is_sweep,
     is_multi_leg,
-    is_unusual,
-    is_golden_sweep,
-    side,
-    order,
     // Extended flow alerts filters
     min_volume,
     max_volume,
@@ -144,24 +132,17 @@ export async function handleFlow(args: Record<string, unknown>): Promise<string>
   switch (action) {
     case "flow_alerts":
       return formatResponse(await uwFetch("/api/option-trades/flow-alerts", {
-        date,
         ticker_symbol: ticker,
         limit,
         min_premium,
         max_premium,
         min_size,
         max_size,
-        min_oi,
-        max_oi,
         min_dte,
         max_dte,
         is_floor,
         is_sweep,
         is_multi_leg,
-        is_unusual,
-        is_golden_sweep,
-        side,
-        order,
         // Extended filters
         min_volume,
         max_volume,
