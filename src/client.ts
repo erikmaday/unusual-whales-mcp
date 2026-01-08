@@ -1,8 +1,11 @@
+import { logger } from "./logger.js"
 import { SlidingWindowRateLimiter } from "./rate-limiter.js"
 
 const BASE_URL = "https://api.unusualwhales.com"
 const REQUEST_TIMEOUT_MS = 30_000
 const DEFAULT_RATE_LIMIT_PER_MINUTE = 120
+const DEFAULT_MAX_RETRIES = 3
+const BASE_RETRY_DELAY_MS = 1000
 
 export interface ApiResponse<T = unknown> {
   data?: T
@@ -17,6 +20,49 @@ const rateLimitPerMinute = parseInt(
 const rateLimiter = new SlidingWindowRateLimiter(
   isNaN(rateLimitPerMinute) ? DEFAULT_RATE_LIMIT_PER_MINUTE : rateLimitPerMinute,
 )
+
+// Initialize max retries from environment variable or default
+const maxRetries = parseInt(
+  process.env.UW_MAX_RETRIES || String(DEFAULT_MAX_RETRIES),
+  10,
+)
+const configuredMaxRetries = isNaN(maxRetries) ? DEFAULT_MAX_RETRIES : maxRetries
+
+/**
+ * Determines if an error is retryable (transient failure).
+ * Retries on: 5xx errors, network timeouts, connection errors
+ * Does not retry on: 4xx errors (client errors), successful responses
+ */
+function isRetryableError(status: number | null, error?: Error): boolean {
+  // Network errors (no status) are retryable
+  if (status === null) {
+    return true
+  }
+  // 5xx server errors are retryable
+  if (status >= 500) {
+    return true
+  }
+  // Timeout errors are retryable
+  if (error?.name === "AbortError") {
+    return true
+  }
+  return false
+}
+
+/**
+ * Calculates the delay for exponential backoff.
+ * Returns delay in ms: 1s, 2s, 4s for attempts 0, 1, 2
+ */
+function getRetryDelay(attempt: number): number {
+  return Math.pow(2, attempt) * BASE_RETRY_DELAY_MS
+}
+
+/**
+ * Delays execution for the specified number of milliseconds.
+ */
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 /**
  * Safely encode a value for use in a URL path segment.
@@ -38,7 +84,7 @@ export function encodePath(value: unknown): string {
 }
 
 /**
- * Fetch data from the UnusualWhales API.
+ * Fetch data from the UnusualWhales API with exponential backoff retry.
  *
  * @param endpoint - The API endpoint path (relative to base URL)
  * @param params - Optional query parameters to append to the URL
@@ -83,23 +129,39 @@ export async function uwFetch<T = unknown>(
     })
   }
 
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+  let lastError: string | null = null
 
-  try {
-    const response = await fetch(url.toString(), {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Accept: "application/json",
-      },
-      signal: controller.signal,
-    })
+  for (let attempt = 0; attempt < configuredMaxRetries; attempt++) {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
 
-    clearTimeout(timeout)
+    try {
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          Accept: "application/json",
+        },
+        signal: controller.signal,
+      })
 
-    if (!response.ok) {
-      // Special handling for rate limit responses from the API
+      clearTimeout(timeout)
+
+      if (response.ok) {
+        const text = await response.text()
+        if (!text) {
+          return { data: {} as T }
+        }
+
+        try {
+          const data = JSON.parse(text)
+          return { data: data as T }
+        } catch {
+          return { error: `Invalid JSON response: ${text.slice(0, 100)}` }
+        }
+      }
+
+      // Special handling for rate limit responses from the API (don't retry)
       if (response.status === 429) {
         const retryAfter = response.headers.get("retry-after")
         const waitInfo = retryAfter ? ` Retry after ${retryAfter} seconds.` : ""
@@ -109,31 +171,54 @@ export async function uwFetch<T = unknown>(
       }
 
       const errorText = await response.text()
-      return {
-        error: `API error (${response.status}): ${errorText}`,
+      lastError = `API error (${response.status}): ${errorText}`
+
+      // Don't retry 4xx client errors (except 429 which is handled above)
+      if (response.status >= 400 && response.status < 500) {
+        return { error: lastError }
+      }
+
+      // 5xx errors - check if we should retry
+      if (isRetryableError(response.status) && attempt < configuredMaxRetries - 1) {
+        const retryDelay = getRetryDelay(attempt)
+        logger.warn("Retrying request after server error", {
+          endpoint,
+          status: response.status,
+          attempt: attempt + 1,
+          maxRetries: configuredMaxRetries,
+          delayMs: retryDelay,
+        })
+        await delay(retryDelay)
+        continue
+      }
+    } catch (error) {
+      clearTimeout(timeout)
+      const err = error instanceof Error ? error : new Error(String(error))
+
+      if (err.name === "AbortError") {
+        lastError = "Request timed out"
+      } else {
+        lastError = `Request failed: ${err.message}`
+      }
+
+      // Check if we should retry network errors
+      if (isRetryableError(null, err) && attempt < configuredMaxRetries - 1) {
+        const retryDelay = getRetryDelay(attempt)
+        logger.warn("Retrying request after network error", {
+          endpoint,
+          error: err.message,
+          attempt: attempt + 1,
+          maxRetries: configuredMaxRetries,
+          delayMs: retryDelay,
+        })
+        await delay(retryDelay)
+        continue
       }
     }
-
-    const text = await response.text()
-    if (!text) {
-      return { data: {} as T }
-    }
-
-    try {
-      const data = JSON.parse(text)
-      return { data: data as T }
-    } catch {
-      return { error: `Invalid JSON response: ${text.slice(0, 100)}` }
-    }
-  } catch (error) {
-    clearTimeout(timeout)
-    if (error instanceof Error && error.name === "AbortError") {
-      return { error: "Request timed out" }
-    }
-    return {
-      error: `Request failed: ${error instanceof Error ? error.message : String(error)}`,
-    }
   }
+
+  // All retries exhausted
+  return { error: lastError ?? "Max retries exceeded" }
 }
 
 /**
