@@ -64,8 +64,11 @@ Add to your config file:
 |----------|-------------|---------|
 | `UW_API_KEY` | Your Unusual Whales API key (required) | - |
 | `UW_RATE_LIMIT_PER_MINUTE` | Max requests per minute | `120` |
+| `UW_MAX_RETRIES` | Max retry attempts for failed requests (5xx errors, network failures) | `3` |
 
 The server includes a sliding window rate limiter to prevent exceeding API limits. The Unusual Whales API allows 120 requests/minute and 15,000 requests/day by default (some plans may differ). If you have a custom rate limit or want to adjust the MCP server's limit, set `UW_RATE_LIMIT_PER_MINUTE` accordingly.
+
+Failed requests (5xx errors, network timeouts) are automatically retried with exponential backoff (1s, 2s, 4s delays). Client errors (4xx) are not retried. Set `UW_MAX_RETRIES=0` to disable retries.
 
 ## Usage
 
