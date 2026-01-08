@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, limitSchema, formatZodError, insiderTransactionFiltersSchema } from "../schemas.js"
+import { toJsonSchema, tickerSchema, limitSchema, formatZodError, insiderTransactionFiltersSchema } from "../schemas/index.js"
 
 const insiderActions = ["transactions", "sector_flow", "ticker_flow", "insiders"] as const
 

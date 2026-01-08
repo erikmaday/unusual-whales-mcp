@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
 import { toJsonSchema, tickerSchema, formatZodError,
-} from "../schemas.js"
+} from "../schemas/index.js"
 
 const shortsActions = ["data", "ftds", "interest_float", "volume_ratio", "volumes_by_exchange"] as const
 

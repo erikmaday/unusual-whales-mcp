@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, formatError } from "../client.js"
-import { toJsonSchema, limitSchema, formatZodError } from "../schemas.js"
+import { toJsonSchema, limitSchema, formatZodError } from "../schemas/index.js"
 
 const alertsActions = ["alerts", "configurations"] as const
 

@@ -3,7 +3,7 @@ import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
 import {
   toJsonSchema, tickerSchema, formatZodError, limitSchema, orderSchema,
   seasonalityOrderBySchema,
-} from "../schemas.js"
+} from "../schemas/index.js"
 
 const seasonalityActions = ["market", "performers", "monthly", "year_month"] as const
 

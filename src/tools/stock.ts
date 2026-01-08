@@ -18,7 +18,7 @@ import {
   optionContractFiltersSchema,
   stockFlowFiltersSchema,
   dteFilterSchema,
-} from "../schemas.js"
+} from "../schemas/index.js"
 
 const stockActions = [
   "info",
@@ -169,7 +169,7 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
     expiry,
     expirations,
     candle_size,
-    strike,
+    strike: _strike,
     min_strike,
     max_strike,
     option_type,

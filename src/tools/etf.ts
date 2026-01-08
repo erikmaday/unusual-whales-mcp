@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
 import { toJsonSchema, tickerSchema, formatZodError,
-} from "../schemas.js"
+} from "../schemas/index.js"
 
 const etfActions = ["info", "holdings", "exposure", "in_outflow", "weights"] as const
 

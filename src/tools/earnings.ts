@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
 import { toJsonSchema, tickerSchema, dateSchema, limitSchema, formatZodError,
-} from "../schemas.js"
+} from "../schemas/index.js"
 
 const earningsActions = ["premarket", "afterhours", "ticker"] as const
 

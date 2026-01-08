@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, formatError } from "../client.js"
 import { toJsonSchema, tickerSchema, limitSchema, formatZodError,
-} from "../schemas.js"
+} from "../schemas/index.js"
 
 const newsActions = ["headlines"] as const
 

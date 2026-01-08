@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, dateSchema, limitSchema, orderSchema, formatZodError } from "../schemas.js"
+import { toJsonSchema, tickerSchema, dateSchema, limitSchema, orderSchema, formatZodError } from "../schemas/index.js"
 
 const marketActions = [
   "market_tide",
