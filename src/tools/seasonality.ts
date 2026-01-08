@@ -35,6 +35,7 @@ Available actions:
   inputSchema: toJsonSchema(seasonalityInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }
