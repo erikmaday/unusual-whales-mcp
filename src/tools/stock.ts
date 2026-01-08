@@ -101,8 +101,8 @@ export const stockTool = {
 Available actions:
 - info: Get stock information (ticker required)
 - ohlc: Get OHLC candles (ticker, candle_size required; date, timeframe, end_date, limit optional)
-- option_chains: Get option chains (ticker required; date, expiry, min_strike, max_strike optional)
-- option_contracts: Get option contracts (ticker required; expiry, strike, option_type, vol_greater_oi, exclude_zero_vol_chains, exclude_zero_dte, exclude_zero_oi_chains, maybe_otm_only, option_symbol, limit, page optional)
+- option_chains: Get option chains (ticker required; date optional)
+- option_contracts: Get option contracts (ticker required; expiry, option_type, vol_greater_oi, exclude_zero_vol_chains, exclude_zero_dte, exclude_zero_oi_chains, maybe_otm_only, option_symbol, limit, page optional)
 - greeks: Get greeks data (ticker required; date, expiry optional)
 - greek_exposure: Get gamma/delta/vanna exposure (ticker required; date, timeframe optional)
 - greek_exposure_by_expiry: Get greek exposure by expiry (ticker required; date optional)
@@ -111,20 +111,20 @@ Available actions:
 - greek_flow: Get greek flow (ticker required; date optional)
 - greek_flow_by_expiry: Get greek flow by expiry (ticker, expiry required; date optional)
 - iv_rank: Get IV rank (ticker required; date, timespan optional)
-- interpolated_iv: Get interpolated IV (ticker required; date, expiry optional)
-- max_pain: Get max pain (ticker required; date, expiry optional)
+- interpolated_iv: Get interpolated IV (ticker required; date optional)
+- max_pain: Get max pain (ticker required; date optional)
 - oi_change: Get OI change (ticker required; date, limit, page, order optional)
 - oi_per_expiry: Get OI per expiry (ticker required; date optional)
-- oi_per_strike: Get OI per strike (ticker required; expiry, date optional)
-- options_volume: Get options volume (ticker required; date, limit optional)
+- oi_per_strike: Get OI per strike (ticker required; date optional)
+- options_volume: Get options volume (ticker required; limit optional)
 - volume_oi_expiry: Get volume/OI by expiry (ticker required; date optional)
 - atm_chains: Get ATM chains for given expirations (ticker, expirations[] required)
 - expiry_breakdown: Get expiry breakdown (ticker required; date optional)
-- flow_alerts: Get flow alerts for ticker (ticker required; date, limit, is_ask_side, is_bid_side optional)
-- flow_per_expiry: Get flow per expiry (ticker required; date optional)
-- flow_per_strike: Get flow per strike (ticker required; date, expiry optional)
-- flow_per_strike_intraday: Get intraday flow per strike (ticker required; expiry, date, filter optional)
-- flow_recent: Get recent flow (ticker required; limit, side, min_premium optional)
+- flow_alerts: Get flow alerts for ticker (ticker required; limit, is_ask_side, is_bid_side optional)
+- flow_per_expiry: Get flow per expiry (ticker required)
+- flow_per_strike: Get flow per strike (ticker required; date optional)
+- flow_per_strike_intraday: Get intraday flow per strike (ticker required; date, filter optional)
+- flow_recent: Get recent flow (ticker required; side, min_premium optional)
 - net_prem_ticks: Get net premium ticks (ticker required; date optional)
 - nope: Get NOPE data (ticker required; date optional)
 - stock_price_levels: Get stock price levels (ticker required; date optional)
@@ -137,8 +137,8 @@ Available actions:
 - volatility_realized: Get realized volatility (ticker required; date, timeframe optional)
 - volatility_stats: Get volatility stats (ticker required; date optional)
 - volatility_term_structure: Get term structure (ticker required; date optional)
-- stock_state: Get stock state (ticker required; date optional)
-- insider_buy_sells: Get insider buy/sells for stock (ticker required; limit optional)
+- stock_state: Get stock state (ticker required)
+- insider_buy_sells: Get insider buy/sells for stock (ticker required)
 - ownership: Get ownership data (ticker required; limit optional)
 - tickers_by_sector: Get tickers in sector (sector required)
 - ticker_exchanges: Get mapping of all tickers to their exchanges (no params required)`,
@@ -225,16 +225,12 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
       if (!ticker) return formatError("ticker is required")
       return formatResponse(await uwFetch(`/api/stock/${safeTicker}/option-chains`, {
         date,
-        expiry,
-        min_strike,
-        max_strike,
       }))
 
     case "option_contracts":
       if (!ticker) return formatError("ticker is required")
       return formatResponse(await uwFetch(`/api/stock/${safeTicker}/option-contracts`, {
         expiry,
-        strike,
         option_type,
         vol_greater_oi,
         exclude_zero_vol_chains,
@@ -283,11 +279,11 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
 
     case "interpolated_iv":
       if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/interpolated-iv`, { date, expiry }))
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/interpolated-iv`, { date }))
 
     case "max_pain":
       if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/max-pain`, { date, expiry }))
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/max-pain`, { date }))
 
     case "oi_change":
       if (!ticker) return formatError("ticker is required")
@@ -300,13 +296,12 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
     case "oi_per_strike":
       if (!ticker) return formatError("ticker is required")
       return formatResponse(await uwFetch(`/api/stock/${safeTicker}/oi-per-strike`, {
-        expiry,
         date,
       }))
 
     case "options_volume":
       if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/options-volume`, { date, limit }))
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/options-volume`, { limit }))
 
     case "volume_oi_expiry":
       if (!ticker) return formatError("ticker is required")
@@ -323,27 +318,26 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
 
     case "flow_alerts":
       if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-alerts`, { date, limit, is_ask_side, is_bid_side }))
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-alerts`, { limit, is_ask_side, is_bid_side }))
 
     case "flow_per_expiry":
       if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-expiry`, { date }))
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-expiry`))
 
     case "flow_per_strike":
       if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-strike`, { date, expiry }))
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-strike`, { date }))
 
     case "flow_per_strike_intraday":
       if (!ticker) return formatError("ticker is required")
       return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-strike-intraday`, {
-        expiry,
         date,
         filter,
       }))
 
     case "flow_recent":
       if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-recent`, { limit, side, min_premium }))
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-recent`, { side, min_premium }))
 
     case "net_prem_ticks":
       if (!ticker) return formatError("ticker is required")
@@ -414,11 +408,11 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
 
     case "stock_state":
       if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/stock-state`, { date }))
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/stock-state`))
 
     case "insider_buy_sells":
       if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/insider-buy-sells`, { limit }))
+      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/insider-buy-sells`))
 
     case "ownership":
       if (!ticker) return formatError("ticker is required")
