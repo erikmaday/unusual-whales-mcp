@@ -60,6 +60,7 @@ Available actions:
   inputSchema: toJsonSchema(screenerInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }

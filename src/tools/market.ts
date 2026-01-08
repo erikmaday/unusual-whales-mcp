@@ -59,6 +59,7 @@ Available actions:
   inputSchema: toJsonSchema(marketInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }

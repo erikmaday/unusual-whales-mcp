@@ -37,6 +37,7 @@ Filtering options include premium range, size range, and volume range.`,
   inputSchema: toJsonSchema(darkpoolInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }

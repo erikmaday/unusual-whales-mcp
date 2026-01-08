@@ -26,6 +26,7 @@ Available actions:
   inputSchema: toJsonSchema(alertsInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }
