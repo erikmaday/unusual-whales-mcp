@@ -25,6 +25,7 @@ Available actions:
   inputSchema: toJsonSchema(newsInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }

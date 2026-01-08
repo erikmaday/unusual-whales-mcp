@@ -25,6 +25,7 @@ Available actions:
   inputSchema: toJsonSchema(earningsInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }

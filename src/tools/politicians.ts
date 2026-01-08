@@ -36,6 +36,7 @@ Available actions:
   inputSchema: toJsonSchema(politiciansInputSchema),
   annotations: {
     readOnlyHint: true,
+    idempotentHint: true,
     openWorldHint: true,
   },
 }
