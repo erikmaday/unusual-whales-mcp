@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, dateSchema, limitSchema, formatZodError } from "../schemas.js"
+import { toJsonSchema, tickerSchema, dateSchema, limitSchema, formatZodError } from "../schemas/index.js"
 
 const congressActions = ["recent_trades", "late_reports", "congress_trader"] as const
 

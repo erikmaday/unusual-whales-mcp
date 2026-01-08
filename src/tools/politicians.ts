@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
 import { toJsonSchema, tickerSchema, limitSchema, dateSchema, formatZodError,
-} from "../schemas.js"
+} from "../schemas/index.js"
 
 const politiciansActions = ["people", "portfolio", "recent_trades", "holders", "disclosures"] as const
 

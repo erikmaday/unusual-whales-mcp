@@ -9,7 +9,7 @@ import {
   sizeFilterSchema,
   volumeFilterSchema,
   formatZodError,
-} from "../schemas.js"
+} from "../schemas/index.js"
 
 const darkpoolActions = ["recent", "ticker"] as const
 

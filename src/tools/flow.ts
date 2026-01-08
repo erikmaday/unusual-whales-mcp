@@ -14,7 +14,7 @@ import {
   flowAlertsExtendedFiltersSchema,
   netFlowExpiryFiltersSchema,
   formatZodError,
-} from "../schemas.js"
+} from "../schemas/index.js"
 
 const flowActions = ["flow_alerts", "full_tape", "net_flow_expiry", "group_greek_flow", "group_greek_flow_expiry"] as const
 

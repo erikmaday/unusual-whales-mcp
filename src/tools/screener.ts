@@ -6,7 +6,7 @@ import {
   stockScreenerFiltersSchema,
   optionContractScreenerFiltersSchema,
   formatZodError,
-} from "../schemas.js"
+} from "../schemas/index.js"
 
 const screenerActions = ["stocks", "option_contracts", "analysts"] as const
 

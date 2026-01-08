@@ -6,7 +6,7 @@ import {
   dateSchema,
   limitSchema,
   optionTypeSchema,
-} from "../schemas.js"
+} from "../schemas/index.js"
 
 const optionsActions = ["flow", "historic", "intraday", "volume_profile"] as const
 
