@@ -284,44 +284,44 @@ export const stockFlowFiltersSchema = z.object({
 
 export const stockScreenerFiltersSchema = z.object({
   // Issue types and sectors
-  "issue_types[]": z.array(z.string()).describe("Filter by issue types").optional(),
+  "issue_types[]": z.array(z.string()).describe("Filter by issue types (e.g., Common Stock, ETF, ADR)").optional(),
   "sectors[]": z.array(z.string()).describe("Filter by market sectors").optional(),
 
   // Price change filters
-  min_change: z.number().describe("Minimum price change").optional(),
-  max_change: z.number().describe("Maximum price change").optional(),
+  min_change: z.number().describe("Minimum % change to the previous trading day").optional(),
+  max_change: z.number().describe("Maximum % change to the previous trading day").optional(),
 
   // Underlying price filters
-  min_underlying_price: z.number().describe("Minimum underlying price").optional(),
-  max_underlying_price: z.number().describe("Maximum underlying price").optional(),
+  min_underlying_price: z.number().describe("Minimum stock price").optional(),
+  max_underlying_price: z.number().describe("Maximum stock price").optional(),
 
   // Boolean filters
-  is_s_p_500: z.boolean().describe("Filter for S&P 500 stocks only").optional(),
-  has_dividends: z.boolean().describe("Filter for stocks with dividends").optional(),
+  is_s_p_500: z.boolean().describe("Only include stocks which are part of the S&P 500 (setting to false has no effect)").optional(),
+  has_dividends: z.boolean().describe("Only include stocks which pay dividends (setting to false has no effect)").optional(),
 
   // 3-day percentage filters
-  min_perc_3_day_total: z.number().describe("Minimum 3-day total percentage").optional(),
-  max_perc_3_day_total: z.number().describe("Maximum 3-day total percentage").optional(),
-  min_perc_3_day_call: z.number().describe("Minimum 3-day call percentage").optional(),
-  max_perc_3_day_call: z.number().describe("Maximum 3-day call percentage").optional(),
-  min_perc_3_day_put: z.number().describe("Minimum 3-day put percentage").optional(),
-  max_perc_3_day_put: z.number().describe("Maximum 3-day put percentage").optional(),
+  min_perc_3_day_total: z.number().describe("Minimum ratio of options volume vs 3 day avg options volume").optional(),
+  max_perc_3_day_total: z.number().describe("Maximum ratio of options volume vs 3 day avg options volume").optional(),
+  min_perc_3_day_call: z.number().describe("Minimum ratio of call options volume vs 3 day avg call options volume").optional(),
+  max_perc_3_day_call: z.number().describe("Maximum ratio of call options volume vs 3 day avg call options volume").optional(),
+  min_perc_3_day_put: z.number().describe("Minimum ratio of put options volume vs 3 day avg put options volume").optional(),
+  max_perc_3_day_put: z.number().describe("Maximum ratio of put options volume vs 3 day avg put options volume").optional(),
 
   // 30-day percentage filters
-  min_perc_30_day_total: z.number().describe("Minimum 30-day total percentage").optional(),
-  max_perc_30_day_total: z.number().describe("Maximum 30-day total percentage").optional(),
-  min_perc_30_day_call: z.number().describe("Minimum 30-day call percentage").optional(),
-  max_perc_30_day_call: z.number().describe("Maximum 30-day call percentage").optional(),
-  min_perc_30_day_put: z.number().describe("Minimum 30-day put percentage").optional(),
-  max_perc_30_day_put: z.number().describe("Maximum 30-day put percentage").optional(),
+  min_perc_30_day_total: z.number().describe("Minimum ratio of options volume vs 30 day avg options volume").optional(),
+  max_perc_30_day_total: z.number().describe("Maximum ratio of options volume vs 30 day avg options volume").optional(),
+  min_perc_30_day_call: z.number().describe("Minimum ratio of call options volume vs 30 day avg call options volume").optional(),
+  max_perc_30_day_call: z.number().describe("Maximum ratio of call options volume vs 30 day avg call options volume").optional(),
+  min_perc_30_day_put: z.number().describe("Minimum ratio of put options volume vs 30 day avg put options volume").optional(),
+  max_perc_30_day_put: z.number().describe("Maximum ratio of put options volume vs 30 day avg put options volume").optional(),
 
   // OI change percentage filters
-  min_total_oi_change_perc: z.number().describe("Minimum total OI change percentage").optional(),
-  max_total_oi_change_perc: z.number().describe("Maximum total OI change percentage").optional(),
-  min_call_oi_change_perc: z.number().describe("Minimum call OI change percentage").optional(),
-  max_call_oi_change_perc: z.number().describe("Maximum call OI change percentage").optional(),
-  min_put_oi_change_perc: z.number().describe("Minimum put OI change percentage").optional(),
-  max_put_oi_change_perc: z.number().describe("Maximum put OI change percentage").optional(),
+  min_total_oi_change_perc: z.number().describe("Minimum open interest change compared to the previous day").optional(),
+  max_total_oi_change_perc: z.number().describe("Maximum open interest change compared to the previous day").optional(),
+  min_call_oi_change_perc: z.number().describe("Minimum open interest change of call contracts compared to the previous day").optional(),
+  max_call_oi_change_perc: z.number().describe("Maximum open interest change of call contracts compared to the previous day").optional(),
+  min_put_oi_change_perc: z.number().describe("Minimum open interest change of put contracts compared to the previous day").optional(),
+  max_put_oi_change_perc: z.number().describe("Maximum open interest change of put contracts compared to the previous day").optional(),
 
   // Implied move filters
   min_implied_move: z.number().describe("Minimum implied move").optional(),
@@ -336,39 +336,39 @@ export const stockScreenerFiltersSchema = z.object({
   max_iv_rank: z.number().describe("Maximum IV rank").optional(),
 
   // Call/put volume filters
-  min_call_volume: z.number().int().nonnegative().describe("Minimum call volume").optional(),
-  max_call_volume: z.number().int().nonnegative().describe("Maximum call volume").optional(),
-  min_put_volume: z.number().int().nonnegative().describe("Minimum put volume").optional(),
-  max_put_volume: z.number().int().nonnegative().describe("Maximum put volume").optional(),
+  min_call_volume: z.number().int().nonnegative().describe("Minimum call options volume").optional(),
+  max_call_volume: z.number().int().nonnegative().describe("Maximum call options volume").optional(),
+  min_put_volume: z.number().int().nonnegative().describe("Minimum put options volume").optional(),
+  max_put_volume: z.number().int().nonnegative().describe("Maximum put options volume").optional(),
 
   // Call/put premium filters
-  min_call_premium: z.number().describe("Minimum call premium").optional(),
-  max_call_premium: z.number().describe("Maximum call premium").optional(),
-  min_put_premium: z.number().describe("Minimum put premium").optional(),
-  max_put_premium: z.number().describe("Maximum put premium").optional(),
+  min_call_premium: z.number().describe("Minimum call options premium").optional(),
+  max_call_premium: z.number().describe("Maximum call options premium").optional(),
+  min_put_premium: z.number().describe("Minimum put options premium").optional(),
+  max_put_premium: z.number().describe("Maximum put options premium").optional(),
 
   // Net premium filters
-  min_net_premium: z.number().describe("Minimum net premium").optional(),
-  max_net_premium: z.number().describe("Maximum net premium").optional(),
-  min_net_call_premium: z.number().describe("Minimum net call premium").optional(),
-  max_net_call_premium: z.number().describe("Maximum net call premium").optional(),
-  min_net_put_premium: z.number().describe("Minimum net put premium").optional(),
-  max_net_put_premium: z.number().describe("Maximum net put premium").optional(),
+  min_net_premium: z.number().describe("Minimum net options premium").optional(),
+  max_net_premium: z.number().describe("Maximum net options premium").optional(),
+  min_net_call_premium: z.number().describe("Minimum net call options premium").optional(),
+  max_net_call_premium: z.number().describe("Maximum net call options premium").optional(),
+  min_net_put_premium: z.number().describe("Minimum net put options premium").optional(),
+  max_net_put_premium: z.number().describe("Maximum net put options premium").optional(),
 
   // OI vs volume filters
-  min_oi_vs_vol: z.number().describe("Minimum OI vs volume ratio").optional(),
-  max_oi_vs_vol: z.number().describe("Maximum OI vs volume ratio").optional(),
+  min_oi_vs_vol: z.number().describe("Minimum open interest vs options volume ratio").optional(),
+  max_oi_vs_vol: z.number().describe("Maximum open interest vs options volume ratio").optional(),
 
   // Put/call ratio filters
-  min_put_call_ratio: z.number().describe("Minimum put/call ratio").optional(),
-  max_put_call_ratio: z.number().describe("Maximum put/call ratio").optional(),
+  min_put_call_ratio: z.number().describe("Minimum put to call ratio").optional(),
+  max_put_call_ratio: z.number().describe("Maximum put to call ratio").optional(),
 
   // Stock volume vs avg filters
-  min_stock_volume_vs_avg30_volume: z.number().describe("Minimum stock volume vs 30-day average").optional(),
-  max_avg30_volume: z.number().describe("Maximum 30-day average volume").optional(),
+  min_stock_volume_vs_avg30_volume: z.number().describe("Minimum stock volume vs average 30 day volume").optional(),
+  max_avg30_volume: z.number().describe("Maximum stock volume vs average 30 day volume").optional(),
 
   // Date filter
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format").describe("Filter by specific date").optional(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format").describe("Filter by specific date (YYYY-MM-DD)").optional(),
 })
 
 // ============================================================================
@@ -381,156 +381,156 @@ export const optionContractScreenerFiltersSchema = z.object({
   "sectors[]": z.array(z.string()).describe("Filter by market sectors").optional(),
 
   // Underlying price filters
-  min_underlying_price: z.number().describe("Minimum underlying price").optional(),
-  max_underlying_price: z.number().describe("Maximum underlying price").optional(),
+  min_underlying_price: z.number().describe("Minimum stock price").optional(),
+  max_underlying_price: z.number().describe("Maximum stock price").optional(),
 
   // Ex-div filter
-  exclude_ex_div_ticker: z.boolean().describe("Exclude tickers with ex-dividend dates").optional(),
+  exclude_ex_div_ticker: z.boolean().describe("Exclude tickers trading ex-dividend today (useful to filter out dividend arbitrage ITM call flow)").optional(),
 
   // Diff filters
-  min_diff: z.number().describe("Minimum diff").optional(),
-  max_diff: z.number().describe("Maximum diff").optional(),
+  min_diff: z.number().describe("Minimum OTM diff of a contract").optional(),
+  max_diff: z.number().describe("Maximum OTM diff of a contract").optional(),
 
   // Strike filters
   min_strike: z.number().describe("Minimum strike price").optional(),
   max_strike: z.number().describe("Maximum strike price").optional(),
 
   // Option type
-  type: z.enum(["call", "put"]).describe("Option type filter").optional(),
+  type: z.enum(["call", "put"]).describe("Option type filter (call or put)").optional(),
 
   // Expiry dates
-  "expiry_dates[]": z.array(z.string()).describe("Filter by expiry dates").optional(),
+  "expiry_dates[]": z.array(z.string()).describe("Filter by specific expiry dates").optional(),
 
   // Market cap filters
   min_marketcap: z.number().describe("Minimum market cap").optional(),
   max_marketcap: z.number().describe("Maximum market cap").optional(),
 
   // Volume filters
-  min_volume: z.number().int().nonnegative().describe("Minimum volume").optional(),
-  max_volume: z.number().int().nonnegative().describe("Maximum volume").optional(),
+  min_volume: z.number().int().nonnegative().describe("Minimum volume on that contract").optional(),
+  max_volume: z.number().int().nonnegative().describe("Maximum volume on that contract").optional(),
 
   // 30-day average volume filters
-  min_ticker_30_d_avg_volume: z.number().describe("Minimum ticker 30-day average volume").optional(),
-  max_ticker_30_d_avg_volume: z.number().describe("Maximum ticker 30-day average volume").optional(),
-  min_contract_30_d_avg_volume: z.number().describe("Minimum contract 30-day average volume").optional(),
-  max_contract_30_d_avg_volume: z.number().describe("Maximum contract 30-day average volume").optional(),
+  min_ticker_30_d_avg_volume: z.number().describe("Minimum 30-day average stock volume for the underlying ticker").optional(),
+  max_ticker_30_d_avg_volume: z.number().describe("Maximum 30-day average stock volume for the underlying ticker").optional(),
+  min_contract_30_d_avg_volume: z.number().describe("Minimum 30-day average options contract volume for the underlying ticker").optional(),
+  max_contract_30_d_avg_volume: z.number().describe("Maximum 30-day average options contract volume for the underlying ticker").optional(),
 
   // Multileg volume ratio filters
-  min_multileg_volume_ratio: z.number().describe("Minimum multileg volume ratio").optional(),
-  max_multileg_volume_ratio: z.number().describe("Maximum multileg volume ratio").optional(),
+  min_multileg_volume_ratio: z.number().describe("Minimum multi leg volume to contract volume ratio").optional(),
+  max_multileg_volume_ratio: z.number().describe("Maximum multi leg volume to contract volume ratio").optional(),
 
   // Floor volume ratio filters
-  min_floor_volume_ratio: z.number().describe("Minimum floor volume ratio").optional(),
-  max_floor_volume_ratio: z.number().describe("Maximum floor volume ratio").optional(),
+  min_floor_volume_ratio: z.number().describe("Minimum floor volume to contract volume ratio").optional(),
+  max_floor_volume_ratio: z.number().describe("Maximum floor volume to contract volume ratio").optional(),
 
   // Percentage change filters
-  min_perc_change: z.number().describe("Minimum percentage change").optional(),
-  max_perc_change: z.number().describe("Maximum percentage change").optional(),
-  min_daily_perc_change: z.number().describe("Minimum daily percentage change").optional(),
-  max_daily_perc_change: z.number().describe("Maximum daily percentage change").optional(),
+  min_perc_change: z.number().describe("Minimum % price change of the contract to the previous day (-1.00 to +inf)").optional(),
+  max_perc_change: z.number().describe("Maximum % price change of the contract to the previous day (-1.00 to +inf)").optional(),
+  min_daily_perc_change: z.number().describe("Minimum intraday price change of the contract from open till now").optional(),
+  max_daily_perc_change: z.number().describe("Maximum intraday price change for the contract since market open").optional(),
 
   // Average price filters
-  min_avg_price: z.number().describe("Minimum average price").optional(),
-  max_avg_price: z.number().describe("Maximum average price").optional(),
+  min_avg_price: z.number().describe("Minimum average price of the contract").optional(),
+  max_avg_price: z.number().describe("Maximum average price of the contract").optional(),
 
   // Volume/OI ratio filters
-  min_volume_oi_ratio: z.number().describe("Minimum volume/OI ratio").optional(),
-  max_volume_oi_ratio: z.number().describe("Maximum volume/OI ratio").optional(),
+  min_volume_oi_ratio: z.number().describe("Minimum contract volume to open interest ratio").optional(),
+  max_volume_oi_ratio: z.number().describe("Maximum contract volume to open interest ratio").optional(),
 
   // Open interest filters
-  min_open_interest: z.number().int().nonnegative().describe("Minimum open interest").optional(),
-  max_open_interest: z.number().int().nonnegative().describe("Maximum open interest").optional(),
+  min_open_interest: z.number().int().nonnegative().describe("Minimum open interest on that contract").optional(),
+  max_open_interest: z.number().int().nonnegative().describe("Maximum open interest on that contract").optional(),
 
   // Floor volume filters
-  min_floor_volume: z.number().int().nonnegative().describe("Minimum floor volume").optional(),
-  max_floor_volume: z.number().int().nonnegative().describe("Maximum floor volume").optional(),
+  min_floor_volume: z.number().int().nonnegative().describe("Minimum floor volume on that contract").optional(),
+  max_floor_volume: z.number().int().nonnegative().describe("Maximum floor volume on that contract").optional(),
 
   // Volume > OI filter
-  vol_greater_oi: z.boolean().describe("Filter for contracts where volume > OI").optional(),
+  vol_greater_oi: z.boolean().describe("Only include contracts where volume is greater than open interest").optional(),
 
   // Issue types
-  "issue_types[]": z.array(z.string()).describe("Filter by issue types").optional(),
+  "issue_types[]": z.array(z.string()).describe("Filter by issue types (e.g., Common Stock, ETF, ADR)").optional(),
 
   // Ask/bid percentage filters
-  min_ask_perc: z.number().describe("Minimum ask percentage").optional(),
-  max_ask_perc: z.number().describe("Maximum ask percentage").optional(),
-  min_bid_perc: z.number().describe("Minimum bid percentage").optional(),
-  max_bid_perc: z.number().describe("Maximum bid percentage").optional(),
+  min_ask_perc: z.number().describe("Minimum ask percentage of volume that transacted on the ask").optional(),
+  max_ask_perc: z.number().describe("Maximum ask percentage of volume that transacted on the ask").optional(),
+  min_bid_perc: z.number().describe("Minimum bid percentage of volume that transacted on the bid").optional(),
+  max_bid_perc: z.number().describe("Maximum bid percentage of volume that transacted on the bid").optional(),
 
   // Skew percentage filters
-  min_skew_perc: z.number().describe("Minimum skew percentage").optional(),
-  max_skew_perc: z.number().describe("Maximum skew percentage").optional(),
+  min_skew_perc: z.number().describe("Minimum skew percentage (e.g., 0.8 returns contracts where 80%+ of vol transacted on ask or bid side)").optional(),
+  max_skew_perc: z.number().describe("Maximum skew percentage (e.g., 0.8 returns contracts where max 80% of vol transacted on ask or bid side)").optional(),
 
   // Bull/bear percentage filters
-  min_bull_perc: z.number().describe("Minimum bullish percentage").optional(),
-  max_bull_perc: z.number().describe("Maximum bullish percentage").optional(),
-  min_bear_perc: z.number().describe("Minimum bearish percentage").optional(),
-  max_bear_perc: z.number().describe("Maximum bearish percentage").optional(),
+  min_bull_perc: z.number().describe("Minimum bull percentage").optional(),
+  max_bull_perc: z.number().describe("Maximum bull percentage").optional(),
+  min_bear_perc: z.number().describe("Minimum bear percentage").optional(),
+  max_bear_perc: z.number().describe("Maximum bear percentage").optional(),
 
   // 7-day bid/ask side percentage filters
-  min_bid_side_perc_7_day: z.number().describe("Minimum 7-day bid side percentage").optional(),
-  max_bid_side_perc_7_day: z.number().describe("Maximum 7-day bid side percentage").optional(),
-  min_ask_side_perc_7_day: z.number().describe("Minimum 7-day ask side percentage").optional(),
-  max_ask_side_perc_7_day: z.number().describe("Maximum 7-day ask side percentage").optional(),
+  min_bid_side_perc_7_day: z.number().describe("Minimum percentage of days over last 7 days where contract traded primarily on the bid side").optional(),
+  max_bid_side_perc_7_day: z.number().describe("Maximum percentage of days over last 7 days where contract traded primarily on the bid side").optional(),
+  min_ask_side_perc_7_day: z.number().describe("Minimum percentage of days over last 7 days where contract traded primarily on the ask side").optional(),
+  max_ask_side_perc_7_day: z.number().describe("Maximum percentage of days over last 7 days where contract traded primarily on the ask side").optional(),
 
   // Days of OI increases filters
-  min_days_of_oi_increases: z.number().int().nonnegative().describe("Minimum days of OI increases").optional(),
-  max_days_of_oi_increases: z.number().int().nonnegative().describe("Maximum days of OI increases").optional(),
+  min_days_of_oi_increases: z.number().int().nonnegative().describe("Minimum days of consecutive trading days where open interest increased").optional(),
+  max_days_of_oi_increases: z.number().int().nonnegative().describe("Maximum days of consecutive trading days where open interest increased").optional(),
 
   // Days of volume > OI filters
-  min_days_of_vol_greater_than_oi: z.number().int().nonnegative().describe("Minimum days of volume > OI").optional(),
-  max_days_of_vol_greater_than_oi: z.number().int().nonnegative().describe("Maximum days of volume > OI").optional(),
+  min_days_of_vol_greater_than_oi: z.number().int().nonnegative().describe("Minimum days of consecutive days where volume was greater than open interest").optional(),
+  max_days_of_vol_greater_than_oi: z.number().int().nonnegative().describe("Maximum days of consecutive days where volume was greater than open interest").optional(),
 
   // IV percentage filters
-  min_iv_perc: z.number().describe("Minimum IV percentage").optional(),
-  max_iv_perc: z.number().describe("Maximum IV percentage").optional(),
+  min_iv_perc: z.number().describe("Minimum implied volatility percentage").optional(),
+  max_iv_perc: z.number().describe("Maximum implied volatility percentage").optional(),
 
   // Greek filters
-  min_delta: z.number().describe("Minimum delta").optional(),
-  max_delta: z.number().describe("Maximum delta").optional(),
-  min_gamma: z.number().describe("Minimum gamma").optional(),
-  max_gamma: z.number().describe("Maximum gamma").optional(),
-  min_theta: z.number().describe("Minimum theta").optional(),
-  max_theta: z.number().describe("Maximum theta").optional(),
-  min_vega: z.number().describe("Minimum vega").optional(),
-  max_vega: z.number().describe("Maximum vega").optional(),
+  min_delta: z.number().describe("Minimum delta (-1.00 to +1.00)").optional(),
+  max_delta: z.number().describe("Maximum delta (-1.00 to +1.00)").optional(),
+  min_gamma: z.number().describe("Minimum gamma (0.00 to +inf)").optional(),
+  max_gamma: z.number().describe("Maximum gamma (0.00 to +inf)").optional(),
+  min_theta: z.number().describe("Minimum theta (-inf to 0.00)").optional(),
+  max_theta: z.number().describe("Maximum theta (-inf to 0.00)").optional(),
+  min_vega: z.number().describe("Minimum vega (0.00 to +inf)").optional(),
+  max_vega: z.number().describe("Maximum vega (0.00 to +inf)").optional(),
 
   // Return on capital filters
-  min_return_on_capital_perc: z.number().describe("Minimum return on capital percentage").optional(),
-  max_return_on_capital_perc: z.number().describe("Maximum return on capital percentage").optional(),
+  min_return_on_capital_perc: z.number().describe("Minimum return on capital percentage (ROC)").optional(),
+  max_return_on_capital_perc: z.number().describe("Maximum return on capital percentage (ROC)").optional(),
 
   // OI change filters
-  min_oi_change_perc: z.number().describe("Minimum OI change percentage").optional(),
-  max_oi_change_perc: z.number().describe("Maximum OI change percentage").optional(),
-  min_oi_change: z.number().describe("Minimum OI change").optional(),
-  max_oi_change: z.number().describe("Maximum OI change").optional(),
+  min_oi_change_perc: z.number().describe("Minimum open interest change percentage (-1.00 to +inf)").optional(),
+  max_oi_change_perc: z.number().describe("Maximum open interest change percentage (-1.00 to +inf)").optional(),
+  min_oi_change: z.number().describe("Minimum open interest change as an absolute change").optional(),
+  max_oi_change: z.number().describe("Maximum open interest change as an absolute change").optional(),
 
   // Volume/ticker volume ratio filters
-  min_volume_ticker_vol_ratio: z.number().describe("Minimum volume/ticker volume ratio").optional(),
-  max_volume_ticker_vol_ratio: z.number().describe("Maximum volume/ticker volume ratio").optional(),
+  min_volume_ticker_vol_ratio: z.number().describe("Minimum ratio of contract volume to total option volume of the underlying (0.00 to 1.00)").optional(),
+  max_volume_ticker_vol_ratio: z.number().describe("Maximum ratio of contract volume to total option volume of the underlying (0.00 to 1.00)").optional(),
 
   // Sweep volume ratio filters
-  min_sweep_volume_ratio: z.number().describe("Minimum sweep volume ratio").optional(),
-  max_sweep_volume_ratio: z.number().describe("Maximum sweep volume ratio").optional(),
+  min_sweep_volume_ratio: z.number().describe("Minimum sweep volume ratio (0.00 to 1.00)").optional(),
+  max_sweep_volume_ratio: z.number().describe("Maximum sweep volume ratio (0.00 to 1.00)").optional(),
 
   // From low/high percentage filters
-  min_from_low_perc: z.number().describe("Minimum from low percentage").optional(),
-  max_from_low_perc: z.number().describe("Maximum from low percentage").optional(),
-  min_from_high_perc: z.number().describe("Minimum from high percentage").optional(),
-  max_from_high_perc: z.number().describe("Maximum from high percentage").optional(),
+  min_from_low_perc: z.number().describe("Minimum percentage change of current price from today's low (-1.00 to +inf)").optional(),
+  max_from_low_perc: z.number().describe("Maximum percentage change of current price from today's low (-1.00 to +inf)").optional(),
+  min_from_high_perc: z.number().describe("Minimum percentage change of current price from today's high (-1.00 to +inf)").optional(),
+  max_from_high_perc: z.number().describe("Maximum percentage change of current price from today's high (-1.00 to +inf)").optional(),
 
   // Earnings DTE filters
   min_earnings_dte: z.number().int().describe("Minimum days to earnings").optional(),
   max_earnings_dte: z.number().int().describe("Maximum days to earnings").optional(),
 
   // Transactions filters
-  min_transactions: z.number().int().nonnegative().describe("Minimum transactions").optional(),
-  max_transactions: z.number().int().nonnegative().describe("Maximum transactions").optional(),
+  min_transactions: z.number().int().nonnegative().describe("Minimum number of transactions").optional(),
+  max_transactions: z.number().int().nonnegative().describe("Maximum number of transactions").optional(),
 
   // Close price filters
-  min_close: z.number().describe("Minimum close price").optional(),
-  max_close: z.number().describe("Maximum close price").optional(),
+  min_close: z.number().describe("Minimum contract price (not underlying price)").optional(),
+  max_close: z.number().describe("Maximum contract price (not underlying price)").optional(),
 
   // Date filter
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format").describe("Filter by specific date").optional(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format").describe("Filter by specific date (YYYY-MM-DD)").optional(),
 })
