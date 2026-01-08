@@ -3,8 +3,6 @@ import { uwFetch, formatResponse, formatError } from "../client.js"
 import {
   toJsonSchema,
   tickerSchema,
-  limitSchema,
-  orderSchema,
   stockScreenerFiltersSchema,
   optionContractScreenerFiltersSchema,
   formatZodError,
@@ -16,34 +14,22 @@ const screenerActions = ["stocks", "option_contracts", "analysts"] as const
 const screenerBaseSchema = z.object({
   action: z.enum(screenerActions).describe("The action to perform"),
   ticker: tickerSchema.optional(),
-  limit: limitSchema.optional(),
-  page: z.number().describe("Page number for pagination").optional(),
-  order: z.string().describe("Order by field").optional(),
-  order_direction: orderSchema.describe("Order direction").optional(),
 
-  // Stock screener common filters (min_price/max_price map to min_underlying_price/max_underlying_price)
-  sector: z.string().describe("Market sector filter").optional(),
+  // Stock screener common filters
   min_marketcap: z.number().describe("Minimum market cap").optional(),
   max_marketcap: z.number().describe("Maximum market cap").optional(),
-  min_price: z.number().describe("Minimum stock price").optional(),
-  max_price: z.number().describe("Maximum stock price").optional(),
   min_volume: z.number().int().nonnegative().describe("Minimum volume").optional(),
   max_volume: z.number().int().nonnegative().describe("Maximum volume").optional(),
 
   // Option contract screener common filters
-  expiry: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expiry date must be in YYYY-MM-DD format").describe("Option expiry date in YYYY-MM-DD format").optional(),
-  option_type: z.enum(["call", "put"]).describe("Option type (call or put)").optional(),
   is_otm: z.boolean().describe("Filter for OTM options").optional(),
   min_dte: z.number().int().nonnegative().describe("Minimum days to expiration").optional(),
   max_dte: z.number().int().nonnegative().describe("Maximum days to expiration").optional(),
   min_premium: z.number().nonnegative().describe("Minimum premium filter").optional(),
   max_premium: z.number().nonnegative().describe("Maximum premium filter").optional(),
-  min_oi: z.number().int().nonnegative().describe("Minimum open interest filter").optional(),
-  max_oi: z.number().int().nonnegative().describe("Maximum open interest filter").optional(),
 
   // Analyst screener filters
   recommendation: z.enum(["buy", "hold", "sell"]).describe("Analyst recommendation (buy, hold, sell)").optional(),
-  analyst_action: z.enum(["initiated", "reiterated", "downgraded", "upgraded", "maintained"]).describe("Analyst action type").optional(),
 })
 
 // Merge with stock screener and option contract screener filter schemas
@@ -80,23 +66,14 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
   }
 
   const data = parsed.data
-  const { action, analyst_action } = data
+  const { action } = data
 
   switch (action) {
     case "stocks":
       return formatResponse(await uwFetch("/api/screener/stocks", {
-        // Common filters
-        ticker: data.ticker,
-        order: data.order,
-        order_direction: data.order_direction,
-        limit: data.limit,
-        page: data.page,
         // Stock screener filters
-        sector: data.sector,
         min_marketcap: data.min_marketcap,
         max_marketcap: data.max_marketcap,
-        min_price: data.min_price,
-        max_price: data.max_price,
         min_volume: data.min_volume,
         max_volume: data.max_volume,
         // New stock screener filters
@@ -159,8 +136,6 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
         min_net_put_premium: data.min_net_put_premium,
         max_net_put_premium: data.max_net_put_premium,
         // OI filters
-        min_oi: data.min_oi,
-        max_oi: data.max_oi,
         min_oi_vs_vol: data.min_oi_vs_vol,
         max_oi_vs_vol: data.max_oi_vs_vol,
         // Put/call ratio filters
@@ -175,21 +150,11 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
 
     case "option_contracts":
       return formatResponse(await uwFetch("/api/screener/option-contracts", {
-        // Common filters
-        ticker: data.ticker,
-        order: data.order,
-        order_direction: data.order_direction,
-        limit: data.limit,
-        page: data.page,
         // Basic option filters
-        expiry: data.expiry,
         min_dte: data.min_dte,
         max_dte: data.max_dte,
         min_premium: data.min_premium,
         max_premium: data.max_premium,
-        min_oi: data.min_oi,
-        max_oi: data.max_oi,
-        option_type: data.option_type,
         is_otm: data.is_otm,
         // New option contract screener filters
         ticker_symbol: data.ticker_symbol,
@@ -310,11 +275,6 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
       return formatResponse(await uwFetch("/api/screener/analysts", {
         ticker: data.ticker,
         recommendation: data.recommendation,
-        action: analyst_action,
-        order: data.order,
-        order_direction: data.order_direction,
-        limit: data.limit,
-        page: data.page,
       }))
 
     default:
