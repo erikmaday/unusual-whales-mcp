@@ -124,8 +124,8 @@ export const flowAlertsExtendedFiltersSchema = z.object({
   vol_greater_oi: z.boolean().describe("Only include alerts where the volume is greater than the open interest").optional(),
 
   // Array filters
-  "rule_name[]": z.array(z.string()).describe("Filter by alert rule names (e.g., RepeatedHits, FloorTradeSmallCap)").optional(),
-  "issue_types[]": z.array(z.string()).describe("Filter by issue types (e.g., Common Stock, ETF, ADR)").optional(),
+  rule_name: z.array(z.string()).describe("Filter by alert rule names (e.g., RepeatedHits, FloorTradeSmallCap)").optional(),
+  issue_types: z.array(z.string()).describe("Filter by issue types (e.g., Common Stock, ETF, ADR)").optional(),
 
   // Diff filters
   min_diff: z.number().describe("Minimum OTM diff of the contract (difference between strike and underlying price)").optional(),
@@ -282,8 +282,8 @@ export const stockFlowFiltersSchema = z.object({
 
 export const stockScreenerFiltersSchema = z.object({
   // Issue types and sectors
-  "issue_types[]": z.array(z.string()).describe("Filter by issue types (e.g., Common Stock, ETF, ADR)").optional(),
-  "sectors[]": z.array(z.string()).describe("Filter by market sectors (e.g., Technology, Healthcare, Financial Services)").optional(),
+  issue_types: z.array(z.string()).describe("Filter by issue types (e.g., Common Stock, ETF, ADR)").optional(),
+  sectors: z.array(z.string()).describe("Filter by market sectors (e.g., Technology, Healthcare, Financial Services)").optional(),
 
   // Price change filters
   min_change: z.number().describe("The minimum percentage change compared to the previous trading day").optional(),
@@ -376,7 +376,7 @@ export const stockScreenerFiltersSchema = z.object({
 export const optionContractScreenerFiltersSchema = z.object({
   // Ticker and sector filters
   ticker_symbol: z.string().describe("Filter by ticker symbol").optional(),
-  "sectors[]": z.array(z.string()).describe("Filter by market sectors").optional(),
+  sectors: z.array(z.string()).describe("Filter by market sectors").optional(),
 
   // Underlying price filters
   min_underlying_price: z.number().describe("Minimum stock price").optional(),
@@ -397,7 +397,7 @@ export const optionContractScreenerFiltersSchema = z.object({
   type: z.enum(["call", "put"]).describe("Option type filter (call or put)").optional(),
 
   // Expiry dates
-  "expiry_dates[]": z.array(z.string()).describe("Filter by specific expiry dates").optional(),
+  expiry_dates: z.array(z.string()).describe("Filter by specific expiry dates").optional(),
 
   // Market cap filters
   min_marketcap: z.number().describe("Minimum market cap").optional(),
@@ -447,7 +447,7 @@ export const optionContractScreenerFiltersSchema = z.object({
   vol_greater_oi: z.boolean().describe("Only include contracts where volume is greater than open interest").optional(),
 
   // Issue types
-  "issue_types[]": z.array(z.string()).describe("Filter by issue types (e.g., Common Stock, ETF, ADR)").optional(),
+  issue_types: z.array(z.string()).describe("Filter by issue types (e.g., Common Stock, ETF, ADR)").optional(),
 
   // Ask/bid percentage filters
   min_ask_perc: z.number().describe("Minimum ask percentage of volume that transacted on the ask").optional(),
