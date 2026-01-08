@@ -9,6 +9,10 @@ const newsInputSchema = z.object({
   action: z.enum(newsActions).describe("The action to perform"),
   ticker: tickerSchema.describe("Filter by ticker symbol").optional(),
   limit: limitSchema.optional(),
+  sources: z.string().describe("Filter by news sources").optional(),
+  search_term: z.string().describe("Search term to filter headlines").optional(),
+  major_only: z.boolean().describe("Only include major news").optional(),
+  page: z.number().describe("Page number for pagination").optional(),
 })
 
 
@@ -17,7 +21,7 @@ export const newsTool = {
   description: `Access UnusualWhales news headlines.
 
 Available actions:
-- headlines: Get news headlines with optional ticker filter`,
+- headlines: Get news headlines with optional filters (ticker, sources, search_term, major_only, page)`,
   inputSchema: toJsonSchema(newsInputSchema),
   annotations: {
     readOnlyHint: true,
@@ -37,13 +41,17 @@ export async function handleNews(args: Record<string, unknown>): Promise<string>
     return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
   }
 
-  const { action, ticker, limit } = parsed.data
+  const { action, ticker, limit, sources, search_term, major_only, page } = parsed.data
 
   switch (action) {
     case "headlines":
       return formatResponse(await uwFetch("/api/news/headlines", {
         ticker,
         limit,
+        sources,
+        search_term,
+        major_only,
+        page,
       }))
 
     default:
