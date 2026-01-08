@@ -239,3 +239,41 @@ export const seasonalityOrderBySchema = z.enum([
   "month", "positive_closes", "years", "positive_months_perc",
   "median_change", "avg_change", "max_change", "min_change",
 ]).describe("Column to order seasonality results by")
+
+// ============================================================================
+// Pagination and ordering schemas
+// ============================================================================
+
+/** Pagination page number */
+export const pageSchema = z.number()
+  .int("Page must be an integer")
+  .positive("Page must be positive")
+  .describe("Page number for paginated results")
+
+/** IV rank timespan */
+export const timespanSchema = z.string().describe("Timespan for IV rank data")
+
+// ============================================================================
+// Stock option contract filter schemas
+// ============================================================================
+
+export const optionContractFiltersSchema = z.object({
+  vol_greater_oi: z.boolean().describe("Filter for contracts where volume > open interest").optional(),
+  exclude_zero_vol_chains: z.boolean().describe("Exclude chains with zero volume").optional(),
+  exclude_zero_dte: z.boolean().describe("Exclude zero days to expiration contracts").optional(),
+  exclude_zero_oi_chains: z.boolean().describe("Exclude chains with zero open interest").optional(),
+  maybe_otm_only: z.boolean().describe("Filter for out-of-the-money options only").optional(),
+  option_symbol: z.string().describe("Specific option symbol to filter by").optional(),
+})
+
+// ============================================================================
+// Stock flow filter schemas
+// ============================================================================
+
+export const stockFlowFiltersSchema = z.object({
+  is_ask_side: z.boolean().describe("Filter for ask-side trades").optional(),
+  is_bid_side: z.boolean().describe("Filter for bid-side trades").optional(),
+  side: z.string().describe("Filter by trade side").optional(),
+  min_premium: z.number().nonnegative("Premium cannot be negative").describe("Minimum premium filter").optional(),
+  filter: z.string().describe("Filter type for intraday flow").optional(),
+})
