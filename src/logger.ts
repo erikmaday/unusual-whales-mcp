@@ -28,7 +28,7 @@ function log(level: LogLevel, message: string, data?: Record<string, unknown>): 
         Object.entries(data).map(([key, value]) => [
           key,
           value instanceof Error ? serializeError(value) : value,
-        ])
+        ]),
       )
     : undefined
 

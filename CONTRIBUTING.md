@@ -15,9 +15,13 @@ npm run dev  # Watch mode
 
 ```
 src/
-├── index.ts      # MCP server entry point
-├── client.ts     # API client (uwFetch, formatResponse, encodePath)
-└── tools/        # Tool modules (one per API domain)
+├── index.ts        # MCP server entry point
+├── client.ts       # API client (uwFetch, formatResponse, encodePath)
+├── schemas.ts      # Shared Zod schemas for parameter validation
+├── rate-limiter.ts # Sliding window rate limiter
+├── logger.ts       # Stderr JSON logger
+└── tools/          # Tool modules (one per API domain)
+    ├── index.ts    # Tool registration
     ├── stock.ts
     ├── flow.ts
     └── ...
@@ -28,7 +32,17 @@ src/
 1. Create `src/tools/mytool.ts`:
 
 ```typescript
+import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { toJsonSchema, tickerSchema, dateSchema, formatZodError } from "../schemas.js"
+
+const myToolActions = ["action1", "action2"] as const
+
+const myToolInputSchema = z.object({
+  action: z.enum(myToolActions).describe("The action to perform"),
+  ticker: tickerSchema.optional(),
+  date: dateSchema.optional(),
+})
 
 export const myTool = {
   name: "uw_mytool",
@@ -37,28 +51,24 @@ export const myTool = {
 Available actions:
 - action1: Description (required params)
 - action2: Description (optional params)`,
-  inputSchema: {
-    type: "object" as const,
-    properties: {
-      action: {
-        type: "string",
-        enum: ["action1", "action2"],
-      },
-      // Add other parameters...
-    },
-    required: ["action"],
-  },
+  inputSchema: toJsonSchema(myToolInputSchema),
 }
 
 export async function handleMyTool(args: Record<string, unknown>): Promise<string> {
-  const { action, ...params } = args
+  const parsed = myToolInputSchema.safeParse(args)
+  if (!parsed.success) {
+    return formatError(formatZodError(parsed.error))
+  }
+
+  const { action, ticker, date } = parsed.data
 
   switch (action) {
     case "action1":
-      // Always validate required params
-      if (!params.required_param) return formatError("required_param is required")
-      // Use encodePath() for URL path segments
-      return formatResponse(await uwFetch(`/api/endpoint/${encodePath(params.id)}`))
+      if (!ticker) return formatError("ticker is required for action1")
+      return formatResponse(await uwFetch(`/api/endpoint/${encodePath(ticker)}`))
+
+    case "action2":
+      return formatResponse(await uwFetch("/api/other", { date }))
 
     default:
       return formatError(`Unknown action: ${action}`)
@@ -66,10 +76,10 @@ export async function handleMyTool(args: Record<string, unknown>): Promise<strin
 }
 ```
 
-2. Register in `src/index.ts`:
+2. Register in `src/tools/index.ts`:
 
 ```typescript
-import { myTool, handleMyTool } from "./tools/mytool.js"
+import { myTool, handleMyTool } from "./mytool.js"
 
 const toolRegistrations: ToolRegistration[] = [
   // ... existing tools
