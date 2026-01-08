@@ -23,7 +23,7 @@ const flowInputSchema = z.object({
   date: dateSchema.optional(),
   flow_group: flowGroupSchema.optional(),
   expiry: expirySchema.optional(),
-  ticker: tickerSchema.describe("Ticker symbol filter").optional(),
+  ticker_symbol: z.string().describe("Comma-separated list of ticker symbols to filter by. Prefix with '-' to exclude tickers (e.g., 'AAPL,INTC' or '-TSLA,NVDA')").optional(),
   limit: limitSchema.optional(),
 }).merge(premiumFilterSchema)
   .merge(sizeFilterSchema)
@@ -71,7 +71,7 @@ export async function handleFlow(args: Record<string, unknown>): Promise<string>
     date,
     flow_group,
     expiry,
-    ticker,
+    ticker_symbol,
     limit,
     min_premium,
     max_premium,
@@ -132,7 +132,7 @@ export async function handleFlow(args: Record<string, unknown>): Promise<string>
   switch (action) {
     case "flow_alerts":
       return formatResponse(await uwFetch("/api/option-trades/flow-alerts", {
-        ticker_symbol: ticker,
+        ticker_symbol,
         limit,
         min_premium,
         max_premium,
