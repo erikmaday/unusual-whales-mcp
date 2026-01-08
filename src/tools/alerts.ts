@@ -1,13 +1,13 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, limitSchema, formatZodError } from "../schemas.js"
+import { toJsonSchema, limitSchema, formatZodError } from "../schemas.js"
 
 const alertsActions = ["alerts", "configurations"] as const
 
 const alertsInputSchema = z.object({
   action: z.enum(alertsActions).describe("The action to perform"),
   limit: limitSchema.optional(),
-  ticker: tickerSchema.describe("Filter by ticker symbol").optional(),
+  ticker_symbols: z.string().describe("Comma-separated list of tickers to filter by. Prefix with '-' to exclude tickers (e.g., 'AAPL,INTC' or '-TSLA,NVDA')").optional(),
   intraday_only: z.boolean().describe("Only show intraday alerts").optional(),
   config_ids: z.string().describe("Filter by configuration IDs").optional(),
   noti_types: z.string().describe("Filter by notification types").optional(),
@@ -42,13 +42,13 @@ export async function handleAlerts(args: Record<string, unknown>): Promise<strin
     return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
   }
 
-  const { action, limit, ticker, intraday_only, config_ids, noti_types, newer_than, older_than } = parsed.data
+  const { action, limit, ticker_symbols, intraday_only, config_ids, noti_types, newer_than, older_than } = parsed.data
 
   switch (action) {
     case "alerts":
       return formatResponse(await uwFetch("/api/alerts", {
         limit,
-        ticker_symbols: ticker,
+        ticker_symbols,
         intraday_only,
         "config_ids[]": config_ids,
         "noti_types[]": noti_types,
