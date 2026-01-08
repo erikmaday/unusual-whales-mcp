@@ -77,8 +77,8 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
         min_volume: data.min_volume,
         max_volume: data.max_volume,
         // New stock screener filters
-        "issue_types[]": data["issue_types[]"],
-        "sectors[]": data["sectors[]"],
+        "issue_types[]": data.issue_types,
+        "sectors[]": data.sectors,
         min_change: data.min_change,
         max_change: data.max_change,
         min_underlying_price: data.min_underlying_price,
@@ -158,7 +158,7 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
         is_otm: data.is_otm,
         // New option contract screener filters
         ticker_symbol: data.ticker_symbol,
-        "sectors[]": data["sectors[]"],
+        "sectors[]": data.sectors,
         min_underlying_price: data.min_underlying_price,
         max_underlying_price: data.max_underlying_price,
         exclude_ex_div_ticker: data.exclude_ex_div_ticker,
@@ -167,7 +167,7 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
         min_strike: data.min_strike,
         max_strike: data.max_strike,
         type: data.type,
-        "expiry_dates[]": data["expiry_dates[]"],
+        "expiry_dates[]": data.expiry_dates,
         min_marketcap: data.min_marketcap,
         max_marketcap: data.max_marketcap,
         min_volume: data.min_volume,
@@ -202,7 +202,7 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
         // Volume > OI filter
         vol_greater_oi: data.vol_greater_oi,
         // Issue types
-        "issue_types[]": data["issue_types[]"],
+        "issue_types[]": data.issue_types,
         // Ask/bid percentage filters
         min_ask_perc: data.min_ask_perc,
         max_ask_perc: data.max_ask_perc,
