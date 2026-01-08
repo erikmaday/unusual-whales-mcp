@@ -8,6 +8,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js"
 
 import { formatError } from "./client.js"
+import { logger } from "./logger.js"
 import { tools, handlers } from "./tools/index.js"
 
 const require = createRequire(import.meta.url)
@@ -113,14 +114,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main(): Promise<void> {
   const transport = new StdioServerTransport()
   await server.connect(transport)
-  console.error(`${SERVER_NAME} v${SERVER_VERSION} running on stdio`)
+  logger.info("Server started", { name: SERVER_NAME, version: SERVER_VERSION })
 }
 
 /**
  * Graceful shutdown handler.
  */
 async function shutdown(): Promise<void> {
-  console.error("Shutting down...")
+  logger.info("Shutting down")
   await server.close()
   process.exit(0)
 }
@@ -129,6 +130,6 @@ process.on("SIGINT", shutdown)
 process.on("SIGTERM", shutdown)
 
 main().catch((error) => {
-  console.error("Fatal error:", error)
+  logger.error("Fatal error", { error })
   process.exit(1)
 })
