@@ -161,31 +161,55 @@ function extractParamsFromBlock(block) {
 
   const params = []
 
-  // Match patterns like: param, param: value, "param": value, 'param': value
-  // Also handle "param[]": value for array params
-  const patterns = [
-    /["']([^"']+)["']\s*:/g,  // "param": or 'param':
-    /(\w+)\s*:/g,              // param:
-    /(\w+)\s*,/g,              // param, (shorthand)
-    /(\w+)\s*$/g,              // param at end (shorthand)
-  ]
+  // Remove single-line comments to avoid false matches
+  const cleanBlock = block.replace(/\/\/[^\n]*/g, '')
 
-  // Simple shorthand: { param1, param2 }
-  const shorthandMatch = block.match(/^\s*[\w\s,]+\s*$/)
-  if (shorthandMatch) {
-    const names = block.split(',').map(s => s.trim()).filter(Boolean)
-    return names
-  }
+  // Check if block contains key-value pairs (has colons)
+  const hasKeyValuePairs = cleanBlock.includes(':')
 
-  // Object with key-value pairs
-  for (const pattern of patterns) {
+  if (hasKeyValuePairs) {
+    // Extract quoted keys: "param[]": value or 'param[]': value
+    // The key (including []) is the API parameter name
+    const quotedKeyPattern = /["']([^"']+)["']\s*:/g
     let match
-    while ((match = pattern.exec(block)) !== null) {
-      let paramName = match[1]
-      // Remove [] suffix for array params
-      paramName = paramName.replace(/\[\]$/, '')
+    while ((match = quotedKeyPattern.exec(cleanBlock)) !== null) {
+      const paramName = match[1] // Keep [] suffix - it's part of the param name
       if (paramName && !params.includes(paramName)) {
         params.push(paramName)
+      }
+    }
+
+    // Extract unquoted keys: param: value
+    // But skip keys we already got from quoted pattern
+    const unquotedKeyPattern = /(?<![."'])(\w+)\s*:/g
+    while ((match = unquotedKeyPattern.exec(cleanBlock)) !== null) {
+      const paramName = match[1]
+      if (paramName && !params.includes(paramName)) {
+        params.push(paramName)
+      }
+    }
+
+    // Also check for shorthand properties (just a variable name, no colon)
+    const parts = cleanBlock.split(',')
+    for (const part of parts) {
+      const trimmed = part.trim()
+      // Skip empty parts, key-value pairs, or parts with dots (like data.foo)
+      if (!trimmed || trimmed.includes(':') || trimmed.includes('.')) continue
+      // Must be just a simple identifier
+      const wordMatch = trimmed.match(/^(\w+)$/)
+      if (wordMatch) {
+        const paramName = wordMatch[1]
+        if (paramName && !params.includes(paramName)) {
+          params.push(paramName)
+        }
+      }
+    }
+  } else {
+    // Simple shorthand: { param1, param2 }
+    const names = cleanBlock.split(',').map(s => s.trim()).filter(Boolean)
+    for (const name of names) {
+      if (/^\w+$/.test(name) && !params.includes(name)) {
+        params.push(name)
       }
     }
   }

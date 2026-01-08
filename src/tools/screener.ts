@@ -21,6 +21,10 @@ const screenerBaseSchema = z.object({
   min_volume: z.number().int().nonnegative().describe("Minimum volume").optional(),
   max_volume: z.number().int().nonnegative().describe("Maximum volume").optional(),
 
+  // Stock screener OI filters
+  min_oi: z.number().int().nonnegative().describe("Minimum open interest").optional(),
+  max_oi: z.number().int().nonnegative().describe("Maximum open interest").optional(),
+
   // Option contract screener common filters
   is_otm: z.boolean().describe("Filter for OTM options").optional(),
   min_dte: z.number().int().nonnegative().describe("Minimum days to expiration").optional(),
@@ -28,8 +32,15 @@ const screenerBaseSchema = z.object({
   min_premium: z.number().nonnegative().describe("Minimum premium filter").optional(),
   max_premium: z.number().nonnegative().describe("Maximum premium filter").optional(),
 
+  // Ordering and pagination
+  order: z.string().describe("Field to order results by").optional(),
+  order_direction: z.enum(["asc", "desc"]).describe("Order direction (asc or desc)").optional(),
+  limit: z.number().int().positive().describe("Maximum number of results").optional(),
+  page: z.number().int().positive().describe("Page number for pagination").optional(),
+
   // Analyst screener filters
   recommendation: z.enum(["buy", "hold", "sell"]).describe("Analyst recommendation (buy, hold, sell)").optional(),
+  analyst_action: z.enum(["initiated", "reiterated", "downgraded", "upgraded", "maintained"]).describe("Analyst action type").optional(),
 })
 
 // Merge with stock screener and option contract screener filter schemas
@@ -71,11 +82,17 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
   switch (action) {
     case "stocks":
       return formatResponse(await uwFetch("/api/screener/stocks", {
+        ticker: data.ticker,
         // Stock screener filters
         min_marketcap: data.min_marketcap,
         max_marketcap: data.max_marketcap,
         min_volume: data.min_volume,
         max_volume: data.max_volume,
+        min_oi: data.min_oi,
+        max_oi: data.max_oi,
+        // Ordering
+        order: data.order,
+        order_direction: data.order_direction,
         // New stock screener filters
         "issue_types[]": data.issue_types,
         "sectors[]": data.sectors,
@@ -267,6 +284,11 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
         // Close price filters
         min_close: data.min_close,
         max_close: data.max_close,
+        // Ordering and pagination
+        order: data.order,
+        order_direction: data.order_direction,
+        limit: data.limit,
+        page: data.page,
         // Date filter
         date: data.date,
       }))
@@ -275,6 +297,8 @@ export async function handleScreener(args: Record<string, unknown>): Promise<str
       return formatResponse(await uwFetch("/api/screener/analysts", {
         ticker: data.ticker,
         recommendation: data.recommendation,
+        limit: data.limit,
+        action: data.analyst_action,
       }))
 
     default:
