@@ -1,13 +1,13 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, limitSchema, formatZodError, insiderTransactionFiltersSchema,
-} from "../schemas.js"
+import { toJsonSchema, tickerSchema, limitSchema, formatZodError, insiderTransactionFiltersSchema } from "../schemas.js"
 
 const insiderActions = ["transactions", "sector_flow", "ticker_flow", "insiders"] as const
 
 const insiderInputSchema = z.object({
   action: z.enum(insiderActions).describe("The action to perform"),
-  ticker: tickerSchema.optional(),
+  ticker: tickerSchema.optional().describe("Single stock ticker symbol for ticker_flow and insiders actions"),
+  ticker_symbol: z.string().optional().describe("Comma-separated list of ticker symbols for transactions action (e.g., AAPL,INTC). Prefix with - to exclude."),
   sector: z.string().describe("Market sector").optional(),
   limit: limitSchema.optional(),
   page: z.number().describe("Page number for pagination").optional(),
@@ -31,7 +31,7 @@ export const insiderTool = {
   description: `Access UnusualWhales insider trading data including transactions and flow.
 
 Available actions:
-- transactions: Get insider transactions with filters
+- transactions: Get insider transactions with filters. Use ticker_symbol for comma-separated tickers (e.g., AAPL,INTC)
 - sector_flow: Get aggregated insider flow for a sector (sector required)
 - ticker_flow: Get aggregated insider flow for a ticker (ticker required)
 - insiders: Get all insiders for a ticker (ticker required)`,
@@ -57,6 +57,7 @@ export async function handleInsider(args: Record<string, unknown>): Promise<stri
   const {
     action,
     ticker,
+    ticker_symbol,
     sector,
     limit,
     page,
@@ -86,7 +87,7 @@ export async function handleInsider(args: Record<string, unknown>): Promise<stri
   switch (action) {
     case "transactions":
       return formatResponse(await uwFetch("/api/insider/transactions", {
-        ticker_symbol: ticker,
+        ticker_symbol,
         limit,
         page,
         min_value,
