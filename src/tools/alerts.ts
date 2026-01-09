@@ -11,8 +11,8 @@ const alertsInputSchema = z.object({
   intraday_only: z.boolean().describe("Only show intraday alerts").optional(),
   config_ids: z.string().describe("Filter by configuration IDs").optional(),
   noti_types: z.string().describe("Filter by notification types").optional(),
-  newer_than: z.string().describe("Filter alerts newer than timestamp (ISO format or unix)").optional(),
-  older_than: z.string().describe("Filter alerts older than timestamp (ISO format or unix)").optional(),
+  newer_than: z.string().datetime().describe("Filter alerts newer than timestamp (ISO format or unix)").optional(),
+  older_than: z.string().datetime().describe("Filter alerts older than timestamp (ISO format or unix)").optional(),
 })
 
 
