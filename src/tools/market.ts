@@ -23,13 +23,13 @@ const marketInputSchema = z.object({
   tickers: z.string().describe("Ticker list for correlations"),
   sector: z.string().describe("Market sector (for sector_tide)").optional(),
   date: dateSchema.optional(),
-  otm_only: z.boolean().describe("Only use OTM options (for market_tide)").optional(),
-  interval_5m: z.boolean().describe("Use 5-minute intervals instead of 1-minute (for market_tide)").optional(),
-  interval: z.string().describe("Time interval (1y, 6m, 3m, 1m) for correlations").optional(),
+  otm_only: z.boolean().describe("Only use OTM options (for market_tide)").default(false),
+  interval_5m: z.boolean().describe("Use 5-minute intervals instead of 1-minute (for market_tide)").default(true),
+  interval: z.string().describe("Time interval (1y, 6m, 3m, 1m) for correlations").default("1Y"),
   start_date: z.string().describe("Start date for correlations (YYYY-MM-DD)").optional(),
   end_date: z.string().describe("End date for correlations (YYYY-MM-DD)").optional(),
-  limit: limitSchema.optional(),
-  order: orderSchema.optional(),
+  limit: z.number().int().positive().describe("Maximum number of results").optional(),
+  order: z.enum(["asc", "desc"]).describe("Order direction").optional(),
   issue_types: z.string().describe("Issue types filter (for top_net_impact)").optional(),
   announced_date_min: z.string().describe("Minimum announced date for FDA calendar").optional(),
   announced_date_max: z.string().describe("Maximum announced date for FDA calendar").optional(),
@@ -128,7 +128,7 @@ export async function handleMarket(args: Record<string, unknown>): Promise<strin
         target_date_max,
         drug,
         ticker,
-        limit,
+        limit: limit ?? 100,
       }))
 
     case "correlations":
@@ -145,8 +145,8 @@ export async function handleMarket(args: Record<string, unknown>): Promise<strin
     case "oi_change":
       return formatResponse(await uwFetch("/api/market/oi-change", {
         date,
-        limit,
-        order,
+        limit: limit ?? 100,
+        order: order ?? "desc",
       }))
 
     case "spike":
@@ -156,11 +156,11 @@ export async function handleMarket(args: Record<string, unknown>): Promise<strin
       return formatResponse(await uwFetch("/api/market/top-net-impact", {
         date,
         "issue_types[]": issue_types,
-        limit,
+        limit: limit ?? 20,
       }))
 
     case "total_options_volume":
-      return formatResponse(await uwFetch("/api/market/total-options-volume", { limit }))
+      return formatResponse(await uwFetch("/api/market/total-options-volume", { limit: limit ?? 1 }))
 
     default:
       return formatError(`Unknown action: ${action}`)
