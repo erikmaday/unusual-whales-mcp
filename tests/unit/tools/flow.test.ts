@@ -201,4 +201,76 @@ describe("handleFlow", () => {
       })
     })
   })
+
+  describe("lit_flow_recent action", () => {
+    it("calls uwFetch with correct endpoint", async () => {
+      await handleFlow({ action: "lit_flow_recent" })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/lit-flow/recent", expect.any(Object))
+    })
+
+    it("passes filter parameters", async () => {
+      await handleFlow({
+        action: "lit_flow_recent",
+        date: "2024-01-15",
+        limit: 100,
+        min_premium: 10000,
+        max_premium: 1000000,
+        min_size: 100,
+        max_size: 10000,
+        min_volume: 1000,
+        max_volume: 100000,
+      })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/lit-flow/recent", expect.objectContaining({
+        date: "2024-01-15",
+        limit: 100,
+        min_premium: 10000,
+        max_premium: 1000000,
+        min_size: 100,
+        max_size: 10000,
+        min_volume: 1000,
+        max_volume: 100000,
+      }))
+    })
+  })
+
+  describe("lit_flow_ticker action", () => {
+    it("returns error when ticker is missing", async () => {
+      const result = await handleFlow({ action: "lit_flow_ticker" })
+      expect(result.text).toContain("ticker is required")
+    })
+
+    it("calls uwFetch with correct endpoint", async () => {
+      await handleFlow({ action: "lit_flow_ticker", ticker: "AAPL" })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/lit-flow/AAPL", expect.any(Object))
+    })
+
+    it("passes filter parameters", async () => {
+      await handleFlow({
+        action: "lit_flow_ticker",
+        ticker: "TSLA",
+        date: "2024-01-15",
+        limit: 200,
+        min_premium: 5000,
+        max_premium: 500000,
+        min_size: 50,
+        max_size: 5000,
+        min_volume: 500,
+        max_volume: 50000,
+        newer_than: "2024-01-15T10:00:00Z",
+        older_than: "2024-01-15T16:00:00Z",
+      })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/lit-flow/TSLA", expect.objectContaining({
+        date: "2024-01-15",
+        limit: 200,
+        min_premium: 5000,
+        max_premium: 500000,
+        min_size: 50,
+        max_size: 5000,
+        min_volume: 500,
+        max_volume: 50000,
+        newer_than: "2024-01-15T10:00:00Z",
+        older_than: "2024-01-15T16:00:00Z",
+      }))
+    })
+  })
 })
