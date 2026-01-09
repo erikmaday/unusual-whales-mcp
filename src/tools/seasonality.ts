@@ -33,6 +33,7 @@ Available actions:
 - monthly: Get monthly seasonality for a ticker (ticker required)
 - year_month: Get year-month breakdown for a ticker (ticker required)`,
   inputSchema: toJsonSchema(seasonalityInputSchema),
+  zodInputSchema: seasonalityInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,

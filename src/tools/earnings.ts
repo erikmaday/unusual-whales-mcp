@@ -23,6 +23,7 @@ Available actions:
 - afterhours: Get afterhours earnings for a date
 - ticker: Get historical earnings for a ticker (ticker required)`,
   inputSchema: toJsonSchema(earningsInputSchema),
+  zodInputSchema: earningsInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,

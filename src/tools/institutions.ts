@@ -37,6 +37,7 @@ Available actions:
 - ownership: Get institutional ownership of a ticker (ticker required)
 - latest_filings: Get latest institutional filings`,
   inputSchema: toJsonSchema(institutionsInputSchema),
+  zodInputSchema: institutionsInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,

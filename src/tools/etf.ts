@@ -22,6 +22,7 @@ Available actions:
 - in_outflow: Get ETF inflow/outflow data (ticker required)
 - weights: Get sector and country weights (ticker required)`,
   inputSchema: toJsonSchema(etfInputSchema),
+  zodInputSchema: etfInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,

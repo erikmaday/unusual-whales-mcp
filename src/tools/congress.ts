@@ -22,6 +22,7 @@ Available actions:
 - late_reports: Get recent late reports by congress members
 - congress_trader: Get trades by a specific congress member (name required)`,
   inputSchema: toJsonSchema(congressInputSchema),
+  zodInputSchema: congressInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,

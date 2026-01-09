@@ -36,6 +36,7 @@ Available actions:
 - ticker_flow: Get aggregated insider flow for a ticker (ticker required)
 - insiders: Get all insiders for a ticker (ticker required)`,
   inputSchema: toJsonSchema(insiderInputSchema),
+  zodInputSchema: insiderInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,
