@@ -7,12 +7,15 @@ import {
   ListToolsRequestSchema,
   ListResourcesRequestSchema,
   ReadResourceRequestSchema,
+  ListPromptsRequestSchema,
+  GetPromptRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js"
 
 import { formatError } from "./client.js"
 import { logger } from "./logger.js"
 import { tools, handlers } from "./tools/index.js"
 import { initializeResources } from "./resources/index.js"
+import { prompts, handlers as promptHandlers } from "./prompts/index.js"
 
 const require = createRequire(import.meta.url)
 const { version } = require("../package.json") as { version: string }
@@ -34,6 +37,9 @@ const server = new Server(
         listChanged: false,
       },
       resources: {
+        listChanged: false,
+      },
+      prompts: {
         listChanged: false,
       },
     },
@@ -150,6 +156,38 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
     return createErrorResponse(
       formatError(
         `Resource read failed: ${error instanceof Error ? error.message : String(error)}`,
+      ),
+    )
+  }
+})
+
+server.setRequestHandler(ListPromptsRequestSchema, async () => {
+  return {
+    prompts: prompts.map((prompt) => ({
+      name: prompt.name,
+      description: prompt.description,
+      arguments: prompt.arguments,
+    })),
+  }
+})
+
+server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+  const { name, arguments: args } = request.params
+
+  const handler = promptHandlers[name]
+  if (!handler) {
+    return createErrorResponse(formatError(`Unknown prompt: ${name}`))
+  }
+
+  try {
+    const messages = await handler(args || {})
+    return {
+      messages,
+    }
+  } catch (error) {
+    return createErrorResponse(
+      formatError(
+        `Prompt execution failed: ${error instanceof Error ? error.message : String(error)}`,
       ),
     )
   }
