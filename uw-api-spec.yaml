@@ -965,12 +965,24 @@ components:
       minimum: 0
       title: DynLimitAcuwovnjamkufgbraigocmsozniilxcdrqtxxonmhftsehiqhas
       type: integer
+    DynLimitAcuzxchajommvjzbpwhjmdxknihaconeyxsmcvrxjddijsjskbw:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAcuzxchajommvjzbpwhjmdxknihaconeyxsmcvrxjddijsjskbw
+      type: boolean
     DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc:
       description: 'The maximum premium on that alert. Min: 0.'
       example: 12500.5
       minimum: 0
       title: DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc
       type: integer
+    DynLimitAeajnkoadvwxwqhcyovxnthkyyoyqjajiovblcbqtixsbsqzwbh:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAeajnkoadvwxwqhcyovxnthkyyoyqjajiovblcbqtixsbsqzwbh
+      type: boolean
     DynLimitAffeikqbyekurtovimkansbsiccwgoegywuqqvsoihqzsmxnzaj:
       default: true
       description: Boolean flag whether a transaction is a call.
@@ -1031,24 +1043,12 @@ components:
       example: true
       title: DynLimitAvaeipmocfyuzgsdjomzahaezgrqrgqjzusbxjtbqnkywntzzgf
       type: boolean
-    DynLimitAwewvwnwllniixxiifihlaluilkspzigqezymivnknkxktmymfd:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAwewvwnwllniixxiifihlaluilkspzigqezymivnknkxktmymfd
-      type: boolean
     DynLimitAyfspabcutofapltqkvgakuzeugnhbxmorudchfyyecytfwrbnk:
       description: 'The minimum premium on that alert. Min: 0.'
       example: 12500.5
       minimum: 0
       title: DynLimitAyfspabcutofapltqkvgakuzeugnhbxmorudchfyyecytfwrbnk
       type: integer
-    DynLimitAyluhpszyoksurirstayhsfbpubsedfiqdbdpfuyerztovwcqyf:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAyluhpszyoksurirstayhsfbpubsedfiqdbdpfuyerztovwcqyf
-      type: boolean
     DynLimitAzgxtgzkaqsehpnvmuqluywcryqrjswbekyhabjcauqselwhujm:
       default: true
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume.
@@ -3864,6 +3864,16 @@ components:
           $ref: '#/components/schemas/Units Change'
       title: Institutional Activity
       type: object
+    Institutional Activity Order By:
+      description: Optional columns to order the result by.
+      enum:
+        - ticker
+        - security_type
+        - units
+        - units_change
+      example: units
+      title: Institutional Activity Order By
+      type: string
     Institutional Holdings Order By:
       description: Optional columns to order the result by
       enum:
@@ -4142,6 +4152,81 @@ components:
       example: name
       title: Latest Institutional Filings Order By
       type: string
+    Lit Trade:
+      description: A lit exchange trade.
+      example:
+        data:
+          - canceled: false
+            executed_at: 2023-02-16T14:30:44Z
+            ext_hour_sold_codes:
+            market_center: Q
+            nbbo_ask: '185.50'
+            nbbo_ask_quantity: 400
+            nbbo_bid: '185.45'
+            nbbo_bid_quantity: 800
+            premium: '1854500.00'
+            price: '185.45'
+            sale_cond_codes: regular_sale
+            size: 10000
+            ticker: AAPL
+            tracking_id: 71984388012245
+            trade_code:
+            trade_settlement: regular_settlement
+            volume: 15946819
+          - canceled: false
+            executed_at: 2023-02-16T14:30:42Z
+            ext_hour_sold_codes:
+            market_center: N
+            nbbo_ask: '185.52'
+            nbbo_ask_quantity: 300
+            nbbo_bid: '185.48'
+            nbbo_bid_quantity: 600
+            premium: '927400.00'
+            price: '185.48'
+            sale_cond_codes: regular_sale
+            size: 5000
+            ticker: AAPL
+            tracking_id: 71984384768588
+            trade_code:
+            trade_settlement: regular_settlement
+            volume: 15936819
+      properties:
+        canceled:
+          $ref: '#/components/schemas/Single Trade Is Trade Cancelled'
+        executed_at:
+          $ref: '#/components/schemas/Single Trade Execution Time'
+        ext_hour_sold_codes:
+          $ref: '#/components/schemas/Single Trade External Hour Sold Code'
+        market_center:
+          $ref: '#/components/schemas/Single Trade Market Center'
+        nbbo_ask:
+          $ref: '#/components/schemas/ToBeDone'
+        nbbo_ask_quantity:
+          $ref: '#/components/schemas/ToBeDone'
+        nbbo_bid:
+          $ref: '#/components/schemas/ToBeDone'
+        nbbo_bid_quantity:
+          $ref: '#/components/schemas/ToBeDone'
+        premium:
+          $ref: '#/components/schemas/Option Contract Premium'
+        price:
+          $ref: '#/components/schemas/Single Trade Price'
+        sale_cond_codes:
+          $ref: '#/components/schemas/Single Trade Sale Cond Code'
+        size:
+          $ref: '#/components/schemas/Single Trade Size'
+        ticker:
+          $ref: '#/components/schemas/Stock Ticker'
+        tracking_id:
+          $ref: '#/components/schemas/Single Trade Tracking ID'
+        trade_code:
+          $ref: '#/components/schemas/Single Trade Trade Code'
+        trade_settlement:
+          $ref: '#/components/schemas/Single Trade Settlement'
+        volume:
+          $ref: '#/components/schemas/Stock Day Stock Volume'
+      title: Lit Trade
+      type: object
     Logo:
       description: A link to a logo
       title: Logo
@@ -10014,6 +10099,18 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Page'
+        - description: ''
+          in: query
+          name: order
+          required: false
+          schema:
+            $ref: '#/components/schemas/Institutional Activity Order By'
+        - description: ''
+          in: query
+          name: order_direction
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderDirection'
       responses:
         '200':
           content:
@@ -10409,6 +10506,179 @@ paths:
       summary: Latest Filings
       tags:
         - institution
+  /api/lit-flow/recent:
+    get:
+      callbacks: {}
+      description: |
+        Returns the latest lit exchange trades.
+      operationId: PublicApi.LitFlowController.lit_flow_recent
+      parameters:
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 100 Max 200 Min 1'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+        - description: ''
+          in: query
+          name: min_premium
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMinPremium'
+        - description: ''
+          in: query
+          name: max_premium
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMaxPremium'
+        - description: ''
+          in: query
+          name: min_size
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMinSize'
+        - description: ''
+          in: query
+          name: max_size
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMaxSize'
+        - description: ''
+          in: query
+          name: min_volume
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMinVol'
+        - description: ''
+          in: query
+          name: max_volume
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMaxVol'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lit Trade'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Recent Lit Flow Trades
+      tags:
+        - lit-flow
+  /api/lit-flow/{ticker}:
+    get:
+      callbacks: {}
+      description: |
+        Returns the lit exchange trades for the given ticker on a given day.
+        Date must be the current or a past date. If no date is given, returns data for the current/last market day.
+      operationId: PublicApi.LitFlowController.lit_flow_ticker
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+        - description: ''
+          in: query
+          name: newer_than
+          required: false
+          schema:
+            $ref: '#/components/schemas/NewerThan'
+        - description: ''
+          in: query
+          name: older_than
+          required: false
+          schema:
+            $ref: '#/components/schemas/OlderThan'
+        - description: ''
+          in: query
+          name: min_premium
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMinPremium'
+        - description: ''
+          in: query
+          name: max_premium
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMaxPremium'
+        - description: ''
+          in: query
+          name: min_size
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMinSize'
+        - description: ''
+          in: query
+          name: max_size
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMaxSize'
+        - description: ''
+          in: query
+          name: min_volume
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMinVol'
+        - description: ''
+          in: query
+          name: max_volume
+          required: false
+          schema:
+            $ref: '#/components/schemas/StockTradesMaxVol'
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lit Trade'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Ticker Lit Flow Trades
+      tags:
+        - lit-flow
   /api/market/correlations:
     get:
       callbacks: {}
@@ -14135,13 +14405,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwewvwnwllniixxiifihlaluilkspzigqezymivnknkxktmymfd'
+            $ref: '#/components/schemas/DynLimitAeajnkoadvwxwqhcyovxnthkyyoyqjajiovblcbqtixsbsqzwbh'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAyluhpszyoksurirstayhsfbpubsedfiqdbdpfuyerztovwcqyf'
+            $ref: '#/components/schemas/DynLimitAcuzxchajommvjzbpwhjmdxknihaconeyxsmcvrxjddijsjskbw'
       responses:
         '200':
           content:
