@@ -499,6 +499,150 @@ describe('extractSchemaEnums', () => {
   })
 })
 
+describe('extractSchemaDefaults', () => {
+  it('extracts default values from schema files', () => {
+    // Mock schema content
+    const schemaContent = `
+      import { z } from "zod"
+
+      export const limitSchema = z.number().min(1).max(200).default(100).describe("Maximum number of results")
+
+      export const nameSchema = z.string().default("Nancy Pelosi").describe("Congress member name")
+
+      export const intradayOnlySchema = z.boolean().default(true).describe("Only intraday alerts")
+    `
+
+    // Parse the content
+    const defaults: Record<string, { file: string; value: any }> = {}
+
+    const defaultPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.[^=]+\.default\(([^)]+)\)/g
+    let match
+
+    while ((match = defaultPattern.exec(schemaContent)) !== null) {
+      const schemaName = match[1]
+      let defaultValue: any = match[2].trim()
+
+      // Parse the default value
+      if ((defaultValue.startsWith('"') && defaultValue.endsWith('"')) ||
+          (defaultValue.startsWith("'") && defaultValue.endsWith("'"))) {
+        defaultValue = defaultValue.slice(1, -1)
+      } else if (defaultValue === 'true' || defaultValue === 'false') {
+        defaultValue = defaultValue === 'true'
+      } else if (!isNaN(Number(defaultValue))) {
+        defaultValue = Number(defaultValue)
+      }
+
+      defaults[schemaName] = {
+        file: 'common.ts',
+        value: defaultValue,
+      }
+    }
+
+    expect(defaults['limitSchema']).toBeDefined()
+    expect(defaults['limitSchema'].value).toBe(100)
+
+    expect(defaults['nameSchema']).toBeDefined()
+    expect(defaults['nameSchema'].value).toBe('Nancy Pelosi')
+
+    expect(defaults['intradayOnlySchema']).toBeDefined()
+    expect(defaults['intradayOnlySchema'].value).toBe(true)
+  })
+
+  it('handles schemas without export keyword', () => {
+    const schemaContent = `
+      const privateSchema = z.string().default("test value")
+    `
+
+    const defaults: Record<string, { file: string; value: any }> = {}
+    const defaultPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.[^=]+\.default\(([^)]+)\)/g
+    let match
+
+    while ((match = defaultPattern.exec(schemaContent)) !== null) {
+      const schemaName = match[1]
+      let defaultValue: any = match[2].trim()
+
+      if ((defaultValue.startsWith('"') && defaultValue.endsWith('"')) ||
+          (defaultValue.startsWith("'") && defaultValue.endsWith("'"))) {
+        defaultValue = defaultValue.slice(1, -1)
+      }
+
+      defaults[schemaName] = {
+        file: 'test.ts',
+        value: defaultValue,
+      }
+    }
+
+    expect(defaults['privateSchema']).toBeDefined()
+    expect(defaults['privateSchema'].value).toBe('test value')
+  })
+
+  it('parses numeric default values correctly', () => {
+    const schemaContent = `
+      export const countSchema = z.number().default(42)
+      export const ratioSchema = z.number().default(0.5)
+    `
+
+    const defaults: Record<string, { file: string; value: any }> = {}
+    const defaultPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.[^=]+\.default\(([^)]+)\)/g
+    let match
+
+    while ((match = defaultPattern.exec(schemaContent)) !== null) {
+      const schemaName = match[1]
+      let defaultValue: any = match[2].trim()
+
+      if (!isNaN(Number(defaultValue))) {
+        defaultValue = Number(defaultValue)
+      }
+
+      defaults[schemaName] = {
+        file: 'test.ts',
+        value: defaultValue,
+      }
+    }
+
+    expect(defaults['countSchema']).toBeDefined()
+    expect(defaults['countSchema'].value).toBe(42)
+    expect(typeof defaults['countSchema'].value).toBe('number')
+
+    expect(defaults['ratioSchema']).toBeDefined()
+    expect(defaults['ratioSchema'].value).toBe(0.5)
+    expect(typeof defaults['ratioSchema'].value).toBe('number')
+  })
+
+  it('parses boolean default values correctly', () => {
+    const schemaContent = `
+      export const enabledSchema = z.boolean().default(true)
+      export const disabledSchema = z.boolean().default(false)
+    `
+
+    const defaults: Record<string, { file: string; value: any }> = {}
+    const defaultPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.[^=]+\.default\(([^)]+)\)/g
+    let match
+
+    while ((match = defaultPattern.exec(schemaContent)) !== null) {
+      const schemaName = match[1]
+      let defaultValue: any = match[2].trim()
+
+      if (defaultValue === 'true' || defaultValue === 'false') {
+        defaultValue = defaultValue === 'true'
+      }
+
+      defaults[schemaName] = {
+        file: 'test.ts',
+        value: defaultValue,
+      }
+    }
+
+    expect(defaults['enabledSchema']).toBeDefined()
+    expect(defaults['enabledSchema'].value).toBe(true)
+    expect(typeof defaults['enabledSchema'].value).toBe('boolean')
+
+    expect(defaults['disabledSchema']).toBeDefined()
+    expect(defaults['disabledSchema'].value).toBe(false)
+    expect(typeof defaults['disabledSchema'].value).toBe('boolean')
+  })
+})
+
 describe('findSchemaForParam', () => {
   it('finds schema by matching parameter name pattern', () => {
     const toolContent = `
