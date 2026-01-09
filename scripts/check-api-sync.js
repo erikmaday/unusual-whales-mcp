@@ -812,6 +812,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
       requiredParamsMissing: 0,
       optionalParamsMissing: 0,
       extraParams: 0,
+      deprecatedEndpointsInSpec: 0,
       deprecatedEndpointsInUse: 0,
       deprecatedParametersInUse: 0,
       enumValuesMissing: 0,
@@ -833,6 +834,13 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
   const normalizedImplMap = new Map()
   for (const ep of Object.keys(implEndpoints)) {
     normalizedImplMap.set(normalizeForComparison(ep), ep)
+  }
+
+  // Count deprecated endpoints in spec
+  for (const [ep, params] of Object.entries(specEndpoints)) {
+    if (params.deprecated) {
+      results.summary.deprecatedEndpointsInSpec++
+    }
   }
 
   // Find missing endpoints (in spec but not implemented)
@@ -1762,9 +1770,10 @@ function printResults(results) {
   console.log('='.repeat(60))
   console.log(`Endpoints in spec:            ${summary.totalSpecEndpoints}`)
   console.log(`Endpoints implemented:        ${summary.endpointsCovered}`)
+  console.log(`Deprecated in spec:           ${summary.deprecatedEndpointsInSpec}`)
+  console.log(`Deprecated still in use:      ${summary.deprecatedEndpointsInUse}`)
   console.log(`Missing endpoints:            ${missingEndpoints.length}`)
   console.log(`Extra endpoints:              ${extraEndpoints.length}`)
-  console.log(`Deprecated endpoints:         ${summary.deprecatedEndpointsInUse}`)
   console.log(`Deprecated parameters:        ${summary.deprecatedParametersInUse}`)
   console.log(`Missing required params:      ${summary.requiredParamsMissing}`)
   console.log(`Required/optional mismatches: ${summary.requiredOptionalMismatches}`)
