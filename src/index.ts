@@ -1,15 +1,7 @@
 #!/usr/bin/env node
 import { createRequire } from "module"
-import { Server } from "@modelcontextprotocol/sdk/server/index.js"
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-  ListResourcesRequestSchema,
-  ReadResourceRequestSchema,
-  ListPromptsRequestSchema,
-  GetPromptRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js"
 
 import { formatError } from "./client.js"
 import { logger } from "./logger.js"
@@ -26,54 +18,10 @@ const SERVER_VERSION = version
 // Initialize resources
 const { resources, handlers: resourceHandlers } = initializeResources(tools)
 
-const server = new Server(
-  {
-    name: SERVER_NAME,
-    version: SERVER_VERSION,
-  },
-  {
-    capabilities: {
-      tools: {
-        listChanged: false,
-      },
-      resources: {
-        listChanged: false,
-      },
-      prompts: {
-        listChanged: false,
-      },
-    },
-  },
-)
-
-/**
- * Create a text content response for MCP.
- */
-function createTextResponse(text: string): { content: { type: "text"; text: string }[] } {
-  return {
-    content: [
-      {
-        type: "text" as const,
-        text,
-      },
-    ],
-  }
-}
-
-/**
- * Create an error response for MCP with isError flag.
- */
-function createErrorResponse(text: string): { content: { type: "text"; text: string }[]; isError: true } {
-  return {
-    content: [
-      {
-        type: "text" as const,
-        text,
-      },
-    ],
-    isError: true,
-  }
-}
+const server = new McpServer({
+  name: SERVER_NAME,
+  version: SERVER_VERSION,
+})
 
 /**
  * Check if a JSON response string contains an error.
@@ -87,136 +35,156 @@ function isErrorResponse(jsonString: string): boolean {
   }
 }
 
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return {
-    tools: tools.map((tool) => ({
-      name: tool.name,
-      description: tool.description,
-      inputSchema: tool.inputSchema,
-      outputSchema: tool.outputSchema,
-      annotations: tool.annotations,
-    })),
-  }
-})
-
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params
-
-  const handler = handlers[name]
+// Register all tools
+for (const tool of tools) {
+  const handler = handlers[tool.name]
   if (!handler) {
-    return createErrorResponse(formatError(`Unknown tool: ${name}`))
+    logger.error(`No handler found for tool: ${tool.name}`)
+    continue
   }
 
-  try {
-    const result = await handler(args as Record<string, unknown>)
+  // McpServer requires Zod schemas, not JSON schemas
+  if (!tool.zodInputSchema) {
+    logger.error(`No Zod schema found for tool: ${tool.name}`)
+    continue
+  }
 
-    // Handle structured response format
-    if (typeof result === "object" && result !== null && "text" in result) {
-      const structuredResult = result as { text: string; structuredContent?: unknown }
-      // Check if the handler returned an error response
-      if (isErrorResponse(structuredResult.text)) {
-        return createErrorResponse(structuredResult.text)
-      }
+  server.tool(
+    tool.name,
+    tool.description,
+    tool.zodInputSchema,
+    tool.annotations || {},
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (args: any) => {
+      try {
+        const result = await handler(args)
 
-      // Return response with structured content if available
-      if (structuredResult.structuredContent !== undefined) {
+        // Handle structured response format
+        if (typeof result === "object" && result !== null && "text" in result) {
+          const structuredResult = result as { text: string; structuredContent?: unknown }
+
+          // Check if the handler returned an error response
+          if (isErrorResponse(structuredResult.text)) {
+            throw new Error(structuredResult.text)
+          }
+
+          // Return response with structured content if available and not null/empty
+          if (
+            structuredResult.structuredContent !== undefined &&
+            structuredResult.structuredContent !== null &&
+            (typeof structuredResult.structuredContent !== "object" ||
+              Object.keys(structuredResult.structuredContent).length > 0)
+          ) {
+            return {
+              content: [
+                {
+                  type: "text" as const,
+                  text: structuredResult.text,
+                },
+              ],
+              structuredContent: structuredResult.structuredContent as Record<string, unknown>,
+            }
+          }
+
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: structuredResult.text,
+              },
+            ],
+          }
+        }
+
+        // Handle legacy string response format
+        if (isErrorResponse(result)) {
+          throw new Error(result)
+        }
+
         return {
           content: [
             {
               type: "text" as const,
-              text: structuredResult.text,
+              text: result,
             },
           ],
-          structuredContent: structuredResult.structuredContent,
         }
+      } catch (error) {
+        throw new Error(
+          formatError(
+            `Tool execution failed: ${error instanceof Error ? error.message : String(error)}`,
+          ),
+        )
       }
-      return createTextResponse(structuredResult.text)
-    }
+    },
+  )
+}
 
-    // Handle legacy string response format
-    if (isErrorResponse(result)) {
-      return createErrorResponse(result)
-    }
-    return createTextResponse(result)
-  } catch (error) {
-    return createErrorResponse(
-      formatError(
-        `Tool execution failed: ${error instanceof Error ? error.message : String(error)}`,
-      ),
-    )
+// Register all resources
+for (const resource of resources) {
+  const handler = resourceHandlers[resource.uri]
+  if (!handler) {
+    logger.error(`No handler found for resource: ${resource.uri}`)
+    continue
   }
-})
 
-server.setRequestHandler(ListResourcesRequestSchema, async () => {
-  return {
-    resources: resources.map((resource) => ({
-      uri: resource.uri,
-      name: resource.name,
+  server.resource(
+    resource.name,
+    resource.uri,
+    {
       description: resource.description,
       mimeType: resource.mimeType,
-    })),
-  }
-})
+    },
+    async () => {
+      try {
+        const content = await handler()
+        return {
+          contents: [
+            {
+              uri: resource.uri,
+              text: content,
+              mimeType: resource.mimeType,
+            },
+          ],
+        }
+      } catch (error) {
+        throw new Error(
+          formatError(
+            `Resource read failed: ${error instanceof Error ? error.message : String(error)}`,
+          ),
+        )
+      }
+    },
+  )
+}
 
-server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
-  const { uri } = request.params
-
-  const handler = resourceHandlers[uri]
+// Register all prompts
+for (const prompt of prompts) {
+  const handler = promptHandlers[prompt.name]
   if (!handler) {
-    return createErrorResponse(formatError(`Unknown resource: ${uri}`))
+    logger.error(`No handler found for prompt: ${prompt.name}`)
+    continue
   }
 
-  try {
-    const content = await handler()
-    return {
-      contents: [
-        {
-          uri,
-          mimeType: resources.find((r) => r.uri === uri)?.mimeType || "text/plain",
-          text: content,
-        },
-      ],
-    }
-  } catch (error) {
-    return createErrorResponse(
-      formatError(
-        `Resource read failed: ${error instanceof Error ? error.message : String(error)}`,
-      ),
-    )
-  }
-})
-
-server.setRequestHandler(ListPromptsRequestSchema, async () => {
-  return {
-    prompts: prompts.map((prompt) => ({
-      name: prompt.name,
-      description: prompt.description,
-      arguments: prompt.arguments,
-    })),
-  }
-})
-
-server.setRequestHandler(GetPromptRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params
-
-  const handler = promptHandlers[name]
-  if (!handler) {
-    return createErrorResponse(formatError(`Unknown prompt: ${name}`))
-  }
-
-  try {
-    const messages = await handler(args || {})
-    return {
-      messages,
-    }
-  } catch (error) {
-    return createErrorResponse(
-      formatError(
-        `Prompt execution failed: ${error instanceof Error ? error.message : String(error)}`,
-      ),
-    )
-  }
-})
+  server.prompt(
+    prompt.name,
+    prompt.description ?? "",
+    async () => {
+      try {
+        // Prompt handlers don't receive args in the old API
+        // We need to adapt to the new API which passes extra parameter
+        const messages = await handler({})
+        return { messages }
+      } catch (error) {
+        throw new Error(
+          formatError(
+            `Prompt execution failed: ${error instanceof Error ? error.message : String(error)}`,
+          ),
+        )
+      }
+    },
+  )
+}
 
 /**
  * Main entry point for the MCP server.

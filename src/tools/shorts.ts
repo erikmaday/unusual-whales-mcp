@@ -22,6 +22,7 @@ Available actions:
 - volume_ratio: Get short volume and ratio (ticker required)
 - volumes_by_exchange: Get short volumes by exchange (ticker required)`,
   inputSchema: toJsonSchema(shortsInputSchema),
+  zodInputSchema: shortsInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,

@@ -144,6 +144,7 @@ Available actions:
 - tickers_by_sector: Get tickers in sector (sector required)
 - ticker_exchanges: Get mapping of all tickers to their exchanges (no params required)`,
   inputSchema: toJsonSchema(stockInputSchema),
+  zodInputSchema: stockInputSchema,
   outputSchema: toJsonSchema(stockOutputSchema),
   annotations: {
     readOnlyHint: true,

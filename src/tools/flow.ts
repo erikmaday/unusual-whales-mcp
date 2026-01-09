@@ -49,6 +49,7 @@ Flow groups: airline, bank, basic materials, china, communication services, cons
 
 Flow alerts filtering options include: ticker, premium range, volume range, OI range, DTE range, and more.`,
   inputSchema: toJsonSchema(flowInputSchema),
+  zodInputSchema: flowInputSchema,
   outputSchema: toJsonSchema(flowOutputSchema),
   annotations: {
     readOnlyHint: true,
