@@ -108,6 +108,8 @@ export async function handleInstitutions(args: Record<string, unknown>): Promise
       if (!name) return formatError("name is required")
       return formatResponse(await uwFetch(`/api/institution/${encodePath(name)}/activity`, {
         date,
+        order,
+        order_direction,
         limit,
         page,
       }))
