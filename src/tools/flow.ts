@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { uwFetch, formatStructuredResponse, encodePath, formatError } from "../client.js"
 import {
   toJsonSchema,
   tickerSchema,
@@ -14,6 +14,7 @@ import {
   flowAlertsExtendedFiltersSchema,
   netFlowExpiryFiltersSchema,
   formatZodError,
+  flowOutputSchema,
 } from "../schemas/index.js"
 
 const flowActions = ["flow_alerts", "full_tape", "net_flow_expiry", "group_greek_flow", "group_greek_flow_expiry"] as const
@@ -48,6 +49,7 @@ Flow groups: airline, bank, basic materials, china, communication services, cons
 
 Flow alerts filtering options include: ticker, premium range, volume range, OI range, DTE range, and more.`,
   inputSchema: toJsonSchema(flowInputSchema),
+  outputSchema: toJsonSchema(flowOutputSchema),
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,
@@ -59,12 +61,12 @@ Flow alerts filtering options include: ticker, premium range, volume range, OI r
  * Handle flow tool requests.
  *
  * @param args - Tool arguments containing action and optional flow filters
- * @returns JSON string with flow data or error message
+ * @returns Structured response with text and optional typed data
  */
-export async function handleFlow(args: Record<string, unknown>): Promise<string> {
+export async function handleFlow(args: Record<string, unknown>): Promise<{ text: string; structuredContent?: unknown }> {
   const parsed = flowInputSchema.safeParse(args)
   if (!parsed.success) {
-    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
+    return { text: formatError(`Invalid input: ${formatZodError(parsed.error)}`) }
   }
 
   const {
@@ -132,7 +134,7 @@ export async function handleFlow(args: Record<string, unknown>): Promise<string>
 
   switch (action) {
     case "flow_alerts":
-      return formatResponse(await uwFetch("/api/option-trades/flow-alerts", {
+      return formatStructuredResponse(await uwFetch("/api/option-trades/flow-alerts", {
         ticker_symbol,
         limit,
         min_premium,
@@ -188,21 +190,21 @@ export async function handleFlow(args: Record<string, unknown>): Promise<string>
       }))
 
     case "full_tape":
-      if (!date) return formatError("date is required")
-      return formatResponse(await uwFetch(`/api/option-trades/full-tape/${encodePath(date)}`))
+      if (!date) return { text: formatError("date is required") }
+      return formatStructuredResponse(await uwFetch(`/api/option-trades/full-tape/${encodePath(date)}`))
 
     case "net_flow_expiry":
-      return formatResponse(await uwFetch("/api/net-flow/expiry", { date, moneyness, tide_type, expiration }))
+      return formatStructuredResponse(await uwFetch("/api/net-flow/expiry", { date, moneyness, tide_type, expiration }))
 
     case "group_greek_flow":
-      if (!flow_group) return formatError("flow_group is required")
-      return formatResponse(await uwFetch(`/api/group-flow/${encodePath(flow_group)}/greek-flow`, { date }))
+      if (!flow_group) return { text: formatError("flow_group is required") }
+      return formatStructuredResponse(await uwFetch(`/api/group-flow/${encodePath(flow_group)}/greek-flow`, { date }))
 
     case "group_greek_flow_expiry":
-      if (!flow_group || !expiry) return formatError("flow_group and expiry are required")
-      return formatResponse(await uwFetch(`/api/group-flow/${encodePath(flow_group)}/greek-flow/${encodePath(expiry)}`, { date }))
+      if (!flow_group || !expiry) return { text: formatError("flow_group and expiry are required") }
+      return formatStructuredResponse(await uwFetch(`/api/group-flow/${encodePath(flow_group)}/greek-flow/${encodePath(expiry)}`, { date }))
 
     default:
-      return formatError(`Unknown action: ${action}`)
+      return { text: formatError(`Unknown action: ${action}`) }
   }
 }
