@@ -42,6 +42,118 @@ function loadOpenAPISpec() {
 }
 
 /**
+ * Resolve a $ref path in the OpenAPI spec
+ * @param {string} ref - The $ref path (e.g., '#/components/schemas/Tide Type')
+ * @param {object} spec - The full OpenAPI spec object
+ * @param {Set} visited - Set of visited refs to detect circular references
+ * @returns {object|null} The resolved schema object, or null if not found
+ */
+function resolveRef(ref, spec, visited = new Set()) {
+  if (!ref || typeof ref !== 'string') return null
+
+  // Detect circular references
+  if (visited.has(ref)) {
+    console.warn(`Circular reference detected: ${ref}`)
+    return null
+  }
+  visited.add(ref)
+
+  // Only support internal references starting with #/
+  if (!ref.startsWith('#/')) {
+    console.warn(`External references not supported: ${ref}`)
+    return null
+  }
+
+  // Parse the path carefully to handle schema names with slashes
+  // For OpenAPI, the structure is typically #/components/schemas/{schemaName}
+  // where {schemaName} might contain slashes
+  const refPath = ref.substring(2) // Remove '#/'
+
+  // Try to match the standard OpenAPI pattern
+  const standardMatch = refPath.match(/^(components\/schemas|components\/parameters|components\/responses)\/(.+)$/)
+
+  let path
+  if (standardMatch) {
+    // Split the prefix and keep the schema name intact
+    const prefix = standardMatch[1].split('/')
+    const schemaName = standardMatch[2]
+    path = [...prefix, schemaName]
+  } else {
+    // Fallback to simple split for other cases
+    path = refPath.split('/')
+  }
+
+  // Navigate the spec object following the path
+  let current = spec
+  for (const segment of path) {
+    if (current && typeof current === 'object' && segment in current) {
+      current = current[segment]
+    } else {
+      console.warn(`Reference path not found: ${ref}`)
+      return null
+    }
+  }
+
+  // If the resolved object itself contains a $ref, resolve it recursively
+  if (current && typeof current === 'object' && current.$ref) {
+    return resolveRef(current.$ref, spec, visited)
+  }
+
+  return current
+}
+
+/**
+ * Extract schema information from a parameter
+ * @param {object} param - The parameter object from OpenAPI spec
+ * @param {object} spec - The full OpenAPI spec for resolving $refs
+ * @returns {object} Schema info including enum, type, constraints
+ */
+function extractParamSchema(param, spec) {
+  const schema = {}
+
+  // Get the schema object, resolving $ref if needed
+  let paramSchema = param.schema
+  if (paramSchema?.$ref) {
+    paramSchema = resolveRef(paramSchema.$ref, spec)
+  }
+
+  if (!paramSchema) return schema
+
+  // Extract enum values
+  if (paramSchema.enum) {
+    schema.enum = paramSchema.enum
+  }
+
+  // Extract type
+  if (paramSchema.type) {
+    schema.type = paramSchema.type
+  }
+
+  // Extract numeric constraints
+  if (paramSchema.minimum !== undefined) {
+    schema.minimum = paramSchema.minimum
+  }
+  if (paramSchema.maximum !== undefined) {
+    schema.maximum = paramSchema.maximum
+  }
+
+  // Extract string constraints
+  if (paramSchema.pattern) {
+    schema.pattern = paramSchema.pattern
+  }
+  if (paramSchema.format) {
+    schema.format = paramSchema.format
+  }
+
+  // Extract default value
+  if (paramSchema.default !== undefined) {
+    schema.default = paramSchema.default
+  }
+
+  return schema
+}
+
+/**
  * Extract all endpoints and their parameters from the OpenAPI spec
  */
 function extractSpecEndpointsWithParams(spec) {
@@ -61,11 +173,18 @@ function extractSpecEndpointsWithParams(spec) {
       optional: [],
       path: [],
       operationId: getMethod.operationId || null,
+      schemas: {}, // Store schema info for each parameter
     }
 
     for (const param of getMethod.parameters || []) {
       const paramName = param.name
       const isRequired = param.required === true
+
+      // Extract schema information
+      const schemaInfo = extractParamSchema(param, spec)
+      if (Object.keys(schemaInfo).length > 0) {
+        params.schemas[paramName] = schemaInfo
+      }
 
       if (param.in === 'path') {
         params.path.push(paramName)
@@ -846,6 +965,20 @@ async function main() {
     console.log('Extracting endpoints and parameters from spec...')
     const specEndpoints = extractSpecEndpointsWithParams(spec)
     console.log(`Found ${Object.keys(specEndpoints).length} endpoints in spec`)
+
+    // Log schema extraction stats for verification
+    let schemasExtracted = 0
+    let enumsFound = 0
+    let constraintsFound = 0
+    for (const endpoint of Object.values(specEndpoints)) {
+      const schemas = endpoint.schemas || {}
+      schemasExtracted += Object.keys(schemas).length
+      for (const schema of Object.values(schemas)) {
+        if (schema.enum) enumsFound++
+        if (schema.minimum !== undefined || schema.maximum !== undefined) constraintsFound++
+      }
+    }
+    console.log(`Extracted ${schemasExtracted} parameter schemas (${enumsFound} with enums, ${constraintsFound} with constraints)`)
 
     console.log('Extracting implemented endpoints and parameters...')
     const implEndpoints = extractImplementedEndpointsWithParams()
