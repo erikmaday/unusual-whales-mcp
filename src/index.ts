@@ -5,17 +5,23 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js"
 
 import { formatError } from "./client.js"
 import { logger } from "./logger.js"
 import { tools, handlers } from "./tools/index.js"
+import { initializeResources } from "./resources/index.js"
 
 const require = createRequire(import.meta.url)
 const { version } = require("../package.json") as { version: string }
 
 const SERVER_NAME = "unusual-whales"
 const SERVER_VERSION = version
+
+// Initialize resources
+const { resources, handlers: resourceHandlers } = initializeResources(tools)
 
 const server = new Server(
   {
@@ -25,6 +31,9 @@ const server = new Server(
   {
     capabilities: {
       tools: {
+        listChanged: false,
+      },
+      resources: {
         listChanged: false,
       },
     },
@@ -102,6 +111,45 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return createErrorResponse(
       formatError(
         `Tool execution failed: ${error instanceof Error ? error.message : String(error)}`,
+      ),
+    )
+  }
+})
+
+server.setRequestHandler(ListResourcesRequestSchema, async () => {
+  return {
+    resources: resources.map((resource) => ({
+      uri: resource.uri,
+      name: resource.name,
+      description: resource.description,
+      mimeType: resource.mimeType,
+    })),
+  }
+})
+
+server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+  const { uri } = request.params
+
+  const handler = resourceHandlers[uri]
+  if (!handler) {
+    return createErrorResponse(formatError(`Unknown resource: ${uri}`))
+  }
+
+  try {
+    const content = await handler()
+    return {
+      contents: [
+        {
+          uri,
+          mimeType: resources.find((r) => r.uri === uri)?.mimeType || "text/plain",
+          text: content,
+        },
+      ],
+    }
+  } catch (error) {
+    return createErrorResponse(
+      formatError(
+        `Resource read failed: ${error instanceof Error ? error.message : String(error)}`,
       ),
     )
   }
