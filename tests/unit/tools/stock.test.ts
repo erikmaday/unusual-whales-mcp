@@ -439,9 +439,11 @@ describe("handleStock", () => {
       expect(result.text).toContain("ticker and expiry are required")
     })
 
-    it("calls uwFetch with correct endpoint", async () => {
+    it("calls uwFetch with correct v2 endpoint", async () => {
       await handleStock({ action: "spot_exposures_expiry_strike", ticker: "AAPL", expiry: "2024-01-19" })
-      expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/spot-exposures/2024-01-19/strike", expect.any(Object))
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/spot-exposures/expiry-strike", expect.objectContaining({
+        "expirations[]": ["2024-01-19"],
+      }))
     })
 
     it("passes filter parameters", async () => {
@@ -453,7 +455,8 @@ describe("handleStock", () => {
         min_strike: 150,
         max_strike: 200,
       })
-      expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/spot-exposures/2024-01-19/strike", expect.objectContaining({
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/spot-exposures/expiry-strike", expect.objectContaining({
+        "expirations[]": ["2024-01-19"],
         date: "2024-01-15",
         min_strike: 150,
         max_strike: 200,
