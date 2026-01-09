@@ -58,6 +58,7 @@ Available actions:
 - option_contracts: Screen option contracts with filters
 - analysts: Screen analyst ratings`,
   inputSchema: toJsonSchema(screenerInputSchema),
+  zodInputSchema: screenerInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,

@@ -34,6 +34,7 @@ Available actions:
 - holders: Get politicians holding a ticker (ticker required; optional: aggregate_all_portfolios)
 - disclosures: Get annual disclosure file records (optional: politician_id, latest_only, year)`,
   inputSchema: toJsonSchema(politiciansInputSchema),
+  zodInputSchema: politiciansInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,

@@ -34,6 +34,7 @@ Available actions:
 
 The 'id' parameter is the option contract symbol (e.g., AAPL240119C00150000).`,
   inputSchema: toJsonSchema(optionsInputSchema),
+  zodInputSchema: optionsInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,
