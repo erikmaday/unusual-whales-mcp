@@ -325,7 +325,9 @@ function extractImplementedSchemas() {
 
     // Find the input schema definition
     // Pattern: const xxxInputSchema = z.object({...})
-    const schemaPattern = /const\s+\w+InputSchema\s*=\s*z\.object\(\{([^}]+(?:\}[^}]+)*)\}\)/gs
+    // Updated to stop at the closing }) and not continue beyond it
+    // This prevents matching into subsequent code blocks
+    const schemaPattern = /const\s+\w+InputSchema\s*=\s*z\.object\(\{([\s\S]*?)\}\)(?:\.merge\([^)]+\))?/
     const match = schemaPattern.exec(content)
 
     if (!match) continue
@@ -336,18 +338,22 @@ function extractImplementedSchemas() {
     // Match patterns like:
     // - param_name: schema.optional()  (optional)
     // - param_name: schema              (required)
-    // Handle multi-line definitions
-    const paramPattern = /(\w+)\s*:\s*([^,\n]+(?:\([^)]*\)[^,\n]*)*)/g
-
+    // Split by lines and reconstruct parameter definitions
     const params = {
       required: [],
       optional: [],
     }
 
-    let paramMatch
-    while ((paramMatch = paramPattern.exec(schemaBody)) !== null) {
-      const paramName = paramMatch[1]
-      const paramDef = paramMatch[2].trim()
+    // Split the schema into parameter entries by looking for pattern "paramName: "
+    // This handles multi-line parameter definitions better
+    const paramEntries = schemaBody.split(/\n\s*(?=\w+\s*:)/)
+
+    for (const entry of paramEntries) {
+      const match = entry.match(/^(\w+)\s*:\s*([\s\S]+?)(?:,\s*$|$)/)
+      if (!match) continue
+
+      const paramName = match[1]
+      const paramDef = match[2].trim().replace(/,\s*$/, '')
 
       // Check if the parameter definition includes .optional()
       const isOptional = paramDef.includes('.optional()')
