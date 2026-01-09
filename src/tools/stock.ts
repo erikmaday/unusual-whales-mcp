@@ -43,7 +43,6 @@ const stockActions = [
   "volume_oi_expiry",
   "atm_chains",
   "expiry_breakdown",
-  "flow_alerts",
   "flow_per_expiry",
   "flow_per_strike",
   "flow_per_strike_intraday",
@@ -121,7 +120,6 @@ Available actions:
 - volume_oi_expiry: Get volume/OI by expiry (ticker required; date optional)
 - atm_chains: Get ATM chains for given expirations (ticker, expirations[] required)
 - expiry_breakdown: Get expiry breakdown (ticker required; date optional)
-- flow_alerts: Get flow alerts for ticker (ticker required; limit, is_ask_side, is_bid_side optional)
 - flow_per_expiry: Get flow per expiry (ticker required)
 - flow_per_strike: Get flow per strike (ticker required; date optional)
 - flow_per_strike_intraday: Get intraday flow per strike (ticker required; date, filter optional)
@@ -319,10 +317,6 @@ export async function handleStock(args: Record<string, unknown>): Promise<{ text
     case "expiry_breakdown":
       if (!ticker) return { text: formatError("ticker is required") }
       return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/expiry-breakdown`, { date }))
-
-    case "flow_alerts":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/flow-alerts`, { limit, is_ask_side, is_bid_side }))
 
     case "flow_per_expiry":
       if (!ticker) return { text: formatError("ticker is required") }
