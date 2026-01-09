@@ -176,6 +176,25 @@ const stockInputSchema = z.object({
       path: ["expiry"],
     },
   )
+  .transform((data: any) => {
+    // Apply action-specific limit defaults if limit is not provided
+    if (data.limit === undefined) {
+      switch (data.action) {
+        case "option_contracts":
+        case "spot_exposures_by_expiry_strike":
+        case "spot_exposures_by_strike":
+          data.limit = 500
+          break
+        case "options_volume":
+          data.limit = 1
+          break
+        case "ownership":
+          data.limit = 20
+          break
+      }
+    }
+    return data
+  })
 
 
 export const stockTool = {

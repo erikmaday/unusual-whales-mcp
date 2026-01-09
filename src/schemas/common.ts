@@ -34,7 +34,7 @@ export const strikeSchema = z.number()
 export const optionTypeSchema = z.enum(["call", "put"]).describe("Option type (call or put)")
 
 /** Order direction */
-export const orderSchema = z.enum(["asc", "desc"]).describe("Order direction")
+export const orderSchema = z.enum(["asc", "desc"]).describe("Order direction").default("desc")
 
 /** Pagination page number */
 export const pageSchema = z.number()
@@ -48,7 +48,7 @@ export const candleSizeSchema = z.enum([
 ]).describe("Candle size (1m, 5m, 10m, 15m, 30m, 1h, 4h, 1d)")
 
 /** Timeframe for historical data */
-export const timeframeSchema = z.string().describe("Timeframe for historical data (e.g., '1y', '6m', '3m', '1m' for 1 year, 6 months, 3 months, 1 month)")
+export const timeframeSchema = z.string().describe("Timeframe for historical data (e.g., '1y', '6m', '3m', '1m' for 1 year, 6 months, 3 months, 1 month)").default("1Y")
 
 /** IV rank timespan */
 export const timespanSchema = z.string().describe("Timespan for IV rank calculation (e.g., '1y' for 1-year lookback period)")
