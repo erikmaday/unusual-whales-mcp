@@ -324,3 +324,90 @@ describe('extractParamSchema', () => {
     expect(result).toEqual({})
   })
 })
+
+describe('extractDeprecationInfo', () => {
+  function extractDeprecationInfo(description) {
+    if (!description) return null
+
+    const lowerDesc = description.toLowerCase()
+    if (!lowerDesc.includes('deprecated')) return null
+
+    const info = {
+      deprecated: true,
+      message: '',
+      replacementEndpoint: null
+    }
+
+    const lines = description.trim().split('\n')
+    info.message = lines[0].trim()
+
+    const urlMatch = description.match(/https:\/\/api\.unusualwhales\.com\/docs#\/operations\/([^\s\)\]]+)/)
+    if (urlMatch) {
+      info.replacementUrl = urlMatch[0]
+    }
+
+    const pathMatch = description.match(/\/api\/[^\s\)]+/)
+    if (pathMatch) {
+      info.replacementEndpoint = pathMatch[0]
+    }
+
+    return info
+  }
+
+  it('detects deprecated endpoint with replacement URL', () => {
+    const description = `This endpoint has been deprecated and will be removed.
+Please migrate to this Flow Alerts endpoint, which provides a more detailed response: [https://api.unusualwhales.com/docs#/operations/PublicApi.OptionTradeController.flow_alerts](https://api.unusualwhales.com/docs#/operations/PublicApi.OptionTradeController.flow_alerts)`
+
+    const result = extractDeprecationInfo(description)
+
+    expect(result).toBeDefined()
+    expect(result.deprecated).toBe(true)
+    expect(result.message).toBe('This endpoint has been deprecated and will be removed.')
+    expect(result.replacementUrl).toBe('https://api.unusualwhales.com/docs#/operations/PublicApi.OptionTradeController.flow_alerts')
+  })
+
+  it('detects deprecated endpoint with replacement endpoint path', () => {
+    const description = `This endpoint has been deprecated and will be removed, please migrate to the new [endpoint](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_by_strike_expiry_v2)`
+
+    const result = extractDeprecationInfo(description)
+
+    expect(result).toBeDefined()
+    expect(result.deprecated).toBe(true)
+    expect(result.message).toContain('deprecated')
+    expect(result.replacementUrl).toBe('https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_by_strike_expiry_v2')
+  })
+
+  it('detects deprecated with API path in description', () => {
+    const description = `This endpoint is deprecated. Use /api/v2/new-endpoint instead.`
+
+    const result = extractDeprecationInfo(description)
+
+    expect(result).toBeDefined()
+    expect(result.deprecated).toBe(true)
+    expect(result.replacementEndpoint).toBe('/api/v2/new-endpoint')
+  })
+
+  it('returns null for non-deprecated endpoint', () => {
+    const description = 'This is a regular endpoint description'
+
+    const result = extractDeprecationInfo(description)
+
+    expect(result).toBeNull()
+  })
+
+  it('returns null for empty description', () => {
+    expect(extractDeprecationInfo('')).toBeNull()
+    expect(extractDeprecationInfo(null)).toBeNull()
+    expect(extractDeprecationInfo(undefined)).toBeNull()
+  })
+
+  it('handles case-insensitive deprecated detection', () => {
+    const description = 'DEPRECATED: This endpoint is no longer supported'
+
+    const result = extractDeprecationInfo(description)
+
+    expect(result).toBeDefined()
+    expect(result.deprecated).toBe(true)
+    expect(result.message).toBe('DEPRECATED: This endpoint is no longer supported')
+  })
+})
