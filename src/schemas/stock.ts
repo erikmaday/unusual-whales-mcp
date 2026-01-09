@@ -14,9 +14,9 @@ export const optionContractFiltersSchema = z.object({
 export const stockFlowFiltersSchema = z.object({
   is_ask_side: z.boolean().describe("Boolean flag whether a transaction is ask side").optional(),
   is_bid_side: z.boolean().describe("Boolean flag whether a transaction is bid side").optional(),
-  side: z.string().describe("Filter by trade side (e.g., 'ask', 'bid', 'mid')").optional(),
-  min_premium: z.number().nonnegative("Premium cannot be negative").describe("The minimum premium on the trade").optional(),
-  filter: z.string().describe("Filter type for intraday flow (e.g., 'NetPremium', 'Volume', 'Trades')").optional(),
+  side: z.string().describe("Filter by trade side (e.g., 'ask', 'bid', 'mid')").default("ALL"),
+  min_premium: z.number().nonnegative("Premium cannot be negative").describe("The minimum premium on the trade").default(0),
+  filter: z.string().describe("Filter type for intraday flow (e.g., 'NetPremium', 'Volume', 'Trades')").default("NetPremium"),
 })
 
 // ============================================================================
