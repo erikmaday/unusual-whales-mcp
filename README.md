@@ -36,6 +36,18 @@ The server exposes documentation resources that AI assistants can access:
 
 AI assistants can request these resources when they need information about available functionality or tool usage.
 
+### Prompts
+
+The server provides reusable prompt templates for common market analysis workflows:
+
+| Prompt | Description | Arguments |
+|--------|-------------|-----------|
+| **daily-summary** | Comprehensive daily market analysis combining market tide, sector analysis, options flow, and dark pool activity | `date` (optional): Date to analyze in YYYY-MM-DD format |
+| **ticker-analysis** | Deep dive analysis of a single ticker including stock info, options flow, dark pool transactions, insider activity, and upcoming catalysts | `ticker` (required): Stock symbol to analyze |
+| **congress-tracker** | Track and analyze recent congressional trading activity with pattern detection | `days` (optional, default: 7): Days to look back<br>`min_amount` (optional, default: 15000): Minimum transaction amount |
+
+These prompts provide pre-configured analysis workflows that combine multiple tools. AI assistants can use them directly or as templates for custom queries.
+
 ## Prerequisites
 
 Get your API key from [Unusual Whales](https://unusualwhales.com).
@@ -105,6 +117,16 @@ Once configured, ask Claude about market data:
 - "What's the dark pool activity for TSLA?"
 - "Get the max pain for SPY options expiring this Friday"
 - "What are institutions buying in the tech sector?"
+
+### Using Prompts
+
+Claude can use the predefined prompts for common analysis workflows:
+
+- "Use the daily-summary prompt" - Get a comprehensive market overview
+- "Use the ticker-analysis prompt for NVDA" - Deep dive on a specific stock
+- "Use the congress-tracker prompt for the last 30 days" - Track congressional activity
+
+Prompts standardize complex multi-tool queries and ensure consistent analysis patterns.
 
 ## Development
 
