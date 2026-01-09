@@ -8,10 +8,10 @@ const newsActions = ["headlines"] as const
 const newsInputSchema = z.object({
   action: z.enum(newsActions).describe("The action to perform"),
   ticker: tickerSchema.describe("Filter by ticker symbol").optional(),
-  limit: limitSchema.optional(),
+  limit: limitSchema.default(50).optional(),
   sources: z.string().describe("Filter by news sources").optional(),
   search_term: z.string().describe("Search term to filter headlines").optional(),
-  major_only: z.boolean().describe("Only include major news").optional(),
+  major_only: z.boolean().default(false).optional(),
   page: z.number().describe("Page number for pagination").optional(),
 })
 
