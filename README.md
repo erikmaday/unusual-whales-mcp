@@ -65,10 +65,23 @@ Add to your config file:
 | `UW_API_KEY` | Your Unusual Whales API key (required) | - |
 | `UW_RATE_LIMIT_PER_MINUTE` | Max requests per minute | `120` |
 | `UW_MAX_RETRIES` | Max retry attempts for failed requests (5xx errors, network failures) | `3` |
+| `UW_CIRCUIT_BREAKER_THRESHOLD` | Number of failures before circuit opens | `5` |
+| `UW_CIRCUIT_BREAKER_RESET_TIMEOUT` | Milliseconds before attempting recovery | `30000` |
+| `UW_CIRCUIT_BREAKER_SUCCESS_THRESHOLD` | Successful requests needed to close circuit | `2` |
 
 The server includes a sliding window rate limiter to prevent exceeding API limits. The Unusual Whales API allows 120 requests/minute and 15,000 requests/day by default (some plans may differ). If you have a custom rate limit or want to adjust the MCP server's limit, set `UW_RATE_LIMIT_PER_MINUTE` accordingly.
 
 Failed requests (5xx errors, network timeouts) are automatically retried with exponential backoff (1s, 2s, 4s delays). Client errors (4xx) are not retried. Set `UW_MAX_RETRIES=0` to disable retries.
+
+### Circuit Breaker
+
+The server implements a circuit breaker pattern to protect against cascading failures when the API is unavailable:
+
+- **CLOSED**: Normal operation - all requests go through
+- **OPEN**: Fast-fail mode - requests immediately return errors without hitting the API
+- **HALF_OPEN**: Recovery testing - limited requests allowed to test if the service has recovered
+
+When the failure threshold is reached (default 5 consecutive failures), the circuit opens for 30 seconds. After this timeout, the circuit enters HALF_OPEN state and allows test requests through. If 2 consecutive requests succeed, the circuit closes and normal operation resumes. Any failure in HALF_OPEN immediately reopens the circuit.
 
 ## Usage
 

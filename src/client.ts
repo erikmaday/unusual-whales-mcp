@@ -1,5 +1,6 @@
 import { logger } from "./logger.js"
 import { SlidingWindowRateLimiter } from "./rate-limiter.js"
+import { CircuitBreaker, CircuitBreakerError } from "./circuit-breaker.js"
 
 const BASE_URL = "https://api.unusualwhales.com"
 const REQUEST_TIMEOUT_MS = 30_000
@@ -27,6 +28,13 @@ const maxRetries = parseInt(
   10,
 )
 const configuredMaxRetries = isNaN(maxRetries) ? DEFAULT_MAX_RETRIES : maxRetries
+
+// Initialize circuit breaker with configurable thresholds
+const circuitBreaker = new CircuitBreaker({
+  failureThreshold: parseInt(process.env.UW_CIRCUIT_BREAKER_THRESHOLD || "5", 10),
+  resetTimeout: parseInt(process.env.UW_CIRCUIT_BREAKER_RESET_TIMEOUT || "30000", 10),
+  successThreshold: parseInt(process.env.UW_CIRCUIT_BREAKER_SUCCESS_THRESHOLD || "2", 10),
+})
 
 /**
  * Determines if an error is retryable (transient failure).
@@ -129,96 +137,107 @@ export async function uwFetch<T = unknown>(
     })
   }
 
-  let lastError: string | null = null
+  // Execute request with circuit breaker protection
+  try {
+    return await circuitBreaker.execute(async () => {
+      let lastError: string | null = null
 
-  for (let attempt = 0; attempt < configuredMaxRetries; attempt++) {
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
-
-    try {
-      const response = await fetch(url.toString(), {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          Accept: "application/json",
-        },
-        signal: controller.signal,
-      })
-
-      clearTimeout(timeout)
-
-      if (response.ok) {
-        const text = await response.text()
-        if (!text) {
-          return { data: {} as T }
-        }
+      for (let attempt = 0; attempt < configuredMaxRetries; attempt++) {
+        const controller = new AbortController()
+        const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
 
         try {
-          const data = JSON.parse(text)
-          return { data: data as T }
-        } catch {
-          return { error: `Invalid JSON response: ${text.slice(0, 100)}` }
+          const response = await fetch(url.toString(), {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+              Accept: "application/json",
+            },
+            signal: controller.signal,
+          })
+
+          clearTimeout(timeout)
+
+          if (response.ok) {
+            const text = await response.text()
+            if (!text) {
+              return { data: {} as T }
+            }
+
+            try {
+              const data = JSON.parse(text)
+              return { data: data as T }
+            } catch {
+              return { error: `Invalid JSON response: ${text.slice(0, 100)}` }
+            }
+          }
+
+          // Special handling for rate limit responses from the API (don't retry)
+          if (response.status === 429) {
+            const retryAfter = response.headers.get("retry-after")
+            const waitInfo = retryAfter ? ` Retry after ${retryAfter} seconds.` : ""
+            return {
+              error: `API rate limit exceeded (429).${waitInfo} You may be approaching your daily limit.`,
+            }
+          }
+
+          const errorText = await response.text()
+          lastError = `API error (${response.status}): ${errorText}`
+
+          // Don't retry 4xx client errors (except 429 which is handled above)
+          if (response.status >= 400 && response.status < 500) {
+            return { error: lastError }
+          }
+
+          // 5xx errors - check if we should retry
+          if (isRetryableError(response.status) && attempt < configuredMaxRetries - 1) {
+            const retryDelay = getRetryDelay(attempt)
+            logger.warn("Retrying request after server error", {
+              endpoint,
+              status: response.status,
+              attempt: attempt + 1,
+              maxRetries: configuredMaxRetries,
+              delayMs: retryDelay,
+            })
+            await delay(retryDelay)
+            continue
+          }
+        } catch (error) {
+          clearTimeout(timeout)
+          const err = error instanceof Error ? error : new Error(String(error))
+
+          if (err.name === "AbortError") {
+            lastError = "Request timed out"
+          } else {
+            lastError = `Request failed: ${err.message}`
+          }
+
+          // Check if we should retry network errors
+          if (isRetryableError(null, err) && attempt < configuredMaxRetries - 1) {
+            const retryDelay = getRetryDelay(attempt)
+            logger.warn("Retrying request after network error", {
+              endpoint,
+              error: err.message,
+              attempt: attempt + 1,
+              maxRetries: configuredMaxRetries,
+              delayMs: retryDelay,
+            })
+            await delay(retryDelay)
+            continue
+          }
         }
       }
 
-      // Special handling for rate limit responses from the API (don't retry)
-      if (response.status === 429) {
-        const retryAfter = response.headers.get("retry-after")
-        const waitInfo = retryAfter ? ` Retry after ${retryAfter} seconds.` : ""
-        return {
-          error: `API rate limit exceeded (429).${waitInfo} You may be approaching your daily limit.`,
-        }
-      }
-
-      const errorText = await response.text()
-      lastError = `API error (${response.status}): ${errorText}`
-
-      // Don't retry 4xx client errors (except 429 which is handled above)
-      if (response.status >= 400 && response.status < 500) {
-        return { error: lastError }
-      }
-
-      // 5xx errors - check if we should retry
-      if (isRetryableError(response.status) && attempt < configuredMaxRetries - 1) {
-        const retryDelay = getRetryDelay(attempt)
-        logger.warn("Retrying request after server error", {
-          endpoint,
-          status: response.status,
-          attempt: attempt + 1,
-          maxRetries: configuredMaxRetries,
-          delayMs: retryDelay,
-        })
-        await delay(retryDelay)
-        continue
-      }
-    } catch (error) {
-      clearTimeout(timeout)
-      const err = error instanceof Error ? error : new Error(String(error))
-
-      if (err.name === "AbortError") {
-        lastError = "Request timed out"
-      } else {
-        lastError = `Request failed: ${err.message}`
-      }
-
-      // Check if we should retry network errors
-      if (isRetryableError(null, err) && attempt < configuredMaxRetries - 1) {
-        const retryDelay = getRetryDelay(attempt)
-        logger.warn("Retrying request after network error", {
-          endpoint,
-          error: err.message,
-          attempt: attempt + 1,
-          maxRetries: configuredMaxRetries,
-          delayMs: retryDelay,
-        })
-        await delay(retryDelay)
-        continue
-      }
+      // All retries exhausted
+      return { error: lastError ?? "Max retries exceeded" }
+    })
+  } catch (error) {
+    // Handle circuit breaker errors
+    if (error instanceof CircuitBreakerError) {
+      return { error: error.message }
     }
+    throw error
   }
-
-  // All retries exhausted
-  return { error: lastError ?? "Max retries exceeded" }
 }
 
 /**
