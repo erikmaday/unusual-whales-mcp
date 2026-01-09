@@ -131,7 +131,7 @@ Available actions:
 - spot_exposures: Get spot exposures (ticker required; date optional)
 - spot_exposures_by_expiry_strike: Get spot exposures by expiry/strike (ticker, expirations required; date, limit, page, min_strike, max_strike, min_dte, max_dte optional)
 - spot_exposures_by_strike: Get spot exposures by strike (ticker required; date, min_strike, max_strike, limit, page optional)
-- spot_exposures_expiry_strike: Get spot exposures for specific expiry (ticker, expiry required; date, min_strike, max_strike optional)
+- spot_exposures_expiry_strike: Get spot exposures for specific expiry using v2 endpoint (ticker, expiry required; date, min_strike, max_strike optional)
 - historical_risk_reversal_skew: Get risk reversal skew (ticker, expiry, delta required; date, timeframe optional)
 - volatility_realized: Get realized volatility (ticker required; date, timeframe optional)
 - volatility_stats: Get volatility stats (ticker required; date optional)
@@ -382,7 +382,9 @@ export async function handleStock(args: Record<string, unknown>): Promise<{ text
 
     case "spot_exposures_expiry_strike":
       if (!ticker || !expiry) return { text: formatError("ticker and expiry are required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/${safeExpiry}/strike`, {
+      // Migrated from deprecated endpoint to v2: /api/stock/{ticker}/spot-exposures/expiry-strike
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/expiry-strike`, {
+        "expirations[]": [expiry],
         date,
         min_strike,
         max_strike,
