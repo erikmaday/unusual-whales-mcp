@@ -12,6 +12,11 @@
  * 3. Missing required parameters (will cause API errors)
  * 4. Missing optional parameters (reduced functionality)
  * 5. Extra parameters (implemented but not in spec - may be removed/renamed)
+ * 6. Deprecated endpoints and parameters still in use
+ * 7. Enum value mismatches (missing or extra values)
+ * 8. Required/optional status mismatches
+ * 9. Default value mismatches
+ * 10. Format validation mismatches (date, datetime, email, uri, uuid)
  *
  * When run in GitHub Actions with GITHUB_TOKEN, creates issues for problems.
  */
@@ -536,6 +541,76 @@ function extractSchemaDefaults() {
 }
 
 /**
+ * Extract format specifiers from schema files
+ * Returns a map of schemaName -> format info
+ */
+function extractSchemaFormats() {
+  const schemasDir = join(ROOT_DIR, 'src', 'schemas')
+  const files = readdirSync(schemasDir).filter(f => f.endsWith('.ts'))
+
+  const formats = {}
+
+  for (const file of files) {
+    const content = readFileSync(join(schemasDir, file), 'utf-8')
+
+    // Look for schema definitions that span multiple lines
+    // Pattern to match: const schemaName = z.string()...
+    // We need to capture everything until we hit the next const/export or end of statement
+    const schemaPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.string\(\)([\s\S]*?)(?=\n\n|\nexport|\nconst|\n\/\*|$)/g
+
+    let match
+    while ((match = schemaPattern.exec(content)) !== null) {
+      const schemaName = match[1]
+      const schemaBody = match[2]
+
+      // Check for common format indicators in the schema
+      let detectedFormat = null
+
+      // Check for regex patterns that indicate date format
+      if (schemaBody.includes('dateRegex') ||
+          schemaBody.includes('\\d{4}-\\d{2}-\\d{2}') ||
+          schemaBody.includes('YYYY-MM-DD') ||
+          schemaBody.toLowerCase().includes('date') && schemaBody.includes('regex')) {
+        detectedFormat = 'date'
+      }
+      // Check for datetime patterns
+      else if (schemaBody.includes('datetime') ||
+               schemaBody.includes('date-time') ||
+               schemaBody.includes('ISO') ||
+               schemaBody.includes('timestamp')) {
+        detectedFormat = 'date-time'
+      }
+      // Check for email patterns
+      else if (schemaBody.includes('email') ||
+               (schemaBody.includes('@') && schemaBody.includes('regex'))) {
+        detectedFormat = 'email'
+      }
+      // Check for URI/URL patterns
+      else if (schemaBody.includes('uri') ||
+               schemaBody.includes('url') ||
+               schemaBody.includes('http')) {
+        detectedFormat = 'uri'
+      }
+      // Check for UUID patterns
+      else if (schemaBody.includes('uuid') ||
+               schemaBody.includes('UUID') ||
+               schemaBody.includes('[0-9a-f]{8}-[0-9a-f]{4}')) {
+        detectedFormat = 'uuid'
+      }
+
+      if (detectedFormat) {
+        formats[schemaName] = {
+          file,
+          format: detectedFormat,
+        }
+      }
+    }
+  }
+
+  return formats
+}
+
+/**
  * Try to find the schema variable name for a parameter
  * by looking at tool files
  */
@@ -604,7 +679,7 @@ function findMatchingSpecEndpoint(implEndpoint, specEndpoints) {
 /**
  * Compare endpoints and parameters
  */
-function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults) {
+function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaFormats) {
   const results = {
     missingEndpoints: [],
     extraEndpoints: [],
@@ -617,6 +692,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
     extraEnumValues: [],
     requiredOptionalMismatches: [], // Track parameters with mismatched required/optional status
     defaultValueMismatches: [], // Track parameters with mismatched default values
+    formatMismatches: [], // Track parameters with mismatched format specifiers
     summary: {
       totalSpecEndpoints: Object.keys(specEndpoints).length,
       totalImplEndpoints: Object.keys(implEndpoints).length,
@@ -630,6 +706,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
       enumValuesExtra: 0,
       requiredOptionalMismatches: 0,
       defaultValueMismatches: 0,
+      formatMismatches: 0,
     },
   }
 
@@ -938,6 +1015,80 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
         results.summary.defaultValueMismatches++
       }
     }
+
+    // Check format specifiers for parameters that have formats in the spec
+    for (const paramName of [...specParams.required, ...specParams.optional]) {
+      const paramSchema = specParams.schemas[paramName]
+      if (!paramSchema?.format) continue // Skip params without format
+
+      // Normalize format values (handle variations)
+      const normalizeFormat = (format) => {
+        if (!format) return null
+        const normalized = format.toLowerCase().trim()
+        // Normalize datetime variations
+        if (normalized === 'datetime' || normalized === 'date_time') {
+          return 'date-time'
+        }
+        return normalized
+      }
+
+      const specFormat = normalizeFormat(paramSchema.format)
+
+      // Find the schema variable used for this parameter in the implementation
+      const schemaVarName = findSchemaForParam(paramName, implData.file)
+      if (!schemaVarName) {
+        // No schema found, report missing format validation
+        results.formatMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          specFormat,
+          implFormat: null,
+          mismatchType: 'missing-in-impl',
+          message: `Parameter has format '${specFormat}' in API spec but no format validation in implementation`,
+        })
+        results.summary.formatMismatches++
+        continue
+      }
+
+      const implFormatData = schemaFormats[schemaVarName]
+      if (!implFormatData) {
+        // Schema variable found but no format validation
+        results.formatMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          specFormat,
+          implFormat: null,
+          mismatchType: 'missing-in-impl',
+          message: `Parameter has format '${specFormat}' in API spec but no format validation in implementation schema`,
+        })
+        results.summary.formatMismatches++
+        continue
+      }
+
+      // Compare format values
+      const implFormat = normalizeFormat(implFormatData.format)
+
+      if (specFormat !== implFormat) {
+        results.formatMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          schemaFile: implFormatData.file,
+          specFormat,
+          implFormat,
+          mismatchType: 'format-mismatch',
+          message: `Format mismatch: spec has '${specFormat}' but implementation has '${implFormat}'`,
+        })
+        results.summary.formatMismatches++
+      }
+    }
   }
 
   return results
@@ -960,7 +1111,7 @@ function buildDocLink(operationId) {
  * Print results to console
  */
 function printResults(results) {
-  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, deprecatedEndpoints, deprecatedParameters, missingEnumValues, extraEnumValues, defaultValueMismatches, summary } = results
+  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, deprecatedEndpoints, deprecatedParameters, missingEnumValues, extraEnumValues, defaultValueMismatches, formatMismatches, summary } = results
 
   console.log('\n' + '='.repeat(60))
   console.log('API SYNC CHECK RESULTS')
@@ -1166,6 +1317,31 @@ function printResults(results) {
     console.log('\n✅ All default values match the spec')
   }
 
+  // Format mismatches
+  if (results.formatMismatches.length > 0) {
+    console.log(`\n⚠️  Format Validation Mismatches (${summary.formatMismatches}):`)
+    console.log('   Parameters with format specifiers in spec but missing or different validation in implementation.\n')
+    const byFile = groupBy(results.formatMismatches, 'file')
+    for (const [file, items] of Object.entries(byFile)) {
+      console.log(`   ${file}:`)
+      for (const item of items) {
+        console.log(`      ${item.endpoint}`)
+        console.log(`         Parameter: ${item.param}`)
+        if (item.schemaName && item.schemaFile) {
+          console.log(`         Schema: ${item.schemaName} (${item.schemaFile})`)
+        }
+        console.log(`         Spec format: ${item.specFormat}`)
+        console.log(`         Impl format: ${item.implFormat === null ? 'none' : item.implFormat}`)
+        if (item.message) {
+          console.log(`         ⚠️  ${item.message}`)
+        }
+      }
+      console.log('')
+    }
+  } else {
+    console.log('\n✅ All format specifiers are properly validated')
+  }
+
   // Summary
   console.log('\n' + '='.repeat(60))
   console.log('SUMMARY')
@@ -1183,6 +1359,7 @@ function printResults(results) {
   console.log(`Missing enum values:          ${summary.enumValuesMissing}`)
   console.log(`Extra enum values:            ${summary.enumValuesExtra}`)
   console.log(`Default value mismatches:     ${summary.defaultValueMismatches}`)
+  console.log(`Format validation mismatches: ${summary.formatMismatches}`)
 
   const hasIssues = missingEndpoints.length > 0 ||
     missingRequiredParams.length > 0 ||
@@ -1193,7 +1370,8 @@ function printResults(results) {
     missingEnumValues.length > 0 ||
     extraEnumValues.length > 0 ||
     results.requiredOptionalMismatches.length > 0 ||
-    results.defaultValueMismatches.length > 0
+    results.defaultValueMismatches.length > 0 ||
+    results.formatMismatches.length > 0
 
   if (!hasIssues) {
     console.log('\n✅ API is fully in sync!')
@@ -1614,6 +1792,65 @@ async function createGitHubIssues(results) {
     })
   }
 
+  // Create ONE issue per tool for format validation mismatches
+  const formatMismatchesByFile = groupBy(results.formatMismatches, 'file')
+  for (const [file, mismatches] of Object.entries(formatMismatchesByFile)) {
+    const byEndpoint = groupBy(mismatches, 'endpoint')
+    const mismatchCount = mismatches.length
+    const issueId = generateIssueId('format-mismatches', file)
+
+    let body = `${issueId}\n\n## Format Validation Mismatches\n\n` +
+      `The following parameters in \`src/tools/${file}\` have format specifiers in the API spec ` +
+      `but are missing or have incorrect format validation in the implementation.\n\n` +
+      `Format specifiers like \`date\`, \`date-time\`, \`email\`, \`uri\`, and \`uuid\` ensure that ` +
+      `parameter values match the expected format before being sent to the API.\n\n`
+
+    for (const [endpoint, eps] of Object.entries(byEndpoint)) {
+      const docLink = buildDocLink(eps[0]?.operationId)
+      body += `### \`${endpoint}\`\n\n`
+      if (docLink) {
+        body += `[View API Docs](${docLink})\n\n`
+      }
+      for (const m of eps) {
+        body += `- **\`${m.param}\`**:\n`
+        if (m.schemaName && m.schemaFile) {
+          body += `  - Schema: \`${m.schemaName}\` in \`src/schemas/${m.schemaFile}\`\n`
+        }
+        body += `  - Spec format: \`${m.specFormat}\`\n`
+        body += `  - Impl format: ${m.implFormat === null ? 'none (no validation)' : `\`${m.implFormat}\``}\n`
+
+        if (m.mismatchType === 'missing-in-impl') {
+          body += `  - ⚠️ No format validation in implementation\n`
+          body += `  - Fix: Add appropriate validation (e.g., regex pattern, `.email()`, `.datetime()`, etc.)\n`
+        } else if (m.mismatchType === 'format-mismatch') {
+          body += `  - ⚠️ Format validation doesn't match spec\n`
+          body += `  - Fix: Update the schema to validate \`${m.specFormat}\` format\n`
+        }
+      }
+      body += '\n'
+    }
+
+    body += `### Common Format Implementations\n\n` +
+      `- **date**: Use \`z.string().regex(/^\\d{4}-\\d{2}-\\d{2}$/)\` for YYYY-MM-DD format\n` +
+      `- **date-time**: Use \`z.string().datetime()\` or regex for ISO 8601 format\n` +
+      `- **email**: Use \`z.string().email()\`\n` +
+      `- **uri/url**: Use \`z.string().url()\`\n` +
+      `- **uuid**: Use \`z.string().uuid()\`\n\n` +
+      `### Action Required\n\n` +
+      `1. Review each parameter's format requirement in the API documentation\n` +
+      `2. Update the Zod schema to include proper format validation\n` +
+      `3. Test the validation with various inputs to ensure it works correctly\n\n` +
+      `---\n*Auto-generated by API sync checker*`
+
+    const toolName = file.replace('.ts', '')
+    issues.push({
+      id: issueId,
+      title: `Add format validation for ${mismatchCount} parameter${mismatchCount > 1 ? 's' : ''} in ${toolName} tool`,
+      body,
+      labels: ['api-sync', 'validation', 'format-mismatch', toolName],
+    })
+  }
+
   // Create issues or update existing ones
   let created = 0
   let updated = 0
@@ -1734,8 +1971,12 @@ async function main() {
     const schemaDefaults = extractSchemaDefaults()
     console.log(`Found ${Object.keys(schemaDefaults).length} schemas with default values`)
 
+    console.log('Extracting format specifiers from MCP implementation...')
+    const schemaFormats = extractSchemaFormats()
+    console.log(`Found ${Object.keys(schemaFormats).length} schemas with format validation`)
+
     console.log('Comparing...')
-    const results = compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults)
+    const results = compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaFormats)
 
     const hasIssues = printResults(results)
 

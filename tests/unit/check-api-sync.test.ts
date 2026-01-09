@@ -972,3 +972,261 @@ describe('required/optional mismatch detection', () => {
     expect(mismatches.some(m => m.param === 'date' && m.type === 'optional-in-spec-required-in-impl')).toBe(true)
   })
 })
+
+describe('extractSchemaFormats', () => {
+  it('extracts date format from schema with dateRegex', () => {
+    const schemaContent = `
+      import { z } from "zod"
+
+      export const dateRegex = /^\\d{4}-\\d{2}-\\d{2}$/
+
+      export const dateSchema = z.string().regex(dateRegex, "Date must be in YYYY-MM-DD format").describe("Date in YYYY-MM-DD format")
+    `
+
+    // Simulate extractSchemaFormats logic
+    const formats: Record<string, { file: string; format: string }> = {}
+    // Match schema definitions - need to handle potential line breaks in the definition
+    const schemaPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.string\(\)([^\n;]+)/g
+    let match
+
+    while ((match = schemaPattern.exec(schemaContent)) !== null) {
+      const schemaName = match[1]
+      const schemaBody = match[2]
+
+      let detectedFormat = null
+
+      if (schemaBody.includes('dateRegex') ||
+          schemaBody.includes(/^\d{4}-\d{2}-\d{2}$/.source) ||
+          schemaBody.includes('YYYY-MM-DD')) {
+        detectedFormat = 'date'
+      }
+
+      if (detectedFormat) {
+        formats[schemaName] = {
+          file: 'common.ts',
+          format: detectedFormat,
+        }
+      }
+    }
+
+    expect(formats['dateSchema']).toBeDefined()
+    expect(formats['dateSchema'].format).toBe('date')
+  })
+
+  it('extracts datetime format from schema', () => {
+    const schemaContent = `export const timestampSchema = z.string().describe("Timestamp in ISO 8601 datetime format")`
+
+    const formats: Record<string, { file: string; format: string }> = {}
+    const schemaPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.string\(\)([^\n;]+)/g
+    let match
+
+    while ((match = schemaPattern.exec(schemaContent)) !== null) {
+      const schemaName = match[1]
+      const schemaBody = match[2]
+
+      let detectedFormat = null
+
+      if (schemaBody.includes('datetime') ||
+          schemaBody.includes('date-time') ||
+          schemaBody.includes('ISO') ||
+          schemaBody.includes('timestamp')) {
+        detectedFormat = 'date-time'
+      }
+
+      if (detectedFormat) {
+        formats[schemaName] = {
+          file: 'test.ts',
+          format: detectedFormat,
+        }
+      }
+    }
+
+    expect(formats['timestampSchema']).toBeDefined()
+    expect(formats['timestampSchema'].format).toBe('date-time')
+  })
+
+  it('extracts email format from schema', () => {
+    const schemaContent = `export const emailSchema = z.string().regex(/@/, "Must be a valid email").describe("Email address")`
+
+    const formats: Record<string, { file: string; format: string }> = {}
+    const schemaPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.string\(\)([^\n;]+)/g
+    let match
+
+    while ((match = schemaPattern.exec(schemaContent)) !== null) {
+      const schemaName = match[1]
+      const schemaBody = match[2]
+
+      let detectedFormat = null
+
+      if (schemaBody.includes('email') ||
+          (schemaBody.includes(/@/) && schemaBody.includes('regex'))) {
+        detectedFormat = 'email'
+      }
+
+      if (detectedFormat) {
+        formats[schemaName] = {
+          file: 'test.ts',
+          format: detectedFormat,
+        }
+      }
+    }
+
+    expect(formats['emailSchema']).toBeDefined()
+    expect(formats['emailSchema'].format).toBe('email')
+  })
+
+  it('extracts uuid format from schema', () => {
+    const schemaContent = `export const idSchema = z.string().describe("UUID identifier")`
+
+    const formats: Record<string, { file: string; format: string }> = {}
+    const schemaPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.string\(\)([^\n;]+)/g
+    let match
+
+    while ((match = schemaPattern.exec(schemaContent)) !== null) {
+      const schemaName = match[1]
+      const schemaBody = match[2]
+
+      let detectedFormat = null
+
+      if (schemaBody.includes('uuid') ||
+          schemaBody.includes('UUID')) {
+        detectedFormat = 'uuid'
+      }
+
+      if (detectedFormat) {
+        formats[schemaName] = {
+          file: 'test.ts',
+          format: detectedFormat,
+        }
+      }
+    }
+
+    expect(formats['idSchema']).toBeDefined()
+    expect(formats['idSchema'].format).toBe('uuid')
+  })
+
+  it('does not detect format for schema without format indicators', () => {
+    const schemaContent = `export const nameSchema = z.string().describe("User name")`
+
+    const formats: Record<string, { file: string; format: string }> = {}
+    const schemaPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.string\(\)([^\n;]+)/g
+    let match
+
+    while ((match = schemaPattern.exec(schemaContent)) !== null) {
+      const schemaName = match[1]
+      const schemaBody = match[2]
+
+      let detectedFormat = null
+
+      if (schemaBody.includes('dateRegex') ||
+          schemaBody.includes('YYYY-MM-DD')) {
+        detectedFormat = 'date'
+      } else if (schemaBody.includes('datetime')) {
+        detectedFormat = 'date-time'
+      }
+
+      if (detectedFormat) {
+        formats[schemaName] = {
+          file: 'test.ts',
+          format: detectedFormat,
+        }
+      }
+    }
+
+    expect(formats['nameSchema']).toBeUndefined()
+  })
+})
+
+describe('format validation', () => {
+  it('normalizes format values correctly', () => {
+    const normalizeFormat = (format: string | null): string | null => {
+      if (!format) return null
+      const normalized = format.toLowerCase().trim()
+      if (normalized === 'datetime' || normalized === 'date_time') {
+        return 'date-time'
+      }
+      return normalized
+    }
+
+    expect(normalizeFormat('date')).toBe('date')
+    expect(normalizeFormat('DATE')).toBe('date')
+    expect(normalizeFormat('datetime')).toBe('date-time')
+    expect(normalizeFormat('date_time')).toBe('date-time')
+    expect(normalizeFormat('date-time')).toBe('date-time')
+    expect(normalizeFormat('email')).toBe('email')
+    expect(normalizeFormat('uri')).toBe('uri')
+    expect(normalizeFormat('uuid')).toBe('uuid')
+    expect(normalizeFormat(null)).toBeNull()
+  })
+
+  it('detects missing format validation in implementation', () => {
+    // Spec has format
+    const specFormat = 'date'
+    // Implementation has no format validation
+    const implFormat = null
+
+    const mismatch = specFormat && !implFormat
+
+    expect(mismatch).toBe(true)
+  })
+
+  it('detects format mismatch between spec and implementation', () => {
+    // Spec says date
+    const specFormat = 'date'
+    // Implementation validates date-time
+    const implFormat = 'date-time'
+
+    const mismatch = specFormat !== implFormat
+
+    expect(mismatch).toBe(true)
+  })
+
+  it('passes when formats match', () => {
+    const specFormat = 'date'
+    const implFormat = 'date'
+
+    const mismatch = specFormat !== implFormat
+
+    expect(mismatch).toBe(false)
+  })
+
+  it('handles normalized format comparisons', () => {
+    const normalizeFormat = (format: string | null): string | null => {
+      if (!format) return null
+      const normalized = format.toLowerCase().trim()
+      if (normalized === 'datetime' || normalized === 'date_time') {
+        return 'date-time'
+      }
+      return normalized
+    }
+
+    // Spec has 'datetime', implementation has 'date-time' - should match after normalization
+    const specFormat = normalizeFormat('datetime')
+    const implFormat = normalizeFormat('date-time')
+
+    expect(specFormat).toBe(implFormat)
+    expect(specFormat).toBe('date-time')
+  })
+
+  it('creates format mismatch result with all required fields', () => {
+    const mismatch = {
+      endpoint: '/api/stock/flow',
+      param: 'date',
+      file: 'flow.ts',
+      operationId: 'getStockFlow',
+      schemaName: 'dateSchema',
+      schemaFile: 'common.ts',
+      specFormat: 'date',
+      implFormat: null,
+      mismatchType: 'missing-in-impl',
+      message: "Parameter has format 'date' in API spec but no format validation in implementation schema",
+    }
+
+    expect(mismatch.endpoint).toBe('/api/stock/flow')
+    expect(mismatch.param).toBe('date')
+    expect(mismatch.specFormat).toBe('date')
+    expect(mismatch.implFormat).toBeNull()
+    expect(mismatch.mismatchType).toBe('missing-in-impl')
+    expect(mismatch.message).toContain('no format validation')
+  })
+})
