@@ -138,6 +138,12 @@ function extractParamSchema(param, spec) {
   }
 
   // Extract string constraints
+  if (paramSchema.minLength !== undefined) {
+    schema.minLength = paramSchema.minLength
+  }
+  if (paramSchema.maxLength !== undefined) {
+    schema.maxLength = paramSchema.maxLength
+  }
   if (paramSchema.pattern) {
     schema.pattern = paramSchema.pattern
   }
@@ -491,6 +497,111 @@ function extractSchemaEnums() {
 }
 
 /**
+ * Extract numeric constraints from schema files
+ * Returns a map of schemaName -> constraints (minimum, maximum, minLength, maxLength)
+ */
+function extractSchemaConstraints() {
+  const schemasDir = join(ROOT_DIR, 'src', 'schemas')
+  const files = readdirSync(schemasDir).filter(f => f.endsWith('.ts'))
+
+  const constraints = {}
+
+  for (const file of files) {
+    const content = readFileSync(join(schemasDir, file), 'utf-8')
+
+    // Pattern to match schema declarations spanning multiple lines
+    // We need to capture everything until we hit a line that doesn't start with a dot or is a new statement
+    // Examples:
+    // export const limitSchema = z.number()
+    //   .int("Limit must be an integer")
+    //   .positive("Limit must be positive")
+    //   .describe("Maximum number of results")
+
+    // Split content into lines and process schema declarations
+    const lines = content.split('\n')
+    let i = 0
+
+    while (i < lines.length) {
+      const line = lines[i]
+
+      // Check if this line starts a schema declaration
+      const schemaStart = line.match(/(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.(string|number)\(\)/)
+      if (schemaStart) {
+        const schemaName = schemaStart[1]
+        const type = schemaStart[2]
+
+        // Collect all chained method calls (lines starting with dots)
+        let chainedCalls = line
+        i++
+        while (i < lines.length && lines[i].trim().startsWith('.')) {
+          chainedCalls += lines[i]
+          i++
+        }
+
+        const schemaConstraints = {
+          file,
+          type,
+        }
+
+        if (type === 'number') {
+          // Extract .min(value) for numbers
+          const minMatch = chainedCalls.match(/\.min\((\d+(?:\.\d+)?)\)/)
+          if (minMatch) {
+            schemaConstraints.minimum = Number(minMatch[1])
+          }
+
+          // Extract .max(value) for numbers
+          const maxMatch = chainedCalls.match(/\.max\((\d+(?:\.\d+)?)\)/)
+          if (maxMatch) {
+            schemaConstraints.maximum = Number(maxMatch[1])
+          }
+
+          // .positive() means minimum = 1 (for integers) or > 0
+          if (chainedCalls.includes('.positive(')) {
+            if (!schemaConstraints.minimum) {
+              schemaConstraints.minimum = chainedCalls.includes('.int(') ? 1 : 0
+              schemaConstraints.positiveConstraint = true
+            }
+          }
+
+          // .nonnegative() means minimum = 0
+          if (chainedCalls.includes('.nonnegative(')) {
+            if (!schemaConstraints.minimum) {
+              schemaConstraints.minimum = 0
+              schemaConstraints.nonnegativeConstraint = true
+            }
+          }
+        } else if (type === 'string') {
+          // Extract .min(value) for strings (minLength)
+          const minMatch = chainedCalls.match(/\.min\((\d+)/)
+          if (minMatch) {
+            schemaConstraints.minLength = Number(minMatch[1])
+          }
+
+          // Extract .max(value) for strings (maxLength)
+          const maxMatch = chainedCalls.match(/\.max\((\d+)/)
+          if (maxMatch) {
+            schemaConstraints.maxLength = Number(maxMatch[1])
+          }
+        }
+
+        // Only store if we found any constraints
+        if (schemaConstraints.minimum !== undefined ||
+            schemaConstraints.maximum !== undefined ||
+            schemaConstraints.minLength !== undefined ||
+            schemaConstraints.maxLength !== undefined) {
+          constraints[schemaName] = schemaConstraints
+        }
+      } else {
+        i++
+      }
+    }
+  }
+
+  return constraints
+}
+
+/**
  * Extract default values from schema files
  * Returns a map of schemaName -> default value
  */
@@ -604,7 +715,7 @@ function findMatchingSpecEndpoint(implEndpoint, specEndpoints) {
 /**
  * Compare endpoints and parameters
  */
-function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults) {
+function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaConstraints) {
   const results = {
     missingEndpoints: [],
     extraEndpoints: [],
@@ -617,6 +728,8 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
     extraEnumValues: [],
     requiredOptionalMismatches: [], // Track parameters with mismatched required/optional status
     defaultValueMismatches: [], // Track parameters with mismatched default values
+    numericConstraintMismatches: [], // Track parameters with mismatched numeric constraints (min/max)
+    stringLengthConstraintMismatches: [], // Track parameters with mismatched string length constraints (minLength/maxLength)
     summary: {
       totalSpecEndpoints: Object.keys(specEndpoints).length,
       totalImplEndpoints: Object.keys(implEndpoints).length,
@@ -630,6 +743,8 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
       enumValuesExtra: 0,
       requiredOptionalMismatches: 0,
       defaultValueMismatches: 0,
+      numericConstraintMismatches: 0,
+      stringLengthConstraintMismatches: 0,
     },
   }
 
@@ -938,6 +1053,200 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
         results.summary.defaultValueMismatches++
       }
     }
+
+    // Check numeric constraints (minimum/maximum) for parameters
+    for (const paramName of [...specParams.required, ...specParams.optional]) {
+      const paramSchema = specParams.schemas[paramName]
+
+      // Skip if no numeric constraints in spec
+      if (paramSchema?.minimum === undefined && paramSchema?.maximum === undefined) continue
+
+      // Skip if parameter is not a number type
+      if (paramSchema.type !== 'integer' && paramSchema.type !== 'number') continue
+
+      // Find the schema variable used for this parameter in the implementation
+      const schemaVarName = findSchemaForParam(paramName, implData.file)
+      if (!schemaVarName) {
+        // No schema found, report missing constraints
+        const missingConstraints = []
+        if (paramSchema.minimum !== undefined) missingConstraints.push(`minimum: ${paramSchema.minimum}`)
+        if (paramSchema.maximum !== undefined) missingConstraints.push(`maximum: ${paramSchema.maximum}`)
+
+        results.numericConstraintMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          specMinimum: paramSchema.minimum,
+          specMaximum: paramSchema.maximum,
+          implMinimum: null,
+          implMaximum: null,
+          mismatchType: 'missing-constraints',
+          message: `Parameter has numeric constraints in API spec but no constraints in implementation (${missingConstraints.join(', ')})`,
+        })
+        results.summary.numericConstraintMismatches++
+        continue
+      }
+
+      const implConstraints = schemaConstraints[schemaVarName]
+      if (!implConstraints) {
+        // Schema variable found but no constraints extracted
+        const missingConstraints = []
+        if (paramSchema.minimum !== undefined) missingConstraints.push(`minimum: ${paramSchema.minimum}`)
+        if (paramSchema.maximum !== undefined) missingConstraints.push(`maximum: ${paramSchema.maximum}`)
+
+        results.numericConstraintMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          specMinimum: paramSchema.minimum,
+          specMaximum: paramSchema.maximum,
+          implMinimum: null,
+          implMaximum: null,
+          mismatchType: 'missing-constraints',
+          message: `Parameter has numeric constraints in API spec but no constraints in implementation schema`,
+        })
+        results.summary.numericConstraintMismatches++
+        continue
+      }
+
+      // Compare minimum values
+      const specMin = paramSchema.minimum
+      const implMin = implConstraints.minimum
+      const hasMinMismatch = (specMin !== undefined && implMin === undefined) ||
+                             (specMin !== undefined && implMin !== undefined && specMin !== implMin)
+
+      // Compare maximum values
+      const specMax = paramSchema.maximum
+      const implMax = implConstraints.maximum
+      const hasMaxMismatch = (specMax !== undefined && implMax === undefined) ||
+                             (specMax !== undefined && implMax !== undefined && specMax !== implMax)
+
+      if (hasMinMismatch || hasMaxMismatch) {
+        const messages = []
+        if (hasMinMismatch) {
+          messages.push(`minimum: spec=${specMin}, impl=${implMin ?? 'none'}`)
+        }
+        if (hasMaxMismatch) {
+          messages.push(`maximum: spec=${specMax}, impl=${implMax ?? 'none'}`)
+        }
+
+        results.numericConstraintMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          schemaFile: implConstraints.file,
+          specMinimum: specMin,
+          specMaximum: specMax,
+          implMinimum: implMin,
+          implMaximum: implMax,
+          mismatchType: 'value-mismatch',
+          message: `Numeric constraint mismatch: ${messages.join(', ')}`,
+        })
+        results.summary.numericConstraintMismatches++
+      }
+    }
+
+    // Check string length constraints (minLength/maxLength) for parameters
+    for (const paramName of [...specParams.required, ...specParams.optional]) {
+      const paramSchema = specParams.schemas[paramName]
+
+      // Skip if no length constraints in spec
+      if (paramSchema?.minLength === undefined && paramSchema?.maxLength === undefined) continue
+
+      // Skip if parameter is not a string type
+      if (paramSchema.type !== 'string') continue
+
+      // Find the schema variable used for this parameter in the implementation
+      const schemaVarName = findSchemaForParam(paramName, implData.file)
+      if (!schemaVarName) {
+        // No schema found, report missing constraints
+        const missingConstraints = []
+        if (paramSchema.minLength !== undefined) missingConstraints.push(`minLength: ${paramSchema.minLength}`)
+        if (paramSchema.maxLength !== undefined) missingConstraints.push(`maxLength: ${paramSchema.maxLength}`)
+
+        results.stringLengthConstraintMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          specMinLength: paramSchema.minLength,
+          specMaxLength: paramSchema.maxLength,
+          implMinLength: null,
+          implMaxLength: null,
+          mismatchType: 'missing-constraints',
+          message: `Parameter has string length constraints in API spec but no constraints in implementation (${missingConstraints.join(', ')})`,
+        })
+        results.summary.stringLengthConstraintMismatches++
+        continue
+      }
+
+      const implConstraints = schemaConstraints[schemaVarName]
+      if (!implConstraints) {
+        // Schema variable found but no constraints extracted
+        const missingConstraints = []
+        if (paramSchema.minLength !== undefined) missingConstraints.push(`minLength: ${paramSchema.minLength}`)
+        if (paramSchema.maxLength !== undefined) missingConstraints.push(`maxLength: ${paramSchema.maxLength}`)
+
+        results.stringLengthConstraintMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          specMinLength: paramSchema.minLength,
+          specMaxLength: paramSchema.maxLength,
+          implMinLength: null,
+          implMaxLength: null,
+          mismatchType: 'missing-constraints',
+          message: `Parameter has string length constraints in API spec but no constraints in implementation schema`,
+        })
+        results.summary.stringLengthConstraintMismatches++
+        continue
+      }
+
+      // Compare minLength values
+      const specMinLen = paramSchema.minLength
+      const implMinLen = implConstraints.minLength
+      const hasMinLenMismatch = (specMinLen !== undefined && implMinLen === undefined) ||
+                                 (specMinLen !== undefined && implMinLen !== undefined && specMinLen !== implMinLen)
+
+      // Compare maxLength values
+      const specMaxLen = paramSchema.maxLength
+      const implMaxLen = implConstraints.maxLength
+      const hasMaxLenMismatch = (specMaxLen !== undefined && implMaxLen === undefined) ||
+                                 (specMaxLen !== undefined && implMaxLen !== undefined && specMaxLen !== implMaxLen)
+
+      if (hasMinLenMismatch || hasMaxLenMismatch) {
+        const messages = []
+        if (hasMinLenMismatch) {
+          messages.push(`minLength: spec=${specMinLen}, impl=${implMinLen ?? 'none'}`)
+        }
+        if (hasMaxLenMismatch) {
+          messages.push(`maxLength: spec=${specMaxLen}, impl=${implMaxLen ?? 'none'}`)
+        }
+
+        results.stringLengthConstraintMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          schemaFile: implConstraints.file,
+          specMinLength: specMinLen,
+          specMaxLength: specMaxLen,
+          implMinLength: implMinLen,
+          implMaxLength: implMaxLen,
+          mismatchType: 'value-mismatch',
+          message: `String length constraint mismatch: ${messages.join(', ')}`,
+        })
+        results.summary.stringLengthConstraintMismatches++
+      }
+    }
   }
 
   return results
@@ -960,7 +1269,7 @@ function buildDocLink(operationId) {
  * Print results to console
  */
 function printResults(results) {
-  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, deprecatedEndpoints, deprecatedParameters, missingEnumValues, extraEnumValues, defaultValueMismatches, summary } = results
+  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, deprecatedEndpoints, deprecatedParameters, missingEnumValues, extraEnumValues, defaultValueMismatches, numericConstraintMismatches, stringLengthConstraintMismatches, summary } = results
 
   console.log('\n' + '='.repeat(60))
   console.log('API SYNC CHECK RESULTS')
@@ -1166,6 +1475,68 @@ function printResults(results) {
     console.log('\n✅ All default values match the spec')
   }
 
+  // Numeric constraint mismatches
+  if (numericConstraintMismatches.length > 0) {
+    console.log(`\n🟠 Numeric Constraint Mismatches (${summary.numericConstraintMismatches}):`)
+    console.log('   Parameters with numeric constraints (min/max) that don\'t match between spec and implementation.\n')
+    const byFile = groupBy(numericConstraintMismatches, 'file')
+    for (const [file, items] of Object.entries(byFile)) {
+      console.log(`   ${file}:`)
+      for (const item of items) {
+        console.log(`      ${item.endpoint}`)
+        console.log(`         Parameter: ${item.param}`)
+        if (item.schemaName && item.schemaFile) {
+          console.log(`         Schema: ${item.schemaName} (${item.schemaFile})`)
+        }
+        if (item.specMinimum !== undefined) {
+          console.log(`         Spec minimum: ${item.specMinimum}`)
+          console.log(`         Impl minimum: ${item.implMinimum ?? 'none'}`)
+        }
+        if (item.specMaximum !== undefined) {
+          console.log(`         Spec maximum: ${item.specMaximum}`)
+          console.log(`         Impl maximum: ${item.implMaximum ?? 'none'}`)
+        }
+        if (item.message) {
+          console.log(`         ⚠️  ${item.message}`)
+        }
+      }
+      console.log('')
+    }
+  } else {
+    console.log('\n✅ All numeric constraints match the spec')
+  }
+
+  // String length constraint mismatches
+  if (stringLengthConstraintMismatches.length > 0) {
+    console.log(`\n🟠 String Length Constraint Mismatches (${summary.stringLengthConstraintMismatches}):`)
+    console.log('   Parameters with string length constraints (minLength/maxLength) that don\'t match between spec and implementation.\n')
+    const byFile = groupBy(stringLengthConstraintMismatches, 'file')
+    for (const [file, items] of Object.entries(byFile)) {
+      console.log(`   ${file}:`)
+      for (const item of items) {
+        console.log(`      ${item.endpoint}`)
+        console.log(`         Parameter: ${item.param}`)
+        if (item.schemaName && item.schemaFile) {
+          console.log(`         Schema: ${item.schemaName} (${item.schemaFile})`)
+        }
+        if (item.specMinLength !== undefined) {
+          console.log(`         Spec minLength: ${item.specMinLength}`)
+          console.log(`         Impl minLength: ${item.implMinLength ?? 'none'}`)
+        }
+        if (item.specMaxLength !== undefined) {
+          console.log(`         Spec maxLength: ${item.specMaxLength}`)
+          console.log(`         Impl maxLength: ${item.implMaxLength ?? 'none'}`)
+        }
+        if (item.message) {
+          console.log(`         ⚠️  ${item.message}`)
+        }
+      }
+      console.log('')
+    }
+  } else {
+    console.log('\n✅ All string length constraints match the spec')
+  }
+
   // Summary
   console.log('\n' + '='.repeat(60))
   console.log('SUMMARY')
@@ -1183,6 +1554,8 @@ function printResults(results) {
   console.log(`Missing enum values:          ${summary.enumValuesMissing}`)
   console.log(`Extra enum values:            ${summary.enumValuesExtra}`)
   console.log(`Default value mismatches:     ${summary.defaultValueMismatches}`)
+  console.log(`Numeric constraint mismatches: ${summary.numericConstraintMismatches}`)
+  console.log(`String length constraint mismatches: ${summary.stringLengthConstraintMismatches}`)
 
   const hasIssues = missingEndpoints.length > 0 ||
     missingRequiredParams.length > 0 ||
@@ -1193,7 +1566,9 @@ function printResults(results) {
     missingEnumValues.length > 0 ||
     extraEnumValues.length > 0 ||
     results.requiredOptionalMismatches.length > 0 ||
-    results.defaultValueMismatches.length > 0
+    results.defaultValueMismatches.length > 0 ||
+    numericConstraintMismatches.length > 0 ||
+    stringLengthConstraintMismatches.length > 0
 
   if (!hasIssues) {
     console.log('\n✅ API is fully in sync!')
@@ -1734,8 +2109,12 @@ async function main() {
     const schemaDefaults = extractSchemaDefaults()
     console.log(`Found ${Object.keys(schemaDefaults).length} schemas with default values`)
 
+    console.log('Extracting numeric constraints from MCP implementation...')
+    const schemaConstraints = extractSchemaConstraints()
+    console.log(`Found ${Object.keys(schemaConstraints).length} schemas with numeric/string constraints`)
+
     console.log('Comparing...')
-    const results = compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults)
+    const results = compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaConstraints)
 
     const hasIssues = printResults(results)
 
