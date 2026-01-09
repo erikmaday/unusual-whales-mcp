@@ -260,6 +260,61 @@ function extractSpecEndpointsWithParams(spec) {
 }
 
 /**
+ * Extract Zod schema information from tool files
+ * Returns a map of file -> params with their required/optional status
+ */
+function extractImplementedSchemas() {
+  const toolsDir = join(ROOT_DIR, 'src', 'tools')
+  const files = readdirSync(toolsDir).filter(f => f.endsWith('.ts') && f !== 'index.ts')
+
+  const schemas = {}
+
+  for (const file of files) {
+    const content = readFileSync(join(toolsDir, file), 'utf-8')
+
+    // Find the input schema definition
+    // Pattern: const xxxInputSchema = z.object({...})
+    const schemaPattern = /const\s+\w+InputSchema\s*=\s*z\.object\(\{([^}]+(?:\}[^}]+)*)\}\)/gs
+    const match = schemaPattern.exec(content)
+
+    if (!match) continue
+
+    const schemaBody = match[1]
+
+    // Extract parameter definitions with their required/optional status
+    // Match patterns like:
+    // - param_name: schema.optional()  (optional)
+    // - param_name: schema              (required)
+    // Handle multi-line definitions
+    const paramPattern = /(\w+)\s*:\s*([^,\n]+(?:\([^)]*\)[^,\n]*)*)/g
+
+    const params = {
+      required: [],
+      optional: [],
+    }
+
+    let paramMatch
+    while ((paramMatch = paramPattern.exec(schemaBody)) !== null) {
+      const paramName = paramMatch[1]
+      const paramDef = paramMatch[2].trim()
+
+      // Check if the parameter definition includes .optional()
+      const isOptional = paramDef.includes('.optional()')
+
+      if (isOptional) {
+        params.optional.push(paramName)
+      } else {
+        params.required.push(paramName)
+      }
+    }
+
+    schemas[file] = params
+  }
+
+  return schemas
+}
+
+/**
  * Extract implemented endpoints and the parameters passed to uwFetch
  */
 function extractImplementedEndpointsWithParams() {
@@ -504,7 +559,7 @@ function findMatchingSpecEndpoint(implEndpoint, specEndpoints) {
 /**
  * Compare endpoints and parameters
  */
-function compareAll(specEndpoints, implEndpoints, schemaEnums) {
+function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas) {
   const results = {
     missingEndpoints: [],
     extraEndpoints: [],
@@ -515,6 +570,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums) {
     deprecatedParameters: [], // Track deprecated parameters still in use
     missingEnumValues: [],
     extraEnumValues: [],
+    requiredOptionalMismatches: [], // Track parameters with mismatched required/optional status
     summary: {
       totalSpecEndpoints: Object.keys(specEndpoints).length,
       totalImplEndpoints: Object.keys(implEndpoints).length,
@@ -526,6 +582,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums) {
       deprecatedParametersInUse: 0,
       enumValuesMissing: 0,
       enumValuesExtra: 0,
+      requiredOptionalMismatches: 0,
     },
   }
 
@@ -640,6 +697,55 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums) {
           operationId: specParams.operationId,
         })
         results.summary.extraParams++
+      }
+    }
+
+    // Check for required/optional mismatches
+    const implFileSchemas = implSchemas[implData.file]
+    if (implFileSchemas) {
+      // Check all parameters that exist in both spec and implementation
+      const allParams = [...specParams.required, ...specParams.optional]
+
+      for (const specParam of allParams) {
+        const cleanParam = specParam.replace('[]', '')
+
+        // Check if parameter is used in implementation
+        if (!passedParams.includes(cleanParam) && !passedParams.includes(specParam)) {
+          continue // Parameter not implemented, already caught by missing param checks
+        }
+
+        // Determine spec status
+        const isRequiredInSpec = specParams.required.includes(specParam)
+        const isOptionalInSpec = specParams.optional.includes(specParam)
+
+        // Determine implementation status
+        const isRequiredInImpl = implFileSchemas.required.includes(cleanParam)
+        const isOptionalInImpl = implFileSchemas.optional.includes(cleanParam)
+
+        // Detect mismatches
+        if (isRequiredInSpec && isOptionalInImpl) {
+          // Spec says required, but impl makes it optional
+          results.requiredOptionalMismatches.push({
+            endpoint: specEndpoint,
+            param: cleanParam,
+            file: implData.file,
+            operationId: specParams.operationId,
+            mismatchType: 'required-in-spec-optional-in-impl',
+            message: 'Parameter is required in API spec but optional in implementation',
+          })
+          results.summary.requiredOptionalMismatches++
+        } else if (isOptionalInSpec && isRequiredInImpl) {
+          // Spec says optional, but impl makes it required
+          results.requiredOptionalMismatches.push({
+            endpoint: specEndpoint,
+            param: cleanParam,
+            file: implData.file,
+            operationId: specParams.operationId,
+            mismatchType: 'optional-in-spec-required-in-impl',
+            message: 'Parameter is optional in API spec but required in implementation',
+          })
+          results.summary.requiredOptionalMismatches++
+        }
       }
     }
 
@@ -821,6 +927,32 @@ function printResults(results) {
     console.log('\n✅ All required parameters are implemented')
   }
 
+  // Required/Optional mismatches
+  if (results.requiredOptionalMismatches.length > 0) {
+    console.log(`\n🟠 Required/Optional Mismatches (${results.requiredOptionalMismatches.length}):`)
+    console.log('   Parameters with mismatched required/optional status between spec and implementation.\n')
+    const byFile = groupBy(results.requiredOptionalMismatches, 'file')
+    for (const [file, mismatches] of Object.entries(byFile)) {
+      console.log(`\n   ${file}:`)
+      const byEndpoint = groupBy(mismatches, 'endpoint')
+      for (const [endpoint, eps] of Object.entries(byEndpoint)) {
+        console.log(`      ${endpoint}`)
+        for (const m of eps) {
+          console.log(`         Parameter: ${m.param}`)
+          console.log(`         Issue: ${m.message}`)
+          if (m.mismatchType === 'optional-in-spec-required-in-impl') {
+            console.log(`         ⚠️  Users are forced to provide a value that the API doesn't require`)
+          } else {
+            console.log(`         ⚠️  Implementation allows omitting a parameter that the API requires`)
+          }
+        }
+      }
+    }
+    console.log('')
+  } else {
+    console.log('\n✅ All parameters have matching required/optional status')
+  }
+
   // Missing optional params
   if (missingOptionalParams.length > 0) {
     console.log(`\n🟡 Missing Optional Parameters (${missingOptionalParams.length}):`)
@@ -903,17 +1035,18 @@ function printResults(results) {
   console.log('\n' + '='.repeat(60))
   console.log('SUMMARY')
   console.log('='.repeat(60))
-  console.log(`Endpoints in spec:         ${summary.totalSpecEndpoints}`)
-  console.log(`Endpoints implemented:     ${summary.endpointsCovered}`)
-  console.log(`Missing endpoints:         ${missingEndpoints.length}`)
-  console.log(`Extra endpoints:           ${extraEndpoints.length}`)
-  console.log(`Deprecated endpoints:      ${summary.deprecatedEndpointsInUse}`)
-  console.log(`Deprecated parameters:     ${summary.deprecatedParametersInUse}`)
-  console.log(`Missing required params:   ${summary.requiredParamsMissing}`)
-  console.log(`Missing optional params:   ${summary.optionalParamsMissing}`)
-  console.log(`Extra params:              ${summary.extraParams}`)
-  console.log(`Missing enum values:       ${summary.enumValuesMissing}`)
-  console.log(`Extra enum values:         ${summary.enumValuesExtra}`)
+  console.log(`Endpoints in spec:            ${summary.totalSpecEndpoints}`)
+  console.log(`Endpoints implemented:        ${summary.endpointsCovered}`)
+  console.log(`Missing endpoints:            ${missingEndpoints.length}`)
+  console.log(`Extra endpoints:              ${extraEndpoints.length}`)
+  console.log(`Deprecated endpoints:         ${summary.deprecatedEndpointsInUse}`)
+  console.log(`Deprecated parameters:        ${summary.deprecatedParametersInUse}`)
+  console.log(`Missing required params:      ${summary.requiredParamsMissing}`)
+  console.log(`Required/optional mismatches: ${summary.requiredOptionalMismatches}`)
+  console.log(`Missing optional params:      ${summary.optionalParamsMissing}`)
+  console.log(`Extra params:                 ${summary.extraParams}`)
+  console.log(`Missing enum values:          ${summary.enumValuesMissing}`)
+  console.log(`Extra enum values:            ${summary.enumValuesExtra}`)
 
   const hasIssues = missingEndpoints.length > 0 ||
     missingRequiredParams.length > 0 ||
@@ -922,7 +1055,8 @@ function printResults(results) {
     deprecatedEndpoints.length > 0 ||
     deprecatedParameters.length > 0 ||
     missingEnumValues.length > 0 ||
-    extraEnumValues.length > 0
+    extraEnumValues.length > 0 ||
+    results.requiredOptionalMismatches.length > 0
 
   if (!hasIssues) {
     console.log('\n✅ API is fully in sync!')
@@ -1226,6 +1360,51 @@ async function createGitHubIssues(results) {
     })
   }
 
+  // Create ONE issue per tool for required/optional mismatches
+  const mismatchesByFile = groupBy(results.requiredOptionalMismatches, 'file')
+  for (const [file, mismatches] of Object.entries(mismatchesByFile)) {
+    const byEndpoint = groupBy(mismatches, 'endpoint')
+    const mismatchCount = mismatches.length
+    const issueId = generateIssueId('required-optional-mismatches', file)
+
+    let body = `${issueId}\n\n## Required/Optional Parameter Mismatches\n\n` +
+      `The following parameters in \`src/tools/${file}\` have mismatched required/optional status ` +
+      `between the API spec and the implementation.\n\n`
+
+    for (const [endpoint, eps] of Object.entries(byEndpoint)) {
+      const docLink = buildDocLink(eps[0]?.operationId)
+      body += `### \`${endpoint}\`\n\n`
+      if (docLink) {
+        body += `[View API Docs](${docLink})\n\n`
+      }
+      for (const m of eps) {
+        body += `- **\`${m.param}\`**: ${m.message}\n`
+        if (m.mismatchType === 'optional-in-spec-required-in-impl') {
+          body += `  - ⚠️ Users are forced to provide a value that the API doesn't require\n`
+          body += `  - Fix: Add \`.optional()\` to the parameter schema\n`
+        } else {
+          body += `  - ⚠️ Implementation allows omitting a parameter that the API requires\n`
+          body += `  - Fix: Remove \`.optional()\` from the parameter schema\n`
+        }
+      }
+      body += '\n'
+    }
+
+    body += `### Action Required\n\n` +
+      `1. Review each parameter's required/optional status in the API documentation\n` +
+      `2. Update the Zod schema to match the API spec (add or remove \`.optional()\`)\n` +
+      `3. Test the changes to ensure correct behavior\n\n` +
+      `---\n*Auto-generated by API sync checker*`
+
+    const toolName = file.replace('.ts', '')
+    issues.push({
+      id: issueId,
+      title: `Fix ${mismatchCount} required/optional mismatch${mismatchCount > 1 ? 'es' : ''} in ${toolName} tool`,
+      body,
+      labels: ['api-sync', 'bug', 'schema-mismatch', toolName],
+    })
+  }
+
   // Create ONE issue per tool for missing optional params
   const optionalByFile = groupBy(results.missingOptionalParams, 'file')
   for (const [file, params] of Object.entries(optionalByFile)) {
@@ -1404,12 +1583,18 @@ async function main() {
     const implEndpoints = extractImplementedEndpointsWithParams()
     console.log(`Found ${Object.keys(implEndpoints).length} implemented endpoints`)
 
+    console.log('Extracting Zod schemas from tool files...')
+    const implSchemas = extractImplementedSchemas()
+    const totalRequiredParams = Object.values(implSchemas).reduce((sum, s) => sum + s.required.length, 0)
+    const totalOptionalParams = Object.values(implSchemas).reduce((sum, s) => sum + s.optional.length, 0)
+    console.log(`Found ${Object.keys(implSchemas).length} tool schemas (${totalRequiredParams} required params, ${totalOptionalParams} optional params)`)
+
     console.log('Extracting enum schemas from MCP implementation...')
     const schemaEnums = extractSchemaEnums()
     console.log(`Found ${Object.keys(schemaEnums).length} enum schemas`)
 
     console.log('Comparing...')
-    const results = compareAll(specEndpoints, implEndpoints, schemaEnums)
+    const results = compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas)
 
     const hasIssues = printResults(results)
 
