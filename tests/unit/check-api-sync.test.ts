@@ -610,3 +610,221 @@ describe('enum validation', () => {
     expect(extra).toEqual([])
   })
 })
+
+describe('extractImplementedSchemas', () => {
+  it('extracts required and optional parameters from Zod schema', () => {
+    const toolContent = `
+      import { z } from "zod"
+
+      const testInputSchema = z.object({
+        ticker: z.string().describe("Ticker symbol"),
+        date: z.string().describe("Date").optional(),
+        limit: z.number().optional(),
+        required_param: z.string(),
+      })
+    `
+
+    // Simulate extractImplementedSchemas logic
+    const schemaPattern = /const\s+\w+InputSchema\s*=\s*z\.object\(\{([^}]+(?:\}[^}]+)*)\}\)/gs
+    const match = schemaPattern.exec(toolContent)
+
+    expect(match).toBeDefined()
+
+    const schemaBody = match![1]
+    const paramPattern = /(\w+)\s*:\s*([^,\n]+(?:\([^)]*\)[^,\n]*)*)/g
+
+    const params = {
+      required: [] as string[],
+      optional: [] as string[],
+    }
+
+    let paramMatch
+    while ((paramMatch = paramPattern.exec(schemaBody)) !== null) {
+      const paramName = paramMatch[1]
+      const paramDef = paramMatch[2].trim()
+      const isOptional = paramDef.includes('.optional()')
+
+      if (isOptional) {
+        params.optional.push(paramName)
+      } else {
+        params.required.push(paramName)
+      }
+    }
+
+    expect(params.required).toContain('ticker')
+    expect(params.required).toContain('required_param')
+    expect(params.optional).toContain('date')
+    expect(params.optional).toContain('limit')
+    expect(params.required).toHaveLength(2)
+    expect(params.optional).toHaveLength(2)
+  })
+
+  it('handles inline parameter definitions with chained methods', () => {
+    const toolContent = `
+      const testInputSchema = z.object({
+        complex_param: z.string().describe("A complex parameter").optional(),
+        another: z.number().min(1).max(100),
+      })
+    `
+
+    const schemaPattern = /const\s+\w+InputSchema\s*=\s*z\.object\(\{([^}]+(?:\}[^}]+)*)\}\)/gs
+    const match = schemaPattern.exec(toolContent)
+
+    expect(match).toBeDefined()
+
+    const schemaBody = match![1]
+    const paramPattern = /(\w+)\s*:\s*([^,\n]+(?:\([^)]*\)[^,\n]*)*)/g
+
+    const params = {
+      required: [] as string[],
+      optional: [] as string[],
+    }
+
+    let paramMatch
+    while ((paramMatch = paramPattern.exec(schemaBody)) !== null) {
+      const paramName = paramMatch[1]
+      const paramDef = paramMatch[2].trim()
+      const isOptional = paramDef.includes('.optional()')
+
+      if (isOptional) {
+        params.optional.push(paramName)
+      } else {
+        params.required.push(paramName)
+      }
+    }
+
+    expect(params.optional).toContain('complex_param')
+    expect(params.required).toContain('another')
+  })
+
+  it('returns empty arrays for schema without parameters', () => {
+    const toolContent = `
+      const emptySchema = z.object({})
+    `
+
+    const schemaPattern = /const\s+\w+InputSchema\s*=\s*z\.object\(\{([^}]+(?:\}[^}]+)*)\}\)/gs
+    const match = schemaPattern.exec(toolContent)
+
+    // Should not match schemas that don't follow the xxxInputSchema naming
+    expect(match).toBeNull()
+  })
+})
+
+describe('required/optional mismatch detection', () => {
+  it('detects parameter required in spec but optional in implementation', () => {
+    // Spec says 'ticker' is required
+    const specParams = {
+      required: ['ticker'],
+      optional: ['date'],
+    }
+
+    // Implementation makes 'ticker' optional
+    const implParams = {
+      required: [] as string[],
+      optional: ['ticker', 'date'],
+    }
+
+    // Check for mismatch
+    const mismatches = []
+    for (const param of specParams.required) {
+      if (implParams.optional.includes(param)) {
+        mismatches.push({
+          param,
+          type: 'required-in-spec-optional-in-impl',
+          message: 'Parameter is required in API spec but optional in implementation',
+        })
+      }
+    }
+
+    expect(mismatches).toHaveLength(1)
+    expect(mismatches[0].param).toBe('ticker')
+    expect(mismatches[0].type).toBe('required-in-spec-optional-in-impl')
+  })
+
+  it('detects parameter optional in spec but required in implementation', () => {
+    // Spec says 'date' is optional
+    const specParams = {
+      required: ['ticker'],
+      optional: ['date'],
+    }
+
+    // Implementation makes 'date' required
+    const implParams = {
+      required: ['ticker', 'date'],
+      optional: [] as string[],
+    }
+
+    // Check for mismatch
+    const mismatches = []
+    for (const param of specParams.optional) {
+      if (implParams.required.includes(param)) {
+        mismatches.push({
+          param,
+          type: 'optional-in-spec-required-in-impl',
+          message: 'Parameter is optional in API spec but required in implementation',
+        })
+      }
+    }
+
+    expect(mismatches).toHaveLength(1)
+    expect(mismatches[0].param).toBe('date')
+    expect(mismatches[0].type).toBe('optional-in-spec-required-in-impl')
+  })
+
+  it('detects no mismatches when statuses match', () => {
+    // Spec
+    const specParams = {
+      required: ['ticker', 'action'],
+      optional: ['date', 'limit'],
+    }
+
+    // Implementation matches spec
+    const implParams = {
+      required: ['ticker', 'action'],
+      optional: ['date', 'limit'],
+    }
+
+    // Check for mismatches
+    const mismatches = []
+    for (const param of specParams.required) {
+      if (implParams.optional.includes(param)) {
+        mismatches.push({ param, type: 'required-in-spec-optional-in-impl' })
+      }
+    }
+    for (const param of specParams.optional) {
+      if (implParams.required.includes(param)) {
+        mismatches.push({ param, type: 'optional-in-spec-required-in-impl' })
+      }
+    }
+
+    expect(mismatches).toHaveLength(0)
+  })
+
+  it('detects multiple mismatches in both directions', () => {
+    const specParams = {
+      required: ['ticker', 'action'],
+      optional: ['date', 'limit'],
+    }
+
+    const implParams = {
+      required: ['ticker', 'date'], // 'date' should be optional, 'action' is missing/optional
+      optional: ['action', 'limit'], // 'action' should be required
+    }
+
+    const mismatches = []
+    for (const param of specParams.required) {
+      if (implParams.optional.includes(param)) {
+        mismatches.push({ param, type: 'required-in-spec-optional-in-impl' })
+      }
+    }
+    for (const param of specParams.optional) {
+      if (implParams.required.includes(param)) {
+        mismatches.push({ param, type: 'optional-in-spec-required-in-impl' })
+      }
+    }
+
+    expect(mismatches).toHaveLength(2)
+    expect(mismatches.some(m => m.param === 'action' && m.type === 'required-in-spec-optional-in-impl')).toBe(true)
+    expect(mismatches.some(m => m.param === 'date' && m.type === 'optional-in-spec-required-in-impl')).toBe(true)
+  })
+})
