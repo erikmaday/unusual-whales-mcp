@@ -830,8 +830,14 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
   }
 
   // Find missing endpoints (in spec but not implemented)
+  // Skip deprecated endpoints - we don't want to implement them
   for (const [normalized, specEp] of normalizedSpecMap) {
     if (!normalizedImplMap.has(normalized)) {
+      const specParams = specEndpoints[specEp]
+      // Skip if endpoint is deprecated
+      if (specParams.deprecated) {
+        continue
+      }
       results.missingEndpoints.push({
         endpoint: specEp,
         operationId: specEndpoints[specEp].operationId,
