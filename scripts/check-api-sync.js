@@ -491,6 +491,51 @@ function extractSchemaEnums() {
 }
 
 /**
+ * Extract default values from schema files
+ * Returns a map of schemaName -> default value
+ */
+function extractSchemaDefaults() {
+  const schemasDir = join(ROOT_DIR, 'src', 'schemas')
+  const files = readdirSync(schemasDir).filter(f => f.endsWith('.ts'))
+
+  const defaults = {}
+
+  for (const file of files) {
+    const content = readFileSync(join(schemasDir, file), 'utf-8')
+
+    // Pattern to match z.type().default(value) with variable name
+    // Examples:
+    // export const limitSchema = z.number().default(100)
+    // const nameSchema = z.string().default("Nancy Pelosi")
+    const defaultPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.[^=]+\.default\(([^)]+)\)/g
+
+    let match
+    while ((match = defaultPattern.exec(content)) !== null) {
+      const schemaName = match[1]
+      let defaultValue = match[2].trim()
+
+      // Parse the default value
+      // Remove quotes for strings
+      if ((defaultValue.startsWith('"') && defaultValue.endsWith('"')) ||
+          (defaultValue.startsWith("'") && defaultValue.endsWith("'"))) {
+        defaultValue = defaultValue.slice(1, -1)
+      } else if (defaultValue === 'true' || defaultValue === 'false') {
+        defaultValue = defaultValue === 'true'
+      } else if (!isNaN(Number(defaultValue))) {
+        defaultValue = Number(defaultValue)
+      }
+
+      defaults[schemaName] = {
+        file,
+        value: defaultValue,
+      }
+    }
+  }
+
+  return defaults
+}
+
+/**
  * Try to find the schema variable name for a parameter
  * by looking at tool files
  */
@@ -559,7 +604,7 @@ function findMatchingSpecEndpoint(implEndpoint, specEndpoints) {
 /**
  * Compare endpoints and parameters
  */
-function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas) {
+function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults) {
   const results = {
     missingEndpoints: [],
     extraEndpoints: [],
@@ -571,6 +616,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas) {
     missingEnumValues: [],
     extraEnumValues: [],
     requiredOptionalMismatches: [], // Track parameters with mismatched required/optional status
+    defaultValueMismatches: [], // Track parameters with mismatched default values
     summary: {
       totalSpecEndpoints: Object.keys(specEndpoints).length,
       totalImplEndpoints: Object.keys(implEndpoints).length,
@@ -583,6 +629,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas) {
       enumValuesMissing: 0,
       enumValuesExtra: 0,
       requiredOptionalMismatches: 0,
+      defaultValueMismatches: 0,
     },
   }
 
@@ -828,6 +875,69 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas) {
         results.summary.enumValuesExtra += extra.length
       }
     }
+
+    // Check default values for parameters that have defaults in the spec
+    for (const paramName of [...specParams.required, ...specParams.optional]) {
+      const paramSchema = specParams.schemas[paramName]
+      if (paramSchema?.default === undefined) continue // Skip params without default
+
+      // Find the schema variable used for this parameter in the implementation
+      const schemaVarName = findSchemaForParam(paramName, implData.file)
+      if (!schemaVarName) {
+        // No schema found, report missing default
+        results.defaultValueMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          specDefault: paramSchema.default,
+          implDefault: null,
+          mismatchType: 'missing-in-impl',
+          message: 'Parameter has default value in API spec but no default in implementation',
+        })
+        results.summary.defaultValueMismatches++
+        continue
+      }
+
+      const implDefaultData = schemaDefaults[schemaVarName]
+      if (!implDefaultData) {
+        // Schema variable found but no default value
+        results.defaultValueMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          specDefault: paramSchema.default,
+          implDefault: null,
+          mismatchType: 'missing-in-impl',
+          message: 'Parameter has default value in API spec but no default in implementation schema',
+        })
+        results.summary.defaultValueMismatches++
+        continue
+      }
+
+      // Compare default values
+      const specDefault = paramSchema.default
+      const implDefault = implDefaultData.value
+
+      // Use strict equality for comparison
+      if (specDefault !== implDefault) {
+        results.defaultValueMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          schemaFile: implDefaultData.file,
+          specDefault,
+          implDefault,
+          mismatchType: 'value-mismatch',
+          message: `Default value mismatch: spec has ${JSON.stringify(specDefault)} but implementation has ${JSON.stringify(implDefault)}`,
+        })
+        results.summary.defaultValueMismatches++
+      }
+    }
   }
 
   return results
@@ -850,7 +960,7 @@ function buildDocLink(operationId) {
  * Print results to console
  */
 function printResults(results) {
-  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, deprecatedEndpoints, deprecatedParameters, missingEnumValues, extraEnumValues, summary } = results
+  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, deprecatedEndpoints, deprecatedParameters, missingEnumValues, extraEnumValues, defaultValueMismatches, summary } = results
 
   console.log('\n' + '='.repeat(60))
   console.log('API SYNC CHECK RESULTS')
@@ -1031,6 +1141,31 @@ function printResults(results) {
     console.log('\n✅ No extra enum values found')
   }
 
+  // Default value mismatches
+  if (results.defaultValueMismatches.length > 0) {
+    console.log(`\n⚠️  Default Value Mismatches (${summary.defaultValueMismatches}):`)
+    console.log('   Parameters with default values in spec but missing or different in implementation.\n')
+    const byFile = groupBy(results.defaultValueMismatches, 'file')
+    for (const [file, items] of Object.entries(byFile)) {
+      console.log(`   ${file}:`)
+      for (const item of items) {
+        console.log(`      ${item.endpoint}`)
+        console.log(`         Parameter: ${item.param}`)
+        if (item.schemaName && item.schemaFile) {
+          console.log(`         Schema: ${item.schemaName} (${item.schemaFile})`)
+        }
+        console.log(`         Spec default: ${JSON.stringify(item.specDefault)}`)
+        console.log(`         Impl default: ${item.implDefault === null ? 'none' : JSON.stringify(item.implDefault)}`)
+        if (item.message) {
+          console.log(`         ⚠️  ${item.message}`)
+        }
+      }
+      console.log('')
+    }
+  } else {
+    console.log('\n✅ All default values match the spec')
+  }
+
   // Summary
   console.log('\n' + '='.repeat(60))
   console.log('SUMMARY')
@@ -1047,6 +1182,7 @@ function printResults(results) {
   console.log(`Extra params:                 ${summary.extraParams}`)
   console.log(`Missing enum values:          ${summary.enumValuesMissing}`)
   console.log(`Extra enum values:            ${summary.enumValuesExtra}`)
+  console.log(`Default value mismatches:     ${summary.defaultValueMismatches}`)
 
   const hasIssues = missingEndpoints.length > 0 ||
     missingRequiredParams.length > 0 ||
@@ -1056,7 +1192,8 @@ function printResults(results) {
     deprecatedParameters.length > 0 ||
     missingEnumValues.length > 0 ||
     extraEnumValues.length > 0 ||
-    results.requiredOptionalMismatches.length > 0
+    results.requiredOptionalMismatches.length > 0 ||
+    results.defaultValueMismatches.length > 0
 
   if (!hasIssues) {
     console.log('\n✅ API is fully in sync!')
@@ -1593,8 +1730,12 @@ async function main() {
     const schemaEnums = extractSchemaEnums()
     console.log(`Found ${Object.keys(schemaEnums).length} enum schemas`)
 
+    console.log('Extracting default values from MCP implementation...')
+    const schemaDefaults = extractSchemaDefaults()
+    console.log(`Found ${Object.keys(schemaDefaults).length} schemas with default values`)
+
     console.log('Comparing...')
-    const results = compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas)
+    const results = compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults)
 
     const hasIssues = printResults(results)
 
