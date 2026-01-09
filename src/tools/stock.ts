@@ -102,7 +102,7 @@ const stockInputSchema = z.object({
     {
       message: "expiry is required for greeks action",
       path: ["expiry"],
-    }
+    },
   )
   .refine(
     (data) => {
@@ -114,7 +114,19 @@ const stockInputSchema = z.object({
     {
       message: "expiry is required for greek_exposure_by_strike_expiry action",
       path: ["expiry"],
-    }
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.action === "greek_flow_by_expiry") {
+        return data.expiry !== undefined
+      }
+      return true
+    },
+    {
+      message: "expiry is required for greek_flow_by_expiry action",
+      path: ["expiry"],
+    },
   )
   .refine(
     (data) => {
@@ -126,7 +138,7 @@ const stockInputSchema = z.object({
     {
       message: "expirations is required for atm_chains action",
       path: ["expirations"],
-    }
+    },
   )
   .refine(
     (data) => {
@@ -138,7 +150,7 @@ const stockInputSchema = z.object({
     {
       message: "expirations is required for spot_exposures_by_expiry_strike action",
       path: ["expirations"],
-    }
+    },
   )
   .refine(
     (data) => {
@@ -150,7 +162,19 @@ const stockInputSchema = z.object({
     {
       message: "expiry and delta are required for historical_risk_reversal_skew action",
       path: ["expiry"],
-    }
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.action === "spot_exposures_expiry_strike") {
+        return data.expiry !== undefined
+      }
+      return true
+    },
+    {
+      message: "expiry is required for spot_exposures_expiry_strike action",
+      path: ["expiry"],
+    },
   )
 
 
