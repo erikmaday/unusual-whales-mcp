@@ -965,23 +965,17 @@ components:
       minimum: 0
       title: DynLimitAcuwovnjamkufgbraigocmsozniilxcdrqtxxonmhftsehiqhas
       type: integer
-    DynLimitAcuzxchajommvjzbpwhjmdxknihaconeyxsmcvrxjddijsjskbw:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAcuzxchajommvjzbpwhjmdxknihaconeyxsmcvrxjddijsjskbw
-      type: boolean
     DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc:
       description: 'The maximum premium on that alert. Min: 0.'
       example: 12500.5
       minimum: 0
       title: DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc
       type: integer
-    DynLimitAeajnkoadvwxwqhcyovxnthkyyoyqjajiovblcbqtixsbsqzwbh:
+    DynLimitAedyffsbemdnsupjsztlftfwjajaoxehvnggwzsgvxqxoozjwqb:
       default: true
       description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAeajnkoadvwxwqhcyovxnthkyyoyqjajiovblcbqtixsbsqzwbh
+      title: DynLimitAedyffsbemdnsupjsztlftfwjajaoxehvnggwzsgvxqxoozjwqb
       type: boolean
     DynLimitAffeikqbyekurtovimkansbsiccwgoegywuqqvsoihqzsmxnzaj:
       default: true
@@ -1037,6 +1031,12 @@ components:
       minimum: 0
       title: DynLimitAqpmukvtnqzjopoweoyvpeharwijcwnkajzocucgocoqugeobql
       type: integer
+    DynLimitAsorpqoadqkljnfuaxwzvorrkzpiojzlpzrqmnpgqvqxjplriub:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAsorpqoadqkljnfuaxwzvorrkzpiojzlpzrqmnpgqvqxjplriub
+      type: boolean
     DynLimitAvaeipmocfyuzgsdjomzahaezgrqrgqjzusbxjtbqnkywntzzgf:
       default: true
       description: Boolean flag whether a transaction is a put.
@@ -7894,8 +7894,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -14405,13 +14405,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAeajnkoadvwxwqhcyovxnthkyyoyqjajiovblcbqtixsbsqzwbh'
+            $ref: '#/components/schemas/DynLimitAedyffsbemdnsupjsztlftfwjajaoxehvnggwzsgvxqxoozjwqb'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcuzxchajommvjzbpwhjmdxknihaconeyxsmcvrxjddijsjskbw'
+            $ref: '#/components/schemas/DynLimitAsorpqoadqkljnfuaxwzvorrkzpiojzlpzrqmnpgqvqxjplriub'
       responses:
         '200':
           content:
