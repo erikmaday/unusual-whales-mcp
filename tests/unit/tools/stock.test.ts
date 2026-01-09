@@ -10,6 +10,17 @@ vi.mock("../../../src/client.js", () => ({
     }
     return JSON.stringify(result.data, null, 2)
   }),
+  formatStructuredResponse: vi.fn((result) => {
+    if (result.error) {
+      return {
+        text: JSON.stringify({ error: result.error }, null, 2),
+      }
+    }
+    return {
+      text: JSON.stringify(result.data, null, 2),
+      structuredContent: result.data,
+    }
+  }),
   formatError: vi.fn((message) => JSON.stringify({ error: message })),
   encodePath: vi.fn((value) => {
     if (value === undefined || value === null) {
@@ -60,12 +71,14 @@ describe("handleStock", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleStock({ action: "invalid_action" })
-      expect(result).toContain("Invalid option")
+      expect(result).toHaveProperty("text")
+      expect(result.text).toContain("Invalid option")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleStock({})
-      expect(result).toContain("Invalid input")
+      expect(result).toHaveProperty("text")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for invalid ticker format", async () => {
@@ -73,7 +86,7 @@ describe("handleStock", () => {
         action: "info",
         ticker: "TOOLONGTICKER123",
       })
-      expect(result).toContain("Ticker symbol too long")
+      expect(result.text).toContain("Ticker symbol too long")
     })
 
     it("returns error for invalid date format", async () => {
@@ -82,14 +95,14 @@ describe("handleStock", () => {
         ticker: "AAPL",
         date: "invalid-date",
       })
-      expect(result).toContain("Invalid")
+      expect(result.text).toContain("Invalid")
     })
   })
 
   describe("info action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "info" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -101,12 +114,12 @@ describe("handleStock", () => {
   describe("ohlc action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "ohlc", candle_size: "1d" })
-      expect(result).toContain("ticker and candle_size are required")
+      expect(result.text).toContain("ticker and candle_size are required")
     })
 
     it("returns error when candle_size is missing", async () => {
       const result = await handleStock({ action: "ohlc", ticker: "AAPL" })
-      expect(result).toContain("ticker and candle_size are required")
+      expect(result.text).toContain("ticker and candle_size are required")
     })
 
     it("calls uwFetch with correct endpoint and params", async () => {
@@ -129,7 +142,7 @@ describe("handleStock", () => {
   describe("option_chains action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "option_chains" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -190,7 +203,7 @@ describe("handleStock", () => {
         action: "greek_flow_by_expiry",
         ticker: "AAPL",
       })
-      expect(result).toContain("ticker and expiry are required")
+      expect(result.text).toContain("ticker and expiry are required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -211,7 +224,7 @@ describe("handleStock", () => {
         action: "atm_chains",
         ticker: "AAPL",
       })
-      expect(result).toContain("expirations[] is required")
+      expect(result.text).toContain("expirations[] is required")
     })
 
     it("returns error when expirations is empty", async () => {
@@ -220,7 +233,7 @@ describe("handleStock", () => {
         ticker: "AAPL",
         expirations: [],
       })
-      expect(result).toContain("expirations[] is required")
+      expect(result.text).toContain("expirations[] is required")
     })
 
     it("calls uwFetch with expirations array", async () => {
@@ -241,7 +254,7 @@ describe("handleStock", () => {
         action: "historical_risk_reversal_skew",
         ticker: "AAPL",
       })
-      expect(result).toContain("ticker, expiry, and delta are required")
+      expect(result.text).toContain("ticker, expiry, and delta are required")
     })
 
     it("calls uwFetch with all params", async () => {
@@ -265,7 +278,7 @@ describe("handleStock", () => {
   describe("tickers_by_sector action", () => {
     it("returns error when sector is missing", async () => {
       const result = await handleStock({ action: "tickers_by_sector" })
-      expect(result).toContain("sector is required")
+      expect(result.text).toContain("sector is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -330,7 +343,7 @@ describe("handleStock", () => {
         action: "spot_exposures_by_expiry_strike",
         ticker: "AAPL",
       })
-      expect(result).toContain("ticker and expirations are required")
+      expect(result.text).toContain("ticker and expirations are required")
     })
 
     it("passes all filter params", async () => {
@@ -362,7 +375,7 @@ describe("handleStock", () => {
   describe("stock_price_levels action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "stock_price_levels" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -379,7 +392,7 @@ describe("handleStock", () => {
   describe("stock_volume_price_levels action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "stock_volume_price_levels" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -391,7 +404,7 @@ describe("handleStock", () => {
   describe("spot_exposures action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "spot_exposures" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -403,7 +416,7 @@ describe("handleStock", () => {
   describe("spot_exposures_by_strike action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "spot_exposures_by_strike" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -434,12 +447,12 @@ describe("handleStock", () => {
   describe("spot_exposures_expiry_strike action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "spot_exposures_expiry_strike", expiry: "2024-01-19" })
-      expect(result).toContain("ticker and expiry are required")
+      expect(result.text).toContain("ticker and expiry are required")
     })
 
     it("returns error when expiry is missing", async () => {
       const result = await handleStock({ action: "spot_exposures_expiry_strike", ticker: "AAPL" })
-      expect(result).toContain("ticker and expiry are required")
+      expect(result.text).toContain("ticker and expiry are required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -467,7 +480,7 @@ describe("handleStock", () => {
   describe("volatility_realized action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "volatility_realized" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -492,7 +505,7 @@ describe("handleStock", () => {
   describe("volatility_stats action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "volatility_stats" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -504,7 +517,7 @@ describe("handleStock", () => {
   describe("volatility_term_structure action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "volatility_term_structure" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -516,7 +529,7 @@ describe("handleStock", () => {
   describe("stock_state action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "stock_state" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -528,7 +541,7 @@ describe("handleStock", () => {
   describe("insider_buy_sells action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "insider_buy_sells" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -540,7 +553,7 @@ describe("handleStock", () => {
   describe("ownership action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "ownership" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -557,7 +570,7 @@ describe("handleStock", () => {
   describe("greek_exposure_by_expiry action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "greek_exposure_by_expiry" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -569,7 +582,7 @@ describe("handleStock", () => {
   describe("greek_exposure_by_strike action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "greek_exposure_by_strike" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -581,7 +594,7 @@ describe("handleStock", () => {
   describe("greek_exposure_by_strike_expiry action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "greek_exposure_by_strike_expiry" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -593,7 +606,7 @@ describe("handleStock", () => {
   describe("greek_flow action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "greek_flow" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -605,7 +618,7 @@ describe("handleStock", () => {
   describe("interpolated_iv action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "interpolated_iv" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -617,7 +630,7 @@ describe("handleStock", () => {
   describe("max_pain action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "max_pain" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -629,7 +642,7 @@ describe("handleStock", () => {
   describe("oi_change action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "oi_change" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -641,7 +654,7 @@ describe("handleStock", () => {
   describe("oi_per_expiry action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "oi_per_expiry" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -653,7 +666,7 @@ describe("handleStock", () => {
   describe("oi_per_strike action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "oi_per_strike" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -665,7 +678,7 @@ describe("handleStock", () => {
   describe("options_volume action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "options_volume" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -677,7 +690,7 @@ describe("handleStock", () => {
   describe("volume_oi_expiry action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "volume_oi_expiry" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -689,7 +702,7 @@ describe("handleStock", () => {
   describe("expiry_breakdown action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "expiry_breakdown" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -701,7 +714,7 @@ describe("handleStock", () => {
   describe("flow_per_expiry action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "flow_per_expiry" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -713,7 +726,7 @@ describe("handleStock", () => {
   describe("flow_per_strike action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "flow_per_strike" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -725,7 +738,7 @@ describe("handleStock", () => {
   describe("flow_per_strike_intraday action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "flow_per_strike_intraday" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -737,7 +750,7 @@ describe("handleStock", () => {
   describe("flow_recent action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "flow_recent" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -749,7 +762,7 @@ describe("handleStock", () => {
   describe("net_prem_ticks action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "net_prem_ticks" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -761,7 +774,7 @@ describe("handleStock", () => {
   describe("nope action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "nope" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -773,7 +786,7 @@ describe("handleStock", () => {
   describe("greeks action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "greeks" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("ticker is required")
     })
   })
 })

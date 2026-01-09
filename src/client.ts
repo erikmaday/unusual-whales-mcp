@@ -256,6 +256,30 @@ export function formatResponse<T>(result: ApiResponse<T>): string {
 }
 
 /**
+ * Format an API response as a structured response with both text and typed data.
+ * Returns formatted error JSON if there's an error, otherwise returns both formatted JSON text
+ * and the structured data for programmatic access.
+ *
+ * @param result - The API response to format
+ * @returns Object with text (JSON string) and structuredContent (typed data)
+ * @template T - The type of the data in the response
+ */
+export function formatStructuredResponse<T>(result: ApiResponse<T>): {
+  text: string
+  structuredContent?: T
+} {
+  if (result.error) {
+    return {
+      text: JSON.stringify({ error: result.error }, null, 2),
+    }
+  }
+  return {
+    text: JSON.stringify(result.data, null, 2),
+    structuredContent: result.data,
+  }
+}
+
+/**
  * Format an error message as a JSON string.
  * Helper function to reduce duplication of error formatting across tools.
  *

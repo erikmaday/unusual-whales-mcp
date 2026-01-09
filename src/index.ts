@@ -93,6 +93,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       name: tool.name,
       description: tool.description,
       inputSchema: tool.inputSchema,
+      outputSchema: tool.outputSchema,
       annotations: tool.annotations,
     })),
   }
@@ -108,7 +109,31 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   try {
     const result = await handler(args as Record<string, unknown>)
-    // Check if the handler returned an error response
+
+    // Handle structured response format
+    if (typeof result === "object" && result !== null && "text" in result) {
+      const structuredResult = result as { text: string; structuredContent?: unknown }
+      // Check if the handler returned an error response
+      if (isErrorResponse(structuredResult.text)) {
+        return createErrorResponse(structuredResult.text)
+      }
+
+      // Return response with structured content if available
+      if (structuredResult.structuredContent !== undefined) {
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: structuredResult.text,
+            },
+          ],
+          structuredContent: structuredResult.structuredContent,
+        }
+      }
+      return createTextResponse(structuredResult.text)
+    }
+
+    // Handle legacy string response format
     if (isErrorResponse(result)) {
       return createErrorResponse(result)
     }

@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { uwFetch, formatStructuredResponse, encodePath, formatError } from "../client.js"
 import {
   toJsonSchema,
   tickerSchema,
@@ -18,6 +18,7 @@ import {
   optionContractFiltersSchema,
   stockFlowFiltersSchema,
   dteFilterSchema,
+  stockOutputSchema,
 } from "../schemas/index.js"
 
 const stockActions = [
@@ -143,6 +144,7 @@ Available actions:
 - tickers_by_sector: Get tickers in sector (sector required)
 - ticker_exchanges: Get mapping of all tickers to their exchanges (no params required)`,
   inputSchema: toJsonSchema(stockInputSchema),
+  outputSchema: toJsonSchema(stockOutputSchema),
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,
@@ -154,12 +156,12 @@ Available actions:
  * Handle stock tool requests.
  *
  * @param args - Tool arguments containing action and optional parameters
- * @returns JSON string with stock data or error message
+ * @returns Structured response with text and optional typed data
  */
-export async function handleStock(args: Record<string, unknown>): Promise<string> {
+export async function handleStock(args: Record<string, unknown>): Promise<{ text: string; structuredContent?: unknown }> {
   const parsed = stockInputSchema.safeParse(args)
   if (!parsed.success) {
-    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
+    return { text: formatError(`Invalid input: ${formatZodError(parsed.error)}`) }
   }
 
   const {
@@ -210,12 +212,12 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
 
   switch (action) {
     case "info":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/info`))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/info`))
 
     case "ohlc":
-      if (!ticker || !candle_size) return formatError("ticker and candle_size are required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/ohlc/${safeCandle}`, {
+      if (!ticker || !candle_size) return { text: formatError("ticker and candle_size are required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/ohlc/${safeCandle}`, {
         date,
         timeframe,
         end_date,
@@ -223,14 +225,14 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
       }))
 
     case "option_chains":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/option-chains`, {
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/option-chains`, {
         date,
       }))
 
     case "option_contracts":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/option-contracts`, {
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/option-contracts`, {
         expiry,
         option_type,
         vol_greater_oi,
@@ -244,125 +246,125 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
       }))
 
     case "greeks":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/greeks`, { date, expiry }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greeks`, { date, expiry }))
 
     case "greek_exposure":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure`, { date, timeframe }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure`, { date, timeframe }))
 
     case "greek_exposure_by_expiry":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure/expiry`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure/expiry`, { date }))
 
     case "greek_exposure_by_strike":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure/strike`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure/strike`, { date }))
 
     case "greek_exposure_by_strike_expiry":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure/strike-expiry`, {
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure/strike-expiry`, {
         expiry,
         date,
       }))
 
     case "greek_flow":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/greek-flow`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-flow`, { date }))
 
     case "greek_flow_by_expiry":
-      if (!ticker || !expiry) return formatError("ticker and expiry are required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/greek-flow/${safeExpiry}`, { date }))
+      if (!ticker || !expiry) return { text: formatError("ticker and expiry are required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-flow/${safeExpiry}`, { date }))
 
     case "iv_rank":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/iv-rank`, { date, timespan }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/iv-rank`, { date, timespan }))
 
     case "interpolated_iv":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/interpolated-iv`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/interpolated-iv`, { date }))
 
     case "max_pain":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/max-pain`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/max-pain`, { date }))
 
     case "oi_change":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/oi-change`, { date, limit, page, order }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/oi-change`, { date, limit, page, order }))
 
     case "oi_per_expiry":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/oi-per-expiry`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/oi-per-expiry`, { date }))
 
     case "oi_per_strike":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/oi-per-strike`, {
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/oi-per-strike`, {
         date,
       }))
 
     case "options_volume":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/options-volume`, { limit }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/options-volume`, { limit }))
 
     case "volume_oi_expiry":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/option/volume-oi-expiry`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/option/volume-oi-expiry`, { date }))
 
     case "atm_chains":
-      if (!ticker) return formatError("ticker is required")
-      if (!expirations || expirations.length === 0) return formatError("expirations[] is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/atm-chains`, { "expirations[]": expirations }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      if (!expirations || expirations.length === 0) return { text: formatError("expirations[] is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/atm-chains`, { "expirations[]": expirations }))
 
     case "expiry_breakdown":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/expiry-breakdown`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/expiry-breakdown`, { date }))
 
     case "flow_alerts":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-alerts`, { limit, is_ask_side, is_bid_side }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/flow-alerts`, { limit, is_ask_side, is_bid_side }))
 
     case "flow_per_expiry":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-expiry`))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-expiry`))
 
     case "flow_per_strike":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-strike`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-strike`, { date }))
 
     case "flow_per_strike_intraday":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-strike-intraday`, {
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-strike-intraday`, {
         date,
         filter,
       }))
 
     case "flow_recent":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/flow-recent`, { side, min_premium }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/flow-recent`, { side, min_premium }))
 
     case "net_prem_ticks":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/net-prem-ticks`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/net-prem-ticks`, { date }))
 
     case "nope":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/nope`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/nope`, { date }))
 
     case "stock_price_levels":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/option/stock-price-levels`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/option/stock-price-levels`, { date }))
 
     case "stock_volume_price_levels":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/stock-volume-price-levels`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/stock-volume-price-levels`, { date }))
 
     case "spot_exposures":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures`, { date }))
 
     case "spot_exposures_by_expiry_strike":
-      if (!ticker || !expirations || expirations.length === 0) return formatError("ticker and expirations are required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/expiry-strike`, {
+      if (!ticker || !expirations || expirations.length === 0) return { text: formatError("ticker and expirations are required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/expiry-strike`, {
         "expirations[]": expirations,
         date,
         limit,
@@ -374,8 +376,8 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
       }))
 
     case "spot_exposures_by_strike":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/strike`, {
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/strike`, {
         date,
         min_strike,
         max_strike,
@@ -384,49 +386,49 @@ export async function handleStock(args: Record<string, unknown>): Promise<string
       }))
 
     case "spot_exposures_expiry_strike":
-      if (!ticker || !expiry) return formatError("ticker and expiry are required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/${safeExpiry}/strike`, {
+      if (!ticker || !expiry) return { text: formatError("ticker and expiry are required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/${safeExpiry}/strike`, {
         date,
         min_strike,
         max_strike,
       }))
 
     case "historical_risk_reversal_skew":
-      if (!ticker || !expiry || !delta) return formatError("ticker, expiry, and delta are required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/historical-risk-reversal-skew`, { expiry, delta, date, timeframe }))
+      if (!ticker || !expiry || !delta) return { text: formatError("ticker, expiry, and delta are required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/historical-risk-reversal-skew`, { expiry, delta, date, timeframe }))
 
     case "volatility_realized":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/volatility/realized`, { date, timeframe }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/volatility/realized`, { date, timeframe }))
 
     case "volatility_stats":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/volatility/stats`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/volatility/stats`, { date }))
 
     case "volatility_term_structure":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/volatility/term-structure`, { date }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/volatility/term-structure`, { date }))
 
     case "stock_state":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/stock-state`))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/stock-state`))
 
     case "insider_buy_sells":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/insider-buy-sells`))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/insider-buy-sells`))
 
     case "ownership":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeTicker}/ownership`, { limit }))
+      if (!ticker) return { text: formatError("ticker is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/ownership`, { limit }))
 
     case "tickers_by_sector":
-      if (!sector) return formatError("sector is required")
-      return formatResponse(await uwFetch(`/api/stock/${safeSector}/tickers`))
+      if (!sector) return { text: formatError("sector is required") }
+      return formatStructuredResponse(await uwFetch(`/api/stock/${safeSector}/tickers`))
 
     case "ticker_exchanges":
-      return formatResponse(await uwFetch("/api/stock-directory/ticker-exchanges"))
+      return formatStructuredResponse(await uwFetch("/api/stock-directory/ticker-exchanges"))
 
     default:
-      return formatError(`Unknown action: ${action}`)
+      return { text: formatError(`Unknown action: ${action}`) }
   }
 }

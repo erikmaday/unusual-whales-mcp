@@ -15,7 +15,12 @@ import { newsTool, handleNews } from "./news.js"
 import { alertsTool, handleAlerts } from "./alerts.js"
 import { politiciansTool, handlePoliticians } from "./politicians.js"
 
-export type ToolHandler = (args: Record<string, unknown>) => Promise<string>
+export interface ToolResponse {
+  text: string
+  structuredContent?: unknown
+}
+
+export type ToolHandler = (args: Record<string, unknown>) => Promise<string | ToolResponse>
 
 export interface ToolDefinition {
   name: string
@@ -24,6 +29,11 @@ export interface ToolDefinition {
     type: "object"
     properties: Record<string, unknown>
     required: string[]
+  }
+  outputSchema?: {
+    type: "object"
+    properties: Record<string, unknown>
+    required?: string[]
   }
   annotations?: {
     title?: string

@@ -10,6 +10,17 @@ vi.mock("../../../src/client.js", () => ({
     }
     return JSON.stringify(result.data, null, 2)
   }),
+  formatStructuredResponse: vi.fn((result) => {
+    if (result.error) {
+      return {
+        text: JSON.stringify({ error: result.error }, null, 2),
+      }
+    }
+    return {
+      text: JSON.stringify(result.data, null, 2),
+      structuredContent: result.data,
+    }
+  }),
   formatError: vi.fn((message) => JSON.stringify({ error: message })),
   encodePath: vi.fn((value) => {
     if (value === undefined || value === null) {
@@ -60,12 +71,12 @@ describe("handleFlow", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleFlow({ action: "invalid_action" })
-      expect(result).toContain("Invalid option")
+      expect(result.text).toContain("Invalid option")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleFlow({})
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
   })
 
@@ -100,14 +111,14 @@ describe("handleFlow", () => {
         action: "flow_alerts",
         min_premium: -100,
       })
-      expect(result).toContain("Premium cannot be negative")
+      expect(result.text).toContain("Premium cannot be negative")
     })
   })
 
   describe("full_tape action", () => {
     it("returns error when date is missing", async () => {
       const result = await handleFlow({ action: "full_tape" })
-      expect(result).toContain("date is required")
+      expect(result.text).toContain("date is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -142,7 +153,7 @@ describe("handleFlow", () => {
   describe("group_greek_flow action", () => {
     it("returns error when flow_group is missing", async () => {
       const result = await handleFlow({ action: "group_greek_flow" })
-      expect(result).toContain("flow_group is required")
+      expect(result.text).toContain("flow_group is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -168,7 +179,7 @@ describe("handleFlow", () => {
         action: "group_greek_flow_expiry",
         expiry: "2024-01-19",
       })
-      expect(result).toContain("flow_group and expiry are required")
+      expect(result.text).toContain("flow_group and expiry are required")
     })
 
     it("returns error when expiry is missing", async () => {
@@ -176,7 +187,7 @@ describe("handleFlow", () => {
         action: "group_greek_flow_expiry",
         flow_group: "mag7",
       })
-      expect(result).toContain("flow_group and expiry are required")
+      expect(result.text).toContain("flow_group and expiry are required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
