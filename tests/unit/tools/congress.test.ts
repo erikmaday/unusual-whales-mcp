@@ -1,0 +1,141 @@
+import { describe, it, expect, vi, beforeEach } from "vitest"
+import { handleCongress, congressTool } from "../../../src/tools/congress.js"
+
+// Mock the client module
+vi.mock("../../../src/client.js", () => ({
+  uwFetch: vi.fn(),
+  formatResponse: vi.fn((result) => {
+    if (result.error) {
+      return JSON.stringify({ error: result.error }, null, 2)
+    }
+    return JSON.stringify(result.data, null, 2)
+  }),
+  formatError: vi.fn((message) => JSON.stringify({ error: message })),
+  encodePath: vi.fn((value) => {
+    if (value === undefined || value === null) {
+      throw new Error("Path parameter is required")
+    }
+    const str = String(value)
+    if (str.includes("/") || str.includes("\\") || str.includes("..")) {
+      throw new Error("Invalid path parameter")
+    }
+    return encodeURIComponent(str)
+  }),
+}))
+
+import { uwFetch } from "../../../src/client.js"
+
+describe("congressTool", () => {
+  it("has correct name", () => {
+    expect(congressTool.name).toBe("uw_congress")
+  })
+
+  it("has a description", () => {
+    expect(congressTool.description).toBeDefined()
+    expect(congressTool.description).toContain("congress")
+  })
+
+  it("has inputSchema", () => {
+    expect(congressTool.inputSchema).toBeDefined()
+    expect(congressTool.inputSchema.type).toBe("object")
+  })
+
+  it("has correct annotations", () => {
+    expect(congressTool.annotations).toEqual({
+      readOnlyHint: true,
+      idempotentHint: true,
+      openWorldHint: true,
+    })
+  })
+})
+
+describe("handleCongress", () => {
+  const mockUwFetch = uwFetch as ReturnType<typeof vi.fn>
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockUwFetch.mockResolvedValue({ data: { test: "data" } })
+  })
+
+  describe("input validation", () => {
+    it("returns error for invalid action", async () => {
+      const result = await handleCongress({ action: "invalid_action" })
+      expect(result).toContain("Invalid option")
+    })
+
+    it("returns error for missing action", async () => {
+      const result = await handleCongress({})
+      expect(result).toContain("Invalid input")
+    })
+  })
+
+  describe("recent_trades action", () => {
+    it("calls uwFetch with correct endpoint", async () => {
+      await handleCongress({ action: "recent_trades" })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/congress/recent-trades", expect.any(Object))
+    })
+
+    it("passes filter parameters", async () => {
+      await handleCongress({
+        action: "recent_trades",
+        date: "2024-01-15",
+        ticker: "AAPL",
+        limit: 100,
+      })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/congress/recent-trades", expect.objectContaining({
+        date: "2024-01-15",
+        ticker: "AAPL",
+        limit: 100,
+      }))
+    })
+  })
+
+  describe("late_reports action", () => {
+    it("calls uwFetch with correct endpoint", async () => {
+      await handleCongress({ action: "late_reports" })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/congress/late-reports", expect.any(Object))
+    })
+
+    it("passes filter parameters", async () => {
+      await handleCongress({
+        action: "late_reports",
+        date: "2024-01-15",
+        ticker: "NVDA",
+        limit: 50,
+      })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/congress/late-reports", expect.objectContaining({
+        date: "2024-01-15",
+        ticker: "NVDA",
+        limit: 50,
+      }))
+    })
+  })
+
+  describe("congress_trader action", () => {
+    it("returns error when name is missing", async () => {
+      const result = await handleCongress({ action: "congress_trader" })
+      expect(result).toContain("name is required")
+    })
+
+    it("calls uwFetch with correct endpoint", async () => {
+      await handleCongress({ action: "congress_trader", name: "Nancy Pelosi" })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/congress/congress-trader", expect.any(Object))
+    })
+
+    it("passes filter parameters", async () => {
+      await handleCongress({
+        action: "congress_trader",
+        name: "Nancy Pelosi",
+        date: "2024-01-15",
+        ticker: "AAPL",
+        limit: 25,
+      })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/congress/congress-trader", expect.objectContaining({
+        name: "Nancy Pelosi",
+        date: "2024-01-15",
+        ticker: "AAPL",
+        limit: 25,
+      }))
+    })
+  })
+})

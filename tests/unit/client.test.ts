@@ -274,4 +274,133 @@ describe("uwFetch", () => {
     expect(calledUrl).toContain("expirations%5B%5D=2024-01-01")
     expect(calledUrl).toContain("expirations%5B%5D=2024-01-08")
   })
+
+  it("retries on 5xx server errors", async () => {
+    process.env.UW_API_KEY = "test-api-key"
+    process.env.UW_MAX_RETRIES = "2"
+
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        text: () => Promise.resolve("Internal Server Error"),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: () => Promise.resolve('{"success": true}'),
+      })
+    vi.stubGlobal("fetch", mockFetch)
+
+    const result = await uwFetch("/api/test")
+    expect(result).toEqual({ data: { success: true } })
+    expect(mockFetch).toHaveBeenCalledTimes(2)
+  })
+
+  it("returns error after max retries exhausted on server error", async () => {
+    process.env.UW_API_KEY = "test-api-key"
+
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 503,
+      text: () => Promise.resolve("Service Unavailable"),
+    })
+    vi.stubGlobal("fetch", mockFetch)
+
+    const result = await uwFetch("/api/test")
+    expect(result.error).toMatch(/API error \(503\)/)
+    // Default max retries is 3
+    expect(mockFetch).toHaveBeenCalledTimes(3)
+  })
+
+  it("retries on network errors", async () => {
+    process.env.UW_API_KEY = "test-api-key"
+    process.env.UW_MAX_RETRIES = "2"
+
+    const mockFetch = vi.fn()
+      .mockRejectedValueOnce(new Error("Network error"))
+      .mockResolvedValueOnce({
+        ok: true,
+        text: () => Promise.resolve('{"recovered": true}'),
+      })
+    vi.stubGlobal("fetch", mockFetch)
+
+    const result = await uwFetch("/api/test")
+    expect(result).toEqual({ data: { recovered: true } })
+    expect(mockFetch).toHaveBeenCalledTimes(2)
+  })
+
+  it("returns error after max retries on network failure", async () => {
+    process.env.UW_API_KEY = "test-api-key"
+
+    const mockFetch = vi.fn().mockRejectedValue(new Error("Connection refused"))
+    vi.stubGlobal("fetch", mockFetch)
+
+    const result = await uwFetch("/api/test")
+    expect(result.error).toMatch(/Request failed: Connection refused/)
+    // Default max retries is 3
+    expect(mockFetch).toHaveBeenCalledTimes(3)
+  })
+
+  it("handles AbortError for timeout", async () => {
+    process.env.UW_API_KEY = "test-api-key"
+    process.env.UW_MAX_RETRIES = "1"
+
+    const abortError = new Error("Aborted")
+    abortError.name = "AbortError"
+
+    const mockFetch = vi.fn().mockRejectedValue(abortError)
+    vi.stubGlobal("fetch", mockFetch)
+
+    const result = await uwFetch("/api/test")
+    expect(result.error).toBe("Request timed out")
+  })
+
+  it("returns rate limit error without retry-after header", async () => {
+    process.env.UW_API_KEY = "test-api-key"
+
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: false,
+      status: 429,
+      headers: {
+        get: () => null,
+      },
+      text: () => Promise.resolve("rate limited"),
+    }))
+
+    const result = await uwFetch("/api/test")
+    expect(result.error).toMatch(/API rate limit exceeded/)
+    expect(result.error).not.toContain("Retry after")
+  })
+
+  it("handles true boolean params", async () => {
+    process.env.UW_API_KEY = "test-api-key"
+
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve("{}"),
+    })
+    vi.stubGlobal("fetch", mockFetch)
+
+    await uwFetch("/api/test", { is_active: true, count: 0 })
+
+    const calledUrl = mockFetch.mock.calls[0][0]
+    expect(calledUrl).toContain("is_active=true")
+    expect(calledUrl).toContain("count=0")
+  })
+
+  it("handles null params in object", async () => {
+    process.env.UW_API_KEY = "test-api-key"
+
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve("{}"),
+    })
+    vi.stubGlobal("fetch", mockFetch)
+
+    await uwFetch("/api/test", { valid: "yes", invalid: null as unknown as string })
+
+    const calledUrl = mockFetch.mock.calls[0][0]
+    expect(calledUrl).toContain("valid=yes")
+    expect(calledUrl).not.toContain("invalid")
+  })
 })
