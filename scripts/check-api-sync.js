@@ -583,13 +583,35 @@ function extractSchemaConstraints() {
           if (maxMatch) {
             schemaConstraints.maxLength = Number(maxMatch[1])
           }
+
+          // Extract format validators (Zod built-in methods)
+          // Map Zod methods to OpenAPI format types
+          if (chainedCalls.includes('.email(')) {
+            schemaConstraints.format = 'email'
+          } else if (chainedCalls.includes('.url(')) {
+            schemaConstraints.format = 'uri'
+          } else if (chainedCalls.includes('.uuid(')) {
+            schemaConstraints.format = 'uuid'
+          } else if (chainedCalls.includes('.datetime(')) {
+            schemaConstraints.format = 'date-time'
+          } else if (chainedCalls.includes('.ip(')) {
+            schemaConstraints.format = 'ipv4'
+          }
+
+          // Check for custom regex patterns that imply formats
+          // Date pattern: YYYY-MM-DD
+          if (chainedCalls.includes('dateRegex') ||
+              chainedCalls.match(/\.regex\([^)]*\\d\{4\}-\\d\{2\}-\\d\{2\}/)) {
+            schemaConstraints.format = 'date'
+          }
         }
 
         // Only store if we found any constraints
         if (schemaConstraints.minimum !== undefined ||
             schemaConstraints.maximum !== undefined ||
             schemaConstraints.minLength !== undefined ||
-            schemaConstraints.maxLength !== undefined) {
+            schemaConstraints.maxLength !== undefined ||
+            schemaConstraints.format !== undefined) {
           constraints[schemaName] = schemaConstraints
         }
       } else {
@@ -730,6 +752,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
     defaultValueMismatches: [], // Track parameters with mismatched default values
     numericConstraintMismatches: [], // Track parameters with mismatched numeric constraints (min/max)
     stringLengthConstraintMismatches: [], // Track parameters with mismatched string length constraints (minLength/maxLength)
+    formatMismatches: [], // Track parameters with mismatched format specifiers (date, email, uri, etc.)
     summary: {
       totalSpecEndpoints: Object.keys(specEndpoints).length,
       totalImplEndpoints: Object.keys(implEndpoints).length,
@@ -745,6 +768,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
       defaultValueMismatches: 0,
       numericConstraintMismatches: 0,
       stringLengthConstraintMismatches: 0,
+      formatMismatches: 0,
     },
   }
 
@@ -1247,6 +1271,82 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
         results.summary.stringLengthConstraintMismatches++
       }
     }
+
+    // Check format specifiers for parameters
+    for (const paramName of [...specParams.required, ...specParams.optional]) {
+      const paramSchema = specParams.schemas[paramName]
+
+      // Skip if no format in spec
+      if (!paramSchema?.format) continue
+
+      // Skip if parameter is not a string type
+      if (paramSchema.type !== 'string') continue
+
+      // Normalize format variations in spec
+      // OpenAPI spec uses: date, date-time, date_time, datetime, email, uri, uuid, float
+      let normalizedSpecFormat = paramSchema.format
+      if (normalizedSpecFormat === 'date_time' || normalizedSpecFormat === 'datetime') {
+        normalizedSpecFormat = 'date-time'
+      }
+
+      // Skip float format (it's a number format, not string)
+      if (normalizedSpecFormat === 'float') continue
+
+      // Find the schema variable used for this parameter in the implementation
+      const schemaVarName = findSchemaForParam(paramName, implData.file)
+      if (!schemaVarName) {
+        // No schema found, report missing format
+        results.formatMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          specFormat: normalizedSpecFormat,
+          implFormat: null,
+          mismatchType: 'missing-format',
+          message: `Parameter has format '${normalizedSpecFormat}' in API spec but no format validation in implementation`,
+        })
+        results.summary.formatMismatches++
+        continue
+      }
+
+      const implConstraints = schemaConstraints[schemaVarName]
+      if (!implConstraints || !implConstraints.format) {
+        // Schema variable found but no format extracted
+        results.formatMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          schemaFile: implConstraints?.file,
+          specFormat: normalizedSpecFormat,
+          implFormat: null,
+          mismatchType: 'missing-format',
+          message: `Parameter has format '${normalizedSpecFormat}' in API spec but no format validation in implementation schema`,
+        })
+        results.summary.formatMismatches++
+        continue
+      }
+
+      // Compare format values
+      const implFormat = implConstraints.format
+      if (normalizedSpecFormat !== implFormat) {
+        results.formatMismatches.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          schemaFile: implConstraints.file,
+          specFormat: normalizedSpecFormat,
+          implFormat: implFormat,
+          mismatchType: 'value-mismatch',
+          message: `Format mismatch: spec has '${normalizedSpecFormat}' but implementation has '${implFormat}'`,
+        })
+        results.summary.formatMismatches++
+      }
+    }
   }
 
   return results
@@ -1269,7 +1369,7 @@ function buildDocLink(operationId) {
  * Print results to console
  */
 function printResults(results) {
-  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, deprecatedEndpoints, deprecatedParameters, missingEnumValues, extraEnumValues, defaultValueMismatches, numericConstraintMismatches, stringLengthConstraintMismatches, summary } = results
+  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, deprecatedEndpoints, deprecatedParameters, missingEnumValues, extraEnumValues, defaultValueMismatches, numericConstraintMismatches, stringLengthConstraintMismatches, formatMismatches, summary } = results
 
   console.log('\n' + '='.repeat(60))
   console.log('API SYNC CHECK RESULTS')
@@ -1537,6 +1637,31 @@ function printResults(results) {
     console.log('\n✅ All string length constraints match the spec')
   }
 
+  // Format mismatches
+  if (formatMismatches.length > 0) {
+    console.log(`\n🟠 Format Validation Mismatches (${summary.formatMismatches}):`)
+    console.log('   Parameters with format specifiers (date, email, uri, etc.) that don\'t match between spec and implementation.\n')
+    const byFile = groupBy(formatMismatches, 'file')
+    for (const [file, items] of Object.entries(byFile)) {
+      console.log(`   ${file}:`)
+      for (const item of items) {
+        console.log(`      ${item.endpoint}`)
+        console.log(`         Parameter: ${item.param}`)
+        if (item.schemaName && item.schemaFile) {
+          console.log(`         Schema: ${item.schemaName} (${item.schemaFile})`)
+        }
+        console.log(`         Spec format: ${item.specFormat}`)
+        console.log(`         Impl format: ${item.implFormat ?? 'none'}`)
+        if (item.message) {
+          console.log(`         ⚠️  ${item.message}`)
+        }
+      }
+      console.log('')
+    }
+  } else {
+    console.log('\n✅ All format specifiers match the spec')
+  }
+
   // Summary
   console.log('\n' + '='.repeat(60))
   console.log('SUMMARY')
@@ -1556,6 +1681,7 @@ function printResults(results) {
   console.log(`Default value mismatches:     ${summary.defaultValueMismatches}`)
   console.log(`Numeric constraint mismatches: ${summary.numericConstraintMismatches}`)
   console.log(`String length constraint mismatches: ${summary.stringLengthConstraintMismatches}`)
+  console.log(`Format mismatches:            ${summary.formatMismatches}`)
 
   const hasIssues = missingEndpoints.length > 0 ||
     missingRequiredParams.length > 0 ||
@@ -1568,7 +1694,8 @@ function printResults(results) {
     results.requiredOptionalMismatches.length > 0 ||
     results.defaultValueMismatches.length > 0 ||
     numericConstraintMismatches.length > 0 ||
-    stringLengthConstraintMismatches.length > 0
+    stringLengthConstraintMismatches.length > 0 ||
+    formatMismatches.length > 0
 
   if (!hasIssues) {
     console.log('\n✅ API is fully in sync!')
