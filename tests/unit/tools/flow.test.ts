@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+import { describe, it, expect, vi, beforeEach } from "vitest"
 import { handleFlow, flowTool } from "../../../src/tools/flow.js"
 
 // Mock the client module
@@ -57,19 +57,15 @@ describe("handleFlow", () => {
     mockUwFetch.mockResolvedValue({ data: { test: "data" } })
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleFlow({ action: "invalid_action" })
-      expect(result).toContain("error")
+      expect(result).toContain("Invalid option")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleFlow({})
-      expect(result).toContain("error")
+      expect(result).toContain("Invalid input")
     })
   })
 
@@ -104,7 +100,7 @@ describe("handleFlow", () => {
         action: "flow_alerts",
         min_premium: -100,
       })
-      expect(result).toContain("error")
+      expect(result).toContain("Premium cannot be negative")
     })
   })
 
