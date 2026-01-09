@@ -30,8 +30,8 @@ export const strikeSchema = z.number()
   .positive("Strike price must be positive")
   .describe("Option strike price")
 
-/** Option type (call or put) */
-export const optionTypeSchema = z.enum(["call", "put"]).describe("Option type (call or put)")
+/** Option type (call, put, or ALL) */
+export const optionTypeSchema = z.enum(["call", "put", "ALL"]).describe("Option type (call, put, or ALL)")
 
 /** Order direction */
 export const orderSchema = z.enum(["asc", "desc"]).describe("Order direction").default("desc")
