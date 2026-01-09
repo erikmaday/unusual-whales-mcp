@@ -92,6 +92,66 @@ const stockInputSchema = z.object({
   .merge(optionContractFiltersSchema)
   .merge(stockFlowFiltersSchema)
   .merge(dteFilterSchema)
+  .refine(
+    (data) => {
+      if (data.action === "greeks") {
+        return data.expiry !== undefined
+      }
+      return true
+    },
+    {
+      message: "expiry is required for greeks action",
+      path: ["expiry"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.action === "greek_exposure_by_strike_expiry") {
+        return data.expiry !== undefined
+      }
+      return true
+    },
+    {
+      message: "expiry is required for greek_exposure_by_strike_expiry action",
+      path: ["expiry"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.action === "atm_chains") {
+        return data.expirations !== undefined && data.expirations.length > 0
+      }
+      return true
+    },
+    {
+      message: "expirations is required for atm_chains action",
+      path: ["expirations"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.action === "spot_exposures_by_expiry_strike") {
+        return data.expirations !== undefined && data.expirations.length > 0
+      }
+      return true
+    },
+    {
+      message: "expirations is required for spot_exposures_by_expiry_strike action",
+      path: ["expirations"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.action === "historical_risk_reversal_skew") {
+        return data.expiry !== undefined && data.delta !== undefined
+      }
+      return true
+    },
+    {
+      message: "expiry and delta are required for historical_risk_reversal_skew action",
+      path: ["expiry"],
+    }
+  )
 
 
 export const stockTool = {
@@ -103,11 +163,11 @@ Available actions:
 - ohlc: Get OHLC candles (ticker, candle_size required; date, timeframe, end_date, limit optional)
 - option_chains: Get option chains (ticker required; date optional)
 - option_contracts: Get option contracts (ticker required; expiry, option_type, vol_greater_oi, exclude_zero_vol_chains, exclude_zero_dte, exclude_zero_oi_chains, maybe_otm_only, option_symbol, limit, page optional)
-- greeks: Get greeks data (ticker required; date, expiry optional)
+- greeks: Get greeks data (ticker, expiry required; date optional)
 - greek_exposure: Get gamma/delta/vanna exposure (ticker required; date, timeframe optional)
 - greek_exposure_by_expiry: Get greek exposure by expiry (ticker required; date optional)
 - greek_exposure_by_strike: Get greek exposure by strike (ticker required; date optional)
-- greek_exposure_by_strike_expiry: Get greek exposure by strike and expiry (ticker required; expiry, date optional)
+- greek_exposure_by_strike_expiry: Get greek exposure by strike and expiry (ticker, expiry required; date optional)
 - greek_flow: Get greek flow (ticker required; date optional)
 - greek_flow_by_expiry: Get greek flow by expiry (ticker, expiry required; date optional)
 - iv_rank: Get IV rank (ticker required; date, timespan optional)
@@ -118,7 +178,7 @@ Available actions:
 - oi_per_strike: Get OI per strike (ticker required; date optional)
 - options_volume: Get options volume (ticker required; limit optional)
 - volume_oi_expiry: Get volume/OI by expiry (ticker required; date optional)
-- atm_chains: Get ATM chains for given expirations (ticker, expirations[] required)
+- atm_chains: Get ATM chains for given expirations (ticker, expirations required)
 - expiry_breakdown: Get expiry breakdown (ticker required; date optional)
 - flow_per_expiry: Get flow per expiry (ticker required)
 - flow_per_strike: Get flow per strike (ticker required; date optional)
