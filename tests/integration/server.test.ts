@@ -10,6 +10,17 @@ vi.mock("../../src/client.js", () => ({
     }
     return JSON.stringify(result.data, null, 2)
   }),
+  formatStructuredResponse: vi.fn((result) => {
+    if (result.error) {
+      return {
+        text: JSON.stringify({ error: result.error }, null, 2),
+      }
+    }
+    return {
+      text: JSON.stringify(result.data, null, 2),
+      structuredContent: result.data,
+    }
+  }),
   formatError: vi.fn((message) => JSON.stringify({ error: message })),
   encodePath: vi.fn((value) => {
     if (value === undefined || value === null) {
@@ -118,20 +129,23 @@ describe("Handler Integration", () => {
     vi.clearAllMocks()
   })
 
-  it("handlers return JSON strings", async () => {
+  it("handlers return structured responses", async () => {
     const handler = handlers["uw_stock"]
     const result = await handler({ action: "ticker_exchanges" })
 
-    expect(typeof result).toBe("string")
-    expect(() => JSON.parse(result)).not.toThrow()
+    expect(typeof result).toBe("object")
+    expect(result).toHaveProperty("text")
+    expect(typeof result.text).toBe("string")
+    expect(() => JSON.parse(result.text)).not.toThrow()
   })
 
-  it("handlers return error JSON for invalid input", async () => {
+  it("handlers return error for invalid input", async () => {
     const handler = handlers["uw_stock"]
     const result = await handler({ action: "invalid_action_that_does_not_exist" })
 
-    expect(typeof result).toBe("string")
-    const parsed = JSON.parse(result)
+    expect(typeof result).toBe("object")
+    expect(result).toHaveProperty("text")
+    const parsed = JSON.parse(result.text)
     expect(parsed.error).toBeDefined()
   })
 
@@ -164,9 +178,12 @@ describe("Request/Response Cycle", () => {
 
     const handler = handlers["uw_stock"]
     const result = await handler({ action: "info", ticker: "AAPL" })
-    const parsed = JSON.parse(result)
+    expect(result).toHaveProperty("text")
+    expect(result).toHaveProperty("structuredContent")
+    const parsed = JSON.parse(result.text)
 
     expect(parsed).toEqual(mockData)
+    expect(result.structuredContent).toEqual(mockData)
   })
 
   it("API error response flows through correctly", async () => {
@@ -174,7 +191,8 @@ describe("Request/Response Cycle", () => {
 
     const handler = handlers["uw_stock"]
     const result = await handler({ action: "info", ticker: "AAPL" })
-    const parsed = JSON.parse(result)
+    expect(result).toHaveProperty("text")
+    const parsed = JSON.parse(result.text)
 
     expect(parsed.error).toBe("API rate limit exceeded")
   })
@@ -183,7 +201,8 @@ describe("Request/Response Cycle", () => {
     const handler = handlers["uw_stock"]
     const result = await handler({ action: "ohlc", ticker: "AAPL" }) // missing candle_size
 
-    const parsed = JSON.parse(result)
+    expect(result).toHaveProperty("text")
+    const parsed = JSON.parse(result.text)
     expect(parsed.error).toContain("required")
     expect(mockUwFetch).not.toHaveBeenCalled()
   })
