@@ -34,8 +34,8 @@ const screenerBaseSchema = z.object({
 
   // Ordering and pagination
   order: z.string().describe("Field to order results by").optional(),
-  order_direction: z.enum(["asc", "desc"]).describe("Order direction (asc or desc)").optional(),
-  limit: z.number().int().positive().describe("Maximum number of results").optional(),
+  order_direction: z.enum(["asc", "desc"]).describe("Order direction (asc or desc)").default("desc"),
+  limit: z.number().int().positive().describe("Maximum number of results").default(1),
   page: z.number().int().positive().describe("Page number for pagination").optional(),
 
   // Analyst screener filters
