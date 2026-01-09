@@ -24,6 +24,7 @@ Available actions:
 - alerts: Get triggered alerts for the user
 - configurations: Get alert configurations`,
   inputSchema: toJsonSchema(alertsInputSchema),
+  zodInputSchema: alertsInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,

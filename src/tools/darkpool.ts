@@ -35,6 +35,7 @@ Available actions:
 
 Filtering options include premium range, size range, and volume range.`,
   inputSchema: toJsonSchema(darkpoolInputSchema),
+  zodInputSchema: darkpoolInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,

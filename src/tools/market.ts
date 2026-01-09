@@ -57,6 +57,7 @@ Available actions:
 - top_net_impact: Get top tickers by net premium (date, issue_types, limit optional)
 - total_options_volume: Get total market options volume (limit optional)`,
   inputSchema: toJsonSchema(marketInputSchema),
+  zodInputSchema: marketInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,

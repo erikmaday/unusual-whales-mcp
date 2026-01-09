@@ -23,6 +23,7 @@ export const newsTool = {
 Available actions:
 - headlines: Get news headlines with optional filters (ticker, sources, search_term, major_only, page)`,
   inputSchema: toJsonSchema(newsInputSchema),
+  zodInputSchema: newsInputSchema,
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,
