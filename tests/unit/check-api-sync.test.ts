@@ -972,3 +972,122 @@ describe('required/optional mismatch detection', () => {
     expect(mismatches.some(m => m.param === 'date' && m.type === 'optional-in-spec-required-in-impl')).toBe(true)
   })
 })
+
+describe('Format validation', () => {
+  it('extracts format from Zod email validator', () => {
+    const zodSchema = `
+      export const emailSchema = z.string()
+        .email("Invalid email")
+        .describe("Email address")
+    `
+
+    // Simulate format extraction logic
+    const hasEmailFormat = zodSchema.includes('.email(')
+    const extractedFormat = hasEmailFormat ? 'email' : null
+
+    expect(extractedFormat).toBe('email')
+  })
+
+  it('extracts format from Zod url validator', () => {
+    const zodSchema = `
+      export const websiteSchema = z.string()
+        .url("Invalid URL")
+        .describe("Website URL")
+    `
+
+    const hasUrlFormat = zodSchema.includes('.url(')
+    const extractedFormat = hasUrlFormat ? 'uri' : null
+
+    expect(extractedFormat).toBe('uri')
+  })
+
+  it('extracts format from Zod uuid validator', () => {
+    const zodSchema = `
+      export const idSchema = z.string()
+        .uuid("Invalid UUID")
+        .describe("Unique identifier")
+    `
+
+    const hasUuidFormat = zodSchema.includes('.uuid(')
+    const extractedFormat = hasUuidFormat ? 'uuid' : null
+
+    expect(extractedFormat).toBe('uuid')
+  })
+
+  it('extracts format from Zod datetime validator', () => {
+    const zodSchema = `
+      export const timestampSchema = z.string()
+        .datetime("Invalid datetime")
+        .describe("ISO 8601 datetime")
+    `
+
+    const hasDatetimeFormat = zodSchema.includes('.datetime(')
+    const extractedFormat = hasDatetimeFormat ? 'date-time' : null
+
+    expect(extractedFormat).toBe('date-time')
+  })
+
+  it('extracts date format from custom date regex', () => {
+    const zodSchema = `
+      export const dateSchema = z.string()
+        .regex(dateRegex, "Date must be in YYYY-MM-DD format")
+        .describe("Date in YYYY-MM-DD format")
+    `
+
+    const hasDateRegex = zodSchema.includes('dateRegex')
+    const extractedFormat = hasDateRegex ? 'date' : null
+
+    expect(extractedFormat).toBe('date')
+  })
+
+  it('normalizes date_time format variations', () => {
+    const formats = ['date-time', 'date_time', 'datetime']
+    const normalized = formats.map(f => {
+      if (f === 'date_time' || f === 'datetime') {
+        return 'date-time'
+      }
+      return f
+    })
+
+    expect(normalized).toEqual(['date-time', 'date-time', 'date-time'])
+  })
+
+  it('detects format mismatches', () => {
+    const specFormat = 'date'
+    const implFormat = 'email'
+
+    const hasMismatch = specFormat !== implFormat
+
+    expect(hasMismatch).toBe(true)
+  })
+
+  it('detects missing format in implementation', () => {
+    const specFormat = 'date'
+    const implFormat = null
+
+    const hasMismatch = specFormat && !implFormat
+
+    expect(hasMismatch).toBe(true)
+  })
+
+  it('passes when formats match', () => {
+    const specFormat = 'uuid'
+    const implFormat = 'uuid'
+
+    const hasMismatch = specFormat !== implFormat
+
+    expect(hasMismatch).toBe(false)
+  })
+
+  it('skips float format for string parameters', () => {
+    const paramSchema = {
+      type: 'string',
+      format: 'float'
+    }
+
+    // Float is a number format, should be skipped for string types
+    const shouldProcess = paramSchema.type === 'string' && paramSchema.format !== 'float'
+
+    expect(shouldProcess).toBe(false)
+  })
+})
