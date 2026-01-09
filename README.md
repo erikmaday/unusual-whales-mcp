@@ -4,6 +4,8 @@ An MCP server that provides access to the [Unusual Whales](https://unusualwhales
 
 ## Features
 
+### Tools
+
 | Tool | Description |
 |------|-------------|
 | **Stock** | Options chains, Greeks, IV rank, OHLC candles, max pain, open interest, flow alerts, spot exposures, volatility analysis |
@@ -22,6 +24,17 @@ An MCP server that provides access to the [Unusual Whales](https://unusualwhales
 | **Screener** | Stock screener, options contract screener, analyst ratings screener |
 | **News** | Market news headlines with ticker filter |
 | **Alerts** | User alert configurations and triggered alerts |
+
+### Resources
+
+The server exposes documentation resources that AI assistants can access:
+
+| Resource | URI | Description |
+|----------|-----|-------------|
+| **API Reference** | `docs://api-reference` | Complete reference documentation for all available tools with input schemas and annotations |
+| **Tools Summary** | `docs://tools-summary` | JSON summary of available tools with their actions and required parameters |
+
+AI assistants can request these resources when they need information about available functionality or tool usage.
 
 ## Prerequisites
 
