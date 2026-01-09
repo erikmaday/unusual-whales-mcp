@@ -49,11 +49,13 @@ for (const tool of tools) {
     continue
   }
 
-  server.tool(
+  server.registerTool(
     tool.name,
-    tool.description,
-    tool.zodInputSchema,
-    tool.annotations || {},
+    {
+      description: tool.description,
+      inputSchema: tool.zodInputSchema,
+      annotations: tool.annotations || {},
+    },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async (args: any) => {
       try {
@@ -128,7 +130,7 @@ for (const resource of resources) {
     continue
   }
 
-  server.resource(
+  server.registerResource(
     resource.name,
     resource.uri,
     {
@@ -166,9 +168,11 @@ for (const prompt of prompts) {
     continue
   }
 
-  server.prompt(
+  server.registerPrompt(
     prompt.name,
-    prompt.description ?? "",
+    {
+      description: prompt.description ?? "",
+    },
     async () => {
       try {
         // Prompt handlers don't receive args in the old API
