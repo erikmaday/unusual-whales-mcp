@@ -102,6 +102,24 @@ npm run start     # Run server
 npm run check-api # Check for API changes
 ```
 
+### API Sync Checker
+
+The `check-api-sync.js` script compares the UnusualWhales OpenAPI spec against the implemented endpoints, checking:
+
+- **Endpoint coverage**: Missing or extra endpoints
+- **Parameter validation**: Required/optional parameters, enum values, constraints
+- **Response schemas**: Documented response types (optional validation)
+
+Run with optional flags:
+
+```bash
+npm run check-api                        # Standard check
+SHOW_RESPONSE_SCHEMAS=true npm run check-api  # Include response schema details
+CREATE_ISSUES=true npm run check-api     # Create GitHub issues for problems
+```
+
+Response schema validation is lower priority since the MCP passes API responses through without transformation. Enable `SHOW_RESPONSE_SCHEMAS=true` to see which endpoints have documented response schemas for potential future TypeScript type generation.
+
 ### Debugging with MCP Inspector
 
 To test and debug the server locally, use the [MCP Inspector](https://github.com/modelcontextprotocol/inspector):
