@@ -20,7 +20,9 @@ const marketActions = [
 const marketInputSchema = z.object({
   action: z.enum(marketActions).describe("The action to perform"),
   ticker: tickerSchema.describe("Ticker symbol (for etf_tide)").optional(),
-  tickers: z.string().describe("Comma-separated list of tickers (for correlations)").optional(),
+  // Comma-separated list of tickers (required for correlations action)
+  // Runtime validation in handleMarket ensures this is provided when action=correlations
+  tickers: z.string().optional().describe("Ticker list for correlations"),
   sector: z.string().describe("Market sector (for sector_tide)").optional(),
   date: dateSchema.optional(),
   otm_only: z.boolean().describe("Only use OTM options (for market_tide)").optional(),
