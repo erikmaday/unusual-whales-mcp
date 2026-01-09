@@ -337,6 +337,83 @@ function extractParamsFromBlock(block) {
 }
 
 /**
+ * Extract enum values from schema files
+ */
+function extractSchemaEnums() {
+  const schemasDir = join(ROOT_DIR, 'src', 'schemas')
+  const files = readdirSync(schemasDir).filter(f => f.endsWith('.ts'))
+
+  const enums = {}
+
+  for (const file of files) {
+    const content = readFileSync(join(schemasDir, file), 'utf-8')
+
+    // Pattern to match z.enum([...]) with variable name
+    // Examples:
+    // export const optionTypeSchema = z.enum(["call", "put"])
+    // const tideTypeSchema = z.enum(['all', 'equity_only'])
+    const enumPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.enum\(\s*\[([^\]]+)\]\s*\)/g
+
+    let match
+    while ((match = enumPattern.exec(content)) !== null) {
+      const schemaName = match[1]
+      const enumValues = match[2]
+
+      // Extract the actual enum values from the array
+      const values = []
+      const valuePattern = /["']([^"']+)["']/g
+      let valueMatch
+      while ((valueMatch = valuePattern.exec(enumValues)) !== null) {
+        values.push(valueMatch[1])
+      }
+
+      if (values.length > 0) {
+        enums[schemaName] = {
+          file,
+          values,
+        }
+      }
+    }
+  }
+
+  return enums
+}
+
+/**
+ * Try to find the schema variable name for a parameter
+ * by looking at tool files
+ */
+function findSchemaForParam(paramName, toolFile) {
+  const toolsDir = join(ROOT_DIR, 'src', 'tools')
+  const content = readFileSync(join(toolsDir, toolFile), 'utf-8')
+
+  // Look for patterns like:
+  // tide_type: tideTypeSchema
+  // option_type: optionTypeSchema
+  // The pattern is: paramName: schemaName
+  const pattern = new RegExp(`${paramName}\\s*:\\s*(\\w+Schema)`, 'i')
+  const match = content.match(pattern)
+
+  if (match) {
+    return match[1]
+  }
+
+  // Try camelCase conversion: tide_type -> tideTypeSchema
+  const camelCase = paramName.split('_').map((word, i) => {
+    if (i === 0) return word
+    return word.charAt(0).toUpperCase() + word.slice(1)
+  }).join('')
+  const expectedSchemaName = camelCase + 'Schema'
+
+  // Check if this schema exists in the file (might be imported)
+  if (content.includes(expectedSchemaName)) {
+    return expectedSchemaName
+  }
+
+  return null
+}
+
+/**
  * Normalize endpoint for comparison (replace specific path params with generic)
  */
 function normalizeForComparison(endpoint) {
@@ -371,13 +448,15 @@ function findMatchingSpecEndpoint(implEndpoint, specEndpoints) {
 /**
  * Compare endpoints and parameters
  */
-function compareAll(specEndpoints, implEndpoints) {
+function compareAll(specEndpoints, implEndpoints, schemaEnums) {
   const results = {
     missingEndpoints: [],
     extraEndpoints: [],
     missingRequiredParams: [],
     missingOptionalParams: [],
     extraParams: [],
+    missingEnumValues: [],
+    extraEnumValues: [],
     summary: {
       totalSpecEndpoints: Object.keys(specEndpoints).length,
       totalImplEndpoints: Object.keys(implEndpoints).length,
@@ -385,6 +464,8 @@ function compareAll(specEndpoints, implEndpoints) {
       requiredParamsMissing: 0,
       optionalParamsMissing: 0,
       extraParams: 0,
+      enumValuesMissing: 0,
+      enumValuesExtra: 0,
     },
   }
 
@@ -472,6 +553,86 @@ function compareAll(specEndpoints, implEndpoints) {
         results.summary.extraParams++
       }
     }
+
+    // Check enum values for parameters that have enums in the spec
+    for (const paramName of [...specParams.required, ...specParams.optional]) {
+      const paramSchema = specParams.schemas[paramName]
+      if (!paramSchema?.enum) continue // Skip params without enum
+
+      // Find the schema variable used for this parameter in the implementation
+      const schemaVarName = findSchemaForParam(paramName, implData.file)
+      if (!schemaVarName) {
+        // No enum schema found in implementation
+        results.missingEnumValues.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          specEnum: paramSchema.enum,
+          implEnum: null,
+          missing: paramSchema.enum,
+          extra: [],
+        })
+        results.summary.enumValuesMissing += paramSchema.enum.length
+        continue
+      }
+
+      const implEnumData = schemaEnums[schemaVarName]
+      if (!implEnumData) {
+        // Schema variable found but not an enum
+        results.missingEnumValues.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          specEnum: paramSchema.enum,
+          implEnum: null,
+          missing: paramSchema.enum,
+          extra: [],
+        })
+        results.summary.enumValuesMissing += paramSchema.enum.length
+        continue
+      }
+
+      // Compare enum values
+      const specEnumValues = paramSchema.enum
+      const implEnumValues = implEnumData.values
+
+      const missing = specEnumValues.filter(v => !implEnumValues.includes(v))
+      const extra = implEnumValues.filter(v => !specEnumValues.includes(v))
+
+      if (missing.length > 0) {
+        results.missingEnumValues.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          schemaFile: implEnumData.file,
+          specEnum: specEnumValues,
+          implEnum: implEnumValues,
+          missing,
+          extra: [],
+        })
+        results.summary.enumValuesMissing += missing.length
+      }
+
+      if (extra.length > 0) {
+        results.extraEnumValues.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          schemaName: schemaVarName,
+          schemaFile: implEnumData.file,
+          specEnum: specEnumValues,
+          implEnum: implEnumValues,
+          missing: [],
+          extra,
+        })
+        results.summary.enumValuesExtra += extra.length
+      }
+    }
   }
 
   return results
@@ -494,7 +655,7 @@ function buildDocLink(operationId) {
  * Print results to console
  */
 function printResults(results) {
-  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, summary } = results
+  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, missingEnumValues, extraEnumValues, summary } = results
 
   console.log('\n' + '='.repeat(60))
   console.log('API SYNC CHECK RESULTS')
@@ -569,22 +730,70 @@ function printResults(results) {
     console.log('\n✅ No extra parameters found')
   }
 
+  // Missing enum values (in spec but not in MCP schema)
+  if (missingEnumValues.length > 0) {
+    console.log(`\n🔴 CRITICAL: Missing Enum Values (${summary.enumValuesMissing} values):`)
+    const byFile = groupBy(missingEnumValues, 'file')
+    for (const [file, items] of Object.entries(byFile)) {
+      console.log(`\n   ${file}:`)
+      for (const item of items) {
+        console.log(`      ${item.endpoint}`)
+        console.log(`         Parameter: ${item.param}`)
+        if (item.schemaName && item.schemaFile) {
+          console.log(`         Schema: ${item.schemaName} (${item.schemaFile})`)
+        }
+        console.log(`         Missing values: ${item.missing.join(', ')}`)
+        if (item.implEnum) {
+          console.log(`         Current values: ${item.implEnum.join(', ')}`)
+        } else {
+          console.log(`         Current: No enum constraint (just z.string())`)
+        }
+      }
+    }
+  } else {
+    console.log('\n✅ All enum values from spec are implemented')
+  }
+
+  // Extra enum values (in MCP schema but not in spec)
+  if (extraEnumValues.length > 0) {
+    console.log(`\n⚠️  Extra Enum Values (${summary.enumValuesExtra} values) - not in spec:`)
+    const byFile = groupBy(extraEnumValues, 'file')
+    for (const [file, items] of Object.entries(byFile)) {
+      console.log(`\n   ${file}:`)
+      for (const item of items) {
+        console.log(`      ${item.endpoint}`)
+        console.log(`         Parameter: ${item.param}`)
+        if (item.schemaName && item.schemaFile) {
+          console.log(`         Schema: ${item.schemaName} (${item.schemaFile})`)
+        }
+        console.log(`         Extra values: ${item.extra.join(', ')}`)
+        console.log(`         Expected values: ${item.specEnum.join(', ')}`)
+      }
+    }
+  } else {
+    console.log('\n✅ No extra enum values found')
+  }
+
   // Summary
   console.log('\n' + '='.repeat(60))
   console.log('SUMMARY')
   console.log('='.repeat(60))
-  console.log(`Endpoints in spec:      ${summary.totalSpecEndpoints}`)
-  console.log(`Endpoints implemented:  ${summary.endpointsCovered}`)
-  console.log(`Missing endpoints:      ${missingEndpoints.length}`)
-  console.log(`Extra endpoints:        ${extraEndpoints.length}`)
+  console.log(`Endpoints in spec:       ${summary.totalSpecEndpoints}`)
+  console.log(`Endpoints implemented:   ${summary.endpointsCovered}`)
+  console.log(`Missing endpoints:       ${missingEndpoints.length}`)
+  console.log(`Extra endpoints:         ${extraEndpoints.length}`)
   console.log(`Missing required params: ${summary.requiredParamsMissing}`)
   console.log(`Missing optional params: ${summary.optionalParamsMissing}`)
-  console.log(`Extra params:           ${summary.extraParams}`)
+  console.log(`Extra params:            ${summary.extraParams}`)
+  console.log(`Missing enum values:     ${summary.enumValuesMissing}`)
+  console.log(`Extra enum values:       ${summary.enumValuesExtra}`)
 
   const hasIssues = missingEndpoints.length > 0 ||
     missingRequiredParams.length > 0 ||
     missingOptionalParams.length > 0 ||
-    extraParams.length > 0
+    extraParams.length > 0 ||
+    missingEnumValues.length > 0 ||
+    extraEnumValues.length > 0
 
   if (!hasIssues) {
     console.log('\n✅ API is fully in sync!')
@@ -984,8 +1193,12 @@ async function main() {
     const implEndpoints = extractImplementedEndpointsWithParams()
     console.log(`Found ${Object.keys(implEndpoints).length} implemented endpoints`)
 
+    console.log('Extracting enum schemas from MCP implementation...')
+    const schemaEnums = extractSchemaEnums()
+    console.log(`Found ${Object.keys(schemaEnums).length} enum schemas`)
+
     console.log('Comparing...')
-    const results = compareAll(specEndpoints, implEndpoints)
+    const results = compareAll(specEndpoints, implEndpoints, schemaEnums)
 
     const hasIssues = printResults(results)
 
