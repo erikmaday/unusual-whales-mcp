@@ -7,7 +7,7 @@ const politiciansActions = ["people", "portfolio", "recent_trades", "holders", "
 
 const politiciansInputSchema = z.object({
   action: z.enum(politiciansActions).describe("The action to perform"),
-  politician_id: z.string().describe("Politician ID (for portfolio, recent_trades, or disclosures action)").optional(),
+  politician_id: z.uuid("Politician ID must be a valid UUID").describe("Politician ID (for portfolio, recent_trades, or disclosures action)").optional(),
   latest_only: z.boolean().describe("Return only most recent disclosure per politician (for disclosures action)").optional(),
   year: z.number().describe("Filter by disclosure year (for disclosures action)").optional(),
   ticker: tickerSchema.describe("Ticker symbol (for holders or recent_trades action)").optional(),
