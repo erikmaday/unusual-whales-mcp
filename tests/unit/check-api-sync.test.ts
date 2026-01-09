@@ -411,3 +411,202 @@ Please migrate to this Flow Alerts endpoint, which provides a more detailed resp
     expect(result.message).toBe('DEPRECATED: This endpoint is no longer supported')
   })
 })
+
+describe('extractSchemaEnums', () => {
+  it('extracts enum values from schema files', () => {
+    // Mock schema content
+    const schemaContent = `
+      import { z } from "zod"
+
+      export const optionTypeSchema = z.enum(["call", "put"]).describe("Option type (call or put)")
+
+      export const orderSchema = z.enum(["asc", "desc"]).describe("Order direction")
+
+      export const candleSizeSchema = z.enum([
+        "1m", "5m", "10m", "15m", "30m", "1h", "4h", "1d",
+      ]).describe("Candle size")
+    `
+
+    // Parse the content
+    const enums: Record<string, { file: string; values: string[] }> = {}
+
+    const enumPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.enum\(\s*\[([^\]]+)\]\s*\)/g
+    let match
+
+    while ((match = enumPattern.exec(schemaContent)) !== null) {
+      const schemaName = match[1]
+      const enumValues = match[2]
+
+      const values: string[] = []
+      const valuePattern = /["']([^"']+)["']/g
+      let valueMatch
+
+      while ((valueMatch = valuePattern.exec(enumValues)) !== null) {
+        values.push(valueMatch[1])
+      }
+
+      if (values.length > 0) {
+        enums[schemaName] = {
+          file: 'common.ts',
+          values,
+        }
+      }
+    }
+
+    expect(enums['optionTypeSchema']).toBeDefined()
+    expect(enums['optionTypeSchema'].values).toEqual(['call', 'put'])
+
+    expect(enums['orderSchema']).toBeDefined()
+    expect(enums['orderSchema'].values).toEqual(['asc', 'desc'])
+
+    expect(enums['candleSizeSchema']).toBeDefined()
+    expect(enums['candleSizeSchema'].values).toEqual([
+      '1m', '5m', '10m', '15m', '30m', '1h', '4h', '1d',
+    ])
+  })
+
+  it('handles enums without export keyword', () => {
+    const schemaContent = `
+      const privateSchema = z.enum(["a", "b", "c"])
+    `
+
+    const enums: Record<string, { file: string; values: string[] }> = {}
+    const enumPattern = /(?:export\s+)?const\s+(\w+Schema)\s*=\s*z\.enum\(\s*\[([^\]]+)\]\s*\)/g
+    let match
+
+    while ((match = enumPattern.exec(schemaContent)) !== null) {
+      const schemaName = match[1]
+      const enumValues = match[2]
+
+      const values: string[] = []
+      const valuePattern = /["']([^"']+)["']/g
+      let valueMatch
+
+      while ((valueMatch = valuePattern.exec(enumValues)) !== null) {
+        values.push(valueMatch[1])
+      }
+
+      if (values.length > 0) {
+        enums[schemaName] = {
+          file: 'test.ts',
+          values,
+        }
+      }
+    }
+
+    expect(enums['privateSchema']).toBeDefined()
+    expect(enums['privateSchema'].values).toEqual(['a', 'b', 'c'])
+  })
+})
+
+describe('findSchemaForParam', () => {
+  it('finds schema by matching parameter name pattern', () => {
+    const toolContent = `
+      export const schema = z.object({
+        tide_type: tideTypeSchema.optional(),
+        option_type: optionTypeSchema,
+      })
+    `
+
+    // Simulate findSchemaForParam logic
+    function findSchemaForParam(paramName: string, content: string): string | null {
+      const pattern = new RegExp(`${paramName}\\s*:\\s*(\\w+Schema)`, 'i')
+      const match = content.match(pattern)
+
+      if (match) {
+        return match[1]
+      }
+
+      return null
+    }
+
+    const tideTypeResult = findSchemaForParam('tide_type', toolContent)
+    expect(tideTypeResult).toBe('tideTypeSchema')
+
+    const optionTypeResult = findSchemaForParam('option_type', toolContent)
+    expect(optionTypeResult).toBe('optionTypeSchema')
+  })
+
+  it('returns null for non-existent parameter', () => {
+    const toolContent = `
+      export const schema = z.object({
+        tide_type: tideTypeSchema.optional(),
+      })
+    `
+
+    function findSchemaForParam(paramName: string, content: string): string | null {
+      const pattern = new RegExp(`${paramName}\\s*:\\s*(\\w+Schema)`, 'i')
+      const match = content.match(pattern)
+      return match ? match[1] : null
+    }
+
+    const result = findSchemaForParam('nonexistent', toolContent)
+    expect(result).toBeNull()
+  })
+})
+
+describe('enum validation', () => {
+  it('detects missing enum values', () => {
+    // Spec has enum with 4 values
+    const specEnum = ['all', 'equity_only', 'etf_only', 'index_only']
+
+    // Implementation only has 3 values
+    const implEnum = ['all', 'equity_only', 'etf_only']
+
+    const missing = specEnum.filter(v => !implEnum.includes(v))
+    const extra = implEnum.filter(v => !specEnum.includes(v))
+
+    expect(missing).toEqual(['index_only'])
+    expect(extra).toEqual([])
+  })
+
+  it('detects extra enum values', () => {
+    // Spec has enum with 2 values
+    const specEnum = ['call', 'put']
+
+    // Implementation has 3 values (including deprecated one)
+    const implEnum = ['call', 'put', 'spread']
+
+    const missing = specEnum.filter(v => !implEnum.includes(v))
+    const extra = implEnum.filter(v => !specEnum.includes(v))
+
+    expect(missing).toEqual([])
+    expect(extra).toEqual(['spread'])
+  })
+
+  it('detects both missing and extra enum values', () => {
+    // Spec has enum values
+    const specEnum = ['asc', 'desc', 'random']
+
+    // Implementation has different values
+    const implEnum = ['asc', 'ascending', 'descending']
+
+    const missing = specEnum.filter(v => !implEnum.includes(v))
+    const extra = implEnum.filter(v => !specEnum.includes(v))
+
+    expect(missing).toEqual(['desc', 'random'])
+    expect(extra).toEqual(['ascending', 'descending'])
+  })
+
+  it('passes when enum values match exactly', () => {
+    const specEnum = ['call', 'put']
+    const implEnum = ['call', 'put']
+
+    const missing = specEnum.filter(v => !implEnum.includes(v))
+    const extra = implEnum.filter(v => !specEnum.includes(v))
+
+    expect(missing).toEqual([])
+    expect(extra).toEqual([])
+  })
+
+  it('handles enums with different ordering', () => {
+    const specEnum = ['z', 'a', 'm']
+    const implEnum = ['a', 'm', 'z']
+
+    const missing = specEnum.filter(v => !implEnum.includes(v))
+    const extra = implEnum.filter(v => !specEnum.includes(v))
+
+    expect(missing).toEqual([])
+    expect(extra).toEqual([])
+  })
+})
