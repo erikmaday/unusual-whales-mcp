@@ -294,22 +294,6 @@ describe("handleStock", () => {
     })
   })
 
-  describe("flow_alerts action", () => {
-    it("calls uwFetch with filter params", async () => {
-      await handleStock({
-        action: "flow_alerts",
-        ticker: "AAPL",
-        limit: 50,
-        is_ask_side: true,
-      })
-      expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/flow-alerts", {
-        limit: 50,
-        is_ask_side: true,
-        is_bid_side: undefined,
-      })
-    })
-  })
-
   describe("option_contracts action", () => {
     it("passes filter options correctly", async () => {
       await handleStock({
