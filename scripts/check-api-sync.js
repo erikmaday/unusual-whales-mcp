@@ -2290,7 +2290,7 @@ async function createGitHubIssues(results) {
   const missingEnumsByFile = groupBy(results.missingEnumValues, 'file')
   for (const [file, enumIssues] of Object.entries(missingEnumsByFile)) {
     const issueId = generateIssueId('missing-enum-values', file)
-    const enumCount = enumIssues.reduce((sum, e) => sum + e.missingValues.length, 0)
+    const enumCount = enumIssues.reduce((sum, e) => sum + (e.missing?.length || 0), 0)
 
     let body = `${issueId}\n\n## Missing Enum Values\n\n` +
       `The following parameters in \`src/tools/${file}\` have enum values defined in the API spec ` +
@@ -2308,9 +2308,9 @@ async function createGitHubIssues(results) {
         if (e.schemaName) {
           body += `- **Schema:** \`${e.schemaName}\` (${e.schemaFile || 'common.ts'})\n`
         }
-        body += `- **Missing values:** ${e.missingValues.join(', ')}\n`
-        if (e.currentValues && e.currentValues.length > 0) {
-          body += `- **Current values:** ${e.currentValues.join(', ')}\n`
+        body += `- **Missing values:** ${e.missing?.join(', ') || 'none'}\n`
+        if (e.implEnum && e.implEnum.length > 0) {
+          body += `- **Current values:** ${e.implEnum.join(', ')}\n`
         } else {
           body += `- **Current:** No enum constraint (just z.string())\n`
         }
@@ -2337,7 +2337,7 @@ async function createGitHubIssues(results) {
   const extraEnumsByFile = groupBy(results.extraEnumValues, 'file')
   for (const [file, enumIssues] of Object.entries(extraEnumsByFile)) {
     const issueId = generateIssueId('extra-enum-values', file)
-    const enumCount = enumIssues.reduce((sum, e) => sum + e.extraValues.length, 0)
+    const enumCount = enumIssues.reduce((sum, e) => sum + (e.extra?.length || 0), 0)
 
     let body = `${issueId}\n\n## Extra Enum Values\n\n` +
       `The following parameters in \`src/tools/${file}\` have enum values in the implementation ` +
@@ -2355,8 +2355,8 @@ async function createGitHubIssues(results) {
         if (e.schemaName) {
           body += `- **Schema:** \`${e.schemaName}\` (${e.schemaFile || 'common.ts'})\n`
         }
-        body += `- **Extra values:** ${e.extraValues.join(', ')}\n`
-        body += `- **Expected values:** ${e.specValues.join(', ')}\n\n`
+        body += `- **Extra values:** ${e.extra?.join(', ') || 'none'}\n`
+        body += `- **Expected values:** ${e.specEnum?.join(', ') || 'none'}\n\n`
       }
     }
 
@@ -2397,13 +2397,13 @@ async function createGitHubIssues(results) {
         if (c.schemaName) {
           body += `- **Schema:** \`${c.schemaName}\` (${c.schemaFile || 'common.ts'})\n`
         }
-        if (c.specMin !== undefined) {
-          body += `- **Spec minimum:** ${c.specMin}\n`
-          body += `- **Impl minimum:** ${c.implMin !== undefined ? c.implMin : 'none'}\n`
+        if (c.specMinimum !== undefined) {
+          body += `- **Spec minimum:** ${c.specMinimum}\n`
+          body += `- **Impl minimum:** ${c.implMinimum !== undefined ? c.implMinimum : 'none'}\n`
         }
-        if (c.specMax !== undefined) {
-          body += `- **Spec maximum:** ${c.specMax}\n`
-          body += `- **Impl maximum:** ${c.implMax !== undefined ? c.implMax : 'none'}\n`
+        if (c.specMaximum !== undefined) {
+          body += `- **Spec maximum:** ${c.specMaximum}\n`
+          body += `- **Impl maximum:** ${c.implMaximum !== undefined ? c.implMaximum : 'none'}\n`
         }
         body += `- **Issue:** ${c.message}\n\n`
       }
