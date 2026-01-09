@@ -196,6 +196,44 @@ function extractDeprecationInfo(description) {
 }
 
 /**
+ * Extract response schema information from an endpoint
+ * @param {object} method - The method object from OpenAPI spec
+ * @param {object} spec - The full OpenAPI spec for resolving $refs
+ * @returns {object} Response schema info
+ */
+function extractResponseSchema(method, spec) {
+  const responseInfo = {}
+
+  // Check for 200 response
+  const responses = method.responses || {}
+  const okResponse = responses['200']
+
+  if (!okResponse) return responseInfo
+
+  // Get the schema from application/json content
+  const content = okResponse.content || {}
+  const jsonContent = content['application/json']
+
+  if (!jsonContent || !jsonContent.schema) return responseInfo
+
+  let schema = jsonContent.schema
+
+  // Resolve $ref if present
+  if (schema.$ref) {
+    const resolved = resolveRef(schema.$ref, spec)
+    if (resolved) {
+      responseInfo.schemaRef = schema.$ref
+      responseInfo.schemaName = schema.$ref.split('/').pop()
+      responseInfo.schema = resolved
+    }
+  } else {
+    responseInfo.schema = schema
+  }
+
+  return responseInfo
+}
+
+/**
  * Extract all endpoints and their parameters from the OpenAPI spec
  */
 function extractSpecEndpointsWithParams(spec) {
@@ -216,6 +254,13 @@ function extractSpecEndpointsWithParams(spec) {
       path: [],
       operationId: getMethod.operationId || null,
       schemas: {}, // Store schema info for each parameter
+      responseSchema: null, // Store response schema info
+    }
+
+    // Extract response schema
+    const responseSchema = extractResponseSchema(getMethod, spec)
+    if (Object.keys(responseSchema).length > 0) {
+      params.responseSchema = responseSchema
     }
 
     // Check for deprecation
@@ -753,6 +798,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
     numericConstraintMismatches: [], // Track parameters with mismatched numeric constraints (min/max)
     stringLengthConstraintMismatches: [], // Track parameters with mismatched string length constraints (minLength/maxLength)
     formatMismatches: [], // Track parameters with mismatched format specifiers (date, email, uri, etc.)
+    responseSchemas: [], // Track response schemas documented (for optional validation)
     summary: {
       totalSpecEndpoints: Object.keys(specEndpoints).length,
       totalImplEndpoints: Object.keys(implEndpoints).length,
@@ -769,6 +815,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
       numericConstraintMismatches: 0,
       stringLengthConstraintMismatches: 0,
       formatMismatches: 0,
+      responseSchemasDocumented: 0,
     },
   }
 
@@ -1347,6 +1394,18 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
         results.summary.formatMismatches++
       }
     }
+
+    // Document response schema (optional validation - lower priority)
+    if (specParams.responseSchema) {
+      results.responseSchemas.push({
+        endpoint: specEndpoint,
+        file: implData.file,
+        operationId: specParams.operationId,
+        schemaName: specParams.responseSchema.schemaName,
+        schemaRef: specParams.responseSchema.schemaRef,
+      })
+      results.summary.responseSchemasDocumented++
+    }
   }
 
   return results
@@ -1369,7 +1428,7 @@ function buildDocLink(operationId) {
  * Print results to console
  */
 function printResults(results) {
-  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, deprecatedEndpoints, deprecatedParameters, missingEnumValues, extraEnumValues, defaultValueMismatches, numericConstraintMismatches, stringLengthConstraintMismatches, formatMismatches, summary } = results
+  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, deprecatedEndpoints, deprecatedParameters, missingEnumValues, extraEnumValues, defaultValueMismatches, numericConstraintMismatches, stringLengthConstraintMismatches, formatMismatches, responseSchemas, summary } = results
 
   console.log('\n' + '='.repeat(60))
   console.log('API SYNC CHECK RESULTS')
@@ -1662,6 +1721,29 @@ function printResults(results) {
     console.log('\n✅ All format specifiers match the spec')
   }
 
+  // Response schemas (optional - informational only)
+  if (process.env.SHOW_RESPONSE_SCHEMAS === 'true' && responseSchemas.length > 0) {
+    console.log(`\n📋 Response Schemas Documented (${summary.responseSchemasDocumented}):`)
+    console.log('   Endpoints with documented response schemas in the OpenAPI spec.')
+    console.log('   Note: Response validation is lower priority since MCP passes responses through without transformation.\n')
+    const byFile = groupBy(responseSchemas, 'file')
+    for (const [file, items] of Object.entries(byFile)) {
+      console.log(`\n   ${file}:`)
+      for (const item of items) {
+        console.log(`      ${item.endpoint}`)
+        console.log(`         Response schema: ${item.schemaName}`)
+        if (item.schemaRef) {
+          console.log(`         Schema ref: ${item.schemaRef}`)
+        }
+        const docLink = buildDocLink(item.operationId)
+        if (docLink) {
+          console.log(`         API docs: ${docLink}`)
+        }
+      }
+    }
+    console.log('')
+  }
+
   // Summary
   console.log('\n' + '='.repeat(60))
   console.log('SUMMARY')
@@ -1682,6 +1764,7 @@ function printResults(results) {
   console.log(`Numeric constraint mismatches: ${summary.numericConstraintMismatches}`)
   console.log(`String length constraint mismatches: ${summary.stringLengthConstraintMismatches}`)
   console.log(`Format mismatches:            ${summary.formatMismatches}`)
+  console.log(`Response schemas documented:  ${summary.responseSchemasDocumented}`)
 
   const hasIssues = missingEndpoints.length > 0 ||
     missingRequiredParams.length > 0 ||
