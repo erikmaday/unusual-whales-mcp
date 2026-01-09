@@ -154,6 +154,42 @@ function extractParamSchema(param, spec) {
 }
 
 /**
+ * Extract deprecated information from endpoint description
+ * @param {string} description - The endpoint description
+ * @returns {object} Deprecation info with message and replacement endpoint
+ */
+function extractDeprecationInfo(description) {
+  if (!description) return null
+
+  const lowerDesc = description.toLowerCase()
+  if (!lowerDesc.includes('deprecated')) return null
+
+  const info = {
+    deprecated: true,
+    message: '',
+    replacementEndpoint: null
+  }
+
+  // Extract the full deprecation message (first paragraph usually)
+  const lines = description.trim().split('\n')
+  info.message = lines[0].trim()
+
+  // Try to find replacement endpoint URL
+  const urlMatch = description.match(/https:\/\/api\.unusualwhales\.com\/docs#\/operations\/([^\s\)\]]+)/)
+  if (urlMatch) {
+    info.replacementUrl = urlMatch[0]
+  }
+
+  // Try to extract replacement endpoint path from description
+  const pathMatch = description.match(/\/api\/[^\s\)]+/)
+  if (pathMatch) {
+    info.replacementEndpoint = pathMatch[0]
+  }
+
+  return info
+}
+
+/**
  * Extract all endpoints and their parameters from the OpenAPI spec
  */
 function extractSpecEndpointsWithParams(spec) {
@@ -176,6 +212,15 @@ function extractSpecEndpointsWithParams(spec) {
       schemas: {}, // Store schema info for each parameter
     }
 
+    // Check for deprecation
+    const deprecationInfo = extractDeprecationInfo(getMethod.description)
+    if (deprecationInfo) {
+      params.deprecated = true
+      params.deprecationMessage = deprecationInfo.message
+      params.replacementEndpoint = deprecationInfo.replacementEndpoint
+      params.replacementUrl = deprecationInfo.replacementUrl
+    }
+
     for (const param of getMethod.parameters || []) {
       const paramName = param.name
       const isRequired = param.required === true
@@ -184,6 +229,17 @@ function extractSpecEndpointsWithParams(spec) {
       const schemaInfo = extractParamSchema(param, spec)
       if (Object.keys(schemaInfo).length > 0) {
         params.schemas[paramName] = schemaInfo
+      }
+
+      // Check if individual parameter is deprecated
+      if (param.deprecated === true || extractDeprecationInfo(param.description)) {
+        if (!schemaInfo.deprecated) {
+          schemaInfo.deprecated = true
+          const paramDeprecationInfo = extractDeprecationInfo(param.description)
+          if (paramDeprecationInfo) {
+            schemaInfo.deprecationMessage = paramDeprecationInfo.message
+          }
+        }
       }
 
       if (param.in === 'path') {
@@ -455,6 +511,8 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums) {
     missingRequiredParams: [],
     missingOptionalParams: [],
     extraParams: [],
+    deprecatedEndpoints: [], // Track deprecated endpoints still implemented
+    deprecatedParameters: [], // Track deprecated parameters still in use
     missingEnumValues: [],
     extraEnumValues: [],
     summary: {
@@ -464,6 +522,8 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums) {
       requiredParamsMissing: 0,
       optionalParamsMissing: 0,
       extraParams: 0,
+      deprecatedEndpointsInUse: 0,
+      deprecatedParametersInUse: 0,
       enumValuesMissing: 0,
       enumValuesExtra: 0,
     },
@@ -506,6 +566,35 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums) {
 
     const specParams = specEndpoints[specEndpoint]
     const passedParams = implData.params
+
+    // Check if endpoint is deprecated
+    if (specParams.deprecated) {
+      results.deprecatedEndpoints.push({
+        endpoint: specEndpoint,
+        file: implData.file,
+        operationId: specParams.operationId,
+        message: specParams.deprecationMessage,
+        replacementEndpoint: specParams.replacementEndpoint,
+        replacementUrl: specParams.replacementUrl,
+      })
+      results.summary.deprecatedEndpointsInUse++
+    }
+
+    // Check for deprecated parameters being used
+    for (const paramName of passedParams) {
+      const cleanParamName = paramName.replace('[]', '')
+      const paramSchema = specParams.schemas[cleanParamName] || specParams.schemas[paramName]
+      if (paramSchema?.deprecated) {
+        results.deprecatedParameters.push({
+          endpoint: specEndpoint,
+          param: paramName,
+          file: implData.file,
+          operationId: specParams.operationId,
+          message: paramSchema.deprecationMessage,
+        })
+        results.summary.deprecatedParametersInUse++
+      }
+    }
 
     // Check required params
     for (const reqParam of specParams.required) {
@@ -655,13 +744,49 @@ function buildDocLink(operationId) {
  * Print results to console
  */
 function printResults(results) {
-  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, missingEnumValues, extraEnumValues, summary } = results
+  const { missingEndpoints, extraEndpoints, missingRequiredParams, missingOptionalParams, extraParams, deprecatedEndpoints, deprecatedParameters, missingEnumValues, extraEnumValues, summary } = results
 
   console.log('\n' + '='.repeat(60))
   console.log('API SYNC CHECK RESULTS')
   console.log('='.repeat(60))
 
   console.log(`\nEndpoint Coverage: ${summary.endpointsCovered}/${summary.totalSpecEndpoints} spec endpoints implemented`)
+
+  // Deprecated endpoints (IMPORTANT - show first)
+  if (deprecatedEndpoints.length > 0) {
+    console.log(`\n🔶 DEPRECATED Endpoints Still Implemented (${deprecatedEndpoints.length}):`)
+    console.log('   These endpoints are marked as deprecated and should be migrated.\n')
+    for (const { endpoint, file, message, replacementEndpoint, replacementUrl } of deprecatedEndpoints) {
+      console.log(`   ${endpoint} (${file})`)
+      if (message) {
+        console.log(`      ⚠️  ${message}`)
+      }
+      if (replacementEndpoint) {
+        console.log(`      → Migrate to: ${replacementEndpoint}`)
+      }
+      if (replacementUrl) {
+        console.log(`      📖 Docs: ${replacementUrl}`)
+      }
+      console.log('')
+    }
+  }
+
+  // Deprecated parameters
+  if (deprecatedParameters.length > 0) {
+    console.log(`\n🔶 DEPRECATED Parameters Still In Use (${deprecatedParameters.length}):`)
+    const byFile = groupBy(deprecatedParameters, 'file')
+    for (const [file, params] of Object.entries(byFile)) {
+      console.log(`\n   ${file}:`)
+      for (const p of params) {
+        console.log(`      ${p.endpoint}`)
+        console.log(`         Parameter: ${p.param}`)
+        if (p.message) {
+          console.log(`         ⚠️  ${p.message}`)
+        }
+      }
+    }
+    console.log('')
+  }
 
   // Missing endpoints
   if (missingEndpoints.length > 0) {
@@ -778,20 +903,24 @@ function printResults(results) {
   console.log('\n' + '='.repeat(60))
   console.log('SUMMARY')
   console.log('='.repeat(60))
-  console.log(`Endpoints in spec:       ${summary.totalSpecEndpoints}`)
-  console.log(`Endpoints implemented:   ${summary.endpointsCovered}`)
-  console.log(`Missing endpoints:       ${missingEndpoints.length}`)
-  console.log(`Extra endpoints:         ${extraEndpoints.length}`)
-  console.log(`Missing required params: ${summary.requiredParamsMissing}`)
-  console.log(`Missing optional params: ${summary.optionalParamsMissing}`)
-  console.log(`Extra params:            ${summary.extraParams}`)
-  console.log(`Missing enum values:     ${summary.enumValuesMissing}`)
-  console.log(`Extra enum values:       ${summary.enumValuesExtra}`)
+  console.log(`Endpoints in spec:         ${summary.totalSpecEndpoints}`)
+  console.log(`Endpoints implemented:     ${summary.endpointsCovered}`)
+  console.log(`Missing endpoints:         ${missingEndpoints.length}`)
+  console.log(`Extra endpoints:           ${extraEndpoints.length}`)
+  console.log(`Deprecated endpoints:      ${summary.deprecatedEndpointsInUse}`)
+  console.log(`Deprecated parameters:     ${summary.deprecatedParametersInUse}`)
+  console.log(`Missing required params:   ${summary.requiredParamsMissing}`)
+  console.log(`Missing optional params:   ${summary.optionalParamsMissing}`)
+  console.log(`Extra params:              ${summary.extraParams}`)
+  console.log(`Missing enum values:       ${summary.enumValuesMissing}`)
+  console.log(`Extra enum values:         ${summary.enumValuesExtra}`)
 
   const hasIssues = missingEndpoints.length > 0 ||
     missingRequiredParams.length > 0 ||
     missingOptionalParams.length > 0 ||
     extraParams.length > 0 ||
+    deprecatedEndpoints.length > 0 ||
+    deprecatedParameters.length > 0 ||
     missingEnumValues.length > 0 ||
     extraEnumValues.length > 0
 
@@ -972,6 +1101,88 @@ async function createGitHubIssues(results) {
   console.log(`Found ${existingIssues.length} existing open api-sync issues (${existingById.size} with valid IDs)`)
 
   const issues = []
+
+  // Create issues for deprecated endpoints still implemented
+  for (const { endpoint, file, operationId, message, replacementEndpoint, replacementUrl } of results.deprecatedEndpoints) {
+    const category = getEndpointCategory(endpoint)
+    const docLink = buildDocLink(operationId)
+    const issueId = generateIssueId('deprecated-endpoint', endpoint)
+
+    let body = `${issueId}\n\n## ⚠️ Deprecated Endpoint Still Implemented\n\n` +
+      `This endpoint is marked as deprecated in the API spec and should be migrated to prevent breaking changes.\n\n` +
+      `### Details\n\n` +
+      `- **Endpoint:** \`${endpoint}\`\n` +
+      `- **File:** \`src/tools/${file}\`\n` +
+      (docLink ? `- **API Docs:** [View Documentation](${docLink})\n` : '')
+
+    if (message) {
+      body += `\n### Deprecation Notice\n\n${message}\n`
+    }
+
+    if (replacementEndpoint) {
+      body += `\n### Migration Path\n\nReplace calls to \`${endpoint}\` with \`${replacementEndpoint}\`\n`
+    }
+
+    if (replacementUrl) {
+      body += `\n### Replacement Documentation\n\n[View New Endpoint](${replacementUrl})\n`
+    }
+
+    body += `\n### Action Required\n\n` +
+      `1. Review the new endpoint documentation\n` +
+      `2. Update the tool implementation to use the new endpoint\n` +
+      `3. Test the changes to ensure functionality is preserved\n` +
+      `4. Remove the old deprecated endpoint usage\n\n` +
+      `---\n*Auto-generated by API sync checker*`
+
+    issues.push({
+      id: issueId,
+      title: `Migrate deprecated endpoint: ${endpoint}`,
+      body,
+      labels: ['api-sync', 'deprecated', 'breaking-change', category],
+    })
+  }
+
+  // Create issues for deprecated parameters still in use
+  const deprecatedParamsByFile = groupBy(results.deprecatedParameters, 'file')
+  for (const [file, params] of Object.entries(deprecatedParamsByFile)) {
+    const issueId = generateIssueId('deprecated-params', file)
+    const paramCount = params.length
+
+    let body = `${issueId}\n\n## ⚠️ Deprecated Parameters Still In Use\n\n` +
+      `The following parameters in \`src/tools/${file}\` are marked as deprecated.\n` +
+      `These should be removed or replaced to prevent breaking changes.\n\n`
+
+    const byEndpoint = groupBy(params, 'endpoint')
+    for (const [endpoint, eps] of Object.entries(byEndpoint)) {
+      const docLink = buildDocLink(eps[0]?.operationId)
+      body += `### \`${endpoint}\`\n\n`
+      if (docLink) {
+        body += `[View API Docs](${docLink})\n\n`
+      }
+      for (const p of eps) {
+        body += `- \`${p.param}\``
+        if (p.message) {
+          body += ` - ${p.message}`
+        }
+        body += '\n'
+      }
+      body += '\n'
+    }
+
+    body += `### Action Required\n\n` +
+      `1. Review the API documentation for these parameters\n` +
+      `2. Remove or replace deprecated parameters\n` +
+      `3. Test the changes to ensure functionality\n\n` +
+      `---\n*Auto-generated by API sync checker*`
+
+    const toolName = file.replace('.ts', '')
+    issues.push({
+      id: issueId,
+      title: `Remove ${paramCount} deprecated parameter${paramCount > 1 ? 's' : ''} from ${toolName} tool`,
+      body,
+      labels: ['api-sync', 'deprecated', 'breaking-change', toolName],
+    })
+  }
 
   // Create issues for missing endpoints (one per endpoint)
   for (const { endpoint, operationId } of results.missingEndpoints) {
