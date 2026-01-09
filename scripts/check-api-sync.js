@@ -365,7 +365,29 @@ function extractImplementedSchemas() {
       }
     }
 
-    schemas[file] = params
+    // Extract .refine() calls to find parameters that are conditionally required
+    // Pattern: .refine((data) => { if (data.action === "action_name") { return data.param !== undefined } }, ...)
+    const refineBlocks = content.matchAll(/\.refine\(\s*\(data\)\s*=>\s*\{([\s\S]*?)\}\s*,\s*\{/g)
+
+    const refinements = []
+    for (const block of refineBlocks) {
+      const refineBody = block[1]
+
+      // Extract action name
+      const actionMatch = refineBody.match(/if\s*\(\s*data\.action\s*===\s*["'](\w+)["']/)
+      if (!actionMatch) continue
+
+      const actionName = actionMatch[1]
+
+      // Extract all parameters checked for !== undefined
+      const paramMatches = refineBody.matchAll(/data\.(\w+)\s*!==\s*undefined/g)
+      for (const paramMatch of paramMatches) {
+        const paramName = paramMatch[1]
+        refinements.push({ action: actionName, param: paramName })
+      }
+    }
+
+    schemas[file] = { ...params, refinements }
   }
 
   return schemas
@@ -972,8 +994,52 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
         const isOptionalInSpec = specParams.optional.includes(specParam)
 
         // Determine implementation status
-        const isRequiredInImpl = implFileSchemas.required.includes(cleanParam)
-        const isOptionalInImpl = implFileSchemas.optional.includes(cleanParam)
+        let isRequiredInImpl = implFileSchemas.required.includes(cleanParam)
+        let isOptionalInImpl = implFileSchemas.optional.includes(cleanParam)
+
+        // Check if parameter is made required by a .refine() call
+        // Extract action name from endpoint (e.g., /api/stock/{ticker}/greeks -> greeks)
+        // This handles common patterns like /api/category/{param}/action-name
+        const actionMatch = specEndpoint.match(/\/([a-z_-]+)(?:\?|$)/i)
+        const lastSegment = actionMatch ? actionMatch[1] : null
+
+        // Also try to extract from operation ID if available
+        const operationId = specParams.operationId || ''
+        // Remove controller prefix like "PublicApi.TickerController." and version suffix like "_v2"
+        const actionFromOp = operationId.replace(/^[^.]+\.[^.]+\./, '').replace(/_v\d+$/, '')
+
+        // Check both possible action names
+        const possibleActions = [lastSegment, actionFromOp, operationId.replace(/^get_stock_/, '').replace(/_/g, '-')]
+
+        if (implFileSchemas.refinements) {
+          for (const { action, param } of implFileSchemas.refinements) {
+            // Try to match the action name in various formats
+            const normalizedAction = action.replace(/_/g, '-')
+            const actionWords = action.split('_').sort().join('_')
+
+            for (const possibleAction of possibleActions) {
+              if (!possibleAction) continue
+
+              const normalizedPossible = possibleAction.replace(/-/g, '_')
+              const possibleWords = normalizedPossible.split('_').sort().join('_')
+
+              if (
+                normalizedAction === possibleAction ||
+                action === possibleAction ||
+                normalizedAction === normalizedPossible ||
+                action === normalizedPossible ||
+                actionWords === possibleWords  // Match with sorted words (handles word order differences)
+              ) {
+                if (param === cleanParam) {
+                  // This parameter is required by a refinement for this action
+                  isRequiredInImpl = true
+                  isOptionalInImpl = false
+                  break
+                }
+              }
+            }
+          }
+        }
 
         // Detect mismatches
         if (isRequiredInSpec && isOptionalInImpl) {
