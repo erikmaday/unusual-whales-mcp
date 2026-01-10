@@ -44,6 +44,7 @@ export {
   limitSchema,
   strikeSchema,
   optionTypeSchema,
+  sideSchema,
   orderDirectionSchema,
   pageSchema,
   candleSizeSchema,
