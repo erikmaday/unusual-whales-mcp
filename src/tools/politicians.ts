@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, limitSchema, dateSchema, formatZodError,
+import { toJsonSchema, tickerSchema, dateSchema, formatZodError,
 } from "../schemas/index.js"
 
 const politiciansActions = ["people", "portfolio", "recent_trades", "holders", "disclosures"] as const
@@ -11,7 +11,7 @@ const politiciansInputSchema = z.object({
   latest_only: z.boolean().describe("Return only most recent disclosure per politician (for disclosures action)").optional(),
   year: z.number().describe("Filter by disclosure year (for disclosures action)").optional(),
   ticker: tickerSchema.describe("Ticker symbol (for holders or recent_trades action)").optional(),
-  limit: limitSchema.default(500).optional(),
+  limit: z.number().int().min(1).max(500).default(500).describe("Maximum number of results").optional(),
   page: z.number().describe("Page number for pagination").optional(),
   aggregate_all_portfolios: z.boolean().describe("Aggregate all portfolios (for portfolio or holders action)").optional(),
   date: dateSchema.describe("Filter by date in YYYY-MM-DD format (for recent_trades action)").optional(),
