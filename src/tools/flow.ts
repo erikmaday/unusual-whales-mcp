@@ -27,7 +27,7 @@ const flowInputSchema = z.object({
   expiry: expirySchema.optional(),
   ticker: tickerSchema.describe("Ticker symbol (required for lit_flow_ticker action)").optional(),
   ticker_symbol: z.string().describe("Comma-separated list of ticker symbols to filter by. Prefix with '-' to exclude tickers (e.g., 'AAPL,INTC' or '-TSLA,NVDA')").optional(),
-  limit: limitSchema.optional(),
+  limit: limitSchema.default(100).optional(),
   newer_than: z.string().describe("Filter trades newer than timestamp (for lit_flow_ticker)").optional(),
   older_than: z.string().describe("Filter trades older than timestamp (for lit_flow_ticker)").optional(),
 }).merge(premiumFilterSchema)

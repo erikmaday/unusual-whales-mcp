@@ -3,8 +3,8 @@ import { dateRegex } from "./common.js"
 
 /** Flow trade filters (floor, sweep, multi-leg) */
 export const flowTradeFiltersSchema = z.object({
-  is_floor: z.boolean().describe("Boolean flag whether a transaction is from the floor").optional(),
-  is_sweep: z.boolean().describe("Boolean flag whether a transaction is an intermarket sweep").optional(),
+  is_floor: z.boolean().default(true).describe("Boolean flag whether a transaction is from the floor").optional(),
+  is_sweep: z.boolean().default(true).describe("Boolean flag whether a transaction is an intermarket sweep").optional(),
   is_multi_leg: z.boolean().describe("Boolean flag whether the transaction is a multi-leg transaction").optional(),
 })
 
@@ -17,11 +17,11 @@ export const flowAlertsExtendedFiltersSchema = z.object({
   max_open_interest: z.number().int().nonnegative("Open interest cannot be negative").describe("The maximum open interest on that alert's contract at the time of the alert").optional(),
 
   // Boolean trade type filters
-  all_opening: z.boolean().describe("Boolean flag whether all transactions are opening transactions based on open interest, size, and volume").optional(),
-  is_call: z.boolean().describe("Boolean flag whether a transaction is a call").optional(),
-  is_put: z.boolean().describe("Boolean flag whether a transaction is a put").optional(),
-  is_ask_side: z.boolean().describe("Boolean flag whether a transaction is ask side").optional(),
-  is_bid_side: z.boolean().describe("Boolean flag whether a transaction is bid side").optional(),
+  all_opening: z.boolean().default(true).describe("Boolean flag whether all transactions are opening transactions based on open interest, size, and volume").optional(),
+  is_call: z.boolean().default(true).describe("Boolean flag whether a transaction is a call").optional(),
+  is_put: z.boolean().default(true).describe("Boolean flag whether a transaction is a put").optional(),
+  is_ask_side: z.boolean().default(true).describe("Boolean flag whether a transaction is ask side").optional(),
+  is_bid_side: z.boolean().default(true).describe("Boolean flag whether a transaction is bid side").optional(),
   is_otm: z.boolean().describe("Only include contracts which are currently out of the money").optional(),
   size_greater_oi: z.boolean().describe("Only include alerts where the size is greater than the open interest").optional(),
   vol_greater_oi: z.boolean().describe("Only include alerts where the volume is greater than the open interest").optional(),
