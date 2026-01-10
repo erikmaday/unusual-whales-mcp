@@ -34,7 +34,7 @@ export const strikeSchema = z.number()
 export const optionTypeSchema = z.enum(["call", "put", "ALL"]).describe("Option type (call, put, or ALL)")
 
 /** Order direction */
-export const orderSchema = z.enum(["asc", "desc"]).describe("Order direction").default("desc")
+export const orderDirectionSchema = z.enum(["asc", "desc"]).describe("Order direction").default("desc")
 
 /** Pagination page number */
 export const pageSchema = z.number()

@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, dateSchema, limitSchema, orderSchema, formatZodError,
+import { toJsonSchema, tickerSchema, dateSchema, limitSchema, orderDirectionSchema, formatZodError,
 } from "../schemas/index.js"
 
 const institutionsActions = ["list", "holdings", "activity", "sectors", "ownership", "latest_filings"] as const
@@ -14,8 +14,8 @@ const institutionsInputSchema = z.object({
   end_date: z.string().describe("End date for date range").optional(),
   limit: limitSchema.default(500).optional(),
   page: z.number().describe("Page number for pagination").optional(),
-  order: z.string().describe("Order by field").optional(),
-  order_direction: orderSchema.default("desc").optional(),
+  order: z.string().describe("Order by field (e.g., name, total_value, ticker, date)").optional(),
+  order_direction: orderDirectionSchema.default("desc").optional(),
   min_total_value: z.number().describe("Minimum total value filter").optional(),
   max_total_value: z.number().describe("Maximum total value filter").optional(),
   min_share_value: z.number().describe("Minimum share value filter").optional(),

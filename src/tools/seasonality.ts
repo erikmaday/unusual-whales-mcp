@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
 import {
-  toJsonSchema, tickerSchema, formatZodError, limitSchema, orderSchema,
+  toJsonSchema, tickerSchema, formatZodError, limitSchema, orderDirectionSchema,
   seasonalityOrderBySchema,
 } from "../schemas/index.js"
 
@@ -18,7 +18,7 @@ const seasonalityInputSchema = z.object({
   min_oi: z.number().int().nonnegative("Open interest cannot be negative").describe("Minimum open interest filter").optional(),
   limit: limitSchema.optional(),
   order: seasonalityOrderBySchema.optional(),
-  order_direction: orderSchema.optional(),
+  order_direction: orderDirectionSchema.optional(),
 })
 
 

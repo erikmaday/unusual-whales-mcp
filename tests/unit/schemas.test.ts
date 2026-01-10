@@ -8,7 +8,7 @@ import {
   limitSchema,
   strikeSchema,
   optionTypeSchema,
-  orderSchema,
+  orderDirectionSchema,
   pageSchema,
   candleSizeSchema,
   deltaSchema,
@@ -184,15 +184,15 @@ describe("optionTypeSchema", () => {
   })
 })
 
-describe("orderSchema", () => {
+describe("orderDirectionSchema", () => {
   it("accepts asc and desc", () => {
-    expect(orderSchema.parse("asc")).toBe("asc")
-    expect(orderSchema.parse("desc")).toBe("desc")
+    expect(orderDirectionSchema.parse("asc")).toBe("asc")
+    expect(orderDirectionSchema.parse("desc")).toBe("desc")
   })
 
-  it("rejects invalid order values", () => {
-    expect(() => orderSchema.parse("ASC")).toThrow()
-    expect(() => orderSchema.parse("ascending")).toThrow()
+  it("rejects invalid order direction values", () => {
+    expect(() => orderDirectionSchema.parse("ASC")).toThrow()
+    expect(() => orderDirectionSchema.parse("ascending")).toThrow()
   })
 })
 
