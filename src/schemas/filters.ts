@@ -2,8 +2,8 @@ import { z } from "zod"
 
 /** Premium filter (min/max) */
 export const premiumFilterSchema = z.object({
-  min_premium: z.number().nonnegative("Premium cannot be negative").default(0).describe("The minimum premium on the alert or trade").optional(),
-  max_premium: z.number().nonnegative("Premium cannot be negative").describe("The maximum premium on the alert or trade").optional(),
+  min_premium: z.number().int().nonnegative("Premium cannot be negative").default(0).describe("The minimum premium on the alert or trade").optional(),
+  max_premium: z.number().int().nonnegative("Premium cannot be negative").describe("The maximum premium on the alert or trade").optional(),
 })
 
 /** Size filter (min/max) */
