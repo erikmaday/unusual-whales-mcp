@@ -1,15 +1,22 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, dateSchema, limitSchema, pageSchema, formatZodError,
+import { toJsonSchema, tickerSchema, dateSchema, pageSchema, formatZodError,
 } from "../schemas/index.js"
 
 const earningsActions = ["premarket", "afterhours", "ticker"] as const
+
+// Earnings-specific limit schema with max 100 for premarket/afterhours endpoints
+const earningsLimitSchema = z.number()
+  .int("Limit must be an integer")
+  .positive("Limit must be positive")
+  .max(100, "Limit cannot exceed 100")
+  .describe("Maximum number of results")
 
 const earningsInputSchema = z.object({
   action: z.enum(earningsActions).describe("The action to perform"),
   ticker: tickerSchema.describe("Ticker symbol (for ticker action)").optional(),
   date: dateSchema.optional(),
-  limit: limitSchema.default(50).optional(),
+  limit: earningsLimitSchema.default(50).optional(),
   page: pageSchema.optional(),
 })
 
