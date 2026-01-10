@@ -6,7 +6,7 @@ const alertsActions = ["alerts", "configurations"] as const
 
 const alertsInputSchema = z.object({
   action: z.enum(alertsActions).describe("The action to perform"),
-  limit: limitSchema.optional(),
+  limit: limitSchema.default(500).optional(),
   ticker_symbols: z.string().describe("Comma-separated list of tickers to filter by. Prefix with '-' to exclude tickers (e.g., 'AAPL,INTC' or '-TSLA,NVDA')").optional(),
   intraday_only: z.boolean().describe("Only show intraday alerts").optional(),
   config_ids: z.string().describe("Filter by configuration IDs").optional(),
