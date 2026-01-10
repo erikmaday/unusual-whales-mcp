@@ -35,38 +35,38 @@ export const flowAlertsExtendedFiltersSchema = z.object({
   max_diff: z.number().describe("Maximum OTM diff of the contract (difference between strike and underlying price)").optional(),
 
   // Volume/OI ratio filters
-  min_volume_oi_ratio: z.number().nonnegative().describe("The minimum ratio of contract volume to contract open interest. If open interest is zero, the ratio is evaluated as if open interest was one").optional(),
-  max_volume_oi_ratio: z.number().nonnegative().describe("The maximum ratio of contract volume to contract open interest. If open interest is zero, the ratio is evaluated as if open interest was one").optional(),
+  min_volume_oi_ratio: z.number().int().min(1).describe("The minimum ratio of contract volume to contract open interest. If open interest is zero, the ratio is evaluated as if open interest was one").optional(),
+  max_volume_oi_ratio: z.number().int().min(0).describe("The maximum ratio of contract volume to contract open interest. If open interest is zero, the ratio is evaluated as if open interest was one").optional(),
 
   // Percentage filters
-  min_ask_perc: z.number().describe("The minimum ask percentage. Decimal proxy for percentage (0 to 1)").optional(),
-  max_ask_perc: z.number().describe("The maximum ask percentage. Decimal proxy for percentage (0 to 1)").optional(),
-  min_bid_perc: z.number().describe("The minimum bid percentage. Decimal proxy for percentage (0 to 1)").optional(),
-  max_bid_perc: z.number().describe("The maximum bid percentage. Decimal proxy for percentage (0 to 1)").optional(),
-  min_bull_perc: z.number().describe("The minimum bull percentage. Decimal proxy for percentage (0 to 1)").optional(),
-  max_bull_perc: z.number().describe("The maximum bull percentage. Decimal proxy for percentage (0 to 1)").optional(),
-  min_bear_perc: z.number().describe("The minimum bear percentage. Decimal proxy for percentage (0 to 1)").optional(),
-  max_bear_perc: z.number().describe("The maximum bear percentage. Decimal proxy for percentage (0 to 1)").optional(),
+  min_ask_perc: z.number().min(0).max(1).describe("The minimum ask percentage. Decimal proxy for percentage (0 to 1)").optional(),
+  max_ask_perc: z.number().min(0).max(1).describe("The maximum ask percentage. Decimal proxy for percentage (0 to 1)").optional(),
+  min_bid_perc: z.number().min(0).max(1).describe("The minimum bid percentage. Decimal proxy for percentage (0 to 1)").optional(),
+  max_bid_perc: z.number().min(0).max(1).describe("The maximum bid percentage. Decimal proxy for percentage (0 to 1)").optional(),
+  min_bull_perc: z.number().min(0).max(1).describe("The minimum bull percentage. Decimal proxy for percentage (0 to 1)").optional(),
+  max_bull_perc: z.number().min(0).max(1).describe("The maximum bull percentage. Decimal proxy for percentage (0 to 1)").optional(),
+  min_bear_perc: z.number().min(0).max(1).describe("The minimum bear percentage. Decimal proxy for percentage (0 to 1)").optional(),
+  max_bear_perc: z.number().min(0).max(1).describe("The maximum bear percentage. Decimal proxy for percentage (0 to 1)").optional(),
 
   // Skew filters
-  min_skew: z.number().describe("The minimum skew. Decimal proxy for percentage (0 to 1)").optional(),
-  max_skew: z.number().describe("The maximum skew. Decimal proxy for percentage (0 to 1)").optional(),
+  min_skew: z.number().min(0).max(1).describe("The minimum skew. Decimal proxy for percentage (0 to 1)").optional(),
+  max_skew: z.number().min(0).max(1).describe("The maximum skew. Decimal proxy for percentage (0 to 1)").optional(),
 
   // Price filters
-  min_price: z.number().nonnegative("Price cannot be negative").describe("The minimum price of the underlying asset").optional(),
-  max_price: z.number().nonnegative("Price cannot be negative").describe("The maximum price of the underlying asset").optional(),
+  min_price: z.number().min(0).describe("The minimum price of the underlying asset").optional(),
+  max_price: z.number().min(0).describe("The maximum price of the underlying asset").optional(),
 
   // IV change filters
-  min_iv_change: z.number().describe("The minimum IV change. Unbounded decimal proxy for percentage (e.g., 0.01 for minimum +1% change)").optional(),
-  max_iv_change: z.number().describe("The maximum IV change. Unbounded decimal proxy for percentage (e.g., 0.05 for maximum +5% change)").optional(),
+  min_iv_change: z.number().min(0).describe("The minimum IV change. Unbounded decimal proxy for percentage (e.g., 0.01 for minimum +1% change)").optional(),
+  max_iv_change: z.number().min(0).describe("The maximum IV change. Unbounded decimal proxy for percentage (e.g., 0.05 for maximum +5% change)").optional(),
 
   // Size/volume ratio filters
-  min_size_vol_ratio: z.number().nonnegative().describe("The minimum size to volume ratio").optional(),
-  max_size_vol_ratio: z.number().nonnegative().describe("The maximum size to volume ratio").optional(),
+  min_size_vol_ratio: z.number().min(0).max(1).describe("The minimum size to volume ratio").optional(),
+  max_size_vol_ratio: z.number().min(0).max(1).describe("The maximum size to volume ratio").optional(),
 
   // Spread filters
-  min_spread: z.number().nonnegative().describe("The minimum spread").optional(),
-  max_spread: z.number().nonnegative().describe("The maximum spread").optional(),
+  min_spread: z.number().min(0).describe("The minimum spread").optional(),
+  max_spread: z.number().min(0).max(1).describe("The maximum spread").optional(),
 
   // Market cap filters
   min_marketcap: z.number().nonnegative("Market cap cannot be negative").describe("The minimum market capitalization in USD").optional(),
