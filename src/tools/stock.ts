@@ -12,7 +12,6 @@ import {
   timeframeSchema,
   deltaSchema,
   formatZodError,
-  orderSchema,
   pageSchema,
   timespanSchema,
   optionContractFiltersSchema,
@@ -83,7 +82,7 @@ const stockInputSchema = z.object({
   delta: deltaSchema.optional(),
   // Pagination and ordering
   page: pageSchema.optional(),
-  order: orderSchema.optional(),
+  order: z.string().describe("Order by field").optional(),
   // OHLC parameters
   end_date: dateSchema.optional().describe("End date for OHLC data in YYYY-MM-DD format"),
   // IV rank timespan

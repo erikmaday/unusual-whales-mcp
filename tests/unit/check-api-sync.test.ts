@@ -420,7 +420,7 @@ describe('extractSchemaEnums', () => {
 
       export const optionTypeSchema = z.enum(["call", "put"]).describe("Option type (call or put)")
 
-      export const orderSchema = z.enum(["asc", "desc"]).describe("Order direction")
+      export const orderDirectionSchema = z.enum(["asc", "desc"]).describe("Order direction")
 
       export const candleSizeSchema = z.enum([
         "1m", "5m", "10m", "15m", "30m", "1h", "4h", "1d",
@@ -456,8 +456,8 @@ describe('extractSchemaEnums', () => {
     expect(enums['optionTypeSchema']).toBeDefined()
     expect(enums['optionTypeSchema'].values).toEqual(['call', 'put'])
 
-    expect(enums['orderSchema']).toBeDefined()
-    expect(enums['orderSchema'].values).toEqual(['asc', 'desc'])
+    expect(enums['orderDirectionSchema']).toBeDefined()
+    expect(enums['orderDirectionSchema'].values).toEqual(['asc', 'desc'])
 
     expect(enums['candleSizeSchema']).toBeDefined()
     expect(enums['candleSizeSchema'].values).toEqual([
