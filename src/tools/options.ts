@@ -5,7 +5,7 @@ import {
   formatZodError,
   dateSchema,
   limitSchema,
-  optionTypeSchema,
+  sideSchema,
 } from "../schemas/index.js"
 
 const optionsActions = ["flow", "historic", "intraday", "volume_profile"] as const
@@ -14,7 +14,7 @@ const optionsInputSchema = z.object({
   action: z.enum(optionsActions).describe("The action to perform"),
   id: z.string().describe("Option contract ID/symbol (e.g., AAPL240119C00150000)"),
   // flow action parameters
-  side: optionTypeSchema.describe("Trade side (call, put, or ALL)").default("ALL"),
+  side: sideSchema.describe("Trade side (ALL, ASK, BID, or MID)").default("ALL"),
   min_premium: z.number().nonnegative("Premium cannot be negative").describe("Minimum premium filter").default(0),
   limit: limitSchema.optional(),
   // date parameter used by flow, intraday, and volume_profile actions

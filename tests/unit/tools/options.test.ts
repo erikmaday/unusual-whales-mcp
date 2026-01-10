@@ -93,13 +93,13 @@ describe("handleOptions", () => {
       await handleOptions({
         action: "flow",
         id: "TSLA240119P00200000",
-        side: "put",
+        side: "ASK",
         min_premium: 1000,
         limit: 50,
         date: "2024-01-15",
       })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/option-contract/TSLA240119P00200000/flow", expect.objectContaining({
-        side: "put",
+        side: "ASK",
         min_premium: 1000,
         limit: 50,
         date: "2024-01-15",
