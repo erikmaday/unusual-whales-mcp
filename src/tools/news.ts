@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, limitSchema, formatZodError,
+import { toJsonSchema, tickerSchema, limitSchema, pageSchema, formatZodError,
 } from "../schemas/index.js"
 
 const newsActions = ["headlines"] as const
@@ -12,7 +12,7 @@ const newsInputSchema = z.object({
   sources: z.string().describe("Filter by news sources").optional(),
   search_term: z.string().describe("Search term to filter headlines").optional(),
   major_only: z.boolean().default(false).optional(),
-  page: z.number().describe("Page number for pagination").optional(),
+  page: pageSchema.optional(),
 })
 
 
