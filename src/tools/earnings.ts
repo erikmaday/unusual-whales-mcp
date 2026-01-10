@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, dateSchema, limitSchema, formatZodError,
+import { toJsonSchema, tickerSchema, dateSchema, limitSchema, pageSchema, formatZodError,
 } from "../schemas/index.js"
 
 const earningsActions = ["premarket", "afterhours", "ticker"] as const
@@ -9,8 +9,8 @@ const earningsInputSchema = z.object({
   action: z.enum(earningsActions).describe("The action to perform"),
   ticker: tickerSchema.describe("Ticker symbol (for ticker action)").optional(),
   date: dateSchema.optional(),
-  limit: limitSchema.optional(),
-  page: z.number().describe("Page number for pagination").optional(),
+  limit: limitSchema.default(50).optional(),
+  page: pageSchema.optional(),
 })
 
 
