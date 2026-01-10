@@ -17,12 +17,16 @@ const darkpoolInputSchema = z.object({
   action: z.enum(darkpoolActions).describe("The action to perform"),
   ticker: tickerSchema.describe("Ticker symbol (required for ticker action)").optional(),
   date: dateSchema.optional(),
-  limit: limitSchema.optional(),
+  limit: z.number().int().positive().describe("Maximum number of results").optional(),
   newer_than: z.string().describe("Filter trades newer than timestamp").optional(),
   older_than: z.string().describe("Filter trades older than timestamp").optional(),
-}).merge(premiumFilterSchema)
-  .merge(sizeFilterSchema)
-  .merge(volumeFilterSchema)
+  min_premium: z.number().nonnegative("Premium cannot be negative").describe("The minimum premium on the alert or trade").default(0),
+  max_premium: z.number().nonnegative("Premium cannot be negative").describe("The maximum premium on the alert or trade").optional(),
+  min_size: z.number().int().nonnegative("Size cannot be negative").describe("The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert").default(0),
+  max_size: z.number().int().nonnegative("Size cannot be negative").describe("The maximum size on that alert").optional(),
+  min_volume: z.number().int().nonnegative("Volume cannot be negative").describe("The minimum volume on the contract").default(0),
+  max_volume: z.number().int().nonnegative("Volume cannot be negative").describe("The maximum volume on the contract").optional(),
+})
 
 
 export const darkpoolTool = {
@@ -74,7 +78,7 @@ export async function handleDarkpool(args: Record<string, unknown>): Promise<str
     case "recent":
       return formatResponse(await uwFetch("/api/darkpool/recent", {
         date,
-        limit,
+        limit: limit ?? 100,
         min_premium,
         max_premium,
         min_size,
@@ -87,7 +91,7 @@ export async function handleDarkpool(args: Record<string, unknown>): Promise<str
       if (!ticker) return formatError("ticker is required")
       return formatResponse(await uwFetch(`/api/darkpool/${encodePath(ticker)}`, {
         date,
-        limit,
+        limit: limit ?? 500,
         min_premium,
         max_premium,
         min_size,
