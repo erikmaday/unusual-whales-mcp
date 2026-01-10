@@ -134,10 +134,10 @@ describe("expirySchema", () => {
 })
 
 describe("limitSchema", () => {
-  it("accepts positive integers", () => {
+  it("accepts positive integers within range", () => {
     expect(limitSchema.parse(1)).toBe(1)
     expect(limitSchema.parse(100)).toBe(100)
-    expect(limitSchema.parse(1000)).toBe(1000)
+    expect(limitSchema.parse(500)).toBe(500)
   })
 
   it("rejects zero", () => {
@@ -152,6 +152,11 @@ describe("limitSchema", () => {
   it("rejects non-integers", () => {
     expect(() => limitSchema.parse(1.5)).toThrow()
     expect(() => limitSchema.parse(10.1)).toThrow()
+  })
+
+  it("rejects values exceeding maximum", () => {
+    expect(() => limitSchema.parse(501)).toThrow()
+    expect(() => limitSchema.parse(1000)).toThrow()
   })
 })
 
