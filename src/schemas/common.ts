@@ -23,6 +23,7 @@ export const expirySchema = z.string()
 export const limitSchema = z.number()
   .int("Limit must be an integer")
   .positive("Limit must be positive")
+  .max(500, "Limit cannot exceed 500")
   .describe("Maximum number of results")
 
 /** Option strike price */
