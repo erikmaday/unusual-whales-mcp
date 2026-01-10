@@ -28,7 +28,7 @@ const marketInputSchema = z.object({
   interval: z.string().describe("Time interval (1y, 6m, 3m, 1m) for correlations").default("1Y"),
   start_date: z.string().describe("Start date for correlations (YYYY-MM-DD)").optional(),
   end_date: z.string().describe("End date for correlations (YYYY-MM-DD)").optional(),
-  limit: z.number().int().positive().describe("Maximum number of results").optional(),
+  limit: z.number().int().min(1).max(500).describe("Maximum number of results").optional(),
   order: z.enum(["asc", "desc"]).describe("Order direction").optional(),
   issue_types: z.string().describe("Issue types filter (for top_net_impact)").optional(),
   announced_date_min: z.string().describe("Minimum announced date for FDA calendar").optional(),
