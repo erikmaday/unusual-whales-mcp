@@ -9,7 +9,7 @@ const insiderInputSchema = z.object({
   ticker: tickerSchema.optional().describe("Single stock ticker symbol for ticker_flow and insiders actions"),
   ticker_symbol: z.string().optional().describe("Comma-separated list of ticker symbols for transactions action (e.g., AAPL,INTC). Prefix with - to exclude."),
   sector: z.string().describe("Market sector").optional(),
-  limit: limitSchema.default(500).optional(),
+  limit: z.number().int().min(1).max(500).default(500).optional(),
   page: z.number().describe("Page number for pagination").optional(),
   min_value: z.number().describe("Minimum transaction value").optional(),
   max_value: z.number().describe("Maximum transaction value").optional(),
