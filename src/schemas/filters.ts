@@ -2,19 +2,19 @@ import { z } from "zod"
 
 /** Premium filter (min/max) */
 export const premiumFilterSchema = z.object({
-  min_premium: z.number().nonnegative("Premium cannot be negative").describe("The minimum premium on the alert or trade").optional(),
+  min_premium: z.number().nonnegative("Premium cannot be negative").default(0).describe("The minimum premium on the alert or trade").optional(),
   max_premium: z.number().nonnegative("Premium cannot be negative").describe("The maximum premium on the alert or trade").optional(),
 })
 
 /** Size filter (min/max) */
 export const sizeFilterSchema = z.object({
-  min_size: z.number().int().nonnegative("Size cannot be negative").describe("The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert").optional(),
+  min_size: z.number().int().nonnegative("Size cannot be negative").default(0).describe("The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert").optional(),
   max_size: z.number().int().nonnegative("Size cannot be negative").describe("The maximum size on that alert").optional(),
 })
 
 /** Volume filter (min/max) */
 export const volumeFilterSchema = z.object({
-  min_volume: z.number().int().nonnegative("Volume cannot be negative").describe("The minimum volume on the contract").optional(),
+  min_volume: z.number().int().nonnegative("Volume cannot be negative").default(0).describe("The minimum volume on the contract").optional(),
   max_volume: z.number().int().nonnegative("Volume cannot be negative").describe("The maximum volume on the contract").optional(),
 })
 
