@@ -1,8 +1,9 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
 import {
-  toJsonSchema, tickerSchema, formatZodError, limitSchema, orderDirectionSchema,
-  seasonalityOrderBySchema,
+  toJsonSchema, tickerSchema, formatZodError,
+  seasonalityOrderBySchema, minYearsSchema, sP500NasdaqOnlySchema,
+  seasonalityLimitSchema, seasonalityOrderDirectionSchema,
 } from "../schemas/index.js"
 
 const seasonalityActions = ["market", "performers", "monthly", "year_month"] as const
@@ -12,13 +13,13 @@ const seasonalityInputSchema = z.object({
   ticker: tickerSchema.optional(),
   month: z.number().min(1).max(12).describe("Month number (1-12)").optional(),
   // Performers-specific optional parameters
-  min_years: z.number().int().min(1).describe("Minimum years of data required (default: 10)").optional(),
+  min_years: minYearsSchema.optional(),
   ticker_for_sector: tickerSchema.describe("A ticker whose sector will be used to filter results").optional(),
-  s_p_500_nasdaq_only: z.boolean().describe("Only return tickers in S&P 500 or Nasdaq 100").optional(),
+  s_p_500_nasdaq_only: sP500NasdaqOnlySchema.optional(),
   min_oi: z.number().int().nonnegative("Open interest cannot be negative").describe("Minimum open interest filter").optional(),
-  limit: limitSchema.optional(),
+  limit: seasonalityLimitSchema.optional(),
   order: seasonalityOrderBySchema.optional(),
-  order_direction: orderDirectionSchema.optional(),
+  order_direction: seasonalityOrderDirectionSchema.optional(),
 })
 
 
