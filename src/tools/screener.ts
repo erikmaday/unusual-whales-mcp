@@ -29,8 +29,8 @@ const screenerBaseSchema = z.object({
   is_otm: z.boolean().describe("Filter for OTM options").optional(),
   min_dte: z.number().int().nonnegative().describe("Minimum days to expiration").optional(),
   max_dte: z.number().int().nonnegative().describe("Maximum days to expiration").optional(),
-  min_premium: z.number().nonnegative().describe("Minimum premium filter").optional(),
-  max_premium: z.number().nonnegative().describe("Maximum premium filter").optional(),
+  min_premium: z.number().min(0).describe("Minimum premium filter").optional(),
+  max_premium: z.number().min(0).describe("Maximum premium filter").optional(),
 
   // Ordering and pagination
   order: z.string().describe("Field to order results by").optional(),
