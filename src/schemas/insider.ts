@@ -3,8 +3,8 @@ import { z } from "zod"
 /** Insider transaction filters */
 export const insiderTransactionFiltersSchema = z.object({
   // Market cap filters
-  min_marketcap: z.number().int().nonnegative("Market cap cannot be negative").describe("The minimum market capitalization in USD").optional(),
-  max_marketcap: z.number().int().nonnegative("Market cap cannot be negative").describe("The maximum market capitalization in USD").optional(),
+  min_marketcap: z.number().int().min(0).describe("The minimum market capitalization in USD").optional(),
+  max_marketcap: z.number().int().min(0).describe("The maximum market capitalization in USD").optional(),
   market_cap_size: z.string().describe("Filter by company market cap size category (small, mid, large)").optional(),
 
   // Earnings DTE filters
