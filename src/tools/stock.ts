@@ -74,8 +74,8 @@ const stockInputSchema = z.object({
   expirations: z.array(expirySchema).describe("Array of expiration dates in YYYY-MM-DD format (for atm_chains and spot_exposures_by_expiry_strike actions)").optional(),
   candle_size: candleSizeSchema.optional(),
   strike: strikeSchema.optional(),
-  min_strike: z.number().describe("Minimum strike price filter").optional(),
-  max_strike: z.number().describe("Maximum strike price filter").optional(),
+  min_strike: z.number().min(0, "Minimum strike must be non-negative").describe("Minimum strike price filter").optional(),
+  max_strike: z.number().min(0, "Maximum strike must be non-negative").describe("Maximum strike price filter").optional(),
   option_type: optionTypeSchema.optional(),
   limit: limitSchema.optional(),
   timeframe: timeframeSchema.optional(),
@@ -175,25 +175,27 @@ const stockInputSchema = z.object({
       path: ["expiry"],
     },
   )
-  .transform((data: any) => {
-    // Apply action-specific limit defaults if limit is not provided
-    if (data.limit === undefined) {
-      switch (data.action) {
-        case "option_contracts":
-        case "spot_exposures_by_expiry_strike":
-        case "spot_exposures_by_strike":
-          data.limit = 500
-          break
-        case "options_volume":
-          data.limit = 1
-          break
-        case "ownership":
-          data.limit = 20
-          break
+  .refine(
+    (data) => {
+      // Validate action-specific limit maximums
+      if (data.limit !== undefined) {
+        if (data.action === "ohlc" && data.limit > 2500) {
+          return false
+        }
+        if (data.action === "ownership" && data.limit > 100) {
+          return false
+        }
+        if (["option_contracts", "options_volume", "spot_exposures_by_expiry_strike", "spot_exposures_by_strike"].includes(data.action) && data.limit > 500) {
+          return false
+        }
       }
-    }
-    return data
-  })
+      return true
+    },
+    {
+      message: "Limit exceeds maximum allowed for this action",
+      path: ["limit"],
+    },
+  )
 
 
 export const stockTool = {
@@ -265,7 +267,7 @@ export async function handleStock(args: Record<string, unknown>): Promise<{ text
     return { text: formatError(`Invalid input: ${formatZodError(parsed.error)}`) }
   }
 
-  const {
+  let {
     action,
     ticker,
     sector,
@@ -304,6 +306,23 @@ export async function handleStock(args: Record<string, unknown>): Promise<{ text
     min_dte,
     max_dte,
   } = parsed.data
+
+  // Apply action-specific limit defaults if limit is not provided
+  if (limit === undefined) {
+    switch (action) {
+      case "option_contracts":
+      case "spot_exposures_by_expiry_strike":
+      case "spot_exposures_by_strike":
+        limit = 500
+        break
+      case "options_volume":
+        limit = 1
+        break
+      case "ownership":
+        limit = 20
+        break
+    }
+  }
 
   // Encode path parameters once if they exist
   const safeTicker = ticker ? encodePath(ticker) : ""

@@ -26,6 +26,6 @@ export const oiFilterSchema = z.object({
 
 /** Days to expiry filter (min/max) */
 export const dteFilterSchema = z.object({
-  min_dte: z.number().int().nonnegative("DTE cannot be negative").describe("The minimum days to expiry").optional(),
-  max_dte: z.number().int().nonnegative("DTE cannot be negative").describe("The maximum days to expiry").optional(),
+  min_dte: z.number().int().min(0, "DTE cannot be negative").describe("The minimum days to expiry").optional(),
+  max_dte: z.number().int().min(0, "DTE cannot be negative").describe("The maximum days to expiry").optional(),
 })
