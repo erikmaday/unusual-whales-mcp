@@ -97,3 +97,12 @@ export {
   seasonalityLimitSchema,
   seasonalityOrderDirectionSchema,
 } from "./seasonality.js"
+
+// Institutions schemas
+export {
+  institutionalActivityOrderBySchema,
+  institutionalHoldingsOrderBySchema,
+  institutionalListOrderBySchema,
+  institutionalOwnershipOrderBySchema,
+  latestInstitutionalFilingsOrderBySchema,
+} from "./institutions.js"
