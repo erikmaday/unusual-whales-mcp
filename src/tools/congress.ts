@@ -6,10 +6,10 @@ const congressActions = ["recent_trades", "late_reports", "congress_trader"] as 
 
 const congressInputSchema = z.object({
   action: z.enum(congressActions).describe("The action to perform"),
-  name: z.string().describe("Congress member name (for congress_trader action)").optional(),
+  name: z.string().describe("Congress member name (for congress_trader action)").default("Nancy Pelosi").optional(),
   ticker: tickerSchema.optional(),
   date: dateSchema.optional(),
-  limit: limitSchema.min(1).max(200).default(100).describe("Maximum number of results (default 100, max 200)").optional(),
+  limit: limitSchema.min(1).max(200).default(100).describe("Maximum number of results (default 100, max 200)"),
 })
 
 
@@ -60,7 +60,6 @@ export async function handleCongress(args: Record<string, unknown>): Promise<str
       }))
 
     case "congress_trader":
-      if (!name) return formatError("name is required")
       return formatResponse(await uwFetch("/api/congress/congress-trader", {
         name,
         date,

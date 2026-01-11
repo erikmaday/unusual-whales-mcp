@@ -112,9 +112,11 @@ describe("handleCongress", () => {
   })
 
   describe("congress_trader action", () => {
-    it("returns error when name is missing", async () => {
-      const result = await handleCongress({ action: "congress_trader" })
-      expect(result).toContain("name is required")
+    it("uses default name when name is not provided", async () => {
+      await handleCongress({ action: "congress_trader" })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/congress/congress-trader", expect.objectContaining({
+        name: "Nancy Pelosi",
+      }))
     })
 
     it("calls uwFetch with correct endpoint", async () => {
