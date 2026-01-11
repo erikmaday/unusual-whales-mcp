@@ -37,7 +37,8 @@ describe("congressTool", () => {
 
   it("has inputSchema", () => {
     expect(congressTool.inputSchema).toBeDefined()
-    expect(congressTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(congressTool.inputSchema.oneOf || congressTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -60,7 +61,7 @@ describe("handleCongress", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleCongress({ action: "invalid_action" })
-      expect(result).toContain("Invalid option")
+      expect(result).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {

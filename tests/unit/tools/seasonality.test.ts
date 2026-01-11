@@ -37,7 +37,8 @@ describe("seasonalityTool", () => {
 
   it("has inputSchema", () => {
     expect(seasonalityTool.inputSchema).toBeDefined()
-    expect(seasonalityTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(seasonalityTool.inputSchema.oneOf || seasonalityTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -60,7 +61,7 @@ describe("handleSeasonality", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleSeasonality({ action: "invalid_action" })
-      expect(result).toContain("Invalid option")
+      expect(result).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {

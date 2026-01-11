@@ -37,7 +37,8 @@ describe("marketTool", () => {
 
   it("has inputSchema", () => {
     expect(marketTool.inputSchema).toBeDefined()
-    expect(marketTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(marketTool.inputSchema.oneOf || marketTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -60,7 +61,8 @@ describe("handleMarket", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleMarket({ action: "invalid_action" })
-      expect(result).toContain("Invalid option")
+      // Zod discriminated union returns "Invalid input" for invalid discriminator values
+      expect(result).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
@@ -93,7 +95,7 @@ describe("handleMarket", () => {
   describe("sector_tide action", () => {
     it("returns error when sector is missing", async () => {
       const result = await handleMarket({ action: "sector_tide" })
-      expect(result).toContain("sector is required")
+      expect(result).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -116,7 +118,7 @@ describe("handleMarket", () => {
   describe("etf_tide action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleMarket({ action: "etf_tide" })
-      expect(result).toContain("ticker is required")
+      expect(result).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -182,7 +184,7 @@ describe("handleMarket", () => {
   describe("correlations action", () => {
     it("returns error when tickers is missing", async () => {
       const result = await handleMarket({ action: "correlations" })
-      expect(result).toContain("tickers is required")
+      expect(result).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {

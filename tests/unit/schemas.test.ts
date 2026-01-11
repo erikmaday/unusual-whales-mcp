@@ -263,8 +263,9 @@ describe("premiumFilterSchema", () => {
 
   it("accepts partial filters", () => {
     expect(premiumFilterSchema.parse({ min_premium: 50 })).toEqual({ min_premium: 50 })
-    expect(premiumFilterSchema.parse({ max_premium: 500 })).toEqual({ max_premium: 500 })
-    expect(premiumFilterSchema.parse({})).toEqual({})
+    // min_premium has a default of 0, so it will be filled in when parsing
+    expect(premiumFilterSchema.parse({ max_premium: 500 })).toEqual({ min_premium: 0, max_premium: 500 })
+    expect(premiumFilterSchema.parse({})).toEqual({ min_premium: 0 })
   })
 
   it("rejects negative premium", () => {

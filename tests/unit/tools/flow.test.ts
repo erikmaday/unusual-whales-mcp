@@ -48,7 +48,8 @@ describe("flowTool", () => {
 
   it("has inputSchema", () => {
     expect(flowTool.inputSchema).toBeDefined()
-    expect(flowTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(flowTool.inputSchema.oneOf || flowTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -71,7 +72,8 @@ describe("handleFlow", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleFlow({ action: "invalid_action" })
-      expect(result.text).toContain("Invalid option")
+      // Zod discriminated union returns "Invalid input" for invalid discriminator values
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
@@ -153,7 +155,7 @@ describe("handleFlow", () => {
   describe("group_greek_flow action", () => {
     it("returns error when flow_group is missing", async () => {
       const result = await handleFlow({ action: "group_greek_flow" })
-      expect(result.text).toContain("flow_group is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -179,7 +181,8 @@ describe("handleFlow", () => {
         action: "group_greek_flow_expiry",
         expiry: "2024-01-19",
       })
-      expect(result.text).toContain("flow_group and expiry are required")
+      // Zod validation error for missing required field
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error when expiry is missing", async () => {
@@ -187,7 +190,8 @@ describe("handleFlow", () => {
         action: "group_greek_flow_expiry",
         flow_group: "mag7",
       })
-      expect(result.text).toContain("flow_group and expiry are required")
+      // Zod validation error for missing required field
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -236,7 +240,7 @@ describe("handleFlow", () => {
   describe("lit_flow_ticker action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleFlow({ action: "lit_flow_ticker" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {

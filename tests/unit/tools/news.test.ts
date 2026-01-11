@@ -37,7 +37,8 @@ describe("newsTool", () => {
 
   it("has inputSchema", () => {
     expect(newsTool.inputSchema).toBeDefined()
-    expect(newsTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(newsTool.inputSchema.oneOf || newsTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {

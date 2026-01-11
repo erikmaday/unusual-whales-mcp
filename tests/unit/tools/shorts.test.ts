@@ -46,7 +46,8 @@ describe("shortsTool", () => {
   })
 
   it("has object inputSchema", () => {
-    expect(shortsTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(shortsTool.inputSchema.oneOf || shortsTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -63,7 +64,7 @@ describe("handleShorts", () => {
   describe("input validation", () => {
     it("rejects invalid action", async () => {
       const result = await handleShorts({ action: "invalid_action", ticker: "GME" })
-      expect(result).toContain("Invalid option")
+      expect(result).toContain("Invalid input")
     })
 
     it("rejects missing action", async () => {

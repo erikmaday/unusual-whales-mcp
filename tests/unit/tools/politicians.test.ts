@@ -37,7 +37,8 @@ describe("politiciansTool", () => {
 
   it("has inputSchema", () => {
     expect(politiciansTool.inputSchema).toBeDefined()
-    expect(politiciansTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(politiciansTool.inputSchema.oneOf || politiciansTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -60,7 +61,7 @@ describe("handlePoliticians", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handlePoliticians({ action: "invalid_action" })
-      expect(result).toContain("Invalid option")
+      expect(result).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
@@ -83,17 +84,17 @@ describe("handlePoliticians", () => {
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handlePoliticians({ action: "portfolio", politician_id: "nancy-pelosi" })
-      expect(mockUwFetch).toHaveBeenCalledWith("/api/politician-portfolios/nancy-pelosi", expect.any(Object))
+      await handlePoliticians({ action: "portfolio", politician_id: "12345678-1234-4234-8234-123456789012" })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/politician-portfolios/12345678-1234-4234-8234-123456789012", expect.any(Object))
     })
 
     it("passes aggregate parameter", async () => {
       await handlePoliticians({
         action: "portfolio",
-        politician_id: "nancy-pelosi",
+        politician_id: "12345678-1234-4234-8234-123456789012",
         aggregate_all_portfolios: true,
       })
-      expect(mockUwFetch).toHaveBeenCalledWith("/api/politician-portfolios/nancy-pelosi", expect.objectContaining({
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/politician-portfolios/12345678-1234-4234-8234-123456789012", expect.objectContaining({
         aggregate_all_portfolios: true,
       }))
     })
@@ -110,14 +111,14 @@ describe("handlePoliticians", () => {
         action: "recent_trades",
         date: "2024-01-15",
         ticker: "AAPL",
-        politician_id: "nancy-pelosi",
+        politician_id: "12345678-1234-4234-8234-123456789012",
         limit: 50,
         filter_late_reports: true,
       })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/politician-portfolios/recent_trades", expect.objectContaining({
         date: "2024-01-15",
         ticker: "AAPL",
-        politician_id: "nancy-pelosi",
+        politician_id: "12345678-1234-4234-8234-123456789012",
         limit: 50,
         filter_late_reports: true,
       }))
@@ -172,12 +173,12 @@ describe("handlePoliticians", () => {
     it("passes filter parameters", async () => {
       await handlePoliticians({
         action: "disclosures",
-        politician_id: "nancy-pelosi",
+        politician_id: "12345678-1234-4234-8234-123456789012",
         latest_only: true,
         year: 2024,
       })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/politician-portfolios/disclosures", expect.objectContaining({
-        politician_id: "nancy-pelosi",
+        politician_id: "12345678-1234-4234-8234-123456789012",
         latest_only: true,
         year: 2024,
       }))

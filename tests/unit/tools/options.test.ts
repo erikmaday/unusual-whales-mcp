@@ -37,7 +37,8 @@ describe("optionsTool", () => {
 
   it("has inputSchema", () => {
     expect(optionsTool.inputSchema).toBeDefined()
-    expect(optionsTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(optionsTool.inputSchema.oneOf || optionsTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -60,7 +61,7 @@ describe("handleOptions", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleOptions({ action: "invalid_action", id: "AAPL240119C00150000" })
-      expect(result).toContain("Invalid option")
+      expect(result).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {

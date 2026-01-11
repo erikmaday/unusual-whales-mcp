@@ -37,7 +37,8 @@ describe("alertsTool", () => {
 
   it("has inputSchema", () => {
     expect(alertsTool.inputSchema).toBeDefined()
-    expect(alertsTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(alertsTool.inputSchema.oneOf || alertsTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -60,7 +61,7 @@ describe("handleAlerts", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleAlerts({ action: "invalid_action" })
-      expect(result).toContain("Invalid option")
+      expect(result).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {

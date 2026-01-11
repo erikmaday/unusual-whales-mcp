@@ -37,7 +37,8 @@ describe("screenerTool", () => {
 
   it("has inputSchema", () => {
     expect(screenerTool.inputSchema).toBeDefined()
-    expect(screenerTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(screenerTool.inputSchema.oneOf || screenerTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -60,7 +61,7 @@ describe("handleScreener", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleScreener({ action: "invalid_action" })
-      expect(result).toContain("Invalid option")
+      expect(result).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {

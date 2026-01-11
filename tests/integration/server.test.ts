@@ -52,8 +52,15 @@ describe("Tool Registry", () => {
       expect(tool.description.length).toBeGreaterThan(0)
 
       expect(tool.inputSchema).toBeDefined()
-      expect(tool.inputSchema.type).toBe("object")
-      expect(tool.inputSchema.properties).toBeDefined()
+      // For discriminated unions, the schema has oneOf instead of type: "object"
+      expect(tool.inputSchema.oneOf || tool.inputSchema.type).toBeDefined()
+      // For discriminated unions, properties are in each variant, not at the top level
+      if (tool.inputSchema.oneOf) {
+        expect(Array.isArray(tool.inputSchema.oneOf)).toBe(true)
+        expect(tool.inputSchema.oneOf.length).toBeGreaterThan(0)
+      } else {
+        expect(tool.inputSchema.properties).toBeDefined()
+      }
     }
   })
 
@@ -211,14 +218,31 @@ describe("Request/Response Cycle", () => {
 describe("Tool Input Schema Validation", () => {
   it("all tools have action enum in schema", () => {
     for (const tool of tools) {
-      const actionProp = tool.inputSchema.properties.action
-      expect(actionProp).toBeDefined()
+      if (tool.inputSchema.oneOf) {
+        // For discriminated unions, action is the discriminator field
+        // Check that each variant has an action property
+        for (const variant of tool.inputSchema.oneOf) {
+          expect(variant.properties?.action).toBeDefined()
+        }
+      } else {
+        // For regular schemas, action is in properties
+        const actionProp = tool.inputSchema.properties.action
+        expect(actionProp).toBeDefined()
+      }
     }
   })
 
   it("action is required for all tools", () => {
     for (const tool of tools) {
-      expect(tool.inputSchema.required).toContain("action")
+      if (tool.inputSchema.oneOf) {
+        // For discriminated unions, action is required in each variant
+        for (const variant of tool.inputSchema.oneOf) {
+          expect(variant.required).toContain("action")
+        }
+      } else {
+        // For regular schemas, action is in required array
+        expect(tool.inputSchema.required).toContain("action")
+      }
     }
   })
 })
