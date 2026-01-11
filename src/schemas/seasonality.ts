@@ -13,7 +13,7 @@ export const minYearsSchema = z.number().int().min(1).describe("Minimum years of
 export const sP500NasdaqOnlySchema = z.boolean().describe("Only return tickers in S&P 500 or Nasdaq 100").default(false)
 
 /** Maximum number of results for seasonality performers */
-export const seasonalityLimitSchema = z.number().int("Limit must be an integer").positive("Limit must be positive").describe("Maximum number of results").default(50)
+export const seasonalityLimitSchema = z.number().int("Limit must be an integer").min(1).describe("Maximum number of results").default(50)
 
 /** Order direction for seasonality performers */
 export const seasonalityOrderDirectionSchema = z.enum(["asc", "desc"]).describe("Order direction").default("desc")
