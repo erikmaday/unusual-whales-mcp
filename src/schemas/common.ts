@@ -32,7 +32,7 @@ export const strikeSchema = z.number()
   .describe("Option strike price")
 
 /** Option type (call, put, or ALL) */
-export const optionTypeSchema = z.enum(["call", "put", "ALL"]).describe("Option type (call, put, or ALL)")
+export const optionTypeSchema = z.enum(["call", "put", "Call", "Put", "ALL"]).describe("Option type (call, put, or ALL)")
 
 /** Trade side (ALL, ASK, BID, MID) */
 export const sideSchema = z.enum(["ALL", "ASK", "BID", "MID"]).describe("Trade side (ALL, ASK, BID, or MID)")
