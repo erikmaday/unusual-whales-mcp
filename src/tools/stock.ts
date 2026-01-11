@@ -8,6 +8,8 @@ import {
   limitSchema,
   strikeSchema,
   optionTypeSchema,
+  sideSchema,
+  orderDirectionSchema,
   candleSizeSchema,
   timeframeSchema,
   deltaSchema,
@@ -16,6 +18,7 @@ import {
   timespanSchema,
   optionContractFiltersSchema,
   stockFlowFiltersSchema,
+  filterSchema,
   dteFilterSchema,
   stockOutputSchema,
 } from "../schemas/index.js"
@@ -68,7 +71,19 @@ const stockActions = [
 const stockInputSchema = z.object({
   action: z.enum(stockActions).describe("The action to perform"),
   ticker: tickerSchema.optional(),
-  sector: z.string().describe("Market sector (for tickers_by_sector action)").optional(),
+  sector: z.enum([
+    "Basic Materials",
+    "Communication Services",
+    "Consumer Cyclical",
+    "Consumer Defensive",
+    "Energy",
+    "Financial Services",
+    "Healthcare",
+    "Industrials",
+    "Real Estate",
+    "Technology",
+    "Utilities",
+  ]).describe("Market sector (for tickers_by_sector action)").optional(),
   date: dateSchema.optional(),
   expiry: expirySchema.optional(),
   expirations: z.array(expirySchema).describe("Array of expiration dates in YYYY-MM-DD format (for atm_chains and spot_exposures_by_expiry_strike actions)").optional(),
@@ -82,11 +97,14 @@ const stockInputSchema = z.object({
   delta: deltaSchema.optional(),
   // Pagination and ordering
   page: pageSchema.optional(),
-  order: z.string().describe("Order by field").optional(),
+  order: orderDirectionSchema.optional(),
   // OHLC parameters
   end_date: dateSchema.optional().describe("End date for OHLC data in YYYY-MM-DD format"),
   // IV rank timespan
   timespan: timespanSchema.optional(),
+  // Flow filters
+  side: sideSchema.optional(),
+  filter: filterSchema.optional(),
 })
   .merge(optionContractFiltersSchema)
   .merge(stockFlowFiltersSchema)
@@ -297,8 +315,6 @@ export async function handleStock(args: Record<string, unknown>): Promise<{ text
     maybe_otm_only,
     option_symbol,
     // Flow filters
-    is_ask_side,
-    is_bid_side,
     side,
     min_premium,
     filter,
