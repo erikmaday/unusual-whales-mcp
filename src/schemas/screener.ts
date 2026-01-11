@@ -113,7 +113,7 @@ export const optionContractScreenerFiltersSchema = z.object({
   max_strike: z.number().describe("Maximum strike price").optional(),
 
   // Option type
-  type: z.enum(["call", "put"]).describe("Option type filter (call or put)").optional(),
+  type: z.enum(["call", "Call", "put", "Put"]).describe("Option type filter (call or put)").optional(),
 
   // Expiry dates
   expiry_dates: z.array(z.string()).describe("Filter by specific expiry dates").optional(),
