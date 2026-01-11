@@ -37,7 +37,8 @@ describe("institutionsTool", () => {
 
   it("has inputSchema", () => {
     expect(institutionsTool.inputSchema).toBeDefined()
-    expect(institutionsTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(institutionsTool.inputSchema.oneOf || institutionsTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -60,7 +61,7 @@ describe("handleInstitutions", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleInstitutions({ action: "invalid_action" })
-      expect(result).toContain("Invalid option")
+      expect(result).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {

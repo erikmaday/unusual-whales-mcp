@@ -37,7 +37,8 @@ describe("earningsTool", () => {
 
   it("has inputSchema", () => {
     expect(earningsTool.inputSchema).toBeDefined()
-    expect(earningsTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(earningsTool.inputSchema.oneOf || earningsTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -60,7 +61,7 @@ describe("handleEarnings", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleEarnings({ action: "invalid_action" })
-      expect(result).toContain("Invalid option")
+      expect(result).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {

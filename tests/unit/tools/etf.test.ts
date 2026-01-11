@@ -37,7 +37,8 @@ describe("etfTool", () => {
 
   it("has inputSchema", () => {
     expect(etfTool.inputSchema).toBeDefined()
-    expect(etfTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(etfTool.inputSchema.oneOf || etfTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -60,7 +61,7 @@ describe("handleEtf", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleEtf({ action: "invalid_action", ticker: "SPY" })
-      expect(result).toContain("Invalid option")
+      expect(result).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {

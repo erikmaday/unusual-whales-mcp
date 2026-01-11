@@ -132,7 +132,7 @@ describe("handleStock", () => {
       })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/ohlc/1d", {
         date: "2024-01-01",
-        timeframe: undefined,
+        timeframe: "1Y", // timeframeSchema has a default of "1Y"
         end_date: undefined,
         limit: 10,
       })
@@ -203,7 +203,8 @@ describe("handleStock", () => {
         action: "greek_flow_by_expiry",
         ticker: "AAPL",
       })
-      expect(result.text).toContain("ticker and expiry are required")
+      // Only expiry is missing, ticker is provided
+      expect(result.text).toContain("expiry is required")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -224,7 +225,7 @@ describe("handleStock", () => {
         action: "atm_chains",
         ticker: "AAPL",
       })
-      expect(result.text).toContain("expirations[] is required")
+      expect(result.text).toContain("expirations is required")
     })
 
     it("returns error when expirations is empty", async () => {
@@ -233,7 +234,7 @@ describe("handleStock", () => {
         ticker: "AAPL",
         expirations: [],
       })
-      expect(result.text).toContain("expirations[] is required")
+      expect(result.text).toContain("expirations is required")
     })
 
     it("calls uwFetch with expirations array", async () => {
@@ -254,7 +255,8 @@ describe("handleStock", () => {
         action: "historical_risk_reversal_skew",
         ticker: "AAPL",
       })
-      expect(result.text).toContain("ticker, expiry, and delta are required")
+      // Ticker is provided, but expiry and delta are missing
+      expect(result.text).toContain("expiry and delta are required")
     })
 
     it("calls uwFetch with all params", async () => {
@@ -327,7 +329,7 @@ describe("handleStock", () => {
         action: "spot_exposures_by_expiry_strike",
         ticker: "AAPL",
       })
-      expect(result.text).toContain("ticker and expirations are required")
+      expect(result.text).toContain("expirations is required")
     })
 
     it("passes all filter params", async () => {
@@ -431,12 +433,14 @@ describe("handleStock", () => {
   describe("spot_exposures_expiry_strike action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "spot_exposures_expiry_strike", expiry: "2024-01-19" })
+      // Ticker is optional in schema, so validation passes and handler check runs
       expect(result.text).toContain("ticker and expiry are required")
     })
 
     it("returns error when expiry is missing", async () => {
       const result = await handleStock({ action: "spot_exposures_expiry_strike", ticker: "AAPL" })
-      expect(result.text).toContain("ticker and expiry are required")
+      // Zod validation catches missing expiry via .refine()
+      expect(result.text).toContain("expiry is required")
     })
 
     it("calls uwFetch with correct v2 endpoint", async () => {
@@ -545,7 +549,7 @@ describe("handleStock", () => {
 
     it("calls uwFetch with correct endpoint", async () => {
       await handleStock({ action: "ownership", ticker: "NFLX" })
-      expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/NFLX/ownership", { limit: undefined })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/NFLX/ownership", { limit: 20 })
     })
 
     it("passes limit parameter", async () => {
@@ -581,11 +585,11 @@ describe("handleStock", () => {
   describe("greek_exposure_by_strike_expiry action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "greek_exposure_by_strike_expiry" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "greek_exposure_by_strike_expiry", ticker: "AAPL" })
+      await handleStock({ action: "greek_exposure_by_strike_expiry", ticker: "AAPL", expiry: "2024-01-19" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/greek-exposure/strike-expiry", expect.any(Object))
     })
   })
@@ -670,7 +674,7 @@ describe("handleStock", () => {
 
     it("calls uwFetch with correct endpoint", async () => {
       await handleStock({ action: "options_volume", ticker: "AAPL" })
-      expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/options-volume", { limit: undefined })
+      expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/options-volume", { limit: 1 })
     })
   })
 
@@ -773,7 +777,7 @@ describe("handleStock", () => {
   describe("greeks action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "greeks" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
   })
 })

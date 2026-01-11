@@ -37,7 +37,8 @@ describe("darkpoolTool", () => {
 
   it("has inputSchema", () => {
     expect(darkpoolTool.inputSchema).toBeDefined()
-    expect(darkpoolTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(darkpoolTool.inputSchema.oneOf || darkpoolTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -60,7 +61,7 @@ describe("handleDarkpool", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleDarkpool({ action: "invalid_action" })
-      expect(result).toContain("Invalid option")
+      expect(result).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
@@ -99,7 +100,7 @@ describe("handleDarkpool", () => {
   describe("ticker action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleDarkpool({ action: "ticker" })
-      expect(result).toContain("ticker is required")
+      expect(result).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
