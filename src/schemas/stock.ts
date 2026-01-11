@@ -17,7 +17,7 @@ export const filterSchema = z.enum(["NetPremium", "Volume", "Trades"]).describe(
 export const stockFlowFiltersSchema = z.object({
   is_ask_side: z.boolean().describe("Boolean flag whether a transaction is ask side").optional(),
   is_bid_side: z.boolean().describe("Boolean flag whether a transaction is bid side").optional(),
-  min_premium: z.number().min(0, "Premium cannot be negative").describe("The minimum premium on the trade").default(0),
+  min_premium: z.number().min(0, "Premium cannot be negative").describe("The minimum premium on the trade").default(0).optional(),
 })
 
 // ============================================================================

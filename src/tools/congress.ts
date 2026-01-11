@@ -9,7 +9,7 @@ const congressInputSchema = z.object({
   name: z.string().describe("Congress member name (for congress_trader action)").default("Nancy Pelosi").optional(),
   ticker: tickerSchema.optional(),
   date: dateSchema.optional(),
-  limit: limitSchema.min(1).max(200).default(100).describe("Maximum number of results (default 100, max 200)"),
+  limit: limitSchema.min(1).max(200).default(100).describe("Maximum number of results (default 100, max 200)").optional(),
 })
 
 

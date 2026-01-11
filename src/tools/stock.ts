@@ -195,17 +195,20 @@ const stockInputSchema = z.object({
   )
   .refine(
     (data) => {
-      // Validate action-specific limit maximums
-      if (data.limit !== undefined) {
-        if (data.action === "ohlc" && data.limit > 2500) {
-          return false
-        }
-        if (data.action === "ownership" && data.limit > 100) {
-          return false
-        }
-        if (["option_contracts", "options_volume", "spot_exposures_by_expiry_strike", "spot_exposures_by_strike"].includes(data.action) && data.limit > 500) {
-          return false
-        }
+      // Validate action-specific limit maximums (only when limit is provided)
+      const hasLimit = "limit" in data && data.limit !== null && data.limit !== void 0
+      if (!hasLimit) return true
+
+      const limitValue = data.limit!
+
+      if (data.action === "ohlc" && limitValue > 2500) {
+        return false
+      }
+      if (data.action === "ownership" && limitValue > 100) {
+        return false
+      }
+      if (["option_contracts", "options_volume", "spot_exposures_by_expiry_strike", "spot_exposures_by_strike"].includes(data.action) && limitValue > 500) {
+        return false
       }
       return true
     },
@@ -329,6 +332,7 @@ export async function handleStock(args: Record<string, unknown>): Promise<{ text
       case "option_contracts":
       case "spot_exposures_by_expiry_strike":
       case "spot_exposures_by_strike":
+      case "spot_exposures_expiry_strike":
         limit = 500
         break
       case "options_volume":
@@ -336,6 +340,24 @@ export async function handleStock(args: Record<string, unknown>): Promise<{ text
         break
       case "ownership":
         limit = 20
+        break
+    }
+  }
+
+  // Apply action-specific side defaults if side is not provided
+  if (side === undefined) {
+    switch (action) {
+      case "flow_recent":
+        side = "ALL"
+        break
+    }
+  }
+
+  // Apply action-specific min_premium defaults if min_premium is not provided
+  if (min_premium === undefined) {
+    switch (action) {
+      case "flow_recent":
+        min_premium = 0
         break
     }
   }

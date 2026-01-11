@@ -8,7 +8,7 @@ const earningsActions = ["premarket", "afterhours", "ticker"] as const
 // Earnings-specific limit schema with max 100 for premarket/afterhours endpoints
 const earningsLimitSchema = z.number()
   .int("Limit must be an integer")
-  .positive("Limit must be positive")
+  .min(1, "Limit must be at least 1")
   .max(100, "Limit cannot exceed 100")
   .describe("Maximum number of results")
 

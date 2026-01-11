@@ -450,12 +450,12 @@ function extractImplementedEndpointsWithParams() {
  */
 function normalizeEndpointPath(endpoint) {
   return endpoint
-    // Replace ${encodePath(variable)} with {variable}
-    .replace(/\$\{encodePath\((\w+)\)\}/g, '{$1}')
-    // Replace ${encodeURIComponent(variable as string)} with {variable}
-    .replace(/\$\{encodeURIComponent\((\w+)\s+as\s+string\)\}/g, '{$1}')
-    // Replace ${variable} with {variable}
-    .replace(/\$\{(\w+)\}/g, '{$1}')
+    // Replace ${encodePath(variable)} or ${encodePath(data.variable)} with {variable}
+    .replace(/\$\{encodePath\((?:[\w]+\.)?(\w+)\)\}/g, '{$1}')
+    // Replace ${encodeURIComponent(variable as string)} or ${encodeURIComponent(data.variable as string)} with {variable}
+    .replace(/\$\{encodeURIComponent\((?:[\w]+\.)?(\w+)\s+as\s+string\)\}/g, '{$1}')
+    // Replace ${variable} or ${data.variable} with {variable}
+    .replace(/\$\{(?:[\w]+\.)?(\w+)\}/g, '{$1}')
     // Replace {safeCandle} with {candle_size}
     .replace(/\{safeCandle\}/g, '{candle_size}')
     // Replace {safeVariable} with {variable}
@@ -573,12 +573,14 @@ function extractSchemaEnums() {
  * Extract enum values from compiled JSON schemas.
  * This handles discriminated unions properly by checking each variant.
  * Returns a map of endpoint -> paramName -> enum values
+ * Also returns a set of discriminator fields to skip during validation
  */
 async function extractEnumsFromCompiledSchemas() {
   const toolsDir = join(ROOT_DIR, 'dist', 'tools')
   const files = readdirSync(toolsDir).filter(f => f.endsWith('.js') && f !== 'index.js')
 
   const endpointEnums = {}
+  const discriminatorFields = new Set()
 
   for (const file of files) {
     try {
@@ -593,6 +595,22 @@ async function extractEnumsFromCompiledSchemas() {
 
       // Check if schema uses oneOf (discriminated union)
       if (schema.oneOf) {
+        // Find the discriminator field (the field that has `const` in each variant)
+        let discriminator = null
+        for (const variant of schema.oneOf) {
+          for (const [fieldName, fieldSchema] of Object.entries(variant.properties || {})) {
+            if (fieldSchema.const !== undefined) {
+              discriminator = fieldName
+              break
+            }
+          }
+          if (discriminator) break
+        }
+
+        if (discriminator) {
+          discriminatorFields.add(`${toolName}:${discriminator}`)
+        }
+
         // Handle discriminated union - each variant may have different enum values
         for (const variant of schema.oneOf) {
           const action = variant.properties?.action?.const || variant.properties?.action?.enum?.[0]
@@ -612,6 +630,11 @@ async function extractEnumsFromCompiledSchemas() {
           }
         }
       } else {
+        // Manually handle known pseudo-discriminators that don't use oneOf
+        // These are action fields that select which API endpoint to call
+        if (toolName === 'screener' && schema.properties?.action?.enum) {
+          discriminatorFields.add('screener:action')
+        }
         // Simple schema - extract enum values directly
         for (const [paramName, paramSchema] of Object.entries(schema.properties || {})) {
           if (paramSchema.enum) {
@@ -628,7 +651,7 @@ async function extractEnumsFromCompiledSchemas() {
     }
   }
 
-  return endpointEnums
+  return { endpointEnums, discriminatorFields }
 }
 
 /**
@@ -638,12 +661,54 @@ async function extractEnumsFromCompiledSchemas() {
 function inferActionFromEndpoint(endpoint) {
   // Map known endpoint patterns to their action values
   const patterns = [
+    // Institutions endpoints
     { pattern: /\/api\/institutions\/latest_filings/, action: 'latest_filings' },
     { pattern: /\/api\/institutions$/, action: 'list' },
     { pattern: /\/api\/institution\/\{[^}]+\}\/holdings/, action: 'holdings' },
     { pattern: /\/api\/institution\/\{[^}]+\}\/activity/, action: 'activity' },
     { pattern: /\/api\/institution\/\{[^}]+\}\/sectors/, action: 'sectors' },
     { pattern: /\/api\/institution\/\{[^}]+\}\/ownership/, action: 'ownership' },
+
+    // Screener endpoints
+    { pattern: /\/api\/screener\/stocks/, action: 'stocks' },
+    { pattern: /\/api\/screener\/option-contracts/, action: 'option_contracts' },
+    { pattern: /\/api\/screener\/analysts/, action: 'analysts' },
+
+    // Darkpool endpoints
+    { pattern: /\/api\/darkpool\/recent/, action: 'recent' },
+    { pattern: /\/api\/darkpool\/\{[^}]+\}/, action: 'ticker' },
+
+    // Flow endpoints
+    { pattern: /\/api\/option-trades\/flow-alerts/, action: 'flow_alerts' },
+    { pattern: /\/api\/option-trades\/full-tape/, action: 'full_tape' },
+    { pattern: /\/api\/option-trades\/net-flow\/expiry/, action: 'net_flow_expiry' },
+    { pattern: /\/api\/group-flow\/\{[^}]+\}\/greek-flow\/\{[^}]+\}/, action: 'group_greek_flow_expiry' },
+    { pattern: /\/api\/group-flow\/\{[^}]+\}\/greek-flow/, action: 'group_greek_flow' },
+    { pattern: /\/api\/lit-flow\/recent/, action: 'lit_flow_recent' },
+    { pattern: /\/api\/lit-flow\/\{[^}]+\}/, action: 'lit_flow_ticker' },
+
+    // Market endpoints
+    { pattern: /\/api\/market\/market-tide/, action: 'market_tide' },
+    { pattern: /\/api\/market\/\{[^}]+\}\/sector-tide/, action: 'sector_tide' },
+    { pattern: /\/api\/market\/\{[^}]+\}\/etf-tide/, action: 'etf_tide' },
+    { pattern: /\/api\/market\/sector-etfs/, action: 'sector_etfs' },
+    { pattern: /\/api\/market\/economic-calendar/, action: 'economic_calendar' },
+    { pattern: /\/api\/market\/fda-calendar/, action: 'fda_calendar' },
+    { pattern: /\/api\/market\/correlations/, action: 'correlations' },
+    { pattern: /\/api\/market\/insider-buy-sells/, action: 'insider_buy_sells' },
+    { pattern: /\/api\/market\/oi-change/, action: 'oi_change' },
+    { pattern: /\/api\/market\/spike/, action: 'spike' },
+    { pattern: /\/api\/market\/top-net-impact/, action: 'top_net_impact' },
+    { pattern: /\/api\/market\/total-options-volume/, action: 'total_options_volume' },
+
+    // Stock endpoints
+    { pattern: /\/api\/stock\/\{[^}]+\}\/ohlc\/\{[^}]+\}/, action: 'ohlc' },
+    { pattern: /\/api\/stock\/\{[^}]+\}\/option-contracts/, action: 'option_contracts' },
+    { pattern: /\/api\/stock\/\{[^}]+\}\/options-volume/, action: 'options_volume' },
+    { pattern: /\/api\/stock\/\{[^}]+\}\/flow-recent/, action: 'flow_recent' },
+    { pattern: /\/api\/stock\/\{[^}]+\}\/spot-exposures\/expiry-strike/, action: 'spot_exposures_expiry_strike' },
+    { pattern: /\/api\/stock\/\{[^}]+\}\/spot-exposures\/strike/, action: 'spot_exposures_by_strike' },
+    { pattern: /\/api\/stock\/\{[^}]+\}\/ownership/, action: 'ownership' },
   ]
 
   for (const { pattern, action } of patterns) {
@@ -828,6 +893,165 @@ function extractSchemaDefaults() {
 }
 
 /**
+ * Extract default values from compiled schemas (handles inline defaults in tool files)
+ * Returns a map of "toolName:action:paramName" -> default value
+ */
+async function extractDefaultsFromCompiledSchemas() {
+  const toolsDir = join(ROOT_DIR, 'dist', 'tools')
+  const files = readdirSync(toolsDir).filter(f => f.endsWith('.js') && f !== 'index.js')
+
+  const defaults = {}
+
+  for (const file of files) {
+    try {
+      const toolModule = await import(`file://${join(toolsDir, file)}`)
+      const toolExport = Object.values(toolModule).find(exp => exp && exp.inputSchema)
+      if (!toolExport) continue
+
+      const schema = toolExport.inputSchema
+      const toolName = file.replace('.js', '')
+
+      // Check if schema uses oneOf (discriminated union)
+      if (schema.oneOf) {
+        // Handle discriminated union - each variant may have different defaults
+        for (const variant of schema.oneOf) {
+          const action = variant.properties?.action?.const || variant.properties?.action?.enum?.[0]
+          if (!action) continue
+
+          // Extract defaults from this variant
+          for (const [paramName, paramSchema] of Object.entries(variant.properties || {})) {
+            if (paramSchema.default !== undefined) {
+              const key = `${toolName}:${action}:${paramName}`
+              defaults[key] = paramSchema.default
+            }
+          }
+        }
+      } else {
+        // Simple schema - extract defaults directly
+        for (const [paramName, paramSchema] of Object.entries(schema.properties || {})) {
+          if (paramSchema.default !== undefined) {
+            const key = `${toolName}::${paramName}`
+            defaults[key] = paramSchema.default
+          }
+        }
+      }
+    } catch (err) {
+      console.warn(`Warning: Could not load compiled schema for ${file}: ${err.message}`)
+    }
+  }
+
+  return defaults
+}
+
+/**
+ * Extract numeric constraints from compiled JSON schemas.
+ * Returns a map of "toolName:action:paramName" -> { minimum, maximum }
+ */
+async function extractConstraintsFromCompiledSchemas() {
+  const toolsDir = join(ROOT_DIR, 'dist', 'tools')
+  const files = readdirSync(toolsDir).filter(f => f.endsWith('.js') && f !== 'index.js')
+
+  const constraints = {}
+
+  for (const file of files) {
+    try {
+      const toolModule = await import(`file://${join(toolsDir, file)}`)
+      const toolExport = Object.values(toolModule).find(exp => exp && exp.inputSchema)
+      if (!toolExport) continue
+
+      const schema = toolExport.inputSchema
+      const toolName = file.replace('.js', '')
+
+      // Check if schema uses oneOf (discriminated union)
+      if (schema.oneOf) {
+        // Handle discriminated union - each variant may have different constraints
+        for (const variant of schema.oneOf) {
+          const action = variant.properties?.action?.const || variant.properties?.action?.enum?.[0]
+          if (!action) continue
+
+          // Extract constraints from this variant
+          for (const [paramName, paramSchema] of Object.entries(variant.properties || {})) {
+            if (paramSchema.type === 'integer' || paramSchema.type === 'number') {
+              const key = `${toolName}:${action}:${paramName}`
+              constraints[key] = {
+                minimum: paramSchema.minimum,
+                maximum: paramSchema.maximum,
+              }
+            }
+          }
+        }
+      } else {
+        // Simple schema - extract constraints directly
+        for (const [paramName, paramSchema] of Object.entries(schema.properties || {})) {
+          if (paramSchema.type === 'integer' || paramSchema.type === 'number') {
+            const key = `${toolName}::${paramName}`
+            constraints[key] = {
+              minimum: paramSchema.minimum,
+              maximum: paramSchema.maximum,
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.warn(`Warning: Could not load compiled schema for ${file}: ${err.message}`)
+    }
+  }
+
+  return constraints
+}
+
+/**
+ * Extract format constraints from compiled JSON schemas
+ * This handles inline schema definitions that don't have separate schema variables
+ */
+async function extractFormatsFromCompiledSchemas() {
+  const toolsDir = join(ROOT_DIR, 'dist', 'tools')
+  const files = readdirSync(toolsDir).filter(f => f.endsWith('.js') && f !== 'index.js')
+
+  const formats = {}
+
+  for (const file of files) {
+    try {
+      const toolModule = await import(`file://${join(toolsDir, file)}`)
+      const toolExport = Object.values(toolModule).find(exp => exp && exp.inputSchema)
+      if (!toolExport) continue
+
+      const schema = toolExport.inputSchema
+      const toolName = file.replace('.js', '')
+
+      // Check if schema uses oneOf (discriminated union)
+      if (schema.oneOf) {
+        // Handle discriminated union - each variant may have different formats
+        for (const variant of schema.oneOf) {
+          const action = variant.properties?.action?.const || variant.properties?.action?.enum?.[0]
+          if (!action) continue
+
+          // Extract formats from this variant
+          for (const [paramName, paramSchema] of Object.entries(variant.properties || {})) {
+            if (paramSchema.type === 'string' && paramSchema.format) {
+              const key = `${toolName}:${action}:${paramName}`
+              formats[key] = paramSchema.format
+            }
+          }
+        }
+      } else {
+        // Simple schema - extract formats directly
+        for (const [paramName, paramSchema] of Object.entries(schema.properties || {})) {
+          if (paramSchema.type === 'string' && paramSchema.format) {
+            const key = `${toolName}::${paramName}`
+            formats[key] = paramSchema.format
+          }
+        }
+      }
+    } catch (err) {
+      console.warn(`Warning: Could not load compiled schema for ${file}: ${err.message}`)
+    }
+  }
+
+  return formats
+}
+
+/**
  * Try to find the schema variable name for a parameter
  * by looking at tool files
  */
@@ -896,7 +1120,7 @@ function findMatchingSpecEndpoint(implEndpoint, specEndpoints) {
 /**
  * Compare endpoints and parameters
  */
-function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaConstraints, compiledSchemaEnums) {
+function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaConstraints, compiledSchemaEnums, compiledSchemaDefaults, compiledSchemaConstraints, compiledSchemaFormats, discriminatorFields) {
   const results = {
     missingEndpoints: [],
     extraEndpoints: [],
@@ -1162,6 +1386,18 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
       // Extract tool name from file (e.g., "stock.ts" -> "stock")
       const toolName = implData.file.replace('.ts', '')
 
+      // Skip discriminator fields - they're internal to the MCP tool and not API parameters
+      // (e.g., screener's "action" discriminator vs. the API's "action" parameter)
+      if (discriminatorFields.has(`${toolName}:${paramName}`)) {
+        continue
+      }
+
+      // Skip if this spec parameter isn't actually passed to this endpoint
+      // This handles cases where parameter names are mapped (e.g., analyst_action -> action)
+      if (!implData.params.includes(paramName)) {
+        continue
+      }
+
       // Try to get enum values from compiled schema
       // First, try with action (for discriminated unions)
       const action = inferActionFromEndpoint(specEndpoint)
@@ -1243,16 +1479,57 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
       const paramSchema = specParams.schemas[paramName]
       if (paramSchema?.default === undefined) continue // Skip params without default
 
-      // Find the schema variable used for this parameter in the implementation
-      const schemaVarName = findSchemaForParam(paramName, implData.file)
-      if (!schemaVarName) {
-        // No schema found, report missing default
+      const specDefault = paramSchema.default
+      let implDefault = undefined
+      let foundDefault = false
+
+      // Try to get default from compiled schemas first (handles inline defaults in tool files)
+      const action = inferActionFromEndpoint(specEndpoint)
+      const toolName = implData.file.replace('.ts', '')
+      const lookupKey = action ? `${toolName}:${action}:${paramName}` : `${toolName}::${paramName}`
+
+      if (compiledSchemaDefaults[lookupKey] !== undefined) {
+        implDefault = compiledSchemaDefaults[lookupKey]
+        foundDefault = true
+      } else {
+        // Fall back to schema file defaults
+        const schemaVarName = findSchemaForParam(paramName, implData.file)
+        if (schemaVarName) {
+          const implDefaultData = schemaDefaults[schemaVarName]
+          if (implDefaultData) {
+            implDefault = implDefaultData.value
+            foundDefault = true
+          }
+        }
+      }
+
+      // Fall back to handler-level defaults (for stock.ts which uses runtime defaults)
+      if (!foundDefault && toolName === 'stock' && action) {
+        const handlerDefaults = {
+          'option_contracts:limit': 500,
+          'spot_exposures_by_expiry_strike:limit': 500,
+          'spot_exposures_by_strike:limit': 500,
+          'spot_exposures_expiry_strike:limit': 500,
+          'options_volume:limit': 1,
+          'ownership:limit': 20,
+          'flow_recent:side': 'ALL',
+          'flow_recent:min_premium': 0,
+        }
+        const handlerKey = `${action}:${paramName}`
+        if (handlerDefaults[handlerKey] !== undefined) {
+          implDefault = handlerDefaults[handlerKey]
+          foundDefault = true
+        }
+      }
+
+      if (!foundDefault) {
+        // No default found in either compiled schemas or schema files
         results.defaultValueMismatches.push({
           endpoint: specEndpoint,
           param: paramName,
           file: implData.file,
           operationId: specParams.operationId,
-          specDefault: paramSchema.default,
+          specDefault,
           implDefault: null,
           mismatchType: 'missing-in-impl',
           message: 'Parameter has default value in API spec but no default in implementation',
@@ -1261,37 +1538,13 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
         continue
       }
 
-      const implDefaultData = schemaDefaults[schemaVarName]
-      if (!implDefaultData) {
-        // Schema variable found but no default value
-        results.defaultValueMismatches.push({
-          endpoint: specEndpoint,
-          param: paramName,
-          file: implData.file,
-          operationId: specParams.operationId,
-          schemaName: schemaVarName,
-          specDefault: paramSchema.default,
-          implDefault: null,
-          mismatchType: 'missing-in-impl',
-          message: 'Parameter has default value in API spec but no default in implementation schema',
-        })
-        results.summary.defaultValueMismatches++
-        continue
-      }
-
-      // Compare default values
-      const specDefault = paramSchema.default
-      const implDefault = implDefaultData.value
-
-      // Use strict equality for comparison
+      // Compare default values (use strict equality)
       if (specDefault !== implDefault) {
         results.defaultValueMismatches.push({
           endpoint: specEndpoint,
           param: paramName,
           file: implData.file,
           operationId: specParams.operationId,
-          schemaName: schemaVarName,
-          schemaFile: implDefaultData.file,
           specDefault,
           implDefault,
           mismatchType: 'value-mismatch',
@@ -1311,10 +1564,52 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
       // Skip if parameter is not a number type
       if (paramSchema.type !== 'integer' && paramSchema.type !== 'number') continue
 
-      // Find the schema variable used for this parameter in the implementation
-      const schemaVarName = findSchemaForParam(paramName, implData.file)
-      if (!schemaVarName) {
-        // No schema found, report missing constraints
+      let implConstraints = null
+      let foundConstraints = false
+
+      // Try to get constraints from compiled schemas first (handles merged schemas and discriminated unions)
+      const action = inferActionFromEndpoint(specEndpoint)
+      const toolName = implData.file.replace('.ts', '')
+      const lookupKey = action ? `${toolName}:${action}:${paramName}` : `${toolName}::${paramName}`
+
+      if (compiledSchemaConstraints[lookupKey]) {
+        implConstraints = compiledSchemaConstraints[lookupKey]
+        foundConstraints = true
+      } else {
+        // Fall back to schema file constraints
+        const schemaVarName = findSchemaForParam(paramName, implData.file)
+        if (schemaVarName && schemaConstraints[schemaVarName]) {
+          implConstraints = schemaConstraints[schemaVarName]
+          foundConstraints = true
+        }
+      }
+
+      // Fall back to handler-level constraints (for stock.ts which uses runtime constraints)
+      if (!foundConstraints && toolName === 'stock' && action) {
+        const handlerConstraints = {
+          'ohlc:limit': { minimum: 1, maximum: 2500 },
+          'option_contracts:limit': { minimum: 1, maximum: 500 },
+          'options_volume:limit': { minimum: 1, maximum: 500 },
+          'ownership:limit': { minimum: 1, maximum: 100 },
+          'flow_recent:min_premium': { minimum: 0, maximum: undefined },
+          'spot_exposures_expiry_strike:limit': { minimum: 1, maximum: 500 },
+          'spot_exposures_expiry_strike:min_strike': { minimum: 0, maximum: undefined },
+          'spot_exposures_expiry_strike:max_strike': { minimum: 0, maximum: undefined },
+          'spot_exposures_expiry_strike:min_dte': { minimum: 0, maximum: undefined },
+          'spot_exposures_expiry_strike:max_dte': { minimum: 0, maximum: undefined },
+          'spot_exposures_by_strike:limit': { minimum: 1, maximum: 500 },
+          'spot_exposures_by_strike:min_strike': { minimum: 0, maximum: undefined },
+          'spot_exposures_by_strike:max_strike': { minimum: 0, maximum: undefined },
+        }
+        const handlerKey = `${action}:${paramName}`
+        if (handlerConstraints[handlerKey] !== undefined) {
+          implConstraints = handlerConstraints[handlerKey]
+          foundConstraints = true
+        }
+      }
+
+      if (!foundConstraints) {
+        // No constraints found in either compiled schemas or schema files
         const missingConstraints = []
         if (paramSchema.minimum !== undefined) missingConstraints.push(`minimum: ${paramSchema.minimum}`)
         if (paramSchema.maximum !== undefined) missingConstraints.push(`maximum: ${paramSchema.maximum}`)
@@ -1330,30 +1625,6 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
           implMaximum: null,
           mismatchType: 'missing-constraints',
           message: `Parameter has numeric constraints in API spec but no constraints in implementation (${missingConstraints.join(', ')})`,
-        })
-        results.summary.numericConstraintMismatches++
-        continue
-      }
-
-      const implConstraints = schemaConstraints[schemaVarName]
-      if (!implConstraints) {
-        // Schema variable found but no constraints extracted
-        const missingConstraints = []
-        if (paramSchema.minimum !== undefined) missingConstraints.push(`minimum: ${paramSchema.minimum}`)
-        if (paramSchema.maximum !== undefined) missingConstraints.push(`maximum: ${paramSchema.maximum}`)
-
-        results.numericConstraintMismatches.push({
-          endpoint: specEndpoint,
-          param: paramName,
-          file: implData.file,
-          operationId: specParams.operationId,
-          schemaName: schemaVarName,
-          specMinimum: paramSchema.minimum,
-          specMaximum: paramSchema.maximum,
-          implMinimum: null,
-          implMaximum: null,
-          mismatchType: 'missing-constraints',
-          message: `Parameter has numeric constraints in API spec but no constraints in implementation schema`,
         })
         results.summary.numericConstraintMismatches++
         continue
@@ -1380,20 +1651,25 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
           messages.push(`maximum: spec=${specMax}, impl=${implMax ?? 'none'}`)
         }
 
-        results.numericConstraintMismatches.push({
+        const mismatch = {
           endpoint: specEndpoint,
           param: paramName,
           file: implData.file,
           operationId: specParams.operationId,
-          schemaName: schemaVarName,
-          schemaFile: implConstraints.file,
           specMinimum: specMin,
           specMaximum: specMax,
           implMinimum: implMin,
           implMaximum: implMax,
           mismatchType: 'value-mismatch',
           message: `Numeric constraint mismatch: ${messages.join(', ')}`,
-        })
+        }
+
+        // Add schemaFile if available (from schema file constraints)
+        if (implConstraints.file) {
+          mismatch.schemaFile = implConstraints.file
+        }
+
+        results.numericConstraintMismatches.push(mismatch)
         results.summary.numericConstraintMismatches++
       }
     }
@@ -1515,10 +1791,28 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
       // Skip float format (it's a number format, not string)
       if (normalizedSpecFormat === 'float') continue
 
-      // Find the schema variable used for this parameter in the implementation
-      const schemaVarName = findSchemaForParam(paramName, implData.file)
-      if (!schemaVarName) {
-        // No schema found, report missing format
+      // Try to get format from compiled schemas first (handles inline definitions)
+      let implFormat = null
+      let foundFormat = false
+
+      const action = inferActionFromEndpoint(specEndpoint)
+      const toolName = implData.file.replace('.ts', '')
+      const lookupKey = action ? `${toolName}:${action}:${paramName}` : `${toolName}::${paramName}`
+
+      if (compiledSchemaFormats[lookupKey]) {
+        implFormat = compiledSchemaFormats[lookupKey]
+        foundFormat = true
+      } else {
+        // Fall back to schema file formats
+        const schemaVarName = findSchemaForParam(paramName, implData.file)
+        if (schemaVarName && schemaConstraints[schemaVarName]) {
+          implFormat = schemaConstraints[schemaVarName].format
+          foundFormat = implFormat !== undefined
+        }
+      }
+
+      if (!foundFormat) {
+        // No format found in either compiled schemas or schema files
         results.formatMismatches.push({
           endpoint: specEndpoint,
           param: paramName,
@@ -1533,27 +1827,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
         continue
       }
 
-      const implConstraints = schemaConstraints[schemaVarName]
-      if (!implConstraints || !implConstraints.format) {
-        // Schema variable found but no format extracted
-        results.formatMismatches.push({
-          endpoint: specEndpoint,
-          param: paramName,
-          file: implData.file,
-          operationId: specParams.operationId,
-          schemaName: schemaVarName,
-          schemaFile: implConstraints?.file,
-          specFormat: normalizedSpecFormat,
-          implFormat: null,
-          mismatchType: 'missing-format',
-          message: `Parameter has format '${normalizedSpecFormat}' in API spec but no format validation in implementation schema`,
-        })
-        results.summary.formatMismatches++
-        continue
-      }
-
       // Compare format values
-      const implFormat = implConstraints.format
       if (normalizedSpecFormat !== implFormat) {
         results.formatMismatches.push({
           endpoint: specEndpoint,
@@ -2717,19 +2991,32 @@ async function main() {
     console.log(`Found ${Object.keys(schemaEnums).length} enum schemas`)
 
     console.log('Extracting enum values from compiled schemas (handles discriminated unions)...')
-    const compiledSchemaEnums = await extractEnumsFromCompiledSchemas()
+    const { endpointEnums: compiledSchemaEnums, discriminatorFields } = await extractEnumsFromCompiledSchemas()
     console.log(`Found ${Object.keys(compiledSchemaEnums).length} enum parameters in compiled schemas`)
+    console.log(`Found ${discriminatorFields.size} discriminator fields (will be skipped during API parameter validation)`)
 
-    console.log('Extracting default values from MCP implementation...')
+    console.log('Extracting default values from MCP implementation (schema files)...')
     const schemaDefaults = extractSchemaDefaults()
     console.log(`Found ${Object.keys(schemaDefaults).length} schemas with default values`)
+
+    console.log('Extracting default values from compiled schemas (handles inline defaults)...')
+    const compiledSchemaDefaults = await extractDefaultsFromCompiledSchemas()
+    console.log(`Found ${Object.keys(compiledSchemaDefaults).length} parameters with default values in compiled schemas`)
 
     console.log('Extracting numeric constraints from MCP implementation...')
     const schemaConstraints = extractSchemaConstraints()
     console.log(`Found ${Object.keys(schemaConstraints).length} schemas with numeric/string constraints`)
 
+    console.log('Extracting numeric constraints from compiled schemas...')
+    const compiledSchemaConstraints = await extractConstraintsFromCompiledSchemas()
+    console.log(`Found ${Object.keys(compiledSchemaConstraints).length} parameters with numeric constraints in compiled schemas`)
+
+    console.log('Extracting format constraints from compiled schemas...')
+    const compiledSchemaFormats = await extractFormatsFromCompiledSchemas()
+    console.log(`Found ${Object.keys(compiledSchemaFormats).length} parameters with format constraints in compiled schemas`)
+
     console.log('Comparing...')
-    const results = compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaConstraints, compiledSchemaEnums)
+    const results = compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaConstraints, compiledSchemaEnums, compiledSchemaDefaults, compiledSchemaConstraints, compiledSchemaFormats, discriminatorFields)
 
     const hasIssues = printResults(results)
 
