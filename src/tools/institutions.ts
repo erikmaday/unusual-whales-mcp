@@ -1,12 +1,17 @@
 import { z } from "zod"
 import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
 import { toJsonSchema, tickerSchema, dateSchema, limitSchema, orderDirectionSchema, formatZodError,
+  institutionalActivityOrderBySchema,
+  institutionalHoldingsOrderBySchema,
+  institutionalListOrderBySchema,
+  institutionalOwnershipOrderBySchema,
+  latestInstitutionalFilingsOrderBySchema,
 } from "../schemas/index.js"
 
 const institutionsActions = ["list", "holdings", "activity", "sectors", "ownership", "latest_filings"] as const
 
-const institutionsInputSchema = z.object({
-  action: z.enum(institutionsActions).describe("The action to perform"),
+// Base schema with common fields
+const baseInstitutionsSchema = z.object({
   name: z.string().describe("Institution name").optional(),
   ticker: tickerSchema.describe("Ticker symbol (for ownership)").optional(),
   date: dateSchema.describe("Report date in YYYY-MM-DD format").optional(),
@@ -14,7 +19,6 @@ const institutionsInputSchema = z.object({
   end_date: z.string().describe("End date for date range").optional(),
   limit: limitSchema.default(500).optional(),
   page: z.number().describe("Page number for pagination").optional(),
-  order: z.string().describe("Order by field (e.g., name, total_value, ticker, date)").optional(),
   order_direction: orderDirectionSchema.default("desc").optional(),
   min_total_value: z.number().describe("Minimum total value filter").optional(),
   max_total_value: z.number().describe("Maximum total value filter").optional(),
@@ -23,6 +27,47 @@ const institutionsInputSchema = z.object({
   tags: z.string().describe("Institution tags filter").optional(),
   security_types: z.string().describe("Security types filter").optional(),
 })
+
+// Action-specific schemas with appropriate order enum
+const listSchema = baseInstitutionsSchema.extend({
+  action: z.literal("list"),
+  order: institutionalListOrderBySchema.optional(),
+})
+
+const holdingsSchema = baseInstitutionsSchema.extend({
+  action: z.literal("holdings"),
+  order: institutionalHoldingsOrderBySchema.optional(),
+})
+
+const activitySchema = baseInstitutionsSchema.extend({
+  action: z.literal("activity"),
+  order: institutionalActivityOrderBySchema.optional(),
+})
+
+const sectorsSchema = baseInstitutionsSchema.extend({
+  action: z.literal("sectors"),
+  order: z.string().describe("Order by field").optional(),
+})
+
+const ownershipSchema = baseInstitutionsSchema.extend({
+  action: z.literal("ownership"),
+  order: institutionalOwnershipOrderBySchema.optional(),
+})
+
+const latestFilingsSchema = baseInstitutionsSchema.extend({
+  action: z.literal("latest_filings"),
+  order: latestInstitutionalFilingsOrderBySchema.optional(),
+})
+
+// Union of all action schemas
+const institutionsInputSchema = z.discriminatedUnion("action", [
+  listSchema,
+  holdingsSchema,
+  activitySchema,
+  sectorsSchema,
+  ownershipSchema,
+  latestFilingsSchema,
+])
 
 
 export const institutionsTool = {
