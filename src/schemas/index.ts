@@ -75,6 +75,7 @@ export {
 export {
   optionContractFiltersSchema,
   stockFlowFiltersSchema,
+  filterSchema,
   stockOutputSchema,
 } from "./stock.js"
 

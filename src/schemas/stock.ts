@@ -10,13 +10,14 @@ export const optionContractFiltersSchema = z.object({
   option_symbol: z.string().describe("Filter by a specific option contract symbol (e.g., AAPL240119C00190000)").optional(),
 })
 
+/** Filter type for intraday flow */
+export const filterSchema = z.enum(["NetPremium", "Volume", "Trades"]).describe("Filter type for intraday flow").default("NetPremium")
+
 /** Stock flow filters */
 export const stockFlowFiltersSchema = z.object({
   is_ask_side: z.boolean().describe("Boolean flag whether a transaction is ask side").optional(),
   is_bid_side: z.boolean().describe("Boolean flag whether a transaction is bid side").optional(),
-  side: z.enum(["ALL", "ASK", "BID", "MID"]).describe("Filter by trade side").default("ALL"),
   min_premium: z.number().min(0, "Premium cannot be negative").describe("The minimum premium on the trade").default(0),
-  filter: z.enum(["NetPremium", "Volume", "Trades"]).describe("Filter type for intraday flow").default("NetPremium"),
 })
 
 // ============================================================================
