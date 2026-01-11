@@ -22,7 +22,7 @@ export const expirySchema = z.string()
 /** Maximum number of results */
 export const limitSchema = z.number()
   .int("Limit must be an integer")
-  .positive("Limit must be positive")
+  .min(1, "Limit must be at least 1")
   .max(500, "Limit cannot exceed 500")
   .describe("Maximum number of results")
 
@@ -43,7 +43,7 @@ export const orderDirectionSchema = z.enum(["asc", "desc"]).describe("Order dire
 /** Pagination page number */
 export const pageSchema = z.number()
   .int("Page must be an integer")
-  .positive("Page must be positive")
+  .min(1, "Page must be at least 1")
   .describe("Page number for paginated results")
 
 /** Candle size for OHLC data */

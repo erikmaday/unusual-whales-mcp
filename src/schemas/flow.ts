@@ -35,7 +35,7 @@ export const flowAlertsExtendedFiltersSchema = z.object({
   max_diff: z.number().describe("Maximum OTM diff of the contract (difference between strike and underlying price)").optional(),
 
   // Volume/OI ratio filters
-  min_volume_oi_ratio: z.number().int().min(1).describe("The minimum ratio of contract volume to contract open interest. If open interest is zero, the ratio is evaluated as if open interest was one").optional(),
+  min_volume_oi_ratio: z.number().int().min(0).describe("The minimum ratio of contract volume to contract open interest. If open interest is zero, the ratio is evaluated as if open interest was one").optional(),
   max_volume_oi_ratio: z.number().int().min(0).describe("The maximum ratio of contract volume to contract open interest. If open interest is zero, the ratio is evaluated as if open interest was one").optional(),
 
   // Percentage filters

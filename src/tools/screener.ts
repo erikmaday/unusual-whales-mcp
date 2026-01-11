@@ -5,146 +5,64 @@ import {
   tickerSchema,
   stockScreenerFiltersSchema,
   optionContractScreenerFiltersSchema,
+  stockScreenerOrderBySchema,
+  optionContractScreenerOrderBySchema,
   formatZodError,
 } from "../schemas/index.js"
 
 const screenerActions = ["stocks", "option_contracts", "analysts"] as const
 
-// Enum values for stock screener order parameter
-const stockOrderValues = [
-  "avg_30_day_call_oi",
-  "avg_30_day_call_volume",
-  "avg_30_day_put_oi",
-  "avg_30_day_put_volume",
-  "avg_3_day_call_volume",
-  "avg_3_day_put_volume",
-  "avg_7_day_call_volume",
-  "avg_7_day_put_volume",
-  "bearish_premium",
-  "bullish_premium",
-  "call_oi_change",
-  "call_oi_change_perc",
-  "call_open_interest",
-  "call_premium",
-  "call_premium_ask_side",
-  "call_premium_bid_side",
-  "call_volume",
-  "call_volume_ask_side",
-  "call_volume_bid_side",
-  "cum_dir_delta",
-  "cum_dir_gamma",
-  "cum_dir_vega",
-  "date",
-  "flex_oi",
-  "flex_option_chains",
-  "implied_move",
-  "implied_move_perc",
-  "iv30d",
-  "iv30d_1d",
-  "iv30d_1m",
-  "iv30d_1w",
-  "iv_rank",
-  "marketcap",
-  "net_call_premium",
-  "net_premium",
-  "net_put_premium",
-  "new_chains",
-  "next_dividend_date",
-  "next_earnings_date",
-  "perc_call_vol_ask",
-  "perc_call_vol_bid",
-  "perc_change",
-  "perc_put_vol_ask",
-  "perc_put_vol_bid",
-  "premium",
-  "put_call_ratio",
-  "put_oi_change",
-  "put_oi_change_perc",
-  "put_open_interest",
-  "put_premium",
-  "put_premium_ask_side",
-  "put_premium_bid_side",
-  "put_volume",
-  "put_volume_ask_side",
-  "put_volume_bid_side",
-  "ticker",
-  "total_oi_change",
-  "total_oi_change_perc",
-  "total_open_interest",
-  "volatility",
-  "volume",
-] as const
-
-// Enum values for option contract screener order parameter
-const optionContractOrderValues = [
-  "bid_ask_vol",
-  "bull_bear_vol",
-  "contract_pricing",
-  "daily_perc_change",
-  "diff",
-  "dte",
-  "earnings",
-  "expires",
-  "expiry",
-  "floor_volume",
-  "floor_volume_ratio",
-  "from_high",
-  "from_low",
-  "iv",
-  "multileg_volume",
-  "open_interest",
-  "premium",
-  "spread",
-  "stock_price",
-  "tape_time",
-  "ticker",
-  "total_multileg_volume_ratio",
-  "trades",
-  "volume",
-  "volume_oi_ratio",
-  "volume_ticker_vol_ratio",
-] as const
-
-// Base schema for common fields across all screener actions
-const screenerBaseSchema = z.object({
-  action: z.enum(screenerActions).describe("The action to perform"),
+// Base schema with common fields
+const baseScreenerSchema = z.object({
   ticker: tickerSchema.optional(),
-
-  // Stock screener common filters
-  min_marketcap: z.number().describe("Minimum market cap").optional(),
-  max_marketcap: z.number().describe("Maximum market cap").optional(),
-  min_volume: z.number().int().nonnegative().describe("Minimum volume").optional(),
-  max_volume: z.number().int().nonnegative().describe("Maximum volume").optional(),
-
-  // Stock screener OI filters
-  min_oi: z.number().int().nonnegative().describe("Minimum open interest").optional(),
-  max_oi: z.number().int().nonnegative().describe("Maximum open interest").optional(),
-
-  // Option contract screener common filters
-  is_otm: z.boolean().describe("Filter for OTM options").optional(),
-  min_dte: z.number().int().nonnegative().describe("Minimum days to expiration").optional(),
-  max_dte: z.number().int().nonnegative().describe("Maximum days to expiration").optional(),
-  min_premium: z.number().min(0).describe("Minimum premium filter").optional(),
-  max_premium: z.number().min(0).describe("Maximum premium filter").optional(),
-
-  // Ordering and pagination
-  order: z.union([
-    z.enum(stockOrderValues),
-    z.enum(optionContractOrderValues),
-  ]).describe("Field to order results by").optional(),
+  limit: z.number().int().min(1).max(500).describe("Maximum number of results").default(1),
+  page: z.number().int().min(1).describe("Page number for pagination").optional(),
   order_direction: z.enum(["asc", "desc"]).describe("Order direction (asc or desc)").default("desc"),
-  limit: z.number().int().positive().describe("Maximum number of results").default(1),
-  page: z.number().int().positive().describe("Page number for pagination").optional(),
+})
 
-  // Analyst screener filters
+// Action-specific schemas with appropriate order enum
+const stocksSchema = baseScreenerSchema
+  .merge(stockScreenerFiltersSchema)
+  .extend({
+    action: z.literal("stocks"),
+    order: stockScreenerOrderBySchema.optional(),
+    // Stock-specific filters that overlap with base
+    min_marketcap: z.number().describe("Minimum market cap").optional(),
+    max_marketcap: z.number().describe("Maximum market cap").optional(),
+    min_volume: z.number().int().nonnegative().describe("Minimum volume on that contract").optional(),
+    max_volume: z.number().int().nonnegative().describe("Maximum volume on that contract").optional(),
+    min_oi: z.number().int().nonnegative().describe("Minimum open interest").optional(),
+    max_oi: z.number().int().nonnegative().describe("Maximum open interest").optional(),
+    min_premium: z.number().min(0).describe("Minimum premium filter").optional(),
+    max_premium: z.number().min(0).describe("Maximum premium filter").optional(),
+  })
+
+const optionContractsSchema = baseScreenerSchema
+  .merge(optionContractScreenerFiltersSchema)
+  .extend({
+    action: z.literal("option_contracts"),
+    limit: z.number().int().min(1).max(250).describe("Maximum number of results").default(1),
+    order: optionContractScreenerOrderBySchema.optional(),
+    // Option contract-specific filters
+    is_otm: z.boolean().describe("Filter for OTM options").optional(),
+    min_dte: z.number().int().nonnegative().describe("Minimum days to expiration").optional(),
+    max_dte: z.number().int().nonnegative().describe("Maximum days to expiration").optional(),
+    min_premium: z.number().min(0).describe("Minimum premium filter").optional(),
+    max_premium: z.number().min(0).describe("Maximum premium filter").optional(),
+  })
+
+const analystsSchema = baseScreenerSchema.extend({
+  action: z.literal("analysts"),
   recommendation: z.enum(["buy", "hold", "sell"]).describe("Analyst recommendation (buy, hold, sell)").optional(),
   analyst_action: z.enum(["initiated", "reiterated", "downgraded", "upgraded", "maintained"]).describe("Analyst action type").optional(),
 })
 
-// Merge with stock screener and option contract screener filter schemas
-const screenerInputSchema = screenerBaseSchema
-  .merge(stockScreenerFiltersSchema)
-  .merge(optionContractScreenerFiltersSchema)
+// Union of all action schemas
+const screenerInputSchema = z.discriminatedUnion("action", [
+  stocksSchema,
+  optionContractsSchema,
+  analystsSchema,
+])
 
 
 export const screenerTool = {

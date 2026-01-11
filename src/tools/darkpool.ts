@@ -13,11 +13,9 @@ import {
 
 const darkpoolActions = ["recent", "ticker"] as const
 
-const darkpoolInputSchema = z.object({
-  action: z.enum(darkpoolActions).describe("The action to perform"),
-  ticker: tickerSchema.describe("Ticker symbol (required for ticker action)").optional(),
+// Base schema with common fields
+const baseDarkpoolSchema = z.object({
   date: dateSchema.optional(),
-  limit: z.number().int().positive().describe("Maximum number of results").optional(),
   newer_than: z.string().describe("Filter trades newer than timestamp").optional(),
   older_than: z.string().describe("Filter trades older than timestamp").optional(),
   min_premium: z.number().int().nonnegative("Premium cannot be negative").default(0).describe("The minimum premium on the alert or trade").optional(),
@@ -27,6 +25,24 @@ const darkpoolInputSchema = z.object({
   min_volume: z.number().int().nonnegative("Volume cannot be negative").default(0).describe("The minimum volume on the contract").optional(),
   max_volume: z.number().int().nonnegative("Volume cannot be negative").describe("The maximum volume on the contract").optional(),
 })
+
+// Action-specific schemas
+const recentSchema = baseDarkpoolSchema.extend({
+  action: z.literal("recent"),
+  limit: z.number().int().min(1).max(200).describe("Maximum number of results").default(100).optional(),
+})
+
+const darkpoolTickerSchema = baseDarkpoolSchema.extend({
+  action: z.literal("ticker"),
+  ticker: tickerSchema.describe("Ticker symbol (required for ticker action)"),
+  limit: z.number().int().min(1).max(500).describe("Maximum number of results").default(500).optional(),
+})
+
+// Union of all action schemas
+const darkpoolInputSchema = z.discriminatedUnion("action", [
+  recentSchema,
+  darkpoolTickerSchema,
+])
 
 
 export const darkpoolTool = {
@@ -59,50 +75,36 @@ export async function handleDarkpool(args: Record<string, unknown>): Promise<str
     return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
   }
 
-  const {
-    action,
-    ticker,
-    date,
-    limit,
-    min_premium,
-    max_premium,
-    min_size,
-    max_size,
-    min_volume,
-    max_volume,
-    newer_than,
-    older_than,
-  } = parsed.data
+  const data = parsed.data
 
-  switch (action) {
+  switch (data.action) {
     case "recent":
       return formatResponse(await uwFetch("/api/darkpool/recent", {
-        date,
-        limit: limit ?? 100,
-        min_premium,
-        max_premium,
-        min_size,
-        max_size,
-        min_volume,
-        max_volume,
+        date: data.date,
+        limit: data.limit,
+        min_premium: data.min_premium,
+        max_premium: data.max_premium,
+        min_size: data.min_size,
+        max_size: data.max_size,
+        min_volume: data.min_volume,
+        max_volume: data.max_volume,
       }))
 
     case "ticker":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/darkpool/${encodePath(ticker)}`, {
-        date,
-        limit: limit ?? 500,
-        min_premium,
-        max_premium,
-        min_size,
-        max_size,
-        min_volume,
-        max_volume,
-        newer_than,
-        older_than,
+      return formatResponse(await uwFetch(`/api/darkpool/${encodePath(data.ticker)}`, {
+        date: data.date,
+        limit: data.limit,
+        min_premium: data.min_premium,
+        max_premium: data.max_premium,
+        min_size: data.min_size,
+        max_size: data.max_size,
+        min_volume: data.min_volume,
+        max_volume: data.max_volume,
+        newer_than: data.newer_than,
+        older_than: data.older_than,
       }))
 
     default:
-      return formatError(`Unknown action: ${action}`)
+      return formatError(`Unknown action: ${(data as { action: string }).action}`)
   }
 }

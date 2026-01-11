@@ -17,26 +17,97 @@ const marketActions = [
   "total_options_volume",
 ] as const
 
-const marketInputSchema = z.object({
-  action: z.enum(marketActions).describe("The action to perform"),
-  ticker: tickerSchema.describe("Ticker symbol (for etf_tide)").optional(),
-  tickers: z.string().describe("Ticker list for correlations"),
-  sector: z.string().describe("Market sector (for sector_tide)").optional(),
+// Action-specific schemas
+const marketTideSchema = z.object({
+  action: z.literal("market_tide"),
   date: dateSchema.optional(),
-  otm_only: z.boolean().describe("Only use OTM options (for market_tide)").default(false),
-  interval_5m: z.boolean().describe("Use 5-minute intervals instead of 1-minute (for market_tide)").default(true),
-  interval: z.string().describe("Time interval (1y, 6m, 3m, 1m) for correlations").default("1Y"),
-  start_date: z.string().describe("Start date for correlations (YYYY-MM-DD)").optional(),
-  end_date: z.string().describe("End date for correlations (YYYY-MM-DD)").optional(),
-  limit: z.number().int().min(1).max(500).describe("Maximum number of results").optional(),
-  order: z.enum(["asc", "desc"]).describe("Order direction").optional(),
-  issue_types: z.string().describe("Issue types filter (for top_net_impact)").optional(),
+  otm_only: z.boolean().describe("Only use OTM options (for market_tide)").default(false).optional(),
+  interval_5m: z.boolean().describe("Use 5-minute intervals instead of 1-minute (for market_tide)").default(true).optional(),
+})
+
+const sectorTideSchema = z.object({
+  action: z.literal("sector_tide"),
+  sector: z.string().describe("Market sector (for sector_tide)"),
+  date: dateSchema.optional(),
+})
+
+const etfTideSchema = z.object({
+  action: z.literal("etf_tide"),
+  ticker: tickerSchema.describe("Ticker symbol (for etf_tide)"),
+  date: dateSchema.optional(),
+})
+
+const sectorEtfsSchema = z.object({
+  action: z.literal("sector_etfs"),
+})
+
+const economicCalendarSchema = z.object({
+  action: z.literal("economic_calendar"),
+})
+
+const fdaCalendarSchema = z.object({
+  action: z.literal("fda_calendar"),
   announced_date_min: z.string().describe("Minimum announced date for FDA calendar").optional(),
   announced_date_max: z.string().describe("Maximum announced date for FDA calendar").optional(),
   target_date_min: z.string().describe("Minimum target date for FDA calendar").optional(),
   target_date_max: z.string().describe("Maximum target date for FDA calendar").optional(),
   drug: z.string().describe("Drug name filter for FDA calendar").optional(),
+  ticker: tickerSchema.optional(),
+  limit: z.number().int().min(1).max(200).describe("Maximum number of results").default(100).optional(),
 })
+
+const correlationsSchema = z.object({
+  action: z.literal("correlations"),
+  tickers: z.string().describe("Ticker list for correlations"),
+  interval: z.string().describe("Time interval (1y, 6m, 3m, 1m) for correlations").default("1Y").optional(),
+  start_date: z.string().describe("Start date for correlations (YYYY-MM-DD)").optional(),
+  end_date: z.string().describe("End date for correlations (YYYY-MM-DD)").optional(),
+})
+
+const insiderBuySellsSchema = z.object({
+  action: z.literal("insider_buy_sells"),
+  limit: z.number().int().min(1).max(500).describe("Maximum number of results").optional(),
+})
+
+const oiChangeSchema = z.object({
+  action: z.literal("oi_change"),
+  date: dateSchema.optional(),
+  limit: z.number().int().min(1).max(200).describe("Maximum number of results").default(100).optional(),
+  order: z.enum(["asc", "desc"]).describe("Order direction").default("desc").optional(),
+})
+
+const spikeSchema = z.object({
+  action: z.literal("spike"),
+  date: dateSchema.optional(),
+})
+
+const topNetImpactSchema = z.object({
+  action: z.literal("top_net_impact"),
+  date: dateSchema.optional(),
+  issue_types: z.string().describe("Issue types filter (for top_net_impact)").optional(),
+  limit: z.number().int().min(1).max(100).describe("Maximum number of results").default(20).optional(),
+})
+
+const totalOptionsVolumeSchema = z.object({
+  action: z.literal("total_options_volume"),
+  limit: z.number().int().min(1).max(500).describe("Maximum number of results").default(1).optional(),
+})
+
+// Union of all action schemas
+const marketInputSchema = z.discriminatedUnion("action", [
+  marketTideSchema,
+  sectorTideSchema,
+  etfTideSchema,
+  sectorEtfsSchema,
+  economicCalendarSchema,
+  fdaCalendarSchema,
+  correlationsSchema,
+  insiderBuySellsSchema,
+  oiChangeSchema,
+  spikeSchema,
+  topNetImpactSchema,
+  totalOptionsVolumeSchema,
+])
 
 
 export const marketTool = {
@@ -77,42 +148,25 @@ export async function handleMarket(args: Record<string, unknown>): Promise<strin
     return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
   }
 
-  const {
-    action,
-    ticker,
-    tickers,
-    sector,
-    date,
-    otm_only,
-    interval_5m,
-    interval,
-    start_date,
-    end_date,
-    limit,
-    order,
-    issue_types,
-    announced_date_min,
-    announced_date_max,
-    target_date_min,
-    target_date_max,
-    drug,
-  } = parsed.data
+  const data = parsed.data
 
-  switch (action) {
+  switch (data.action) {
     case "market_tide":
       return formatResponse(await uwFetch("/api/market/market-tide", {
-        date,
-        otm_only,
-        interval_5m,
+        date: data.date,
+        otm_only: data.otm_only,
+        interval_5m: data.interval_5m,
       }))
 
     case "sector_tide":
-      if (!sector) return formatError("sector is required")
-      return formatResponse(await uwFetch(`/api/market/${encodePath(sector)}/sector-tide`, { date }))
+      return formatResponse(await uwFetch(`/api/market/${encodePath(data.sector)}/sector-tide`, {
+        date: data.date
+      }))
 
     case "etf_tide":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/market/${encodePath(ticker)}/etf-tide`, { date }))
+      return formatResponse(await uwFetch(`/api/market/${encodePath(data.ticker)}/etf-tide`, {
+        date: data.date
+      }))
 
     case "sector_etfs":
       return formatResponse(await uwFetch("/api/market/sector-etfs"))
@@ -122,47 +176,53 @@ export async function handleMarket(args: Record<string, unknown>): Promise<strin
 
     case "fda_calendar":
       return formatResponse(await uwFetch("/api/market/fda-calendar", {
-        announced_date_min,
-        announced_date_max,
-        target_date_min,
-        target_date_max,
-        drug,
-        ticker,
-        limit: limit ?? 100,
+        announced_date_min: data.announced_date_min,
+        announced_date_max: data.announced_date_max,
+        target_date_min: data.target_date_min,
+        target_date_max: data.target_date_max,
+        drug: data.drug,
+        ticker: data.ticker,
+        limit: data.limit,
       }))
 
     case "correlations":
       return formatResponse(await uwFetch("/api/market/correlations", {
-        tickers,
-        interval,
-        start_date,
-        end_date,
+        tickers: data.tickers,
+        interval: data.interval,
+        start_date: data.start_date,
+        end_date: data.end_date,
       }))
 
     case "insider_buy_sells":
-      return formatResponse(await uwFetch("/api/market/insider-buy-sells", { limit }))
+      return formatResponse(await uwFetch("/api/market/insider-buy-sells", {
+        limit: data.limit
+      }))
 
     case "oi_change":
       return formatResponse(await uwFetch("/api/market/oi-change", {
-        date,
-        limit: limit ?? 100,
-        order: order ?? "desc",
+        date: data.date,
+        limit: data.limit,
+        order: data.order,
       }))
 
     case "spike":
-      return formatResponse(await uwFetch("/api/market/spike", { date }))
+      return formatResponse(await uwFetch("/api/market/spike", {
+        date: data.date
+      }))
 
     case "top_net_impact":
       return formatResponse(await uwFetch("/api/market/top-net-impact", {
-        date,
-        "issue_types[]": issue_types,
-        limit: limit ?? 20,
+        date: data.date,
+        "issue_types[]": data.issue_types,
+        limit: data.limit,
       }))
 
     case "total_options_volume":
-      return formatResponse(await uwFetch("/api/market/total-options-volume", { limit: limit ?? 1 }))
+      return formatResponse(await uwFetch("/api/market/total-options-volume", {
+        limit: data.limit
+      }))
 
     default:
-      return formatError(`Unknown action: ${action}`)
+      return formatError(`Unknown action: ${(data as { action: string }).action}`)
   }
 }

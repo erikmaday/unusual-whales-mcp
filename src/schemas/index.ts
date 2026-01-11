@@ -83,6 +83,8 @@ export {
 export {
   stockScreenerFiltersSchema,
   optionContractScreenerFiltersSchema,
+  stockScreenerOrderBySchema,
+  optionContractScreenerOrderBySchema,
 } from "./screener.js"
 
 // Insider schemas

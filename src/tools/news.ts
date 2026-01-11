@@ -5,10 +5,17 @@ import { toJsonSchema, tickerSchema, limitSchema, pageSchema, formatZodError,
 
 const newsActions = ["headlines"] as const
 
+// News-specific limit schema with max 100
+const newsLimitSchema = z.number()
+  .int("Limit must be an integer")
+  .min(1, "Limit must be at least 1")
+  .max(100, "Limit cannot exceed 100")
+  .describe("Maximum number of results")
+
 const newsInputSchema = z.object({
   action: z.enum(newsActions).describe("The action to perform"),
   ticker: tickerSchema.describe("Filter by ticker symbol").optional(),
-  limit: limitSchema.default(50).optional(),
+  limit: newsLimitSchema.default(50).optional(),
   sources: z.string().describe("Filter by news sources").optional(),
   search_term: z.string().describe("Search term to filter headlines").optional(),
   major_only: z.boolean().default(false).optional(),

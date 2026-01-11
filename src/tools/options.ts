@@ -14,8 +14,8 @@ const optionsInputSchema = z.object({
   action: z.enum(optionsActions).describe("The action to perform"),
   id: z.string().describe("Option contract ID/symbol (e.g., AAPL240119C00150000)"),
   // flow action parameters
-  side: sideSchema.describe("Trade side (ALL, ASK, BID, or MID)").default("ALL"),
-  min_premium: z.number().int().nonnegative("Premium cannot be negative").describe("Minimum premium filter").default(0),
+  side: sideSchema.describe("Trade side (ALL, ASK, BID, or MID)").default("ALL").optional(),
+  min_premium: z.number().int().nonnegative("Premium cannot be negative").describe("Minimum premium filter").default(0).optional(),
   limit: limitSchema.optional(),
   // date parameter used by flow, intraday, and volume_profile actions
   date: dateSchema.optional(),
