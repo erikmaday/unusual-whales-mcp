@@ -20,11 +20,11 @@ const darkpoolInputSchema = z.object({
   limit: z.number().int().positive().describe("Maximum number of results").optional(),
   newer_than: z.string().describe("Filter trades newer than timestamp").optional(),
   older_than: z.string().describe("Filter trades older than timestamp").optional(),
-  min_premium: z.number().nonnegative("Premium cannot be negative").describe("The minimum premium on the alert or trade").default(0),
-  max_premium: z.number().nonnegative("Premium cannot be negative").describe("The maximum premium on the alert or trade").optional(),
-  min_size: z.number().int().nonnegative("Size cannot be negative").describe("The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert").default(0),
+  min_premium: z.number().int().nonnegative("Premium cannot be negative").default(0).describe("The minimum premium on the alert or trade").optional(),
+  max_premium: z.number().int().nonnegative("Premium cannot be negative").describe("The maximum premium on the alert or trade").optional(),
+  min_size: z.number().int().nonnegative("Size cannot be negative").default(0).describe("The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert").optional(),
   max_size: z.number().int().nonnegative("Size cannot be negative").describe("The maximum size on that alert").optional(),
-  min_volume: z.number().int().nonnegative("Volume cannot be negative").describe("The minimum volume on the contract").default(0),
+  min_volume: z.number().int().nonnegative("Volume cannot be negative").default(0).describe("The minimum volume on the contract").optional(),
   max_volume: z.number().int().nonnegative("Volume cannot be negative").describe("The maximum volume on the contract").optional(),
 })
 
