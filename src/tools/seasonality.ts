@@ -16,7 +16,7 @@ const seasonalityInputSchema = z.object({
   min_years: minYearsSchema.optional(),
   ticker_for_sector: tickerSchema.describe("A ticker whose sector will be used to filter results").optional(),
   s_p_500_nasdaq_only: sP500NasdaqOnlySchema.optional(),
-  min_oi: z.number().int().nonnegative("Open interest cannot be negative").describe("Minimum open interest filter").optional(),
+  min_oi: z.number().int().min(0).describe("Minimum open interest filter").optional(),
   limit: seasonalityLimitSchema.optional(),
   order: seasonalityOrderBySchema.optional(),
   order_direction: seasonalityOrderDirectionSchema.optional(),
