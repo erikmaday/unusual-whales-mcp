@@ -570,6 +570,92 @@ function extractSchemaEnums() {
 }
 
 /**
+ * Extract enum values from compiled JSON schemas.
+ * This handles discriminated unions properly by checking each variant.
+ * Returns a map of endpoint -> paramName -> enum values
+ */
+async function extractEnumsFromCompiledSchemas() {
+  const toolsDir = join(ROOT_DIR, 'dist', 'tools')
+  const files = readdirSync(toolsDir).filter(f => f.endsWith('.js') && f !== 'index.js')
+
+  const endpointEnums = {}
+
+  for (const file of files) {
+    try {
+      const toolModule = await import(`file://${join(toolsDir, file)}`)
+
+      // Find the tool export (e.g., stockTool, flowTool, etc.)
+      const toolExport = Object.values(toolModule).find(exp => exp && exp.inputSchema)
+      if (!toolExport) continue
+
+      const schema = toolExport.inputSchema
+      const toolName = file.replace('.js', '')
+
+      // Check if schema uses oneOf (discriminated union)
+      if (schema.oneOf) {
+        // Handle discriminated union - each variant may have different enum values
+        for (const variant of schema.oneOf) {
+          const action = variant.properties?.action?.const || variant.properties?.action?.enum?.[0]
+          if (!action) continue
+
+          // Extract enum values from this variant
+          for (const [paramName, paramSchema] of Object.entries(variant.properties || {})) {
+            if (paramSchema.enum) {
+              // Store enum values keyed by action
+              const key = `${toolName}:${action}:${paramName}`
+              endpointEnums[key] = {
+                file: `${toolName}.ts`,
+                values: paramSchema.enum,
+                action,
+              }
+            }
+          }
+        }
+      } else {
+        // Simple schema - extract enum values directly
+        for (const [paramName, paramSchema] of Object.entries(schema.properties || {})) {
+          if (paramSchema.enum) {
+            const key = `${toolName}::${paramName}`
+            endpointEnums[key] = {
+              file: `${toolName}.ts`,
+              values: paramSchema.enum,
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.warn(`Warning: Could not load compiled schema for ${file}: ${err.message}`)
+    }
+  }
+
+  return endpointEnums
+}
+
+/**
+ * Infer the action value from an endpoint path.
+ * This is needed for discriminated union schemas where different endpoints use different variants.
+ */
+function inferActionFromEndpoint(endpoint) {
+  // Map known endpoint patterns to their action values
+  const patterns = [
+    { pattern: /\/api\/institutions\/latest_filings/, action: 'latest_filings' },
+    { pattern: /\/api\/institutions$/, action: 'list' },
+    { pattern: /\/api\/institution\/\{[^}]+\}\/holdings/, action: 'holdings' },
+    { pattern: /\/api\/institution\/\{[^}]+\}\/activity/, action: 'activity' },
+    { pattern: /\/api\/institution\/\{[^}]+\}\/sectors/, action: 'sectors' },
+    { pattern: /\/api\/institution\/\{[^}]+\}\/ownership/, action: 'ownership' },
+  ]
+
+  for (const { pattern, action } of patterns) {
+    if (pattern.test(endpoint)) {
+      return action
+    }
+  }
+
+  return null
+}
+
+/**
  * Extract numeric constraints from schema files
  * Returns a map of schemaName -> constraints (minimum, maximum, minLength, maxLength)
  */
@@ -810,7 +896,7 @@ function findMatchingSpecEndpoint(implEndpoint, specEndpoints) {
 /**
  * Compare endpoints and parameters
  */
-function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaConstraints) {
+function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaConstraints, compiledSchemaEnums) {
   const results = {
     missingEndpoints: [],
     extraEndpoints: [],
@@ -1073,27 +1159,31 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
       const paramSchema = specParams.schemas[paramName]
       if (!paramSchema?.enum) continue // Skip params without enum
 
-      // Find the schema variable used for this parameter in the implementation
-      const schemaVarName = findSchemaForParam(paramName, implData.file)
-      if (!schemaVarName) {
-        // No enum schema found in implementation
-        results.missingEnumValues.push({
-          endpoint: specEndpoint,
-          param: paramName,
-          file: implData.file,
-          operationId: specParams.operationId,
-          specEnum: paramSchema.enum,
-          implEnum: null,
-          missing: paramSchema.enum,
-          extra: [],
-        })
-        results.summary.enumValuesMissing += paramSchema.enum.length
-        continue
+      // Extract tool name from file (e.g., "stock.ts" -> "stock")
+      const toolName = implData.file.replace('.ts', '')
+
+      // Try to get enum values from compiled schema
+      // First, try with action (for discriminated unions)
+      const action = inferActionFromEndpoint(specEndpoint)
+      let lookupKey = action ? `${toolName}:${action}:${paramName}` : null
+      let implEnumData = lookupKey ? compiledSchemaEnums[lookupKey] : null
+
+      // If not found with action, try without action (for simple schemas)
+      if (!implEnumData) {
+        lookupKey = `${toolName}::${paramName}`
+        implEnumData = compiledSchemaEnums[lookupKey]
       }
 
-      const implEnumData = schemaEnums[schemaVarName]
+      // Fallback to source file regex extraction if compiled schema doesn't have it
       if (!implEnumData) {
-        // Schema variable found but not an enum
+        const schemaVarName = findSchemaForParam(paramName, implData.file)
+        if (schemaVarName) {
+          implEnumData = schemaEnums[schemaVarName]
+        }
+      }
+
+      if (!implEnumData) {
+        // No enum schema found in implementation
         results.missingEnumValues.push({
           endpoint: specEndpoint,
           param: paramName,
@@ -1121,7 +1211,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
           param: paramName,
           file: implData.file,
           operationId: specParams.operationId,
-          schemaName: schemaVarName,
+          schemaName: implEnumData.action ? `${implEnumData.action} variant` : null,
           schemaFile: implEnumData.file,
           specEnum: specEnumValues,
           implEnum: implEnumValues,
@@ -1137,7 +1227,7 @@ function compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, sche
           param: paramName,
           file: implData.file,
           operationId: specParams.operationId,
-          schemaName: schemaVarName,
+          schemaName: implEnumData.action ? `${implEnumData.action} variant` : null,
           schemaFile: implEnumData.file,
           specEnum: specEnumValues,
           implEnum: implEnumValues,
@@ -2626,6 +2716,10 @@ async function main() {
     const schemaEnums = extractSchemaEnums()
     console.log(`Found ${Object.keys(schemaEnums).length} enum schemas`)
 
+    console.log('Extracting enum values from compiled schemas (handles discriminated unions)...')
+    const compiledSchemaEnums = await extractEnumsFromCompiledSchemas()
+    console.log(`Found ${Object.keys(compiledSchemaEnums).length} enum parameters in compiled schemas`)
+
     console.log('Extracting default values from MCP implementation...')
     const schemaDefaults = extractSchemaDefaults()
     console.log(`Found ${Object.keys(schemaDefaults).length} schemas with default values`)
@@ -2635,7 +2729,7 @@ async function main() {
     console.log(`Found ${Object.keys(schemaConstraints).length} schemas with numeric/string constraints`)
 
     console.log('Comparing...')
-    const results = compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaConstraints)
+    const results = compareAll(specEndpoints, implEndpoints, schemaEnums, implSchemas, schemaDefaults, schemaConstraints, compiledSchemaEnums)
 
     const hasIssues = printResults(results)
 
