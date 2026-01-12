@@ -26,6 +26,9 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
+      - name: 🔒 Security audit
+        run: npm audit --audit-level=high
+
       - name: 🔍 Lint
         run: npm run lint
 
@@ -48,11 +51,11 @@ jobs:
             );
           ")
           echo "Coverage: $COVERAGE%"
-          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
-            echo "⚠️ Warning: Coverage $COVERAGE% is below 80% threshold"
-            echo "This will block publishing, but won't fail the PR"
+          if (( $(echo "$COVERAGE < 90" | bc -l) )); then
+            echo "❌ Coverage $COVERAGE% is below 90% threshold"
+            exit 1
           else
-            echo "✅ Coverage meets 80% threshold"
+            echo "✅ Coverage meets 90% threshold"
           fi
 
       - name: 🔄 Check API sync
@@ -63,8 +66,9 @@ jobs:
         run: |
           echo "## PR Validation Complete ✅" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Security audit passed" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Lint passed" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Build successful" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Tests passed" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Coverage checked" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Coverage ≥90%" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ API sync verified" >> $GITHUB_STEP_SUMMARY
