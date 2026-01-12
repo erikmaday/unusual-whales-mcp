@@ -215,6 +215,9 @@ function extractActionSchemas(toolFile) {
 /**
  * Extract handler implementations to map actions to API endpoints
  * Returns: Map<actionName, endpoint>
+ *
+ * This manually parses the handler object to avoid regex issues with
+ * multi-line patterns and nested braces.
  */
 function extractActionToEndpoint(toolFile) {
   const mapping = new Map()
@@ -222,27 +225,122 @@ function extractActionToEndpoint(toolFile) {
   try {
     const content = readFileSync(toolFile, 'utf-8')
 
-    // Pattern 1: Direct uwFetch with string literal
-    // actionName: async (data) => { return uwFetch("/api/path", ...) }
-    const directPattern = /(\w+):\s*async\s*\([^)]*\)\s*=>\s*\{[\s\S]*?uwFetch\(["']([^"']+)["']/g
-    let match
+    // Find the handler export block
+    const handlerStart = content.indexOf('createToolHandler(')
+    if (handlerStart === -1) return mapping
 
-    while ((match = directPattern.exec(content)) !== null) {
-      mapping.set(match[1], match[2])
+    // Find the comma separating the two arguments at top level (not inside parens/braces)
+    let parenDepth = 1 // Start at 1 because we're inside createToolHandler(
+    let braceDepth = 0
+    let bracketDepth = 0
+    let argSeparatorPos = -1
+
+    for (let i = handlerStart + 'createToolHandler('.length; i < content.length; i++) {
+      const char = content[i]
+
+      if (char === '(') parenDepth++
+      else if (char === ')') {
+        parenDepth--
+        if (parenDepth === 0) break // End of createToolHandler call
+      }
+      else if (char === '{') braceDepth++
+      else if (char === '}') braceDepth--
+      else if (char === '[') bracketDepth++
+      else if (char === ']') bracketDepth--
+      else if (char === ',' && parenDepth === 1 && braceDepth === 0 && bracketDepth === 0) {
+        argSeparatorPos = i
+        break
+      }
     }
 
-    // Pattern 2: PathParamBuilder.build()
-    // const path = new PathParamBuilder()...build("/api/path")
-    const builderPattern = /(\w+):\s*async\s*\([^)]*\)\s*=>\s*\{[\s\S]*?\.build\(["']([^"']+)["']\)/g
+    if (argSeparatorPos === -1) return mapping
 
-    while ((match = builderPattern.exec(content)) !== null) {
-      mapping.set(match[1], match[2])
+    // Find the opening { of handlers object after the comma
+    let handlersStart = -1
+    for (let i = argSeparatorPos + 1; i < content.length; i++) {
+      if (content[i] === '{') {
+        handlersStart = i
+        break
+      }
     }
+
+    if (handlersStart === -1) return mapping
+
+    // Find matching closing brace for handlers object
+    braceDepth = 1
+    let handlersEnd = -1
+    for (let i = handlersStart + 1; i < content.length; i++) {
+      if (content[i] === '{') braceDepth++
+      if (content[i] === '}') {
+        braceDepth--
+        if (braceDepth === 0) {
+          handlersEnd = i
+          break
+        }
+      }
+    }
+
+    if (handlersEnd === -1) return mapping
+
+    const handlersBlock = content.substring(handlersStart + 1, handlersEnd)
+
+    // Extract handlers using line-by-line parsing
+    const lines = handlersBlock.split('\n')
+    let currentAction = null
+    let currentBody = []
+    let handlerBraceDepth = 0
+
+    for (const line of lines) {
+      // Check if this line starts a new handler
+      const actionMatch = line.match(/^\s*(\w+):\s*async\s*\(/)
+      if (actionMatch && handlerBraceDepth === 0) {
+        // Process previous handler if exists
+        if (currentAction && currentBody.length > 0) {
+          const body = currentBody.join('\n')
+          const endpoint = extractEndpointFromBody(body)
+          if (endpoint) mapping.set(currentAction, endpoint)
+        }
+        // Start new handler
+        currentAction = actionMatch[1]
+        currentBody = [line]
+      } else if (currentAction) {
+        currentBody.push(line)
+      }
+
+      // Track brace depth
+      for (const char of line) {
+        if (char === '{') handlerBraceDepth++
+        if (char === '}') handlerBraceDepth--
+      }
+    }
+
+    // Process last handler
+    if (currentAction && currentBody.length > 0) {
+      const body = currentBody.join('\n')
+      const endpoint = extractEndpointFromBody(body)
+      if (endpoint) mapping.set(currentAction, endpoint)
+    }
+
   } catch (error) {
     console.warn(`Error extracting endpoints from ${toolFile}: ${error.message}`)
   }
 
   return mapping
+}
+
+/**
+ * Extract endpoint from handler body
+ */
+function extractEndpointFromBody(body) {
+  // Check for PathParamBuilder.build() first
+  const buildMatch = body.match(/\.build\(["']([^"']+)["']\)/)
+  if (buildMatch) return buildMatch[1]
+
+  // Otherwise check for direct uwFetch with string literal
+  const uwFetchMatch = body.match(/uwFetch\(["']([^"']+)["']/)
+  if (uwFetchMatch) return uwFetchMatch[1]
+
+  return null
 }
 
 /**
