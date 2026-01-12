@@ -61,17 +61,17 @@ describe("handleEtf", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleEtf({ action: "invalid_action", ticker: "SPY" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleEtf({ ticker: "SPY" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing ticker", async () => {
       const result = await handleEtf({ action: "info" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
   })
 

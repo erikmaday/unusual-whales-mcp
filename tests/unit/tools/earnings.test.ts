@@ -61,12 +61,12 @@ describe("handleEarnings", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleEarnings({ action: "invalid_action" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleEarnings({})
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
   })
 
@@ -115,7 +115,7 @@ describe("handleEarnings", () => {
   describe("ticker action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleEarnings({ action: "ticker" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
