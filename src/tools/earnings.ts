@@ -1,25 +1,43 @@
 import { z } from "zod"
-import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, dateSchema, pageSchema, formatZodError,
-} from "../schemas/index.js"
+import { uwFetch } from "../client.js"
+import { toJsonSchema, tickerSchema, dateSchema, pageSchema } from "../schemas/index.js"
+import { createToolHandler } from "./base/tool-factory.js"
+import { PathParamBuilder } from "../utils/path-params.js"
 
-const earningsActions = ["premarket", "afterhours", "ticker"] as const
-
-// Earnings-specific limit schema with max 100 for premarket/afterhours endpoints
+// Earnings-specific limit schema with max 100
 const earningsLimitSchema = z.number()
-  .int("Limit must be an integer")
-  .min(1, "Limit must be at least 1")
-  .max(100, "Limit cannot exceed 100")
-  .describe("Maximum number of results")
+  .int()
+  .min(1)
+  .max(100)
+  .default(50)
+  .describe("Maximum number of results (default 50, max 100)")
 
-const earningsInputSchema = z.object({
-  action: z.enum(earningsActions).describe("The action to perform"),
-  ticker: tickerSchema.describe("Ticker symbol (for ticker action)").optional(),
+// Explicit per-action schemas
+const premarketSchema = z.object({
+  action: z.literal("premarket"),
   date: dateSchema.optional(),
-  limit: earningsLimitSchema.default(50).optional(),
+  limit: earningsLimitSchema.optional(),
   page: pageSchema.optional(),
 })
 
+const afterhoursSchema = z.object({
+  action: z.literal("afterhours"),
+  date: dateSchema.optional(),
+  limit: earningsLimitSchema.optional(),
+  page: pageSchema.optional(),
+})
+
+const tickerSchema$ = z.object({
+  action: z.literal("ticker"),
+  ticker: tickerSchema.describe("Ticker symbol (required for ticker action)"),
+})
+
+// Discriminated union of all action schemas
+const earningsInputSchema = z.discriminatedUnion("action", [
+  premarketSchema,
+  afterhoursSchema,
+  tickerSchema$,
+])
 
 export const earningsTool = {
   name: "uw_earnings",
@@ -39,39 +57,29 @@ Available actions:
 }
 
 /**
- * Handle earnings tool requests.
- *
- * @param args - Tool arguments containing action and optional earnings parameters
- * @returns JSON string with earnings data or error message
+ * Handle earnings tool requests using the tool factory pattern
  */
-export async function handleEarnings(args: Record<string, unknown>): Promise<string> {
-  const parsed = earningsInputSchema.safeParse(args)
-  if (!parsed.success) {
-    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
-  }
+export const handleEarnings = createToolHandler(earningsInputSchema, {
+  premarket: async (data) => {
+    return uwFetch("/api/earnings/premarket", {
+      date: data.date,
+      limit: data.limit,
+      page: data.page,
+    })
+  },
 
-  const { action, ticker, date, limit, page } = parsed.data
+  afterhours: async (data) => {
+    return uwFetch("/api/earnings/afterhours", {
+      date: data.date,
+      limit: data.limit,
+      page: data.page,
+    })
+  },
 
-  switch (action) {
-    case "premarket":
-      return formatResponse(await uwFetch("/api/earnings/premarket", {
-        date,
-        limit,
-        page,
-      }))
-
-    case "afterhours":
-      return formatResponse(await uwFetch("/api/earnings/afterhours", {
-        date,
-        limit,
-        page,
-      }))
-
-    case "ticker":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/earnings/${encodePath(ticker)}`))
-
-    default:
-      return formatError(`Unknown action: ${action}`)
-  }
-}
+  ticker: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/earnings/{ticker}")
+    return uwFetch(path)
+  },
+})

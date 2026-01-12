@@ -1,15 +1,43 @@
 import { z } from "zod"
-import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, formatZodError,
-} from "../schemas/index.js"
+import { uwFetch } from "../client.js"
+import { toJsonSchema, tickerSchema } from "../schemas/index.js"
+import { createToolHandler } from "./base/tool-factory.js"
+import { PathParamBuilder } from "../utils/path-params.js"
 
-const etfActions = ["info", "holdings", "exposure", "in_outflow", "weights"] as const
-
-const etfInputSchema = z.object({
-  action: z.enum(etfActions).describe("The action to perform"),
+// Explicit per-action schemas
+const infoSchema = z.object({
+  action: z.literal("info"),
   ticker: tickerSchema.describe("ETF ticker symbol (e.g., SPY, QQQ)"),
 })
 
+const holdingsSchema = z.object({
+  action: z.literal("holdings"),
+  ticker: tickerSchema.describe("ETF ticker symbol (e.g., SPY, QQQ)"),
+})
+
+const exposureSchema = z.object({
+  action: z.literal("exposure"),
+  ticker: tickerSchema.describe("ETF ticker symbol (e.g., SPY, QQQ)"),
+})
+
+const inOutflowSchema = z.object({
+  action: z.literal("in_outflow"),
+  ticker: tickerSchema.describe("ETF ticker symbol (e.g., SPY, QQQ)"),
+})
+
+const weightsSchema = z.object({
+  action: z.literal("weights"),
+  ticker: tickerSchema.describe("ETF ticker symbol (e.g., SPY, QQQ)"),
+})
+
+// Discriminated union of all action schemas
+const etfInputSchema = z.discriminatedUnion("action", [
+  infoSchema,
+  holdingsSchema,
+  exposureSchema,
+  inOutflowSchema,
+  weightsSchema,
+])
 
 export const etfTool = {
   name: "uw_etf",
@@ -31,37 +59,41 @@ Available actions:
 }
 
 /**
- * Handle ETF tool requests.
- *
- * @param args - Tool arguments containing action and ticker
- * @returns JSON string with ETF data or error message
+ * Handle ETF tool requests using the tool factory pattern
  */
-export async function handleEtf(args: Record<string, unknown>): Promise<string> {
-  const parsed = etfInputSchema.safeParse(args)
-  if (!parsed.success) {
-    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
-  }
+export const handleEtf = createToolHandler(etfInputSchema, {
+  info: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/etfs/{ticker}/info")
+    return uwFetch(path)
+  },
 
-  const { action, ticker } = parsed.data
-  const safeTicker = encodePath(ticker)
+  holdings: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/etfs/{ticker}/holdings")
+    return uwFetch(path)
+  },
 
-  switch (action) {
-    case "info":
-      return formatResponse(await uwFetch(`/api/etfs/${safeTicker}/info`))
+  exposure: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/etfs/{ticker}/exposure")
+    return uwFetch(path)
+  },
 
-    case "holdings":
-      return formatResponse(await uwFetch(`/api/etfs/${safeTicker}/holdings`))
+  in_outflow: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/etfs/{ticker}/in-outflow")
+    return uwFetch(path)
+  },
 
-    case "exposure":
-      return formatResponse(await uwFetch(`/api/etfs/${safeTicker}/exposure`))
-
-    case "in_outflow":
-      return formatResponse(await uwFetch(`/api/etfs/${safeTicker}/in-outflow`))
-
-    case "weights":
-      return formatResponse(await uwFetch(`/api/etfs/${safeTicker}/weights`))
-
-    default:
-      return formatError(`Unknown action: ${action}`)
-  }
-}
+  weights: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/etfs/{ticker}/weights")
+    return uwFetch(path)
+  },
+})
