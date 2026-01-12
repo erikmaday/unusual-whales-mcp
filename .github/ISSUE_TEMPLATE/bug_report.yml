@@ -1,0 +1,156 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this bug! Please fill out the information below to help us diagnose and fix the issue.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: When I try to... I expect... but instead...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the behavior
+      placeholder: |
+        1. Configure MCP server with...
+        2. Execute tool with parameters...
+        3. Observe error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: I expected the tool to return...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: The tool returned an error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Message
+      description: If there's an error message, paste it here (redact API keys!)
+      render: shell
+      placeholder: |
+        Error: Circuit breaker open
+        at CircuitBreaker.execute (...)
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: Run `npm list @unusualwhales/mcp-server` or check package.json
+      placeholder: 1.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      description: Run `node --version`
+      placeholder: v20.10.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS
+        - Linux
+        - Windows
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: claude-version
+    attributes:
+      label: Claude Code Version (if applicable)
+      description: Check in Claude Code settings
+      placeholder: 0.7.0
+
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Which tool is affected?
+      description: Select the tool where you encountered the bug
+      options:
+        - uw_stock
+        - uw_options
+        - uw_market
+        - uw_flow
+        - uw_darkpool
+        - uw_congress
+        - uw_insider
+        - uw_institutions
+        - uw_earnings
+        - uw_etf
+        - uw_screener
+        - uw_shorts
+        - uw_seasonality
+        - uw_news
+        - uw_alerts
+        - uw_politicians
+        - Multiple tools
+        - Not tool-specific
+        - Other
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other information that might help diagnose the issue
+      placeholder: |
+        - Frequency: Does this happen every time or intermittently?
+        - Environment: Any special configuration or environment setup?
+        - Workarounds: Have you found any temporary workarounds?
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: If you have logs, paste them here (redact API keys!)
+      render: shell
+      placeholder: |
+        [REQUEST] /api/stock/AAPL/info {}
+        [RESPONSE] { status: 500, error: ... }
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm you've completed these steps
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I have redacted any sensitive information (API keys, credentials, etc.)
+          required: true
+        - label: I have provided enough information to reproduce the bug
+          required: true
+        - label: I am using the latest version (or have noted my version above)
+          required: false
