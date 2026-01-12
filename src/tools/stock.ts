@@ -1,223 +1,371 @@
 import { z } from "zod"
-import { uwFetch, formatStructuredResponse, encodePath, formatError } from "../client.js"
+import { uwFetch } from "../client.js"
 import {
   toJsonSchema,
   tickerSchema,
   dateSchema,
   expirySchema,
   limitSchema,
-  strikeSchema,
   optionTypeSchema,
   sideSchema,
   orderDirectionSchema,
   candleSizeSchema,
   timeframeSchema,
   deltaSchema,
-  formatZodError,
   pageSchema,
   timespanSchema,
-  optionContractFiltersSchema,
-  stockFlowFiltersSchema,
   filterSchema,
-  dteFilterSchema,
-  stockOutputSchema,
 } from "../schemas/index.js"
+import { createToolHandler } from "./base/tool-factory.js"
+import { PathParamBuilder } from "../utils/path-params.js"
 
-const stockActions = [
-  "info",
-  "ohlc",
-  "option_chains",
-  "option_contracts",
-  "greeks",
-  "greek_exposure",
-  "greek_exposure_by_expiry",
-  "greek_exposure_by_strike",
-  "greek_exposure_by_strike_expiry",
-  "greek_flow",
-  "greek_flow_by_expiry",
-  "iv_rank",
-  "interpolated_iv",
-  "max_pain",
-  "oi_change",
-  "oi_per_expiry",
-  "oi_per_strike",
-  "options_volume",
-  "volume_oi_expiry",
-  "atm_chains",
-  "expiry_breakdown",
-  "flow_per_expiry",
-  "flow_per_strike",
-  "flow_per_strike_intraday",
-  "flow_recent",
-  "net_prem_ticks",
-  "nope",
-  "stock_price_levels",
-  "stock_volume_price_levels",
-  "spot_exposures",
-  "spot_exposures_by_expiry_strike",
-  "spot_exposures_by_strike",
-  "spot_exposures_expiry_strike",
-  "historical_risk_reversal_skew",
-  "volatility_realized",
-  "volatility_stats",
-  "volatility_term_structure",
-  "stock_state",
-  "insider_buy_sells",
-  "ownership",
-  "tickers_by_sector",
-  "ticker_exchanges",
-] as const
+// Sector enum reused across actions
+const sectorEnum = z.enum([
+  "Basic Materials",
+  "Communication Services",
+  "Consumer Cyclical",
+  "Consumer Defensive",
+  "Energy",
+  "Financial Services",
+  "Healthcare",
+  "Industrials",
+  "Real Estate",
+  "Technology",
+  "Utilities",
+])
 
-const stockInputSchema = z.object({
-  action: z.enum(stockActions).describe("The action to perform"),
-  ticker: tickerSchema.optional(),
-  sector: z.enum([
-    "Basic Materials",
-    "Communication Services",
-    "Consumer Cyclical",
-    "Consumer Defensive",
-    "Energy",
-    "Financial Services",
-    "Healthcare",
-    "Industrials",
-    "Real Estate",
-    "Technology",
-    "Utilities",
-  ]).describe("Market sector (for tickers_by_sector action)").optional(),
+// Explicit per-action schemas
+const infoSchema = z.object({
+  action: z.literal("info"),
+  ticker: tickerSchema,
+})
+
+const ohlcSchema = z.object({
+  action: z.literal("ohlc"),
+  ticker: tickerSchema,
+  candle_size: candleSizeSchema,
   date: dateSchema.optional(),
-  expiry: expirySchema.optional(),
-  expirations: z.array(expirySchema).describe("Array of expiration dates in YYYY-MM-DD format (for atm_chains and spot_exposures_by_expiry_strike actions)").optional(),
-  candle_size: candleSizeSchema.optional(),
-  strike: strikeSchema.optional(),
-  min_strike: z.number().min(0, "Minimum strike must be non-negative").describe("Minimum strike price filter").optional(),
-  max_strike: z.number().min(0, "Maximum strike must be non-negative").describe("Maximum strike price filter").optional(),
-  option_type: optionTypeSchema.optional(),
-  limit: limitSchema.optional(),
   timeframe: timeframeSchema.optional(),
-  delta: deltaSchema.optional(),
-  // Pagination and ordering
+  end_date: dateSchema.optional(),
+  limit: z.number().int().min(1).max(2500).optional(),
+})
+
+const optionChainsSchema = z.object({
+  action: z.literal("option_chains"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const optionContractsSchema = z.object({
+  action: z.literal("option_contracts"),
+  ticker: tickerSchema,
+  expiry: expirySchema,
+  option_type: optionTypeSchema.optional(),
+  vol_greater_oi: z.boolean().optional(),
+  exclude_zero_vol_chains: z.boolean().optional(),
+  exclude_zero_dte: z.boolean().optional(),
+  exclude_zero_oi_chains: z.boolean().optional(),
+  maybe_otm_only: z.boolean().optional(),
+  option_symbol: z.string().optional(),
+  limit: z.number().int().min(1).max(500).default(500).optional(),
+  page: pageSchema.optional(),
+})
+
+const greeksSchema = z.object({
+  action: z.literal("greeks"),
+  ticker: tickerSchema,
+  expiry: expirySchema,
+  date: dateSchema.optional(),
+})
+
+const greekExposureSchema = z.object({
+  action: z.literal("greek_exposure"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+  timeframe: timeframeSchema.optional(),
+})
+
+const greekExposureByExpirySchema = z.object({
+  action: z.literal("greek_exposure_by_expiry"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const greekExposureByStrikeSchema = z.object({
+  action: z.literal("greek_exposure_by_strike"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const greekExposureByStrikeExpirySchema = z.object({
+  action: z.literal("greek_exposure_by_strike_expiry"),
+  ticker: tickerSchema,
+  expiry: expirySchema,
+  date: dateSchema.optional(),
+})
+
+const greekFlowSchema = z.object({
+  action: z.literal("greek_flow"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const greekFlowByExpirySchema = z.object({
+  action: z.literal("greek_flow_by_expiry"),
+  ticker: tickerSchema,
+  expiry: expirySchema,
+  date: dateSchema.optional(),
+})
+
+const ivRankSchema = z.object({
+  action: z.literal("iv_rank"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+  timespan: timespanSchema.optional(),
+})
+
+const interpolatedIvSchema = z.object({
+  action: z.literal("interpolated_iv"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const maxPainSchema = z.object({
+  action: z.literal("max_pain"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const oiChangeSchema = z.object({
+  action: z.literal("oi_change"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+  limit: limitSchema.optional(),
   page: pageSchema.optional(),
   order: orderDirectionSchema.optional(),
-  // OHLC parameters
-  end_date: dateSchema.optional().describe("End date for OHLC data in YYYY-MM-DD format"),
-  // IV rank timespan
-  timespan: timespanSchema.optional(),
-  // Flow filters
-  side: sideSchema.optional(),
+})
+
+const oiPerExpirySchema = z.object({
+  action: z.literal("oi_per_expiry"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const oiPerStrikeSchema = z.object({
+  action: z.literal("oi_per_strike"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const optionsVolumeSchema = z.object({
+  action: z.literal("options_volume"),
+  ticker: tickerSchema,
+  limit: z.number().int().min(1).max(500).default(1).optional(),
+})
+
+const volumeOiExpirySchema = z.object({
+  action: z.literal("volume_oi_expiry"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const atmChainsSchema = z.object({
+  action: z.literal("atm_chains"),
+  ticker: tickerSchema,
+  expirations: z.array(expirySchema).min(1),
+})
+
+const expiryBreakdownSchema = z.object({
+  action: z.literal("expiry_breakdown"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const flowPerExpirySchema = z.object({
+  action: z.literal("flow_per_expiry"),
+  ticker: tickerSchema,
+})
+
+const flowPerStrikeSchema = z.object({
+  action: z.literal("flow_per_strike"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const flowPerStrikeIntradaySchema = z.object({
+  action: z.literal("flow_per_strike_intraday"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
   filter: filterSchema.optional(),
 })
-  .merge(optionContractFiltersSchema)
-  .merge(stockFlowFiltersSchema)
-  .merge(dteFilterSchema)
-  .refine(
-    (data) => {
-      if (data.action === "greeks") {
-        return data.expiry !== undefined
-      }
-      return true
-    },
-    {
-      message: "expiry is required for greeks action",
-      path: ["expiry"],
-    },
-  )
-  .refine(
-    (data) => {
-      if (data.action === "greek_exposure_by_strike_expiry") {
-        return data.expiry !== undefined
-      }
-      return true
-    },
-    {
-      message: "expiry is required for greek_exposure_by_strike_expiry action",
-      path: ["expiry"],
-    },
-  )
-  .refine(
-    (data) => {
-      if (data.action === "greek_flow_by_expiry") {
-        return data.expiry !== undefined
-      }
-      return true
-    },
-    {
-      message: "expiry is required for greek_flow_by_expiry action",
-      path: ["expiry"],
-    },
-  )
-  .refine(
-    (data) => {
-      if (data.action === "atm_chains") {
-        return data.expirations !== undefined && data.expirations.length > 0
-      }
-      return true
-    },
-    {
-      message: "expirations is required for atm_chains action",
-      path: ["expirations"],
-    },
-  )
-  .refine(
-    (data) => {
-      if (data.action === "spot_exposures_by_expiry_strike") {
-        return data.expirations !== undefined && data.expirations.length > 0
-      }
-      return true
-    },
-    {
-      message: "expirations is required for spot_exposures_by_expiry_strike action",
-      path: ["expirations"],
-    },
-  )
-  .refine(
-    (data) => {
-      if (data.action === "historical_risk_reversal_skew") {
-        return data.expiry !== undefined && data.delta !== undefined
-      }
-      return true
-    },
-    {
-      message: "expiry and delta are required for historical_risk_reversal_skew action",
-      path: ["expiry"],
-    },
-  )
-  .refine(
-    (data) => {
-      if (data.action === "spot_exposures_expiry_strike") {
-        return data.expiry !== undefined
-      }
-      return true
-    },
-    {
-      message: "expiry is required for spot_exposures_expiry_strike action",
-      path: ["expiry"],
-    },
-  )
-  .refine(
-    (data) => {
-      // Validate action-specific limit maximums (only when limit is provided)
-      const hasLimit = "limit" in data && data.limit !== null && data.limit !== void 0
-      if (!hasLimit) return true
 
-      const limitValue = data.limit!
+const flowRecentSchema = z.object({
+  action: z.literal("flow_recent"),
+  ticker: tickerSchema,
+  side: sideSchema.default("ALL").optional(),
+  min_premium: z.number().min(0).default(0).optional(),
+})
 
-      if (data.action === "ohlc" && limitValue > 2500) {
-        return false
-      }
-      if (data.action === "ownership" && limitValue > 100) {
-        return false
-      }
-      if (["option_contracts", "options_volume", "spot_exposures_by_expiry_strike", "spot_exposures_by_strike"].includes(data.action) && limitValue > 500) {
-        return false
-      }
-      return true
-    },
-    {
-      message: "Limit exceeds maximum allowed for this action",
-      path: ["limit"],
-    },
-  )
+const netPremTicksSchema = z.object({
+  action: z.literal("net_prem_ticks"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
 
+const nopeSchema = z.object({
+  action: z.literal("nope"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const stockPriceLevelsSchema = z.object({
+  action: z.literal("stock_price_levels"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const stockVolumePriceLevelsSchema = z.object({
+  action: z.literal("stock_volume_price_levels"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const spotExposuresSchema = z.object({
+  action: z.literal("spot_exposures"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const spotExposuresByExpiryStrikeSchema = z.object({
+  action: z.literal("spot_exposures_by_expiry_strike"),
+  ticker: tickerSchema,
+  expirations: z.array(expirySchema).min(1),
+  date: dateSchema.optional(),
+  limit: z.number().int().min(1).max(500).default(500).optional(),
+  page: pageSchema.optional(),
+  min_strike: z.number().min(0).optional(),
+  max_strike: z.number().min(0).optional(),
+  min_dte: z.number().int().nonnegative().optional(),
+  max_dte: z.number().int().nonnegative().optional(),
+})
+
+const spotExposuresByStrikeSchema = z.object({
+  action: z.literal("spot_exposures_by_strike"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+  min_strike: z.number().min(0).optional(),
+  max_strike: z.number().min(0).optional(),
+  limit: z.number().int().min(1).max(500).default(500).optional(),
+  page: pageSchema.optional(),
+})
+
+const spotExposuresExpiryStrikeSchema = z.object({
+  action: z.literal("spot_exposures_expiry_strike"),
+  ticker: tickerSchema,
+  expiry: expirySchema,
+  date: dateSchema.optional(),
+  min_strike: z.number().min(0).optional(),
+  max_strike: z.number().min(0).optional(),
+})
+
+const historicalRiskReversalSkewSchema = z.object({
+  action: z.literal("historical_risk_reversal_skew"),
+  ticker: tickerSchema,
+  expiry: expirySchema,
+  delta: deltaSchema,
+  date: dateSchema.optional(),
+  timeframe: timeframeSchema.optional(),
+})
+
+const volatilityRealizedSchema = z.object({
+  action: z.literal("volatility_realized"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+  timeframe: timeframeSchema.optional(),
+})
+
+const volatilityStatsSchema = z.object({
+  action: z.literal("volatility_stats"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const volatilityTermStructureSchema = z.object({
+  action: z.literal("volatility_term_structure"),
+  ticker: tickerSchema,
+  date: dateSchema.optional(),
+})
+
+const stockStateSchema = z.object({
+  action: z.literal("stock_state"),
+  ticker: tickerSchema,
+})
+
+const insiderBuySellsSchema = z.object({
+  action: z.literal("insider_buy_sells"),
+  ticker: tickerSchema,
+})
+
+const ownershipSchema = z.object({
+  action: z.literal("ownership"),
+  ticker: tickerSchema,
+  limit: z.number().int().min(1).max(100).default(20).optional(),
+})
+
+const tickersBySectorSchema = z.object({
+  action: z.literal("tickers_by_sector"),
+  sector: sectorEnum,
+})
+
+const tickerExchangesSchema = z.object({
+  action: z.literal("ticker_exchanges"),
+})
+
+// Discriminated union of all action schemas
+const stockInputSchema = z.discriminatedUnion("action", [
+  infoSchema,
+  ohlcSchema,
+  optionChainsSchema,
+  optionContractsSchema,
+  greeksSchema,
+  greekExposureSchema,
+  greekExposureByExpirySchema,
+  greekExposureByStrikeSchema,
+  greekExposureByStrikeExpirySchema,
+  greekFlowSchema,
+  greekFlowByExpirySchema,
+  ivRankSchema,
+  interpolatedIvSchema,
+  maxPainSchema,
+  oiChangeSchema,
+  oiPerExpirySchema,
+  oiPerStrikeSchema,
+  optionsVolumeSchema,
+  volumeOiExpirySchema,
+  atmChainsSchema,
+  expiryBreakdownSchema,
+  flowPerExpirySchema,
+  flowPerStrikeSchema,
+  flowPerStrikeIntradaySchema,
+  flowRecentSchema,
+  netPremTicksSchema,
+  nopeSchema,
+  stockPriceLevelsSchema,
+  stockVolumePriceLevelsSchema,
+  spotExposuresSchema,
+  spotExposuresByExpiryStrikeSchema,
+  spotExposuresByStrikeSchema,
+  spotExposuresExpiryStrikeSchema,
+  historicalRiskReversalSkewSchema,
+  volatilityRealizedSchema,
+  volatilityStatsSchema,
+  volatilityTermStructureSchema,
+  stockStateSchema,
+  insiderBuySellsSchema,
+  ownershipSchema,
+  tickersBySectorSchema,
+  tickerExchangesSchema,
+])
 
 export const stockTool = {
   name: "uw_stock",
@@ -227,7 +375,7 @@ Available actions:
 - info: Get stock information (ticker required)
 - ohlc: Get OHLC candles (ticker, candle_size required; date, timeframe, end_date, limit optional)
 - option_chains: Get option chains (ticker required; date optional)
-- option_contracts: Get option contracts (ticker required; expiry, option_type, vol_greater_oi, exclude_zero_vol_chains, exclude_zero_dte, exclude_zero_oi_chains, maybe_otm_only, option_symbol, limit, page optional)
+- option_contracts: Get option contracts (ticker, expiry required; option_type, filters, limit optional)
 - greeks: Get greeks data (ticker, expiry required; date optional)
 - greek_exposure: Get gamma/delta/vanna exposure (ticker required; date, timeframe optional)
 - greek_exposure_by_expiry: Get greek exposure by expiry (ticker required; date optional)
@@ -254,21 +402,20 @@ Available actions:
 - stock_price_levels: Get stock price levels (ticker required; date optional)
 - stock_volume_price_levels: Get volume price levels (ticker required; date optional)
 - spot_exposures: Get spot exposures (ticker required; date optional)
-- spot_exposures_by_expiry_strike: Get spot exposures by expiry/strike (ticker, expirations required; date, limit, page, min_strike, max_strike, min_dte, max_dte optional)
-- spot_exposures_by_strike: Get spot exposures by strike (ticker required; date, min_strike, max_strike, limit, page optional)
-- spot_exposures_expiry_strike: Get spot exposures for specific expiry using v2 endpoint (ticker, expiry required; date, min_strike, max_strike optional)
+- spot_exposures_by_expiry_strike: Get spot exposures by expiry/strike (ticker, expirations required; date, filters optional)
+- spot_exposures_by_strike: Get spot exposures by strike (ticker required; date, filters optional)
+- spot_exposures_expiry_strike: Get spot exposures for specific expiry (ticker, expiry required; date, strike filters optional)
 - historical_risk_reversal_skew: Get risk reversal skew (ticker, expiry, delta required; date, timeframe optional)
 - volatility_realized: Get realized volatility (ticker required; date, timeframe optional)
 - volatility_stats: Get volatility stats (ticker required; date optional)
 - volatility_term_structure: Get term structure (ticker required; date optional)
 - stock_state: Get stock state (ticker required)
-- insider_buy_sells: Get insider buy/sells for stock (ticker required)
+- insider_buy_sells: Get insider buy/sells for stock (ticker required; limit optional)
 - ownership: Get ownership data (ticker required; limit optional)
 - tickers_by_sector: Get tickers in sector (sector required)
 - ticker_exchanges: Get mapping of all tickers to their exchanges (no params required)`,
   inputSchema: toJsonSchema(stockInputSchema),
   zodInputSchema: stockInputSchema,
-  outputSchema: toJsonSchema(stockOutputSchema),
   annotations: {
     readOnlyHint: true,
     idempotentHint: true,
@@ -277,314 +424,366 @@ Available actions:
 }
 
 /**
- * Handle stock tool requests.
- *
- * @param args - Tool arguments containing action and optional parameters
- * @returns Structured response with text and optional typed data
+ * Handle stock tool requests using the tool factory pattern
  */
-export async function handleStock(args: Record<string, unknown>): Promise<{ text: string; structuredContent?: unknown }> {
-  const parsed = stockInputSchema.safeParse(args)
-  if (!parsed.success) {
-    return { text: formatError(`Invalid input: ${formatZodError(parsed.error)}`) }
-  }
+export const handleStock = createToolHandler(stockInputSchema, {
+  info: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/info")
+    return uwFetch(path)
+  },
 
-  let {
-    action,
-    ticker,
-    sector,
-    date,
-    expiry,
-    expirations,
-    candle_size,
-    strike: _strike,
-    min_strike,
-    max_strike,
-    option_type,
-    limit,
-    timeframe,
-    delta,
-    // Pagination and ordering
-    page,
-    order,
-    // OHLC parameters
-    end_date,
-    // IV rank timespan
-    timespan,
-    // Option contract filters
-    vol_greater_oi,
-    exclude_zero_vol_chains,
-    exclude_zero_dte,
-    exclude_zero_oi_chains,
-    maybe_otm_only,
-    option_symbol,
-    // Flow filters
-    side,
-    min_premium,
-    filter,
-    // DTE filters
-    min_dte,
-    max_dte,
-  } = parsed.data
+  ohlc: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .add("candle_size", data.candle_size)
+      .build("/api/stock/{ticker}/ohlc/{candle_size}")
+    return uwFetch(path, {
+      date: data.date,
+      timeframe: data.timeframe,
+      end_date: data.end_date,
+      limit: data.limit,
+    })
+  },
 
-  // Apply action-specific limit defaults if limit is not provided
-  if (limit === undefined) {
-    switch (action) {
-      case "option_contracts":
-      case "spot_exposures_by_expiry_strike":
-      case "spot_exposures_by_strike":
-      case "spot_exposures_expiry_strike":
-        limit = 500
-        break
-      case "options_volume":
-        limit = 1
-        break
-      case "ownership":
-        limit = 20
-        break
-    }
-  }
+  option_chains: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/option-chains")
+    return uwFetch(path, { date: data.date })
+  },
 
-  // Apply action-specific side defaults if side is not provided
-  if (side === undefined) {
-    switch (action) {
-      case "flow_recent":
-        side = "ALL"
-        break
-    }
-  }
+  option_contracts: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/option-contracts")
+    return uwFetch(path, {
+      expiry: data.expiry,
+      option_type: data.option_type,
+      vol_greater_oi: data.vol_greater_oi,
+      exclude_zero_vol_chains: data.exclude_zero_vol_chains,
+      exclude_zero_dte: data.exclude_zero_dte,
+      exclude_zero_oi_chains: data.exclude_zero_oi_chains,
+      maybe_otm_only: data.maybe_otm_only,
+      option_symbol: data.option_symbol,
+      limit: data.limit,
+      page: data.page,
+    })
+  },
 
-  // Apply action-specific min_premium defaults if min_premium is not provided
-  if (min_premium === undefined) {
-    switch (action) {
-      case "flow_recent":
-        min_premium = 0
-        break
-    }
-  }
+  greeks: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/greeks")
+    return uwFetch(path, {
+      date: data.date,
+      expiry: data.expiry,
+    })
+  },
 
-  // Encode path parameters once if they exist
-  const safeTicker = ticker ? encodePath(ticker) : ""
-  const safeExpiry = expiry ? encodePath(expiry) : ""
-  const safeSector = sector ? encodePath(sector) : ""
-  const safeCandle = candle_size ? encodePath(candle_size) : ""
+  greek_exposure: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/greek-exposure")
+    return uwFetch(path, {
+      date: data.date,
+      timeframe: data.timeframe,
+    })
+  },
 
-  switch (action) {
-    case "info":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/info`))
+  greek_exposure_by_expiry: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/greek-exposure/expiry")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "ohlc":
-      if (!ticker || !candle_size) return { text: formatError("ticker and candle_size are required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/ohlc/${safeCandle}`, {
-        date,
-        timeframe,
-        end_date,
-        limit,
-      }))
+  greek_exposure_by_strike: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/greek-exposure/strike")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "option_chains":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/option-chains`, {
-        date,
-      }))
+  greek_exposure_by_strike_expiry: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/greek-exposure/strike-expiry")
+    return uwFetch(path, {
+      expiry: data.expiry,
+      date: data.date,
+    })
+  },
 
-    case "option_contracts":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/option-contracts`, {
-        expiry,
-        option_type,
-        vol_greater_oi,
-        exclude_zero_vol_chains,
-        exclude_zero_dte,
-        exclude_zero_oi_chains,
-        maybe_otm_only,
-        option_symbol,
-        limit,
-        page,
-      }))
+  greek_flow: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/greek-flow")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "greeks":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greeks`, { date, expiry }))
+  greek_flow_by_expiry: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .add("expiry", data.expiry)
+      .build("/api/stock/{ticker}/greek-flow/{expiry}")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "greek_exposure":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure`, { date, timeframe }))
+  iv_rank: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/iv-rank")
+    return uwFetch(path, {
+      date: data.date,
+      timespan: data.timespan,
+    })
+  },
 
-    case "greek_exposure_by_expiry":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure/expiry`, { date }))
+  interpolated_iv: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/interpolated-iv")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "greek_exposure_by_strike":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure/strike`, { date }))
+  max_pain: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/max-pain")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "greek_exposure_by_strike_expiry":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-exposure/strike-expiry`, {
-        expiry,
-        date,
-      }))
+  oi_change: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/oi-change")
+    return uwFetch(path, {
+      date: data.date,
+      limit: data.limit,
+      page: data.page,
+      order: data.order,
+    })
+  },
 
-    case "greek_flow":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-flow`, { date }))
+  oi_per_expiry: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/oi-per-expiry")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "greek_flow_by_expiry":
-      if (!ticker || !expiry) return { text: formatError("ticker and expiry are required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/greek-flow/${safeExpiry}`, { date }))
+  oi_per_strike: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/oi-per-strike")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "iv_rank":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/iv-rank`, { date, timespan }))
+  options_volume: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/options-volume")
+    return uwFetch(path, { limit: data.limit })
+  },
 
-    case "interpolated_iv":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/interpolated-iv`, { date }))
+  volume_oi_expiry: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/option/volume-oi-expiry")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "max_pain":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/max-pain`, { date }))
+  atm_chains: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/atm-chains")
+    return uwFetch(path, { "expirations[]": data.expirations })
+  },
 
-    case "oi_change":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/oi-change`, { date, limit, page, order }))
+  expiry_breakdown: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/expiry-breakdown")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "oi_per_expiry":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/oi-per-expiry`, { date }))
+  flow_per_expiry: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/flow-per-expiry")
+    return uwFetch(path)
+  },
 
-    case "oi_per_strike":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/oi-per-strike`, {
-        date,
-      }))
+  flow_per_strike: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/flow-per-strike")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "options_volume":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/options-volume`, { limit }))
+  flow_per_strike_intraday: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/flow-per-strike-intraday")
+    return uwFetch(path, {
+      date: data.date,
+      filter: data.filter,
+    })
+  },
 
-    case "volume_oi_expiry":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/option/volume-oi-expiry`, { date }))
+  flow_recent: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/flow-recent")
+    return uwFetch(path, {
+      side: data.side,
+      min_premium: data.min_premium,
+    })
+  },
 
-    case "atm_chains":
-      if (!ticker) return { text: formatError("ticker is required") }
-      if (!expirations || expirations.length === 0) return { text: formatError("expirations[] is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/atm-chains`, { "expirations[]": expirations }))
+  net_prem_ticks: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/net-prem-ticks")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "expiry_breakdown":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/expiry-breakdown`, { date }))
+  nope: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/nope")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "flow_per_expiry":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-expiry`))
+  stock_price_levels: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/option/stock-price-levels")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "flow_per_strike":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-strike`, { date }))
+  stock_volume_price_levels: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/stock-volume-price-levels")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "flow_per_strike_intraday":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/flow-per-strike-intraday`, {
-        date,
-        filter,
-      }))
+  spot_exposures: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/spot-exposures")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "flow_recent":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/flow-recent`, { side, min_premium }))
+  spot_exposures_by_expiry_strike: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/spot-exposures/expiry-strike")
+    return uwFetch(path, {
+      "expirations[]": data.expirations,
+      date: data.date,
+      limit: data.limit,
+      page: data.page,
+      min_strike: data.min_strike,
+      max_strike: data.max_strike,
+      min_dte: data.min_dte,
+      max_dte: data.max_dte,
+    })
+  },
 
-    case "net_prem_ticks":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/net-prem-ticks`, { date }))
+  spot_exposures_by_strike: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/spot-exposures/strike")
+    return uwFetch(path, {
+      date: data.date,
+      min_strike: data.min_strike,
+      max_strike: data.max_strike,
+      limit: data.limit,
+      page: data.page,
+    })
+  },
 
-    case "nope":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/nope`, { date }))
+  spot_exposures_expiry_strike: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/spot-exposures/expiry-strike")
+    return uwFetch(path, {
+      "expirations[]": [data.expiry],
+      date: data.date,
+      min_strike: data.min_strike,
+      max_strike: data.max_strike,
+    })
+  },
 
-    case "stock_price_levels":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/option/stock-price-levels`, { date }))
+  historical_risk_reversal_skew: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/historical-risk-reversal-skew")
+    return uwFetch(path, {
+      expiry: data.expiry,
+      delta: data.delta,
+      date: data.date,
+      timeframe: data.timeframe,
+    })
+  },
 
-    case "stock_volume_price_levels":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/stock-volume-price-levels`, { date }))
+  volatility_realized: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/volatility/realized")
+    return uwFetch(path, {
+      date: data.date,
+      timeframe: data.timeframe,
+    })
+  },
 
-    case "spot_exposures":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures`, { date }))
+  volatility_stats: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/volatility/stats")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "spot_exposures_by_expiry_strike":
-      if (!ticker || !expirations || expirations.length === 0) return { text: formatError("ticker and expirations are required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/expiry-strike`, {
-        "expirations[]": expirations,
-        date,
-        limit,
-        page,
-        min_strike,
-        max_strike,
-        min_dte,
-        max_dte,
-      }))
+  volatility_term_structure: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/volatility/term-structure")
+    return uwFetch(path, { date: data.date })
+  },
 
-    case "spot_exposures_by_strike":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/strike`, {
-        date,
-        min_strike,
-        max_strike,
-        limit,
-        page,
-      }))
+  stock_state: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/stock-state")
+    return uwFetch(path)
+  },
 
-    case "spot_exposures_expiry_strike":
-      if (!ticker || !expiry) return { text: formatError("ticker and expiry are required") }
-      // Migrated from deprecated endpoint to v2: /api/stock/{ticker}/spot-exposures/expiry-strike
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/spot-exposures/expiry-strike`, {
-        "expirations[]": [expiry],
-        date,
-        min_strike,
-        max_strike,
-      }))
+  insider_buy_sells: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/insider-buy-sells")
+    return uwFetch(path)
+  },
 
-    case "historical_risk_reversal_skew":
-      if (!ticker || !expiry || !delta) return { text: formatError("ticker, expiry, and delta are required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/historical-risk-reversal-skew`, { expiry, delta, date, timeframe }))
+  ownership: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/stock/{ticker}/ownership")
+    return uwFetch(path, { limit: data.limit })
+  },
 
-    case "volatility_realized":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/volatility/realized`, { date, timeframe }))
+  tickers_by_sector: async (data) => {
+    const path = new PathParamBuilder()
+      .add("sector", data.sector)
+      .build("/api/stock/{sector}/tickers")
+    return uwFetch(path)
+  },
 
-    case "volatility_stats":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/volatility/stats`, { date }))
-
-    case "volatility_term_structure":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/volatility/term-structure`, { date }))
-
-    case "stock_state":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/stock-state`))
-
-    case "insider_buy_sells":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/insider-buy-sells`))
-
-    case "ownership":
-      if (!ticker) return { text: formatError("ticker is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeTicker}/ownership`, { limit }))
-
-    case "tickers_by_sector":
-      if (!sector) return { text: formatError("sector is required") }
-      return formatStructuredResponse(await uwFetch(`/api/stock/${safeSector}/tickers`))
-
-    case "ticker_exchanges":
-      return formatStructuredResponse(await uwFetch("/api/stock-directory/ticker-exchanges"))
-
-    default:
-      return { text: formatError(`Unknown action: ${action}`) }
-  }
-}
+  ticker_exchanges: async () => {
+    return uwFetch("/api/stock-directory/ticker-exchanges")
+  },
+})
