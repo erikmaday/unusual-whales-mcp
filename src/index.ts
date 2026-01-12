@@ -56,7 +56,7 @@ for (const tool of tools) {
       inputSchema: tool.zodInputSchema,
       annotations: tool.annotations || {},
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     async (args: any) => {
       try {
         const result = await handler(args)
