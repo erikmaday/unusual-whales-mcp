@@ -1,15 +1,43 @@
 import { z } from "zod"
-import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, formatZodError,
-} from "../schemas/index.js"
+import { uwFetch } from "../client.js"
+import { toJsonSchema, tickerSchema } from "../schemas/index.js"
+import { createToolHandler } from "./base/tool-factory.js"
+import { PathParamBuilder } from "../utils/path-params.js"
 
-const shortsActions = ["data", "ftds", "interest_float", "volume_ratio", "volumes_by_exchange"] as const
-
-const shortsInputSchema = z.object({
-  action: z.enum(shortsActions).describe("The action to perform"),
+// Explicit per-action schemas
+const dataSchema = z.object({
+  action: z.literal("data"),
   ticker: tickerSchema,
 })
 
+const ftdsSchema = z.object({
+  action: z.literal("ftds"),
+  ticker: tickerSchema,
+})
+
+const interestFloatSchema = z.object({
+  action: z.literal("interest_float"),
+  ticker: tickerSchema,
+})
+
+const volumeRatioSchema = z.object({
+  action: z.literal("volume_ratio"),
+  ticker: tickerSchema,
+})
+
+const volumesByExchangeSchema = z.object({
+  action: z.literal("volumes_by_exchange"),
+  ticker: tickerSchema,
+})
+
+// Discriminated union of all action schemas
+const shortsInputSchema = z.discriminatedUnion("action", [
+  dataSchema,
+  ftdsSchema,
+  interestFloatSchema,
+  volumeRatioSchema,
+  volumesByExchangeSchema,
+])
 
 export const shortsTool = {
   name: "uw_shorts",
@@ -31,37 +59,41 @@ Available actions:
 }
 
 /**
- * Handle shorts tool requests.
- *
- * @param args - Tool arguments containing action and ticker
- * @returns JSON string with short interest data or error message
+ * Handle shorts tool requests using the tool factory pattern
  */
-export async function handleShorts(args: Record<string, unknown>): Promise<string> {
-  const parsed = shortsInputSchema.safeParse(args)
-  if (!parsed.success) {
-    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
-  }
+export const handleShorts = createToolHandler(shortsInputSchema, {
+  data: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/shorts/{ticker}/data")
+    return uwFetch(path)
+  },
 
-  const { action, ticker } = parsed.data
-  const safeTicker = encodePath(ticker)
+  ftds: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/shorts/{ticker}/ftds")
+    return uwFetch(path)
+  },
 
-  switch (action) {
-    case "data":
-      return formatResponse(await uwFetch(`/api/shorts/${safeTicker}/data`))
+  interest_float: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/shorts/{ticker}/interest-float")
+    return uwFetch(path)
+  },
 
-    case "ftds":
-      return formatResponse(await uwFetch(`/api/shorts/${safeTicker}/ftds`))
+  volume_ratio: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/shorts/{ticker}/volume-and-ratio")
+    return uwFetch(path)
+  },
 
-    case "interest_float":
-      return formatResponse(await uwFetch(`/api/shorts/${safeTicker}/interest-float`))
-
-    case "volume_ratio":
-      return formatResponse(await uwFetch(`/api/shorts/${safeTicker}/volume-and-ratio`))
-
-    case "volumes_by_exchange":
-      return formatResponse(await uwFetch(`/api/shorts/${safeTicker}/volumes-by-exchange`))
-
-    default:
-      return formatError(`Unknown action: ${action}`)
-  }
-}
+  volumes_by_exchange: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/shorts/{ticker}/volumes-by-exchange")
+    return uwFetch(path)
+  },
+})

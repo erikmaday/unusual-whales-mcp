@@ -1,27 +1,29 @@
 import { z } from "zod"
-import { uwFetch, formatResponse, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, limitSchema, pageSchema, formatZodError,
-} from "../schemas/index.js"
+import { uwFetch } from "../client.js"
+import { toJsonSchema, tickerSchema, pageSchema } from "../schemas/index.js"
+import { createToolHandler } from "./base/tool-factory.js"
 
-const newsActions = ["headlines"] as const
-
-// News-specific limit schema with max 100
+// News-specific limit schema with max 500
 const newsLimitSchema = z.number()
-  .int("Limit must be an integer")
-  .min(1, "Limit must be at least 1")
-  .max(100, "Limit cannot exceed 100")
-  .describe("Maximum number of results")
+  .int()
+  .min(1)
+  .max(500)
+  .default(50)
+  .describe("Maximum number of results (default 50, max 500)")
 
-const newsInputSchema = z.object({
-  action: z.enum(newsActions).describe("The action to perform"),
+// Explicit per-action schema
+const headlinesSchema = z.object({
+  action: z.literal("headlines"),
   ticker: tickerSchema.describe("Filter by ticker symbol").optional(),
-  limit: newsLimitSchema.default(50).optional(),
+  limit: newsLimitSchema.optional(),
   sources: z.string().describe("Filter by news sources").optional(),
   search_term: z.string().describe("Search term to filter headlines").optional(),
   major_only: z.boolean().default(false).optional(),
   page: pageSchema.optional(),
 })
 
+// Discriminated union (only one action for now)
+const newsInputSchema = z.discriminatedUnion("action", [headlinesSchema])
 
 export const newsTool = {
   name: "uw_news",
@@ -39,31 +41,17 @@ Available actions:
 }
 
 /**
- * Handle news tool requests.
- *
- * @param args - Tool arguments containing action and optional news filters
- * @returns JSON string with news data or error message
+ * Handle news tool requests using the tool factory pattern
  */
-export async function handleNews(args: Record<string, unknown>): Promise<string> {
-  const parsed = newsInputSchema.safeParse(args)
-  if (!parsed.success) {
-    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
-  }
-
-  const { action, ticker, limit, sources, search_term, major_only, page } = parsed.data
-
-  switch (action) {
-    case "headlines":
-      return formatResponse(await uwFetch("/api/news/headlines", {
-        ticker,
-        limit,
-        sources,
-        search_term,
-        major_only,
-        page,
-      }))
-
-    default:
-      return formatError(`Unknown action: ${action}`)
-  }
-}
+export const handleNews = createToolHandler(newsInputSchema, {
+  headlines: async (data) => {
+    return uwFetch("/api/news/headlines", {
+      ticker: data.ticker,
+      limit: data.limit,
+      sources: data.sources,
+      search_term: data.search_term,
+      major_only: data.major_only,
+      page: data.page,
+    })
+  },
+})

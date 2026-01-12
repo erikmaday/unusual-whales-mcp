@@ -64,17 +64,17 @@ describe("handleShorts", () => {
   describe("input validation", () => {
     it("rejects invalid action", async () => {
       const result = await handleShorts({ action: "invalid_action", ticker: "GME" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("rejects missing action", async () => {
       const result = await handleShorts({ ticker: "GME" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("rejects missing ticker", async () => {
       const result = await handleShorts({ action: "data" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
   })
 
@@ -87,7 +87,7 @@ describe("handleShorts", () => {
     it("handles API error response", async () => {
       mockUwFetch.mockResolvedValue({ error: "API unavailable" })
       const result = await handleShorts({ action: "data", ticker: "GME" })
-      expect(result).toContain("API unavailable")
+      expect(result.text).toContain("API unavailable")
     })
   })
 

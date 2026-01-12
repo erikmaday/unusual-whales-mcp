@@ -1,11 +1,11 @@
 import { z } from "zod"
-import { uwFetch, formatResponse, formatError } from "../client.js"
-import { toJsonSchema, limitSchema, formatZodError } from "../schemas/index.js"
+import { uwFetch } from "../client.js"
+import { toJsonSchema, limitSchema } from "../schemas/index.js"
+import { createToolHandler } from "./base/tool-factory.js"
 
-const alertsActions = ["alerts", "configurations"] as const
-
-const alertsInputSchema = z.object({
-  action: z.enum(alertsActions).describe("The action to perform"),
+// Explicit per-action schemas
+const alertsSchema = z.object({
+  action: z.literal("alerts"),
   limit: limitSchema.default(1).optional(),
   ticker_symbols: z.string().describe("Comma-separated list of tickers to filter by. Prefix with '-' to exclude tickers (e.g., 'AAPL,INTC' or '-TSLA,NVDA')").optional(),
   intraday_only: z.boolean().describe("Only show intraday alerts").default(true).optional(),
@@ -15,6 +15,15 @@ const alertsInputSchema = z.object({
   older_than: z.string().datetime().describe("Filter alerts older than timestamp (ISO format or unix)").optional(),
 })
 
+const configurationsSchema = z.object({
+  action: z.literal("configurations"),
+})
+
+// Discriminated union of all action schemas
+const alertsInputSchema = z.discriminatedUnion("action", [
+  alertsSchema,
+  configurationsSchema,
+])
 
 export const alertsTool = {
   name: "uw_alerts",
@@ -33,35 +42,22 @@ Available actions:
 }
 
 /**
- * Handle alerts tool requests.
- *
- * @param args - Tool arguments containing action and optional alert filters
- * @returns JSON string with alert data or error message
+ * Handle alerts tool requests using the tool factory pattern
  */
-export async function handleAlerts(args: Record<string, unknown>): Promise<string> {
-  const parsed = alertsInputSchema.safeParse(args)
-  if (!parsed.success) {
-    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
-  }
+export const handleAlerts = createToolHandler(alertsInputSchema, {
+  alerts: async (data) => {
+    return uwFetch("/api/alerts", {
+      limit: data.limit,
+      ticker_symbols: data.ticker_symbols,
+      intraday_only: data.intraday_only,
+      "config_ids[]": data.config_ids,
+      "noti_types[]": data.noti_types,
+      newer_than: data.newer_than,
+      older_than: data.older_than,
+    })
+  },
 
-  const { action, limit, ticker_symbols, intraday_only, config_ids, noti_types, newer_than, older_than } = parsed.data
-
-  switch (action) {
-    case "alerts":
-      return formatResponse(await uwFetch("/api/alerts", {
-        limit,
-        ticker_symbols,
-        intraday_only,
-        "config_ids[]": config_ids,
-        "noti_types[]": noti_types,
-        newer_than,
-        older_than,
-      }))
-
-    case "configurations":
-      return formatResponse(await uwFetch("/api/alerts/configuration"))
-
-    default:
-      return formatError(`Unknown action: ${action}`)
-  }
-}
+  configurations: async () => {
+    return uwFetch("/api/alerts/configuration")
+  },
+})

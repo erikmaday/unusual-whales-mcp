@@ -61,12 +61,12 @@ describe("handleCongress", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleCongress({ action: "invalid_action" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleCongress({})
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
   })
 
