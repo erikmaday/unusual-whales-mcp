@@ -26,7 +26,7 @@ export class CircuitBreakerError extends Error {
   constructor(
     message: string,
     public readonly state: CircuitState,
-    public readonly resetAt?: number
+    public readonly resetAt?: number,
   ) {
     super(message)
     this.name = "CircuitBreakerError"
@@ -44,13 +44,13 @@ export class CircuitBreaker {
     private readonly config: CircuitBreakerConfig = {
       failureThreshold: 5,
       resetTimeout: 30000,
-      successThreshold: 2
-    }
+      successThreshold: 2,
+    },
   ) {
     logger.info("Circuit breaker initialized", {
       failureThreshold: config.failureThreshold,
       resetTimeout: config.resetTimeout,
-      successThreshold: config.successThreshold
+      successThreshold: config.successThreshold,
     })
   }
 
@@ -66,12 +66,12 @@ export class CircuitBreaker {
         state: this.state,
         failures: this.failures,
         waitTimeMs: waitTime,
-        nextAttemptTime: new Date(this.nextAttemptTime).toISOString()
+        nextAttemptTime: new Date(this.nextAttemptTime).toISOString(),
       })
       throw new CircuitBreakerError(
         `Circuit breaker is open - API temporarily unavailable. Try again in ${Math.ceil(waitTime / 1000)}s`,
         CircuitState.OPEN,
-        this.nextAttemptTime
+        this.nextAttemptTime,
       )
     }
 
@@ -95,7 +95,7 @@ export class CircuitBreaker {
         logger.info("Circuit breaker transitioning to HALF_OPEN", {
           previousState: CircuitState.OPEN,
           failures: this.failures,
-          timeSinceLastFailure: now - this.lastFailureTime
+          timeSinceLastFailure: now - this.lastFailureTime,
         })
         this.state = CircuitState.HALF_OPEN
         this.successes = 0
@@ -111,14 +111,14 @@ export class CircuitBreaker {
       this.successes++
       logger.debug("Circuit breaker success in HALF_OPEN", {
         successes: this.successes,
-        successThreshold: this.config.successThreshold
+        successThreshold: this.config.successThreshold,
       })
 
       if (this.successes >= this.config.successThreshold) {
         logger.info("Circuit breaker closing - service recovered", {
           previousState: CircuitState.HALF_OPEN,
           successCount: this.successes,
-          totalFailures: this.failures
+          totalFailures: this.failures,
         })
         this.reset()
       }
@@ -126,7 +126,7 @@ export class CircuitBreaker {
       // Reset failure counter on success in CLOSED state
       if (this.failures > 0) {
         logger.debug("Circuit breaker resetting failure count", {
-          previousFailures: this.failures
+          previousFailures: this.failures,
         })
         this.failures = 0
       }
@@ -144,7 +144,7 @@ export class CircuitBreaker {
       // Any failure in HALF_OPEN immediately opens the circuit
       logger.warn("Circuit breaker opening - failure in HALF_OPEN", {
         previousState: CircuitState.HALF_OPEN,
-        totalFailures: this.failures
+        totalFailures: this.failures,
       })
       this.openCircuit()
     } else if (this.state === CircuitState.CLOSED) {
@@ -152,14 +152,14 @@ export class CircuitBreaker {
         logger.warn("Circuit breaker opening - failure threshold reached", {
           previousState: CircuitState.CLOSED,
           failures: this.failures,
-          threshold: this.config.failureThreshold
+          threshold: this.config.failureThreshold,
         })
         this.openCircuit()
       } else {
         logger.debug("Circuit breaker failure recorded", {
           state: CircuitState.CLOSED,
           failures: this.failures,
-          threshold: this.config.failureThreshold
+          threshold: this.config.failureThreshold,
         })
       }
     }
@@ -198,7 +198,7 @@ export class CircuitBreaker {
       state: this.state,
       failures: this.failures,
       successes: this.successes,
-      nextAttemptTime: this.state === CircuitState.OPEN ? this.nextAttemptTime : null
+      nextAttemptTime: this.state === CircuitState.OPEN ? this.nextAttemptTime : null,
     }
   }
 }
