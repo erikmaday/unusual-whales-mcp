@@ -352,7 +352,7 @@ function extractImplementedActions() {
     f => f.endsWith('.ts') && f !== 'index.ts' && !f.startsWith('base')
   )
 
-  const allActions = new Map() // actionName -> { file, params, endpoint }
+  const allActions = new Map() // `${file}:${actionName}` -> { file, actionName, params, endpoint }
 
   for (const file of files) {
     const filePath = join(toolsDir, file)
@@ -366,8 +366,11 @@ function extractImplementedActions() {
         continue
       }
 
-      allActions.set(actionName, {
+      // Use composite key to handle duplicate action names across different tools
+      const key = `${file}:${actionName}`
+      allActions.set(key, {
         file,
+        actionName,
         params,
         endpoint
       })
@@ -442,8 +445,9 @@ function compareAPIs(specEndpoints, implementedActions) {
   const checkedSpec = new Set()
 
   // For each implemented action, find its spec endpoint and compare
-  for (const [actionName, impl] of implementedActions) {
+  for (const [key, impl] of implementedActions) {
     const endpoint = impl.endpoint
+    const actionName = impl.actionName
 
     // Try GET first (most common), then POST
     let specKey = `GET ${endpoint}`
