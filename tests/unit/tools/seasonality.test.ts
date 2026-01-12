@@ -61,22 +61,22 @@ describe("handleSeasonality", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleSeasonality({ action: "invalid_action" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleSeasonality({})
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for month out of range", async () => {
       const result = await handleSeasonality({ action: "performers", month: 13 })
-      expect(result).toContain("Too big")
+      expect(result.text).toContain("Too big")
     })
 
     it("returns error for month less than 1", async () => {
       const result = await handleSeasonality({ action: "performers", month: 0 })
-      expect(result).toContain("Too small")
+      expect(result.text).toContain("Too small")
     })
   })
 
@@ -90,7 +90,7 @@ describe("handleSeasonality", () => {
   describe("performers action", () => {
     it("returns error when month is missing", async () => {
       const result = await handleSeasonality({ action: "performers" })
-      expect(result).toContain("month is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -125,7 +125,7 @@ describe("handleSeasonality", () => {
   describe("monthly action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleSeasonality({ action: "monthly" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -137,7 +137,7 @@ describe("handleSeasonality", () => {
   describe("year_month action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleSeasonality({ action: "year_month" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {

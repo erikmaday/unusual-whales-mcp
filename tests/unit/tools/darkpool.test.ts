@@ -61,12 +61,12 @@ describe("handleDarkpool", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleDarkpool({ action: "invalid_action" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleDarkpool({})
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
   })
 
@@ -100,7 +100,7 @@ describe("handleDarkpool", () => {
   describe("ticker action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleDarkpool({ action: "ticker" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {

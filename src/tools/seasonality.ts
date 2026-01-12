@@ -1,18 +1,21 @@
 import { z } from "zod"
-import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
+import { uwFetch } from "../client.js"
 import {
-  toJsonSchema, tickerSchema, formatZodError,
+  toJsonSchema, tickerSchema,
   seasonalityOrderBySchema, minYearsSchema, sP500NasdaqOnlySchema,
   seasonalityLimitSchema, seasonalityOrderDirectionSchema,
 } from "../schemas/index.js"
+import { createToolHandler } from "./base/tool-factory.js"
+import { PathParamBuilder } from "../utils/path-params.js"
 
-const seasonalityActions = ["market", "performers", "monthly", "year_month"] as const
+// Explicit per-action schemas
+const marketSchema = z.object({
+  action: z.literal("market"),
+})
 
-const seasonalityInputSchema = z.object({
-  action: z.enum(seasonalityActions).describe("The action to perform"),
-  ticker: tickerSchema.optional(),
-  month: z.number().min(1).max(12).describe("Month number (1-12)").optional(),
-  // Performers-specific optional parameters
+const performersSchema = z.object({
+  action: z.literal("performers"),
+  month: z.number().min(1).max(12).describe("Month number (1-12)"),
   min_years: minYearsSchema.optional(),
   ticker_for_sector: tickerSchema.describe("A ticker whose sector will be used to filter results").optional(),
   s_p_500_nasdaq_only: sP500NasdaqOnlySchema.optional(),
@@ -22,6 +25,23 @@ const seasonalityInputSchema = z.object({
   order_direction: seasonalityOrderDirectionSchema.optional(),
 })
 
+const monthlySchema = z.object({
+  action: z.literal("monthly"),
+  ticker: tickerSchema,
+})
+
+const yearMonthSchema = z.object({
+  action: z.literal("year_month"),
+  ticker: tickerSchema,
+})
+
+// Discriminated union of all action schemas
+const seasonalityInputSchema = z.discriminatedUnion("action", [
+  marketSchema,
+  performersSchema,
+  monthlySchema,
+  yearMonthSchema,
+])
 
 export const seasonalityTool = {
   name: "uw_seasonality",
@@ -43,47 +63,39 @@ Available actions:
 }
 
 /**
- * Handle seasonality tool requests.
- *
- * @param args - Tool arguments containing action and optional seasonality parameters
- * @returns JSON string with seasonality data or error message
+ * Handle seasonality tool requests using the tool factory pattern
  */
-export async function handleSeasonality(args: Record<string, unknown>): Promise<string> {
-  const parsed = seasonalityInputSchema.safeParse(args)
-  if (!parsed.success) {
-    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
-  }
+export const handleSeasonality = createToolHandler(seasonalityInputSchema, {
+  market: async () => {
+    return uwFetch("/api/seasonality/market")
+  },
 
-  const {
-    action, ticker, month,
-    min_years, ticker_for_sector, s_p_500_nasdaq_only, min_oi, limit, order, order_direction,
-  } = parsed.data
+  performers: async (data) => {
+    const path = new PathParamBuilder()
+      .add("month", data.month)
+      .build("/api/seasonality/{month}/performers")
+    return uwFetch(path, {
+      min_years: data.min_years,
+      ticker_for_sector: data.ticker_for_sector,
+      s_p_500_nasdaq_only: data.s_p_500_nasdaq_only,
+      min_oi: data.min_oi,
+      limit: data.limit,
+      order: data.order,
+      order_direction: data.order_direction,
+    })
+  },
 
-  switch (action) {
-    case "market":
-      return formatResponse(await uwFetch("/api/seasonality/market"))
+  monthly: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/seasonality/{ticker}/monthly")
+    return uwFetch(path)
+  },
 
-    case "performers":
-      if (month === undefined) return formatError("month is required (1-12)")
-      return formatResponse(await uwFetch(`/api/seasonality/${month}/performers`, {
-        min_years,
-        ticker_for_sector,
-        s_p_500_nasdaq_only,
-        min_oi,
-        limit,
-        order,
-        order_direction,
-      }))
-
-    case "monthly":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/seasonality/${encodePath(ticker)}/monthly`))
-
-    case "year_month":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/seasonality/${encodePath(ticker)}/year-month`))
-
-    default:
-      return formatError(`Unknown action: ${action}`)
-  }
-}
+  year_month: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/seasonality/{ticker}/year-month")
+    return uwFetch(path)
+  },
+})

@@ -61,12 +61,12 @@ describe("handlePoliticians", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handlePoliticians({ action: "invalid_action" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
       const result = await handlePoliticians({})
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
   })
 
@@ -80,7 +80,7 @@ describe("handlePoliticians", () => {
   describe("portfolio action", () => {
     it("returns error when politician_id is missing", async () => {
       const result = await handlePoliticians({ action: "portfolio" })
-      expect(result).toContain("politician_id is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -144,7 +144,7 @@ describe("handlePoliticians", () => {
   describe("holders action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handlePoliticians({ action: "holders" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
