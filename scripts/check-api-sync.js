@@ -141,9 +141,12 @@ function extractActionSchemas(toolFile) {
     // For each schema, find its definition and extract parameters
     for (const schemaName of schemaNames) {
       try {
+        // Escape special regex characters in schema name (like $)
+        const escapedName = schemaName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
         // Find: const schemaName = z.object({...})
         const schemaPattern = new RegExp(
-          `const\\s+${schemaName}\\s*=\\s*z\\.object\\(\\{([\\s\\S]*?)\\}\\)`,
+          `const\\s+${escapedName}\\s*=\\s*z\\.object\\(\\{([\\s\\S]*?)\\}\\)`,
           ''
         )
         const schemaMatch = content.match(schemaPattern)
@@ -307,10 +310,34 @@ function extractActionToEndpoint(toolFile) {
         currentBody.push(line)
       }
 
-      // Track brace depth
-      for (const char of line) {
-        if (char === '{') handlerBraceDepth++
-        if (char === '}') handlerBraceDepth--
+      // Track brace depth (ignore braces inside strings)
+      let inString = false
+      let stringChar = null
+      let escaped = false
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i]
+
+        if (escaped) {
+          escaped = false
+          continue
+        }
+
+        if (char === '\\') {
+          escaped = true
+          continue
+        }
+
+        if ((char === '"' || char === "'" || char === '`') && !inString) {
+          inString = true
+          stringChar = char
+        } else if (char === stringChar && inString) {
+          inString = false
+          stringChar = null
+        } else if (!inString) {
+          if (char === '{') handlerBraceDepth++
+          if (char === '}') handlerBraceDepth--
+        }
       }
     }
 
