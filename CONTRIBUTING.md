@@ -166,15 +166,52 @@ const toolRegistrations: ToolRegistration[] = [
 ]
 ```
 
-## Checking for API Changes
+## Keeping Up with API Changes
 
-The UnusualWhales API may add new endpoints. To check:
+The Unusual Whales API evolves over time - new endpoints get added, parameters change, and occasionally things get deprecated. We have a sync checker that helps us stay on top of this.
+
+### Running the Check
 
 ```bash
 npm run check-api
 ```
 
-This fetches the live OpenAPI spec and compares against implemented endpoints.
+This compares what we've implemented against the official OpenAPI spec and tells you about any gaps.
+
+### What It Actually Does
+
+The checker reads through our tool files and the OpenAPI spec, then figures out:
+
+1. **Missing endpoints** - Things in the spec we haven't implemented yet
+2. **Extra endpoints** - Things we've implemented that aren't in the spec (usually means something got deprecated or renamed)
+3. **Parameter mismatches** - When our schemas don't quite match what the API expects
+
+It's not magic - it parses our discriminated union schemas and handler code to map actions to API endpoints, then compares the parameters against the spec. The matching is smart enough to handle things like `param[]` array notation differences.
+
+### Automated Daily Checks
+
+A GitHub Action runs this every morning at 9am UTC. If it finds issues, it creates GitHub issues so nothing slips through the cracks. You can also trigger it manually from the Actions tab if you want to check after a known API update.
+
+The workflow:
+1. Fetches the latest OpenAPI spec from Unusual Whales
+2. Commits any spec changes to the repo
+3. Runs the sync check
+4. Creates issues for any problems found
+
+### Ignoring Endpoints
+
+Some endpoints we intentionally skip - WebSocket streams, deprecated routes, etc. These live in the `IGNORED_ENDPOINTS` array at the top of `scripts/check-api-sync.js`. If you're wondering why something isn't flagged as missing, check there first.
+
+### When the Check Fails
+
+If the check fails in CI:
+
+- **Missing required params**: We need to add them to the action schema
+- **Missing optional params**: Probably worth adding, but not urgent
+- **Extra params**: Either the API changed or we have a typo - investigate
+- **Missing endpoints**: New API feature! Consider implementing it
+
+The check runs on every PR, so you'll catch issues before they hit main.
 
 ## Code Style
 
