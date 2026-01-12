@@ -60,7 +60,7 @@ describe("handleCongress", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleCongress({ action: "invalid_action" })
+      const result = await handleCongress({ action_type: "invalid_action" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -72,13 +72,13 @@ describe("handleCongress", () => {
 
   describe("recent_trades action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleCongress({ action: "recent_trades" })
+      await handleCongress({ action_type: "recent_trades" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/congress/recent-trades", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleCongress({
-        action: "recent_trades",
+        action_type: "recent_trades",
         date: "2024-01-15",
         ticker: "AAPL",
         limit: 100,
@@ -93,13 +93,13 @@ describe("handleCongress", () => {
 
   describe("late_reports action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleCongress({ action: "late_reports" })
+      await handleCongress({ action_type: "late_reports" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/congress/late-reports", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleCongress({
-        action: "late_reports",
+        action_type: "late_reports",
         date: "2024-01-15",
         ticker: "NVDA",
         limit: 50,
@@ -114,20 +114,20 @@ describe("handleCongress", () => {
 
   describe("congress_trader action", () => {
     it("uses default name when name is not provided", async () => {
-      await handleCongress({ action: "congress_trader" })
+      await handleCongress({ action_type: "congress_trader" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/congress/congress-trader", expect.objectContaining({
         name: "Nancy Pelosi",
       }))
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleCongress({ action: "congress_trader", name: "Nancy Pelosi" })
+      await handleCongress({ action_type: "congress_trader", name: "Nancy Pelosi" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/congress/congress-trader", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleCongress({
-        action: "congress_trader",
+        action_type: "congress_trader",
         name: "Nancy Pelosi",
         date: "2024-01-15",
         ticker: "AAPL",

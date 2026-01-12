@@ -15,7 +15,7 @@ describe("generateApiReference", () => {
         inputSchema: {
           type: "object",
           properties: {
-            action: { type: "string" },
+            action_type: { type: "string" },
           },
           required: ["action"],
         },
@@ -95,7 +95,7 @@ describe("generateToolsSummary", () => {
         inputSchema: {
           type: "object",
           properties: {
-            action: { type: "string" },
+            action_type: { type: "string" },
           },
           required: ["action"],
         },

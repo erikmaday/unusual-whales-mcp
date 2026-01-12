@@ -60,7 +60,7 @@ describe("handleInsider", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleInsider({ action: "invalid_action" })
+      const result = await handleInsider({ action_type: "invalid_action" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -72,13 +72,13 @@ describe("handleInsider", () => {
 
   describe("transactions action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleInsider({ action: "transactions" })
+      await handleInsider({ action_type: "transactions" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/insider/transactions", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleInsider({
-        action: "transactions",
+        action_type: "transactions",
         ticker_symbol: "AAPL,TSLA",
         min_value: 100000,
         max_value: 10000000,
@@ -98,7 +98,7 @@ describe("handleInsider", () => {
 
     it("passes transaction codes", async () => {
       await handleInsider({
-        action: "transactions",
+        action_type: "transactions",
         transaction_codes: "P,S",
         is_s_p_500: true,
       })
@@ -111,36 +111,36 @@ describe("handleInsider", () => {
 
   describe("sector_flow action", () => {
     it("returns error when sector is missing", async () => {
-      const result = await handleInsider({ action: "sector_flow" })
+      const result = await handleInsider({ action_type: "sector_flow" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleInsider({ action: "sector_flow", sector: "Technology" })
+      await handleInsider({ action_type: "sector_flow", sector: "Technology" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/insider/Technology/sector-flow")
     })
   })
 
   describe("ticker_flow action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleInsider({ action: "ticker_flow" })
+      const result = await handleInsider({ action_type: "ticker_flow" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleInsider({ action: "ticker_flow", ticker: "AAPL" })
+      await handleInsider({ action_type: "ticker_flow", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/insider/AAPL/ticker-flow")
     })
   })
 
   describe("insiders action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleInsider({ action: "insiders" })
+      const result = await handleInsider({ action_type: "insiders" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleInsider({ action: "insiders", ticker: "NVDA" })
+      await handleInsider({ action_type: "insiders", ticker: "NVDA" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/insider/NVDA")
     })
   })

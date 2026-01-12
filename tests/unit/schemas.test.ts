@@ -6,17 +6,11 @@ import {
   dateSchema,
   expirySchema,
   limitSchema,
-  strikeSchema,
   optionTypeSchema,
   orderDirectionSchema,
   pageSchema,
   candleSizeSchema,
   deltaSchema,
-  premiumFilterSchema,
-  sizeFilterSchema,
-  volumeFilterSchema,
-  oiFilterSchema,
-  dteFilterSchema,
 } from "../../src/schemas/index.js"
 import { z } from "zod"
 
@@ -160,22 +154,6 @@ describe("limitSchema", () => {
   })
 })
 
-describe("strikeSchema", () => {
-  it("accepts positive strike prices", () => {
-    expect(strikeSchema.parse(100)).toBe(100)
-    expect(strikeSchema.parse(150.5)).toBe(150.5)
-    expect(strikeSchema.parse(0.5)).toBe(0.5)
-  })
-
-  it("rejects zero", () => {
-    expect(() => strikeSchema.parse(0)).toThrow()
-  })
-
-  it("rejects negative values", () => {
-    expect(() => strikeSchema.parse(-100)).toThrow()
-  })
-})
-
 describe("optionTypeSchema", () => {
   it("accepts call and put", () => {
     expect(optionTypeSchema.parse("call")).toBe("call")
@@ -248,104 +226,5 @@ describe("deltaSchema", () => {
     expect(() => deltaSchema.parse("15")).toThrow()
     expect(() => deltaSchema.parse("50")).toThrow()
     expect(() => deltaSchema.parse(10)).toThrow()
-  })
-})
-
-describe("premiumFilterSchema", () => {
-  it("accepts valid premium filters", () => {
-    const result = premiumFilterSchema.parse({
-      min_premium: 100,
-      max_premium: 1000,
-    })
-    expect(result.min_premium).toBe(100)
-    expect(result.max_premium).toBe(1000)
-  })
-
-  it("accepts partial filters", () => {
-    expect(premiumFilterSchema.parse({ min_premium: 50 })).toEqual({ min_premium: 50 })
-    // min_premium has a default of 0, so it will be filled in when parsing
-    expect(premiumFilterSchema.parse({ max_premium: 500 })).toEqual({ min_premium: 0, max_premium: 500 })
-    expect(premiumFilterSchema.parse({})).toEqual({ min_premium: 0 })
-  })
-
-  it("rejects negative premium", () => {
-    expect(() => premiumFilterSchema.parse({ min_premium: -100 })).toThrow()
-    expect(() => premiumFilterSchema.parse({ max_premium: -50 })).toThrow()
-  })
-
-  it("accepts zero as minimum", () => {
-    expect(premiumFilterSchema.parse({ min_premium: 0 })).toEqual({ min_premium: 0 })
-  })
-})
-
-describe("sizeFilterSchema", () => {
-  it("accepts valid size filters", () => {
-    const result = sizeFilterSchema.parse({
-      min_size: 10,
-      max_size: 1000,
-    })
-    expect(result.min_size).toBe(10)
-    expect(result.max_size).toBe(1000)
-  })
-
-  it("rejects non-integer size", () => {
-    expect(() => sizeFilterSchema.parse({ min_size: 10.5 })).toThrow()
-  })
-
-  it("rejects negative size", () => {
-    expect(() => sizeFilterSchema.parse({ min_size: -1 })).toThrow()
-  })
-})
-
-describe("volumeFilterSchema", () => {
-  it("accepts valid volume filters", () => {
-    const result = volumeFilterSchema.parse({
-      min_volume: 100,
-      max_volume: 10000,
-    })
-    expect(result.min_volume).toBe(100)
-    expect(result.max_volume).toBe(10000)
-  })
-
-  it("rejects negative volume", () => {
-    expect(() => volumeFilterSchema.parse({ min_volume: -1 })).toThrow()
-  })
-})
-
-describe("oiFilterSchema", () => {
-  it("accepts valid open interest filters", () => {
-    const result = oiFilterSchema.parse({
-      min_oi: 500,
-      max_oi: 5000,
-    })
-    expect(result.min_oi).toBe(500)
-    expect(result.max_oi).toBe(5000)
-  })
-
-  it("rejects negative open interest", () => {
-    expect(() => oiFilterSchema.parse({ min_oi: -100 })).toThrow()
-  })
-})
-
-describe("dteFilterSchema", () => {
-  it("accepts valid DTE filters", () => {
-    const result = dteFilterSchema.parse({
-      min_dte: 7,
-      max_dte: 30,
-    })
-    expect(result.min_dte).toBe(7)
-    expect(result.max_dte).toBe(30)
-  })
-
-  it("accepts zero DTE", () => {
-    expect(dteFilterSchema.parse({ min_dte: 0 })).toEqual({ min_dte: 0 })
-  })
-
-  it("rejects negative DTE", () => {
-    expect(() => dteFilterSchema.parse({ min_dte: -1 })).toThrow()
-  })
-
-  it("rejects non-integer DTE", () => {
-    expect(() => dteFilterSchema.parse({ min_dte: 7.5 })).toThrow()
   })
 })

@@ -60,7 +60,7 @@ describe("handleDarkpool", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleDarkpool({ action: "invalid_action" })
+      const result = await handleDarkpool({ action_type: "invalid_action" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -72,13 +72,13 @@ describe("handleDarkpool", () => {
 
   describe("recent action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleDarkpool({ action: "recent" })
+      await handleDarkpool({ action_type: "recent" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/darkpool/recent", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleDarkpool({
-        action: "recent",
+        action_type: "recent",
         date: "2024-01-15",
         limit: 100,
         min_premium: 10000,
@@ -99,18 +99,18 @@ describe("handleDarkpool", () => {
 
   describe("ticker action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleDarkpool({ action: "ticker" })
+      const result = await handleDarkpool({ action_type: "ticker" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleDarkpool({ action: "ticker", ticker: "AAPL" })
+      await handleDarkpool({ action_type: "ticker", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/darkpool/AAPL", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleDarkpool({
-        action: "ticker",
+        action_type: "ticker",
         ticker: "TSLA",
         date: "2024-01-15",
         min_premium: 5000,

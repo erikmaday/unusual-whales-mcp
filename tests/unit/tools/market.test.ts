@@ -60,7 +60,7 @@ describe("handleMarket", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleMarket({ action: "invalid_action" })
+      const result = await handleMarket({ action_type: "invalid_action" })
       // Zod discriminated union returns "Invalid input" for invalid discriminator values
       expect(result.text).toContain("Invalid input")
     })
@@ -73,13 +73,13 @@ describe("handleMarket", () => {
 
   describe("market_tide action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "market_tide" })
+      await handleMarket({ action_type: "market_tide" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/market-tide", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleMarket({
-        action: "market_tide",
+        action_type: "market_tide",
         date: "2024-01-15",
         otm_only: true,
         interval_5m: true,
@@ -94,18 +94,18 @@ describe("handleMarket", () => {
 
   describe("sector_tide action", () => {
     it("returns error when sector is missing", async () => {
-      const result = await handleMarket({ action: "sector_tide" })
+      const result = await handleMarket({ action_type: "sector_tide" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "sector_tide", sector: "Technology" })
+      await handleMarket({ action_type: "sector_tide", sector: "Technology" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/Technology/sector-tide", expect.any(Object))
     })
 
     it("passes date parameter", async () => {
       await handleMarket({
-        action: "sector_tide",
+        action_type: "sector_tide",
         sector: "Energy",
         date: "2024-01-15",
       })
@@ -117,18 +117,18 @@ describe("handleMarket", () => {
 
   describe("etf_tide action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleMarket({ action: "etf_tide" })
+      const result = await handleMarket({ action_type: "etf_tide" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "etf_tide", ticker: "SPY" })
+      await handleMarket({ action_type: "etf_tide", ticker: "SPY" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/SPY/etf-tide", expect.any(Object))
     })
 
     it("passes date parameter", async () => {
       await handleMarket({
-        action: "etf_tide",
+        action_type: "etf_tide",
         ticker: "QQQ",
         date: "2024-01-15",
       })
@@ -140,27 +140,27 @@ describe("handleMarket", () => {
 
   describe("sector_etfs action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "sector_etfs" })
+      await handleMarket({ action_type: "sector_etfs" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/sector-etfs")
     })
   })
 
   describe("economic_calendar action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "economic_calendar" })
+      await handleMarket({ action_type: "economic_calendar" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/economic-calendar")
     })
   })
 
   describe("fda_calendar action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "fda_calendar" })
+      await handleMarket({ action_type: "fda_calendar" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/fda-calendar", expect.any(Object))
     })
 
     it("passes all filter parameters", async () => {
       await handleMarket({
-        action: "fda_calendar",
+        action_type: "fda_calendar",
         announced_date_min: "2024-01-01",
         announced_date_max: "2024-12-31",
         target_date_min: "2024-06-01",
@@ -183,18 +183,18 @@ describe("handleMarket", () => {
 
   describe("correlations action", () => {
     it("returns error when tickers is missing", async () => {
-      const result = await handleMarket({ action: "correlations" })
+      const result = await handleMarket({ action_type: "correlations" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "correlations", tickers: "AAPL,MSFT,GOOGL" })
+      await handleMarket({ action_type: "correlations", tickers: "AAPL,MSFT,GOOGL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/correlations", expect.any(Object))
     })
 
     it("passes all filter parameters", async () => {
       await handleMarket({
-        action: "correlations",
+        action_type: "correlations",
         tickers: "AAPL,TSLA",
         interval: "1y",
         start_date: "2023-01-01",
@@ -211,12 +211,12 @@ describe("handleMarket", () => {
 
   describe("insider_buy_sells action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "insider_buy_sells" })
+      await handleMarket({ action_type: "insider_buy_sells" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/insider-buy-sells", expect.any(Object))
     })
 
     it("passes limit parameter", async () => {
-      await handleMarket({ action: "insider_buy_sells", limit: 100 })
+      await handleMarket({ action_type: "insider_buy_sells", limit: 100 })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/insider-buy-sells", expect.objectContaining({
         limit: 100,
       }))
@@ -225,13 +225,13 @@ describe("handleMarket", () => {
 
   describe("oi_change action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "oi_change" })
+      await handleMarket({ action_type: "oi_change" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/oi-change", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleMarket({
-        action: "oi_change",
+        action_type: "oi_change",
         date: "2024-01-15",
         limit: 50,
         order: "desc",
@@ -246,12 +246,12 @@ describe("handleMarket", () => {
 
   describe("spike action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "spike" })
+      await handleMarket({ action_type: "spike" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/spike", expect.any(Object))
     })
 
     it("passes date parameter", async () => {
-      await handleMarket({ action: "spike", date: "2024-01-15" })
+      await handleMarket({ action_type: "spike", date: "2024-01-15" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/spike", expect.objectContaining({
         date: "2024-01-15",
       }))
@@ -260,13 +260,13 @@ describe("handleMarket", () => {
 
   describe("top_net_impact action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "top_net_impact" })
+      await handleMarket({ action_type: "top_net_impact" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/top-net-impact", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleMarket({
-        action: "top_net_impact",
+        action_type: "top_net_impact",
         date: "2024-01-15",
         issue_types: "Common Stock",
         limit: 25,
@@ -281,12 +281,12 @@ describe("handleMarket", () => {
 
   describe("total_options_volume action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleMarket({ action: "total_options_volume" })
+      await handleMarket({ action_type: "total_options_volume" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/total-options-volume", expect.any(Object))
     })
 
     it("passes limit parameter", async () => {
-      await handleMarket({ action: "total_options_volume", limit: 30 })
+      await handleMarket({ action_type: "total_options_volume", limit: 30 })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/market/total-options-volume", expect.objectContaining({
         limit: 30,
       }))

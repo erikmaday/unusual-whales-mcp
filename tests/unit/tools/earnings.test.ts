@@ -60,7 +60,7 @@ describe("handleEarnings", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleEarnings({ action: "invalid_action" })
+      const result = await handleEarnings({ action_type: "invalid_action" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -72,13 +72,13 @@ describe("handleEarnings", () => {
 
   describe("premarket action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleEarnings({ action: "premarket" })
+      await handleEarnings({ action_type: "premarket" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/earnings/premarket", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleEarnings({
-        action: "premarket",
+        action_type: "premarket",
         date: "2024-01-15",
         limit: 50,
         page: 2,
@@ -93,13 +93,13 @@ describe("handleEarnings", () => {
 
   describe("afterhours action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleEarnings({ action: "afterhours" })
+      await handleEarnings({ action_type: "afterhours" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/earnings/afterhours", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleEarnings({
-        action: "afterhours",
+        action_type: "afterhours",
         date: "2024-01-15",
         limit: 100,
         page: 1,
@@ -114,12 +114,12 @@ describe("handleEarnings", () => {
 
   describe("ticker action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleEarnings({ action: "ticker" })
+      const result = await handleEarnings({ action_type: "ticker" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleEarnings({ action: "ticker", ticker: "AAPL" })
+      await handleEarnings({ action_type: "ticker", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/earnings/AAPL")
     })
   })

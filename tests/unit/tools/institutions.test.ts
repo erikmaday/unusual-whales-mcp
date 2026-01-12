@@ -60,7 +60,7 @@ describe("handleInstitutions", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleInstitutions({ action: "invalid_action" })
+      const result = await handleInstitutions({ action_type: "invalid_action" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -72,13 +72,13 @@ describe("handleInstitutions", () => {
 
   describe("list action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleInstitutions({ action: "list" })
+      await handleInstitutions({ action_type: "list" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/institutions", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleInstitutions({
-        action: "list",
+        action_type: "list",
         name: "Berkshire",
         min_total_value: 1000000,
         max_total_value: 100000000,
@@ -97,18 +97,18 @@ describe("handleInstitutions", () => {
 
   describe("holdings action", () => {
     it("returns error when name is missing", async () => {
-      const result = await handleInstitutions({ action: "holdings" })
+      const result = await handleInstitutions({ action_type: "holdings" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleInstitutions({ action: "holdings", name: "Berkshire Hathaway" })
+      await handleInstitutions({ action_type: "holdings", name: "Berkshire Hathaway" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/institution/Berkshire%20Hathaway/holdings", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleInstitutions({
-        action: "holdings",
+        action_type: "holdings",
         name: "Vanguard",
         date: "2024-01-15",
         start_date: "2024-01-01",
@@ -126,42 +126,42 @@ describe("handleInstitutions", () => {
 
   describe("activity action", () => {
     it("returns error when name is missing", async () => {
-      const result = await handleInstitutions({ action: "activity" })
+      const result = await handleInstitutions({ action_type: "activity" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleInstitutions({ action: "activity", name: "BlackRock" })
+      await handleInstitutions({ action_type: "activity", name: "BlackRock" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/institution/BlackRock/activity", expect.any(Object))
     })
   })
 
   describe("sectors action", () => {
     it("returns error when name is missing", async () => {
-      const result = await handleInstitutions({ action: "sectors" })
+      const result = await handleInstitutions({ action_type: "sectors" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleInstitutions({ action: "sectors", name: "Fidelity" })
+      await handleInstitutions({ action_type: "sectors", name: "Fidelity" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/institution/Fidelity/sectors", expect.any(Object))
     })
   })
 
   describe("ownership action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleInstitutions({ action: "ownership" })
+      const result = await handleInstitutions({ action_type: "ownership" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleInstitutions({ action: "ownership", ticker: "AAPL" })
+      await handleInstitutions({ action_type: "ownership", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/institution/AAPL/ownership", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleInstitutions({
-        action: "ownership",
+        action_type: "ownership",
         ticker: "MSFT",
         date: "2024-01-15",
         order: "value",
@@ -177,13 +177,13 @@ describe("handleInstitutions", () => {
 
   describe("latest_filings action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleInstitutions({ action: "latest_filings" })
+      await handleInstitutions({ action_type: "latest_filings" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/institutions/latest_filings", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleInstitutions({
-        action: "latest_filings",
+        action_type: "latest_filings",
         name: "Citadel",
         date: "2024-01-15",
         limit: 25,

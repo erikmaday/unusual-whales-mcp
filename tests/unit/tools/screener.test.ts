@@ -60,7 +60,7 @@ describe("handleScreener", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleScreener({ action: "invalid_action" })
+      const result = await handleScreener({ action_type: "invalid_action" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -72,13 +72,13 @@ describe("handleScreener", () => {
 
   describe("stocks action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleScreener({ action: "stocks" })
+      await handleScreener({ action_type: "stocks" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/screener/stocks", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleScreener({
-        action: "stocks",
+        action_type: "stocks",
         ticker: "AAPL",
         min_marketcap: 1000000000,
         max_marketcap: 5000000000,
@@ -100,7 +100,7 @@ describe("handleScreener", () => {
 
     it("passes stock-specific filters", async () => {
       await handleScreener({
-        action: "stocks",
+        action_type: "stocks",
         is_s_p_500: true,
         has_dividends: true,
         min_iv_rank: 0.5,
@@ -121,13 +121,13 @@ describe("handleScreener", () => {
 
   describe("option_contracts action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleScreener({ action: "option_contracts" })
+      await handleScreener({ action_type: "option_contracts" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/screener/option-contracts", expect.any(Object))
     })
 
     it("passes option filter parameters", async () => {
       await handleScreener({
-        action: "option_contracts",
+        action_type: "option_contracts",
         min_dte: 7,
         max_dte: 30,
         min_premium: 1000,
@@ -147,7 +147,7 @@ describe("handleScreener", () => {
 
     it("passes greek filters", async () => {
       await handleScreener({
-        action: "option_contracts",
+        action_type: "option_contracts",
         min_delta: 0.3,
         max_delta: 0.7,
         min_gamma: 0.01,
@@ -167,7 +167,7 @@ describe("handleScreener", () => {
 
     it("passes volume and OI filters", async () => {
       await handleScreener({
-        action: "option_contracts",
+        action_type: "option_contracts",
         min_volume: 1000,
         max_volume: 100000,
         min_open_interest: 500,
@@ -186,22 +186,22 @@ describe("handleScreener", () => {
 
   describe("analysts action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleScreener({ action: "analysts" })
+      await handleScreener({ action_type: "analysts" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/screener/analysts", expect.any(Object))
     })
 
     it("passes analyst filter parameters", async () => {
       await handleScreener({
-        action: "analysts",
+        action_type: "analysts",
         ticker: "AAPL",
         recommendation: "buy",
-        analyst_action: "upgraded",
+        action: "upgraded",
         limit: 50,
       })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/screener/analysts", expect.objectContaining({
         ticker: "AAPL",
         recommendation: "buy",
-        analyst_action: "upgraded",
+        action: "upgraded",
         limit: 50,
       }))
     })

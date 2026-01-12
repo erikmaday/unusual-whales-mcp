@@ -63,7 +63,7 @@ describe("handleShorts", () => {
 
   describe("input validation", () => {
     it("rejects invalid action", async () => {
-      const result = await handleShorts({ action: "invalid_action", ticker: "GME" })
+      const result = await handleShorts({ action_type: "invalid_action", ticker: "GME" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -73,48 +73,48 @@ describe("handleShorts", () => {
     })
 
     it("rejects missing ticker", async () => {
-      const result = await handleShorts({ action: "data" })
+      const result = await handleShorts({ action_type: "data" })
       expect(result.text).toContain("Invalid input")
     })
   })
 
   describe("data action", () => {
     it("calls correct endpoint", async () => {
-      await handleShorts({ action: "data", ticker: "GME" })
+      await handleShorts({ action_type: "data", ticker: "GME" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/shorts/GME/data")
     })
 
     it("handles API error response", async () => {
       mockUwFetch.mockResolvedValue({ error: "API unavailable" })
-      const result = await handleShorts({ action: "data", ticker: "GME" })
+      const result = await handleShorts({ action_type: "data", ticker: "GME" })
       expect(result.text).toContain("API unavailable")
     })
   })
 
   describe("ftds action", () => {
     it("calls correct endpoint", async () => {
-      await handleShorts({ action: "ftds", ticker: "AMC" })
+      await handleShorts({ action_type: "ftds", ticker: "AMC" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/shorts/AMC/ftds")
     })
   })
 
   describe("interest_float action", () => {
     it("calls correct endpoint", async () => {
-      await handleShorts({ action: "interest_float", ticker: "TSLA" })
+      await handleShorts({ action_type: "interest_float", ticker: "TSLA" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/shorts/TSLA/interest-float")
     })
   })
 
   describe("volume_ratio action", () => {
     it("calls correct endpoint", async () => {
-      await handleShorts({ action: "volume_ratio", ticker: "AAPL" })
+      await handleShorts({ action_type: "volume_ratio", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/shorts/AAPL/volume-and-ratio")
     })
   })
 
   describe("volumes_by_exchange action", () => {
     it("calls correct endpoint", async () => {
-      await handleShorts({ action: "volumes_by_exchange", ticker: "NVDA" })
+      await handleShorts({ action_type: "volumes_by_exchange", ticker: "NVDA" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/shorts/NVDA/volumes-by-exchange")
     })
   })
