@@ -27,7 +27,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = join(__dirname, '..')
 const SPEC_FILE = join(ROOT_DIR, 'uw-api-spec.yaml')
 
-// Endpoints we intentionally don't implement (WebSocket, etc.)
+// Endpoints we intentionally don't implement (WebSocket, deprecated, etc.)
 const IGNORED_ENDPOINTS = [
   '/api/socket',
   '/api/socket/flow_alerts',
@@ -35,6 +35,9 @@ const IGNORED_ENDPOINTS = [
   '/api/socket/news',
   '/api/socket/option_trades',
   '/api/socket/price',
+  // Deprecated endpoints - migrated to newer versions
+  '/api/stock/{ticker}/flow-alerts', // Deprecated - use /api/option-trades/flow-alerts instead
+  '/api/stock/{ticker}/spot-exposures/{expiry}/strike', // Deprecated - use spot_exposures_expiry_strike v2
 ]
 
 /**
@@ -125,8 +128,8 @@ function extractActionSchemas(toolFile) {
   try {
     const content = readFileSync(toolFile, 'utf-8')
 
-    // Find discriminated union: z.discriminatedUnion("action", [...])
-    const unionMatch = content.match(/z\.discriminatedUnion\("action",\s*\[([\s\S]*?)\]\)/)
+    // Find discriminated union: z.discriminatedUnion("action_type", [...])
+    const unionMatch = content.match(/z\.discriminatedUnion\("action_type",\s*\[([\s\S]*?)\]\)/)
     if (!unionMatch) {
       console.warn(`No discriminated union found in ${toolFile}`)
       return actions
@@ -154,8 +157,8 @@ function extractActionSchemas(toolFile) {
 
         const schemaBody = schemaMatch[1]
 
-        // Extract action name from: action: z.literal("action_name")
-        const actionMatch = schemaBody.match(/action:\s*z\.literal\(["'](\w+)["']\)/)
+        // Extract action name from: action_type: z.literal("action_name")
+        const actionMatch = schemaBody.match(/action_type: z.literal\(["'](\w+)["']\)/)
         if (!actionMatch) continue
 
         const actionName = actionMatch[1]
@@ -178,8 +181,8 @@ function extractActionSchemas(toolFile) {
           const paramName = paramMatch[1]
           let paramDef = paramMatch[2]
 
-          // Skip the 'action' field itself
-          if (paramName === 'action') continue
+          // Skip the 'action_type' field itself (discriminator)
+          if (paramName === 'action_type') continue
 
           // If the definition doesn't end with a comma, it might span multiple lines
           // Collect the full definition

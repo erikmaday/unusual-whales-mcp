@@ -5,21 +5,21 @@ import { createToolHandler } from "./base/tool-factory.js"
 
 // Explicit per-action schemas
 const recentTradesSchema = z.object({
-  action: z.literal("recent_trades"),
+  action_type: z.literal("recent_trades"),
   ticker: tickerSchema.optional(),
   date: dateSchema.optional(),
   limit: limitSchema.min(1).max(200).default(100).describe("Maximum number of results (default 100, max 200)").optional(),
 })
 
 const lateReportsSchema = z.object({
-  action: z.literal("late_reports"),
+  action_type: z.literal("late_reports"),
   ticker: tickerSchema.optional(),
   date: dateSchema.optional(),
   limit: limitSchema.min(1).max(200).default(100).describe("Maximum number of results (default 100, max 200)").optional(),
 })
 
 const congressTraderSchema = z.object({
-  action: z.literal("congress_trader"),
+  action_type: z.literal("congress_trader"),
   name: z.string().describe("Congress member name (for congress_trader action)").default("Nancy Pelosi").optional(),
   ticker: tickerSchema.optional(),
   date: dateSchema.optional(),
@@ -27,7 +27,7 @@ const congressTraderSchema = z.object({
 })
 
 // Discriminated union of all action schemas
-const congressInputSchema = z.discriminatedUnion("action", [
+const congressInputSchema = z.discriminatedUnion("action_type", [
   recentTradesSchema,
   lateReportsSchema,
   congressTraderSchema,

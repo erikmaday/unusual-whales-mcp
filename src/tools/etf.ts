@@ -6,32 +6,32 @@ import { PathParamBuilder } from "../utils/path-params.js"
 
 // Explicit per-action schemas
 const infoSchema = z.object({
-  action: z.literal("info"),
+  action_type: z.literal("info"),
   ticker: tickerSchema.describe("ETF ticker symbol (e.g., SPY, QQQ)"),
 })
 
 const holdingsSchema = z.object({
-  action: z.literal("holdings"),
+  action_type: z.literal("holdings"),
   ticker: tickerSchema.describe("ETF ticker symbol (e.g., SPY, QQQ)"),
 })
 
 const exposureSchema = z.object({
-  action: z.literal("exposure"),
+  action_type: z.literal("exposure"),
   ticker: tickerSchema.describe("ETF ticker symbol (e.g., SPY, QQQ)"),
 })
 
 const inOutflowSchema = z.object({
-  action: z.literal("in_outflow"),
+  action_type: z.literal("in_outflow"),
   ticker: tickerSchema.describe("ETF ticker symbol (e.g., SPY, QQQ)"),
 })
 
 const weightsSchema = z.object({
-  action: z.literal("weights"),
+  action_type: z.literal("weights"),
   ticker: tickerSchema.describe("ETF ticker symbol (e.g., SPY, QQQ)"),
 })
 
 // Discriminated union of all action schemas
-const etfInputSchema = z.discriminatedUnion("action", [
+const etfInputSchema = z.discriminatedUnion("action_type", [
   infoSchema,
   holdingsSchema,
   exposureSchema,

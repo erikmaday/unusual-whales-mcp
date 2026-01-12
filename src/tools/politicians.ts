@@ -6,17 +6,17 @@ import { PathParamBuilder } from "../utils/path-params.js"
 
 // Explicit per-action schemas
 const peopleSchema = z.object({
-  action: z.literal("people"),
+  action_type: z.literal("people"),
 })
 
 const portfolioSchema = z.object({
-  action: z.literal("portfolio"),
+  action_type: z.literal("portfolio"),
   politician_id: z.uuid().describe("Politician ID (for portfolio, recent_trades, or disclosures action)"),
   aggregate_all_portfolios: z.boolean().describe("Aggregate all portfolios (for portfolio or holders action)").optional(),
 })
 
 const recentTradesSchema = z.object({
-  action: z.literal("recent_trades"),
+  action_type: z.literal("recent_trades"),
   politician_id: z.uuid().describe("Politician ID (for portfolio, recent_trades, or disclosures action)").optional(),
   ticker: tickerSchema.describe("Ticker symbol (for holders or recent_trades action)").optional(),
   limit: z.number().int().min(1).max(500).default(500).describe("Maximum number of results").optional(),
@@ -30,20 +30,20 @@ const recentTradesSchema = z.object({
 })
 
 const holdersSchema = z.object({
-  action: z.literal("holders"),
+  action_type: z.literal("holders"),
   ticker: tickerSchema.describe("Ticker symbol (for holders or recent_trades action)"),
   aggregate_all_portfolios: z.boolean().describe("Aggregate all portfolios (for portfolio or holders action)").optional(),
 })
 
 const disclosuresSchema = z.object({
-  action: z.literal("disclosures"),
+  action_type: z.literal("disclosures"),
   politician_id: z.uuid().describe("Politician ID (for portfolio, recent_trades, or disclosures action)").optional(),
   latest_only: z.boolean().describe("Return only most recent disclosure per politician (for disclosures action)").optional(),
   year: z.number().describe("Filter by disclosure year (for disclosures action)").optional(),
 })
 
 // Discriminated union of all action schemas
-const politiciansInputSchema = z.discriminatedUnion("action", [
+const politiciansInputSchema = z.discriminatedUnion("action_type", [
   peopleSchema,
   portfolioSchema,
   recentTradesSchema,

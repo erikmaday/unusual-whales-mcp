@@ -3,22 +3,18 @@ import { uwFetch } from "../client.js"
 import { toJsonSchema, tickerSchema } from "../schemas/index.js"
 import { createToolHandler } from "./base/tool-factory.js"
 import {
-  stockScreenerFiltersSchema,
-  optionContractScreenerFiltersSchema,
   stockScreenerOrderBySchema,
   optionContractScreenerOrderBySchema,
 } from "../schemas/screener.js"
 
-// For screener, we keep the composed approach since explicit would be 100+ parameters per action
-// This is a pragmatic exception to the explicit-schema rule
+// Fully explicit schema - all parameters listed for perfect API sync validation
 const stocksSchema = z.object({
-  action: z.literal("stocks"),
+  action_type: z.literal("stocks"),
   ticker: tickerSchema.optional(),
-  limit: z.number().int().min(1).max(500).default(1).optional(),
-  page: z.number().int().min(1).optional(),
   order: stockScreenerOrderBySchema.optional(),
   order_direction: z.enum(["asc", "desc"]).default("desc").optional(),
-  // Stock-specific filters
+
+  // Market cap and volume filters
   min_marketcap: z.number().optional(),
   max_marketcap: z.number().optional(),
   min_volume: z.number().int().nonnegative().optional(),
@@ -27,11 +23,98 @@ const stocksSchema = z.object({
   max_oi: z.number().int().nonnegative().optional(),
   min_premium: z.number().min(0).optional(),
   max_premium: z.number().min(0).optional(),
-}).merge(stockScreenerFiltersSchema)
 
+  // Issue types and sectors
+  issue_types: z.array(z.string()).optional(),
+  sectors: z.array(z.string()).optional(),
+
+  // Price change filters
+  min_change: z.number().optional(),
+  max_change: z.number().optional(),
+
+  // Underlying price filters
+  min_underlying_price: z.number().optional(),
+  max_underlying_price: z.number().optional(),
+
+  // Boolean filters
+  is_s_p_500: z.boolean().optional(),
+  has_dividends: z.boolean().optional(),
+
+  // 3-day percentage filters
+  min_perc_3_day_total: z.number().optional(),
+  max_perc_3_day_total: z.number().optional(),
+  min_perc_3_day_call: z.number().optional(),
+  max_perc_3_day_call: z.number().optional(),
+  min_perc_3_day_put: z.number().optional(),
+  max_perc_3_day_put: z.number().optional(),
+
+  // 30-day percentage filters
+  min_perc_30_day_total: z.number().optional(),
+  max_perc_30_day_total: z.number().optional(),
+  min_perc_30_day_call: z.number().optional(),
+  max_perc_30_day_call: z.number().optional(),
+  min_perc_30_day_put: z.number().optional(),
+  max_perc_30_day_put: z.number().optional(),
+
+  // OI change percentage filters
+  min_total_oi_change_perc: z.number().optional(),
+  max_total_oi_change_perc: z.number().optional(),
+  min_call_oi_change_perc: z.number().optional(),
+  max_call_oi_change_perc: z.number().optional(),
+  min_put_oi_change_perc: z.number().optional(),
+  max_put_oi_change_perc: z.number().optional(),
+
+  // Implied move filters
+  min_implied_move: z.number().optional(),
+  max_implied_move: z.number().optional(),
+  min_implied_move_perc: z.number().optional(),
+  max_implied_move_perc: z.number().optional(),
+
+  // Volatility and IV rank filters
+  min_volatility: z.number().optional(),
+  max_volatility: z.number().optional(),
+  min_iv_rank: z.number().optional(),
+  max_iv_rank: z.number().optional(),
+
+  // Call/put volume filters
+  min_call_volume: z.number().int().nonnegative().optional(),
+  max_call_volume: z.number().int().nonnegative().optional(),
+  min_put_volume: z.number().int().nonnegative().optional(),
+  max_put_volume: z.number().int().nonnegative().optional(),
+
+  // Call/put premium filters
+  min_call_premium: z.number().optional(),
+  max_call_premium: z.number().optional(),
+  min_put_premium: z.number().optional(),
+  max_put_premium: z.number().optional(),
+
+  // Net premium filters
+  min_net_premium: z.number().optional(),
+  max_net_premium: z.number().optional(),
+  min_net_call_premium: z.number().optional(),
+  max_net_call_premium: z.number().optional(),
+  min_net_put_premium: z.number().optional(),
+  max_net_put_premium: z.number().optional(),
+
+  // OI vs volume filters
+  min_oi_vs_vol: z.number().optional(),
+  max_oi_vs_vol: z.number().optional(),
+
+  // Put/call ratio filters
+  min_put_call_ratio: z.number().optional(),
+  max_put_call_ratio: z.number().optional(),
+
+  // Stock volume vs avg filters
+  min_stock_volume_vs_avg30_volume: z.number().optional(),
+  max_avg30_volume: z.number().optional(),
+
+  // Date filter
+  date: z.string().optional(),
+})
+
+// Fully explicit schema - all 80+ parameters listed for perfect API sync validation
 const optionContractsSchema = z.object({
-  action: z.literal("option_contracts"),
-  ticker: tickerSchema.optional(),
+  action_type: z.literal("option_contracts"),
   limit: z.number().int().min(1).max(250).default(1).optional(),
   page: z.number().int().min(1).optional(),
   order: optionContractScreenerOrderBySchema.optional(),
@@ -41,20 +124,176 @@ const optionContractsSchema = z.object({
   max_dte: z.number().int().nonnegative().optional(),
   min_premium: z.number().min(0).optional(),
   max_premium: z.number().min(0).optional(),
-}).merge(optionContractScreenerFiltersSchema)
+
+  // Ticker and sector filters
+  ticker_symbol: z.string().optional(),
+  sectors: z.array(z.string()).optional(),
+
+  // Underlying price filters
+  min_underlying_price: z.number().optional(),
+  max_underlying_price: z.number().optional(),
+
+  // Ex-div filter
+  exclude_ex_div_ticker: z.boolean().optional(),
+
+  // Diff filters
+  min_diff: z.number().optional(),
+  max_diff: z.number().optional(),
+
+  // Strike filters
+  min_strike: z.number().optional(),
+  max_strike: z.number().optional(),
+
+  // Option type
+  type: z.enum(["call", "Call", "put", "Put"]).optional(),
+
+  // Expiry dates
+  expiry_dates: z.array(z.string()).optional(),
+
+  // Market cap filters
+  min_marketcap: z.number().optional(),
+  max_marketcap: z.number().optional(),
+
+  // Volume filters
+  min_volume: z.number().int().nonnegative().optional(),
+  max_volume: z.number().int().nonnegative().optional(),
+
+  // 30-day average volume filters
+  min_ticker_30_d_avg_volume: z.number().optional(),
+  max_ticker_30_d_avg_volume: z.number().optional(),
+  min_contract_30_d_avg_volume: z.number().optional(),
+  max_contract_30_d_avg_volume: z.number().optional(),
+
+  // Multileg volume ratio filters
+  min_multileg_volume_ratio: z.number().optional(),
+  max_multileg_volume_ratio: z.number().optional(),
+
+  // Floor volume ratio filters
+  min_floor_volume_ratio: z.number().optional(),
+  max_floor_volume_ratio: z.number().optional(),
+
+  // Percentage change filters
+  min_perc_change: z.number().optional(),
+  max_perc_change: z.number().optional(),
+  min_daily_perc_change: z.number().optional(),
+  max_daily_perc_change: z.number().optional(),
+
+  // Average price filters
+  min_avg_price: z.number().optional(),
+  max_avg_price: z.number().optional(),
+
+  // Volume/OI ratio filters
+  min_volume_oi_ratio: z.number().optional(),
+  max_volume_oi_ratio: z.number().optional(),
+
+  // Open interest filters
+  min_open_interest: z.number().int().nonnegative().optional(),
+  max_open_interest: z.number().int().nonnegative().optional(),
+
+  // Floor volume filters
+  min_floor_volume: z.number().int().nonnegative().optional(),
+  max_floor_volume: z.number().int().nonnegative().optional(),
+
+  // Volume > OI filter
+  vol_greater_oi: z.boolean().optional(),
+
+  // Issue types
+  issue_types: z.array(z.string()).optional(),
+
+  // Ask/bid percentage filters
+  min_ask_perc: z.number().optional(),
+  max_ask_perc: z.number().optional(),
+  min_bid_perc: z.number().optional(),
+  max_bid_perc: z.number().optional(),
+
+  // Skew percentage filters
+  min_skew_perc: z.number().optional(),
+  max_skew_perc: z.number().optional(),
+
+  // Bull/bear percentage filters
+  min_bull_perc: z.number().optional(),
+  max_bull_perc: z.number().optional(),
+  min_bear_perc: z.number().optional(),
+  max_bear_perc: z.number().optional(),
+
+  // 7-day bid/ask side percentage filters
+  min_bid_side_perc_7_day: z.number().optional(),
+  max_bid_side_perc_7_day: z.number().optional(),
+  min_ask_side_perc_7_day: z.number().optional(),
+  max_ask_side_perc_7_day: z.number().optional(),
+
+  // Days of OI increases filters
+  min_days_of_oi_increases: z.number().int().nonnegative().optional(),
+  max_days_of_oi_increases: z.number().int().nonnegative().optional(),
+
+  // Days of volume > OI filters
+  min_days_of_vol_greater_than_oi: z.number().int().nonnegative().optional(),
+  max_days_of_vol_greater_than_oi: z.number().int().nonnegative().optional(),
+
+  // IV percentage filters
+  min_iv_perc: z.number().optional(),
+  max_iv_perc: z.number().optional(),
+
+  // Greek filters
+  min_delta: z.number().optional(),
+  max_delta: z.number().optional(),
+  min_gamma: z.number().optional(),
+  max_gamma: z.number().optional(),
+  min_theta: z.number().optional(),
+  max_theta: z.number().optional(),
+  min_vega: z.number().optional(),
+  max_vega: z.number().optional(),
+
+  // Return on capital filters
+  min_return_on_capital_perc: z.number().optional(),
+  max_return_on_capital_perc: z.number().optional(),
+
+  // OI change filters
+  min_oi_change_perc: z.number().optional(),
+  max_oi_change_perc: z.number().optional(),
+  min_oi_change: z.number().optional(),
+  max_oi_change: z.number().optional(),
+
+  // Volume/ticker volume ratio filters
+  min_volume_ticker_vol_ratio: z.number().optional(),
+  max_volume_ticker_vol_ratio: z.number().optional(),
+
+  // Sweep volume ratio filters
+  min_sweep_volume_ratio: z.number().optional(),
+  max_sweep_volume_ratio: z.number().optional(),
+
+  // From low/high percentage filters
+  min_from_low_perc: z.number().optional(),
+  max_from_low_perc: z.number().optional(),
+  min_from_high_perc: z.number().optional(),
+  max_from_high_perc: z.number().optional(),
+
+  // Earnings DTE filters
+  min_earnings_dte: z.number().int().optional(),
+  max_earnings_dte: z.number().int().optional(),
+
+  // Transactions filters
+  min_transactions: z.number().int().nonnegative().optional(),
+  max_transactions: z.number().int().nonnegative().optional(),
+
+  // Close price filters
+  min_close: z.number().optional(),
+  max_close: z.number().optional(),
+
+  // Date filter
+  date: z.string().optional(),
+})
 
 const analystsSchema = z.object({
-  action: z.literal("analysts"),
+  action_type: z.literal("analysts"),
   ticker: tickerSchema.optional(),
   limit: z.number().int().min(1).max(500).default(1).optional(),
-  page: z.number().int().min(1).optional(),
-  order_direction: z.enum(["asc", "desc"]).default("desc").optional(),
   recommendation: z.enum(["buy", "hold", "sell"]).optional(),
-  analyst_action: z.enum(["initiated", "reiterated", "downgraded", "upgraded", "maintained"]).optional(),
+  action: z.enum(["initiated", "reiterated", "downgraded", "upgraded", "maintained"]).optional(),
 })
 
 // Discriminated union of all action schemas
-const screenerInputSchema = z.discriminatedUnion("action", [
+const screenerInputSchema = z.discriminatedUnion("action_type", [
   stocksSchema,
   optionContractsSchema,
   analystsSchema,
@@ -84,8 +323,6 @@ export const handleScreener = createToolHandler(screenerInputSchema, {
   stocks: async (data) => {
     return uwFetch("/api/screener/stocks", {
       ticker: data.ticker,
-      limit: data.limit,
-      page: data.page,
       order: data.order,
       order_direction: data.order_direction,
       // Stock-specific filters
@@ -158,7 +395,6 @@ export const handleScreener = createToolHandler(screenerInputSchema, {
 
   option_contracts: async (data) => {
     return uwFetch("/api/screener/option-contracts", {
-      ticker: data.ticker,
       limit: data.limit,
       page: data.page,
       order: data.order,
@@ -262,10 +498,8 @@ export const handleScreener = createToolHandler(screenerInputSchema, {
     return uwFetch("/api/screener/analysts", {
       ticker: data.ticker,
       limit: data.limit,
-      page: data.page,
-      order_direction: data.order_direction,
       recommendation: data.recommendation,
-      analyst_action: data.analyst_action,
+      action: data.action,
     })
   },
 })

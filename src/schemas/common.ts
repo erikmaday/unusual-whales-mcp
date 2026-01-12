@@ -26,11 +26,6 @@ export const limitSchema = z.number()
   .max(500, "Limit cannot exceed 500")
   .describe("Maximum number of results")
 
-/** Option strike price */
-export const strikeSchema = z.number()
-  .positive("Strike price must be positive")
-  .describe("Option strike price")
-
 /** Option type (call or put) */
 export const optionTypeSchema = z.enum(["call", "put", "Call", "Put"]).describe("Option type (call or put)")
 

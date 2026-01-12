@@ -13,7 +13,7 @@ const newsLimitSchema = z.number()
 
 // Explicit per-action schema
 const headlinesSchema = z.object({
-  action: z.literal("headlines"),
+  action_type: z.literal("headlines"),
   ticker: tickerSchema.describe("Filter by ticker symbol").optional(),
   limit: newsLimitSchema.optional(),
   sources: z.string().describe("Filter by news sources").optional(),
@@ -23,7 +23,7 @@ const headlinesSchema = z.object({
 })
 
 // Discriminated union (only one action for now)
-const newsInputSchema = z.discriminatedUnion("action", [headlinesSchema])
+const newsInputSchema = z.discriminatedUnion("action_type", [headlinesSchema])
 
 export const newsTool = {
   name: "uw_news",
