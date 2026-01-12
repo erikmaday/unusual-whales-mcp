@@ -61,12 +61,12 @@ describe("handleScreener", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleScreener({ action: "invalid_action" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleScreener({})
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
   })
 
@@ -201,7 +201,7 @@ describe("handleScreener", () => {
       expect(mockUwFetch).toHaveBeenCalledWith("/api/screener/analysts", expect.objectContaining({
         ticker: "AAPL",
         recommendation: "buy",
-        action: "upgraded",
+        analyst_action: "upgraded",
         limit: 50,
       }))
     })

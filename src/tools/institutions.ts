@@ -1,65 +1,83 @@
 import { z } from "zod"
-import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, dateSchema, limitSchema, orderDirectionSchema, formatZodError,
+import { uwFetch } from "../client.js"
+import { toJsonSchema, tickerSchema, dateSchema, limitSchema, orderDirectionSchema } from "../schemas/index.js"
+import { createToolHandler } from "./base/tool-factory.js"
+import { PathParamBuilder } from "../utils/path-params.js"
+import {
   institutionalActivityOrderBySchema,
   institutionalHoldingsOrderBySchema,
   institutionalListOrderBySchema,
   institutionalOwnershipOrderBySchema,
   latestInstitutionalFilingsOrderBySchema,
-} from "../schemas/index.js"
+} from "../schemas/institutions.js"
 
-const institutionsActions = ["list", "holdings", "activity", "sectors", "ownership", "latest_filings"] as const
-
-// Base schema with common fields
-const baseInstitutionsSchema = z.object({
-  name: z.string().describe("Institution name").optional(),
-  ticker: tickerSchema.describe("Ticker symbol (for ownership)").optional(),
-  date: dateSchema.describe("Report date in YYYY-MM-DD format").optional(),
-  start_date: z.string().describe("Start date for date range").optional(),
-  end_date: z.string().describe("End date for date range").optional(),
-  limit: limitSchema.default(500).optional(),
-  page: z.number().describe("Page number for pagination").optional(),
-  order_direction: orderDirectionSchema.default("desc").optional(),
-  min_total_value: z.number().describe("Minimum total value filter").optional(),
-  max_total_value: z.number().describe("Maximum total value filter").optional(),
-  min_share_value: z.number().describe("Minimum share value filter").optional(),
-  max_share_value: z.number().describe("Maximum share value filter").optional(),
-  tags: z.string().describe("Institution tags filter").optional(),
-  security_types: z.string().describe("Security types filter").optional(),
-})
-
-// Action-specific schemas with appropriate order enum
-const listSchema = baseInstitutionsSchema.extend({
+// Explicit per-action schemas
+const listSchema = z.object({
   action: z.literal("list"),
+  name: z.string().optional(),
+  limit: limitSchema.default(500).optional(),
+  page: z.number().optional(),
   order: institutionalListOrderBySchema.optional(),
+  order_direction: orderDirectionSchema.default("desc").optional(),
+  min_total_value: z.number().optional(),
+  max_total_value: z.number().optional(),
+  tags: z.string().optional(),
 })
 
-const holdingsSchema = baseInstitutionsSchema.extend({
+const holdingsSchema = z.object({
   action: z.literal("holdings"),
+  name: z.string().describe("Institution name"),
+  date: dateSchema.optional(),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
+  limit: limitSchema.default(500).optional(),
+  page: z.number().optional(),
   order: institutionalHoldingsOrderBySchema.optional(),
+  order_direction: orderDirectionSchema.default("desc").optional(),
+  security_types: z.string().optional(),
 })
 
-const activitySchema = baseInstitutionsSchema.extend({
+const activitySchema = z.object({
   action: z.literal("activity"),
+  name: z.string().describe("Institution name"),
+  limit: limitSchema.default(500).optional(),
+  page: z.number().optional(),
   order: institutionalActivityOrderBySchema.optional(),
+  order_direction: orderDirectionSchema.default("desc").optional(),
 })
 
-const sectorsSchema = baseInstitutionsSchema.extend({
+const sectorsSchema = z.object({
   action: z.literal("sectors"),
-  order: z.string().describe("Order by field").optional(),
+  name: z.string().describe("Institution name"),
+  limit: limitSchema.default(500).optional(),
+  order: z.string().optional(),
 })
 
-const ownershipSchema = baseInstitutionsSchema.extend({
+const ownershipSchema = z.object({
   action: z.literal("ownership"),
+  ticker: tickerSchema.describe("Ticker symbol (for ownership)"),
+  date: dateSchema.optional(),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
+  tags: z.string().optional(),
+  limit: limitSchema.default(500).optional(),
+  page: z.number().optional(),
   order: institutionalOwnershipOrderBySchema.optional(),
+  order_direction: orderDirectionSchema.default("desc").optional(),
 })
 
-const latestFilingsSchema = baseInstitutionsSchema.extend({
+const latestFilingsSchema = z.object({
   action: z.literal("latest_filings"),
+  name: z.string().optional(),
+  date: dateSchema.optional(),
+  limit: limitSchema.default(500).optional(),
   order: latestInstitutionalFilingsOrderBySchema.optional(),
+  order_direction: orderDirectionSchema.default("desc").optional(),
+  min_share_value: z.number().optional(),
+  max_share_value: z.number().optional(),
 })
 
-// Union of all action schemas
+// Discriminated union of all action schemas
 const institutionsInputSchema = z.discriminatedUnion("action", [
   listSchema,
   holdingsSchema,
@@ -68,7 +86,6 @@ const institutionsInputSchema = z.discriminatedUnion("action", [
   ownershipSchema,
   latestFilingsSchema,
 ])
-
 
 export const institutionsTool = {
   name: "uw_institutions",
@@ -91,106 +108,85 @@ Available actions:
 }
 
 /**
- * Handle institutions tool requests.
- *
- * @param args - Tool arguments containing action and optional institution parameters
- * @returns JSON string with institution data or error message
+ * Handle institutions tool requests using the tool factory pattern
  */
-export async function handleInstitutions(args: Record<string, unknown>): Promise<string> {
-  const parsed = institutionsInputSchema.safeParse(args)
-  if (!parsed.success) {
-    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
-  }
+export const handleInstitutions = createToolHandler(institutionsInputSchema, {
+  list: async (data) => {
+    return uwFetch("/api/institutions", {
+      name: data.name,
+      limit: data.limit,
+      page: data.page,
+      order: data.order,
+      order_direction: data.order_direction,
+      min_total_value: data.min_total_value,
+      max_total_value: data.max_total_value,
+      tags: data.tags,
+    })
+  },
 
-  const {
-    action,
-    name,
-    ticker,
-    date,
-    start_date,
-    end_date,
-    limit,
-    page,
-    order,
-    order_direction,
-    min_total_value,
-    max_total_value,
-    min_share_value,
-    max_share_value,
-    tags,
-    security_types,
-  } = parsed.data
+  holdings: async (data) => {
+    const path = new PathParamBuilder()
+      .add("name", data.name)
+      .build("/api/institution/{name}/holdings")
+    return uwFetch(path, {
+      date: data.date,
+      start_date: data.start_date,
+      end_date: data.end_date,
+      limit: data.limit,
+      page: data.page,
+      order: data.order,
+      order_direction: data.order_direction,
+      security_types: data.security_types,
+    })
+  },
 
-  switch (action) {
-    case "list":
-      return formatResponse(await uwFetch("/api/institutions", {
-        name,
-        min_total_value,
-        max_total_value,
-        min_share_value,
-        max_share_value,
-        "tags[]": tags,
-        order,
-        order_direction,
-        limit,
-        page,
-      }))
+  activity: async (data) => {
+    const path = new PathParamBuilder()
+      .add("name", data.name)
+      .build("/api/institution/{name}/activity")
+    return uwFetch(path, {
+      limit: data.limit,
+      page: data.page,
+      order: data.order,
+      order_direction: data.order_direction,
+    })
+  },
 
-    case "holdings":
-      if (!name) return formatError("name is required")
-      return formatResponse(await uwFetch(`/api/institution/${encodePath(name)}/holdings`, {
-        date,
-        start_date,
-        end_date,
-        security_types,
-        limit,
-        page,
-        order,
-        order_direction,
-      }))
+  sectors: async (data) => {
+    const path = new PathParamBuilder()
+      .add("name", data.name)
+      .build("/api/institution/{name}/sectors")
+    return uwFetch(path, {
+      limit: data.limit,
+      order: data.order,
+    })
+  },
 
-    case "activity":
-      if (!name) return formatError("name is required")
-      return formatResponse(await uwFetch(`/api/institution/${encodePath(name)}/activity`, {
-        date,
-        order,
-        order_direction,
-        limit,
-        page,
-      }))
+  ownership: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/institution/{ticker}/ownership")
+    return uwFetch(path, {
+      date: data.date,
+      start_date: data.start_date,
+      end_date: data.end_date,
+      "tags[]": data.tags,
+      limit: data.limit,
+      page: data.page,
+      order: data.order,
+      order_direction: data.order_direction,
+    })
+  },
 
-    case "sectors":
-      if (!name) return formatError("name is required")
-      return formatResponse(await uwFetch(`/api/institution/${encodePath(name)}/sectors`, {
-        date,
-        limit,
-        page,
-      }))
-
-    case "ownership":
-      if (!ticker) return formatError("ticker is required")
-      return formatResponse(await uwFetch(`/api/institution/${encodePath(ticker)}/ownership`, {
-        date,
-        start_date,
-        end_date,
-        "tags[]": tags,
-        order,
-        order_direction,
-        limit,
-        page,
-      }))
-
-    case "latest_filings":
-      return formatResponse(await uwFetch("/api/institutions/latest_filings", {
-        name,
-        date,
-        order,
-        order_direction,
-        limit,
-        page,
-      }))
-
-    default:
-      return formatError(`Unknown action: ${action}`)
-  }
-}
+  latest_filings: async (data) => {
+    return uwFetch("/api/institutions/latest_filings", {
+      name: data.name,
+      date: data.date,
+      limit: data.limit,
+      order: data.order,
+      order_direction: data.order_direction,
+      min_share_value: data.min_share_value,
+      max_share_value: data.max_share_value,
+    })
+  },
+})

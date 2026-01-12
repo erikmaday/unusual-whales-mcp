@@ -61,12 +61,12 @@ describe("handleInstitutions", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleInstitutions({ action: "invalid_action" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleInstitutions({})
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
   })
 
@@ -98,7 +98,7 @@ describe("handleInstitutions", () => {
   describe("holdings action", () => {
     it("returns error when name is missing", async () => {
       const result = await handleInstitutions({ action: "holdings" })
-      expect(result).toContain("name is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -127,7 +127,7 @@ describe("handleInstitutions", () => {
   describe("activity action", () => {
     it("returns error when name is missing", async () => {
       const result = await handleInstitutions({ action: "activity" })
-      expect(result).toContain("name is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -139,7 +139,7 @@ describe("handleInstitutions", () => {
   describe("sectors action", () => {
     it("returns error when name is missing", async () => {
       const result = await handleInstitutions({ action: "sectors" })
-      expect(result).toContain("name is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -151,7 +151,7 @@ describe("handleInstitutions", () => {
   describe("ownership action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleInstitutions({ action: "ownership" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
