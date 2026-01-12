@@ -60,7 +60,7 @@ describe("handleSeasonality", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleSeasonality({ action: "invalid_action" })
+      const result = await handleSeasonality({ action_type: "invalid_action" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -70,37 +70,37 @@ describe("handleSeasonality", () => {
     })
 
     it("returns error for month out of range", async () => {
-      const result = await handleSeasonality({ action: "performers", month: 13 })
+      const result = await handleSeasonality({ action_type: "performers", month: 13 })
       expect(result.text).toContain("Too big")
     })
 
     it("returns error for month less than 1", async () => {
-      const result = await handleSeasonality({ action: "performers", month: 0 })
+      const result = await handleSeasonality({ action_type: "performers", month: 0 })
       expect(result.text).toContain("Too small")
     })
   })
 
   describe("market action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleSeasonality({ action: "market" })
+      await handleSeasonality({ action_type: "market" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/seasonality/market")
     })
   })
 
   describe("performers action", () => {
     it("returns error when month is missing", async () => {
-      const result = await handleSeasonality({ action: "performers" })
+      const result = await handleSeasonality({ action_type: "performers" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleSeasonality({ action: "performers", month: 1 })
+      await handleSeasonality({ action_type: "performers", month: 1 })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/seasonality/1/performers", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleSeasonality({
-        action: "performers",
+        action_type: "performers",
         month: 6,
         min_years: 5,
         ticker_for_sector: "AAPL",
@@ -124,24 +124,24 @@ describe("handleSeasonality", () => {
 
   describe("monthly action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleSeasonality({ action: "monthly" })
+      const result = await handleSeasonality({ action_type: "monthly" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleSeasonality({ action: "monthly", ticker: "AAPL" })
+      await handleSeasonality({ action_type: "monthly", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/seasonality/AAPL/monthly")
     })
   })
 
   describe("year_month action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleSeasonality({ action: "year_month" })
+      const result = await handleSeasonality({ action_type: "year_month" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleSeasonality({ action: "year_month", ticker: "MSFT" })
+      await handleSeasonality({ action_type: "year_month", ticker: "MSFT" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/seasonality/MSFT/year-month")
     })
   })

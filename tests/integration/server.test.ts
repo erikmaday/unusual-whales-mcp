@@ -138,7 +138,7 @@ describe("Handler Integration", () => {
 
   it("handlers return structured responses", async () => {
     const handler = handlers["uw_stock"]
-    const result = await handler({ action: "ticker_exchanges" })
+    const result = await handler({ action_type: "ticker_exchanges" })
 
     expect(typeof result).toBe("object")
     expect(result).toHaveProperty("text")
@@ -148,7 +148,7 @@ describe("Handler Integration", () => {
 
   it("handlers return error for invalid input", async () => {
     const handler = handlers["uw_stock"]
-    const result = await handler({ action: "invalid_action_that_does_not_exist" })
+    const result = await handler({ action_type: "invalid_action_that_does_not_exist" })
 
     expect(typeof result).toBe("object")
     expect(result).toHaveProperty("text")
@@ -158,15 +158,15 @@ describe("Handler Integration", () => {
 
   it("handlers make API calls via uwFetch", async () => {
     const handler = handlers["uw_stock"]
-    await handler({ action: "info", ticker: "AAPL" })
+    await handler({ action_type: "info", ticker: "AAPL" })
 
     expect(mockUwFetch).toHaveBeenCalled()
   })
 
   it("multiple handlers can be called sequentially", async () => {
-    await handlers["uw_stock"]({ action: "ticker_exchanges" })
-    await handlers["uw_flow"]({ action: "flow_alerts" })
-    await handlers["uw_market"]({ action: "market_tide" })
+    await handlers["uw_stock"]({ action_type: "ticker_exchanges" })
+    await handlers["uw_flow"]({ action_type: "flow_alerts" })
+    await handlers["uw_market"]({ action_type: "market_tide" })
 
     expect(mockUwFetch).toHaveBeenCalledTimes(3)
   })
@@ -184,7 +184,7 @@ describe("Request/Response Cycle", () => {
     mockUwFetch.mockResolvedValue({ data: mockData })
 
     const handler = handlers["uw_stock"]
-    const result = await handler({ action: "info", ticker: "AAPL" })
+    const result = await handler({ action_type: "info", ticker: "AAPL" })
     expect(result).toHaveProperty("text")
     expect(result).toHaveProperty("structuredContent")
     const parsed = JSON.parse(result.text)
@@ -197,7 +197,7 @@ describe("Request/Response Cycle", () => {
     mockUwFetch.mockResolvedValue({ error: "API rate limit exceeded" })
 
     const handler = handlers["uw_stock"]
-    const result = await handler({ action: "info", ticker: "AAPL" })
+    const result = await handler({ action_type: "info", ticker: "AAPL" })
     expect(result).toHaveProperty("text")
     const parsed = JSON.parse(result.text)
 
@@ -206,7 +206,7 @@ describe("Request/Response Cycle", () => {
 
   it("validation errors are returned before API call", async () => {
     const handler = handlers["uw_stock"]
-    const result = await handler({ action: "ohlc", ticker: "AAPL" }) // missing candle_size
+    const result = await handler({ action_type: "ohlc", ticker: "AAPL" }) // missing candle_size
 
     expect(result).toHaveProperty("text")
     const parsed = JSON.parse(result.text)
@@ -216,32 +216,32 @@ describe("Request/Response Cycle", () => {
 })
 
 describe("Tool Input Schema Validation", () => {
-  it("all tools have action enum in schema", () => {
+  it("all tools have action_type enum in schema", () => {
     for (const tool of tools) {
       if (tool.inputSchema.oneOf) {
-        // For discriminated unions, action is the discriminator field
-        // Check that each variant has an action property
+        // For discriminated unions, action_type is the discriminator field
+        // Check that each variant has an action_type property
         for (const variant of tool.inputSchema.oneOf) {
-          expect(variant.properties?.action).toBeDefined()
+          expect(variant.properties?.action_type).toBeDefined()
         }
       } else {
-        // For regular schemas, action is in properties
-        const actionProp = tool.inputSchema.properties.action
+        // For regular schemas, action_type is in properties
+        const actionProp = tool.inputSchema.properties.action_type
         expect(actionProp).toBeDefined()
       }
     }
   })
 
-  it("action is required for all tools", () => {
+  it("action_type is required for all tools", () => {
     for (const tool of tools) {
       if (tool.inputSchema.oneOf) {
-        // For discriminated unions, action is required in each variant
+        // For discriminated unions, action_type is required in each variant
         for (const variant of tool.inputSchema.oneOf) {
-          expect(variant.required).toContain("action")
+          expect(variant.required).toContain("action_type")
         }
       } else {
-        // For regular schemas, action is in required array
-        expect(tool.inputSchema.required).toContain("action")
+        // For regular schemas, action_type is in required array
+        expect(tool.inputSchema.required).toContain("action_type")
       }
     }
   })

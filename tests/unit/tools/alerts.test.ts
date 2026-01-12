@@ -60,7 +60,7 @@ describe("handleAlerts", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleAlerts({ action: "invalid_action" })
+      const result = await handleAlerts({ action_type: "invalid_action" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -72,13 +72,13 @@ describe("handleAlerts", () => {
 
   describe("alerts action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleAlerts({ action: "alerts" })
+      await handleAlerts({ action_type: "alerts" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/alerts", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleAlerts({
-        action: "alerts",
+        action_type: "alerts",
         limit: 50,
         ticker_symbols: "AAPL,TSLA",
         intraday_only: true,
@@ -96,7 +96,7 @@ describe("handleAlerts", () => {
 
     it("passes timestamp filters", async () => {
       await handleAlerts({
-        action: "alerts",
+        action_type: "alerts",
         newer_than: "2024-01-01T00:00:00Z",
         older_than: "2024-01-31T23:59:59Z",
       })
@@ -109,7 +109,7 @@ describe("handleAlerts", () => {
 
   describe("configurations action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleAlerts({ action: "configurations" })
+      await handleAlerts({ action_type: "configurations" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/alerts/configuration")
     })
   })

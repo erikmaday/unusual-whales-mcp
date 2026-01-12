@@ -60,7 +60,7 @@ describe("handleNews", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleNews({ action: "invalid_action" })
+      const result = await handleNews({ action_type: "invalid_action" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -72,13 +72,13 @@ describe("handleNews", () => {
 
   describe("headlines action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleNews({ action: "headlines" })
+      await handleNews({ action_type: "headlines" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/news/headlines", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleNews({
-        action: "headlines",
+        action_type: "headlines",
         ticker: "AAPL",
         limit: 50,
         sources: "reuters,bloomberg",
@@ -97,7 +97,7 @@ describe("handleNews", () => {
     })
 
     it("works with minimal parameters", async () => {
-      await handleNews({ action: "headlines", ticker: "NVDA" })
+      await handleNews({ action_type: "headlines", ticker: "NVDA" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/news/headlines", expect.objectContaining({
         ticker: "NVDA",
       }))

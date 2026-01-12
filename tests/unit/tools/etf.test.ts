@@ -60,7 +60,7 @@ describe("handleEtf", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleEtf({ action: "invalid_action", ticker: "SPY" })
+      const result = await handleEtf({ action_type: "invalid_action", ticker: "SPY" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -70,42 +70,42 @@ describe("handleEtf", () => {
     })
 
     it("returns error for missing ticker", async () => {
-      const result = await handleEtf({ action: "info" })
+      const result = await handleEtf({ action_type: "info" })
       expect(result.text).toContain("Invalid input")
     })
   })
 
   describe("info action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleEtf({ action: "info", ticker: "SPY" })
+      await handleEtf({ action_type: "info", ticker: "SPY" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/etfs/SPY/info")
     })
   })
 
   describe("holdings action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleEtf({ action: "holdings", ticker: "QQQ" })
+      await handleEtf({ action_type: "holdings", ticker: "QQQ" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/etfs/QQQ/holdings")
     })
   })
 
   describe("exposure action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleEtf({ action: "exposure", ticker: "AAPL" })
+      await handleEtf({ action_type: "exposure", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/etfs/AAPL/exposure")
     })
   })
 
   describe("in_outflow action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleEtf({ action: "in_outflow", ticker: "SPY" })
+      await handleEtf({ action_type: "in_outflow", ticker: "SPY" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/etfs/SPY/in-outflow")
     })
   })
 
   describe("weights action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleEtf({ action: "weights", ticker: "IWM" })
+      await handleEtf({ action_type: "weights", ticker: "IWM" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/etfs/IWM/weights")
     })
   })

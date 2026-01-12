@@ -71,7 +71,7 @@ describe("handleStock", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleStock({ action: "invalid_action" })
+      const result = await handleStock({ action_type: "invalid_action" })
       expect(result).toHaveProperty("text")
       expect(result.text).toContain("Invalid input")
     })
@@ -84,7 +84,7 @@ describe("handleStock", () => {
 
     it("returns error for invalid ticker format", async () => {
       const result = await handleStock({
-        action: "info",
+        action_type: "info",
         ticker: "TOOLONGTICKER123",
       })
       expect(result.text).toContain("Ticker symbol too long")
@@ -92,7 +92,7 @@ describe("handleStock", () => {
 
     it("returns error for invalid date format", async () => {
       const result = await handleStock({
-        action: "greeks",
+        action_type: "greeks",
         ticker: "AAPL",
         date: "invalid-date",
       })
@@ -102,30 +102,30 @@ describe("handleStock", () => {
 
   describe("info action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "info" })
+      const result = await handleStock({ action_type: "info" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "info", ticker: "AAPL" })
+      await handleStock({ action_type: "info", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/info")
     })
   })
 
   describe("ohlc action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "ohlc", candle_size: "1d" })
+      const result = await handleStock({ action_type: "ohlc", candle_size: "1d" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("returns error when candle_size is missing", async () => {
-      const result = await handleStock({ action: "ohlc", ticker: "AAPL" })
+      const result = await handleStock({ action_type: "ohlc", ticker: "AAPL" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint and params", async () => {
       await handleStock({
-        action: "ohlc",
+        action_type: "ohlc",
         ticker: "AAPL",
         candle_size: "1d",
         date: "2024-01-01",
@@ -142,12 +142,12 @@ describe("handleStock", () => {
 
   describe("option_chains action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "option_chains" })
+      const result = await handleStock({ action_type: "option_chains" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "option_chains", ticker: "AAPL", date: "2024-01-01" })
+      await handleStock({ action_type: "option_chains", ticker: "AAPL", date: "2024-01-01" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/option-chains", {
         date: "2024-01-01",
       })
@@ -157,7 +157,7 @@ describe("handleStock", () => {
   describe("greeks action", () => {
     it("calls uwFetch with date and expiry params", async () => {
       await handleStock({
-        action: "greeks",
+        action_type: "greeks",
         ticker: "AAPL",
         date: "2024-01-01",
         expiry: "2024-01-19",
@@ -172,7 +172,7 @@ describe("handleStock", () => {
   describe("greek_exposure action", () => {
     it("calls uwFetch with correct params", async () => {
       await handleStock({
-        action: "greek_exposure",
+        action_type: "greek_exposure",
         ticker: "AAPL",
         date: "2024-01-01",
         timeframe: "1y",
@@ -187,7 +187,7 @@ describe("handleStock", () => {
   describe("iv_rank action", () => {
     it("calls uwFetch with timespan", async () => {
       await handleStock({
-        action: "iv_rank",
+        action_type: "iv_rank",
         ticker: "AAPL",
         timespan: "1y",
       })
@@ -201,7 +201,7 @@ describe("handleStock", () => {
   describe("greek_flow_by_expiry action", () => {
     it("returns error when expiry is missing", async () => {
       const result = await handleStock({
-        action: "greek_flow_by_expiry",
+        action_type: "greek_flow_by_expiry",
         ticker: "AAPL",
       })
       // Only expiry is missing, ticker is provided
@@ -210,7 +210,7 @@ describe("handleStock", () => {
 
     it("calls uwFetch with correct endpoint", async () => {
       await handleStock({
-        action: "greek_flow_by_expiry",
+        action_type: "greek_flow_by_expiry",
         ticker: "AAPL",
         expiry: "2024-01-19",
       })
@@ -223,7 +223,7 @@ describe("handleStock", () => {
   describe("atm_chains action", () => {
     it("returns error when expirations is missing", async () => {
       const result = await handleStock({
-        action: "atm_chains",
+        action_type: "atm_chains",
         ticker: "AAPL",
       })
       expect(result.text).toContain("Invalid input")
@@ -231,7 +231,7 @@ describe("handleStock", () => {
 
     it("returns error when expirations is empty", async () => {
       const result = await handleStock({
-        action: "atm_chains",
+        action_type: "atm_chains",
         ticker: "AAPL",
         expirations: [],
       })
@@ -240,7 +240,7 @@ describe("handleStock", () => {
 
     it("calls uwFetch with expirations array", async () => {
       await handleStock({
-        action: "atm_chains",
+        action_type: "atm_chains",
         ticker: "AAPL",
         expirations: ["2024-01-19", "2024-01-26"],
       })
@@ -253,7 +253,7 @@ describe("handleStock", () => {
   describe("historical_risk_reversal_skew action", () => {
     it("returns error when required params are missing", async () => {
       const result = await handleStock({
-        action: "historical_risk_reversal_skew",
+        action_type: "historical_risk_reversal_skew",
         ticker: "AAPL",
       })
       // Ticker is provided, but expiry and delta are missing
@@ -262,7 +262,7 @@ describe("handleStock", () => {
 
     it("calls uwFetch with all params", async () => {
       await handleStock({
-        action: "historical_risk_reversal_skew",
+        action_type: "historical_risk_reversal_skew",
         ticker: "AAPL",
         expiry: "2024-01-19",
         delta: "25",
@@ -280,19 +280,19 @@ describe("handleStock", () => {
 
   describe("tickers_by_sector action", () => {
     it("returns error when sector is missing", async () => {
-      const result = await handleStock({ action: "tickers_by_sector" })
+      const result = await handleStock({ action_type: "tickers_by_sector" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "tickers_by_sector", sector: "Technology" })
+      await handleStock({ action_type: "tickers_by_sector", sector: "Technology" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/Technology/tickers")
     })
   })
 
   describe("ticker_exchanges action", () => {
     it("calls uwFetch without params", async () => {
-      await handleStock({ action: "ticker_exchanges" })
+      await handleStock({ action_type: "ticker_exchanges" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock-directory/ticker-exchanges")
     })
   })
@@ -300,7 +300,7 @@ describe("handleStock", () => {
   describe("option_contracts action", () => {
     it("passes filter options correctly", async () => {
       await handleStock({
-        action: "option_contracts",
+        action_type: "option_contracts",
         ticker: "AAPL",
         expiry: "2024-01-19",
         option_type: "call",
@@ -327,7 +327,7 @@ describe("handleStock", () => {
   describe("spot_exposures_by_expiry_strike action", () => {
     it("returns error when expirations is missing", async () => {
       const result = await handleStock({
-        action: "spot_exposures_by_expiry_strike",
+        action_type: "spot_exposures_by_expiry_strike",
         ticker: "AAPL",
       })
       expect(result.text).toContain("Invalid input")
@@ -335,7 +335,7 @@ describe("handleStock", () => {
 
     it("passes all filter params", async () => {
       await handleStock({
-        action: "spot_exposures_by_expiry_strike",
+        action_type: "spot_exposures_by_expiry_strike",
         ticker: "AAPL",
         expirations: ["2024-01-19"],
         date: "2024-01-01",
@@ -361,59 +361,59 @@ describe("handleStock", () => {
 
   describe("stock_price_levels action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "stock_price_levels" })
+      const result = await handleStock({ action_type: "stock_price_levels" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "stock_price_levels", ticker: "AAPL" })
+      await handleStock({ action_type: "stock_price_levels", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/option/stock-price-levels", { date: undefined })
     })
 
     it("passes date parameter", async () => {
-      await handleStock({ action: "stock_price_levels", ticker: "AAPL", date: "2024-01-15" })
+      await handleStock({ action_type: "stock_price_levels", ticker: "AAPL", date: "2024-01-15" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/option/stock-price-levels", { date: "2024-01-15" })
     })
   })
 
   describe("stock_volume_price_levels action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "stock_volume_price_levels" })
+      const result = await handleStock({ action_type: "stock_volume_price_levels" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "stock_volume_price_levels", ticker: "TSLA" })
+      await handleStock({ action_type: "stock_volume_price_levels", ticker: "TSLA" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/TSLA/stock-volume-price-levels", { date: undefined })
     })
   })
 
   describe("spot_exposures action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "spot_exposures" })
+      const result = await handleStock({ action_type: "spot_exposures" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "spot_exposures", ticker: "NVDA" })
+      await handleStock({ action_type: "spot_exposures", ticker: "NVDA" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/NVDA/spot-exposures", { date: undefined })
     })
   })
 
   describe("spot_exposures_by_strike action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "spot_exposures_by_strike" })
+      const result = await handleStock({ action_type: "spot_exposures_by_strike" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "spot_exposures_by_strike", ticker: "AMD" })
+      await handleStock({ action_type: "spot_exposures_by_strike", ticker: "AMD" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AMD/spot-exposures/strike", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleStock({
-        action: "spot_exposures_by_strike",
+        action_type: "spot_exposures_by_strike",
         ticker: "AMD",
         date: "2024-01-15",
         min_strike: 100,
@@ -433,19 +433,19 @@ describe("handleStock", () => {
 
   describe("spot_exposures_expiry_strike action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "spot_exposures_expiry_strike", expiry: "2024-01-19" })
-      // Ticker is optional in schema, so validation passes and handler check runs
+      const result = await handleStock({ action_type: "spot_exposures_expiry_strike", expirations: ["2024-01-19"] })
+      // Ticker is required in schema, so validation fails
       expect(result.text).toContain("Invalid input")
     })
 
-    it("returns error when expiry is missing", async () => {
-      const result = await handleStock({ action: "spot_exposures_expiry_strike", ticker: "AAPL" })
-      // Zod validation catches missing expiry via .refine()
+    it("returns error when expirations is missing", async () => {
+      const result = await handleStock({ action_type: "spot_exposures_expiry_strike", ticker: "AAPL" })
+      // Zod validation catches missing expirations
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct v2 endpoint", async () => {
-      await handleStock({ action: "spot_exposures_expiry_strike", ticker: "AAPL", expiry: "2024-01-19" })
+      await handleStock({ action_type: "spot_exposures_expiry_strike", ticker: "AAPL", expirations: ["2024-01-19"] })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/spot-exposures/expiry-strike", expect.objectContaining({
         "expirations[]": ["2024-01-19"],
       }))
@@ -453,9 +453,9 @@ describe("handleStock", () => {
 
     it("passes filter parameters", async () => {
       await handleStock({
-        action: "spot_exposures_expiry_strike",
+        action_type: "spot_exposures_expiry_strike",
         ticker: "AAPL",
-        expiry: "2024-01-19",
+        expirations: ["2024-01-19"],
         date: "2024-01-15",
         min_strike: 150,
         max_strike: 200,
@@ -471,18 +471,18 @@ describe("handleStock", () => {
 
   describe("volatility_realized action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "volatility_realized" })
+      const result = await handleStock({ action_type: "volatility_realized" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "volatility_realized", ticker: "AAPL" })
+      await handleStock({ action_type: "volatility_realized", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/volatility/realized", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleStock({
-        action: "volatility_realized",
+        action_type: "volatility_realized",
         ticker: "AAPL",
         date: "2024-01-15",
         timeframe: "1y",
@@ -496,288 +496,288 @@ describe("handleStock", () => {
 
   describe("volatility_stats action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "volatility_stats" })
+      const result = await handleStock({ action_type: "volatility_stats" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "volatility_stats", ticker: "MSFT" })
+      await handleStock({ action_type: "volatility_stats", ticker: "MSFT" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/MSFT/volatility/stats", { date: undefined })
     })
   })
 
   describe("volatility_term_structure action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "volatility_term_structure" })
+      const result = await handleStock({ action_type: "volatility_term_structure" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "volatility_term_structure", ticker: "GOOGL" })
+      await handleStock({ action_type: "volatility_term_structure", ticker: "GOOGL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/GOOGL/volatility/term-structure", { date: undefined })
     })
   })
 
   describe("stock_state action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "stock_state" })
+      const result = await handleStock({ action_type: "stock_state" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "stock_state", ticker: "META" })
+      await handleStock({ action_type: "stock_state", ticker: "META" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/META/stock-state")
     })
   })
 
   describe("insider_buy_sells action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "insider_buy_sells" })
+      const result = await handleStock({ action_type: "insider_buy_sells" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "insider_buy_sells", ticker: "AMZN" })
+      await handleStock({ action_type: "insider_buy_sells", ticker: "AMZN" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AMZN/insider-buy-sells")
     })
   })
 
   describe("ownership action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "ownership" })
+      const result = await handleStock({ action_type: "ownership" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "ownership", ticker: "NFLX" })
+      await handleStock({ action_type: "ownership", ticker: "NFLX" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/NFLX/ownership", { limit: 20 })
     })
 
     it("passes limit parameter", async () => {
-      await handleStock({ action: "ownership", ticker: "NFLX", limit: 50 })
+      await handleStock({ action_type: "ownership", ticker: "NFLX", limit: 50 })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/NFLX/ownership", { limit: 50 })
     })
   })
 
   describe("greek_exposure_by_expiry action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "greek_exposure_by_expiry" })
+      const result = await handleStock({ action_type: "greek_exposure_by_expiry" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "greek_exposure_by_expiry", ticker: "AAPL" })
+      await handleStock({ action_type: "greek_exposure_by_expiry", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/greek-exposure/expiry", { date: undefined })
     })
   })
 
   describe("greek_exposure_by_strike action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "greek_exposure_by_strike" })
+      const result = await handleStock({ action_type: "greek_exposure_by_strike" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "greek_exposure_by_strike", ticker: "AAPL" })
+      await handleStock({ action_type: "greek_exposure_by_strike", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/greek-exposure/strike", { date: undefined })
     })
   })
 
   describe("greek_exposure_by_strike_expiry action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "greek_exposure_by_strike_expiry" })
+      const result = await handleStock({ action_type: "greek_exposure_by_strike_expiry" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "greek_exposure_by_strike_expiry", ticker: "AAPL", expiry: "2024-01-19" })
+      await handleStock({ action_type: "greek_exposure_by_strike_expiry", ticker: "AAPL", expiry: "2024-01-19" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/greek-exposure/strike-expiry", expect.any(Object))
     })
   })
 
   describe("greek_flow action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "greek_flow" })
+      const result = await handleStock({ action_type: "greek_flow" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "greek_flow", ticker: "AAPL" })
+      await handleStock({ action_type: "greek_flow", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/greek-flow", { date: undefined })
     })
   })
 
   describe("interpolated_iv action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "interpolated_iv" })
+      const result = await handleStock({ action_type: "interpolated_iv" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "interpolated_iv", ticker: "AAPL" })
+      await handleStock({ action_type: "interpolated_iv", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/interpolated-iv", { date: undefined })
     })
   })
 
   describe("max_pain action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "max_pain" })
+      const result = await handleStock({ action_type: "max_pain" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "max_pain", ticker: "AAPL" })
+      await handleStock({ action_type: "max_pain", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/max-pain", { date: undefined })
     })
   })
 
   describe("oi_change action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "oi_change" })
+      const result = await handleStock({ action_type: "oi_change" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "oi_change", ticker: "AAPL" })
+      await handleStock({ action_type: "oi_change", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/oi-change", expect.any(Object))
     })
   })
 
   describe("oi_per_expiry action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "oi_per_expiry" })
+      const result = await handleStock({ action_type: "oi_per_expiry" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "oi_per_expiry", ticker: "AAPL" })
+      await handleStock({ action_type: "oi_per_expiry", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/oi-per-expiry", { date: undefined })
     })
   })
 
   describe("oi_per_strike action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "oi_per_strike" })
+      const result = await handleStock({ action_type: "oi_per_strike" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "oi_per_strike", ticker: "AAPL" })
+      await handleStock({ action_type: "oi_per_strike", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/oi-per-strike", { date: undefined })
     })
   })
 
   describe("options_volume action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "options_volume" })
+      const result = await handleStock({ action_type: "options_volume" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "options_volume", ticker: "AAPL" })
+      await handleStock({ action_type: "options_volume", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/options-volume", { limit: 1 })
     })
   })
 
   describe("volume_oi_expiry action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "volume_oi_expiry" })
+      const result = await handleStock({ action_type: "volume_oi_expiry" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "volume_oi_expiry", ticker: "AAPL" })
+      await handleStock({ action_type: "volume_oi_expiry", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/option/volume-oi-expiry", { date: undefined })
     })
   })
 
   describe("expiry_breakdown action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "expiry_breakdown" })
+      const result = await handleStock({ action_type: "expiry_breakdown" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "expiry_breakdown", ticker: "AAPL" })
+      await handleStock({ action_type: "expiry_breakdown", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/expiry-breakdown", { date: undefined })
     })
   })
 
   describe("flow_per_expiry action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "flow_per_expiry" })
+      const result = await handleStock({ action_type: "flow_per_expiry" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "flow_per_expiry", ticker: "AAPL" })
+      await handleStock({ action_type: "flow_per_expiry", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/flow-per-expiry")
     })
   })
 
   describe("flow_per_strike action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "flow_per_strike" })
+      const result = await handleStock({ action_type: "flow_per_strike" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "flow_per_strike", ticker: "AAPL" })
+      await handleStock({ action_type: "flow_per_strike", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/flow-per-strike", { date: undefined })
     })
   })
 
   describe("flow_per_strike_intraday action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "flow_per_strike_intraday" })
+      const result = await handleStock({ action_type: "flow_per_strike_intraday" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "flow_per_strike_intraday", ticker: "AAPL" })
+      await handleStock({ action_type: "flow_per_strike_intraday", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/flow-per-strike-intraday", expect.any(Object))
     })
   })
 
   describe("flow_recent action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "flow_recent" })
+      const result = await handleStock({ action_type: "flow_recent" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "flow_recent", ticker: "AAPL" })
+      await handleStock({ action_type: "flow_recent", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/flow-recent", expect.any(Object))
     })
   })
 
   describe("net_prem_ticks action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "net_prem_ticks" })
+      const result = await handleStock({ action_type: "net_prem_ticks" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "net_prem_ticks", ticker: "AAPL" })
+      await handleStock({ action_type: "net_prem_ticks", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/net-prem-ticks", { date: undefined })
     })
   })
 
   describe("nope action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "nope" })
+      const result = await handleStock({ action_type: "nope" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleStock({ action: "nope", ticker: "AAPL" })
+      await handleStock({ action_type: "nope", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/stock/AAPL/nope", { date: undefined })
     })
   })
 
   describe("greeks action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleStock({ action: "greeks" })
+      const result = await handleStock({ action_type: "greeks" })
       expect(result.text).toContain("Invalid input")
     })
   })

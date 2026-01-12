@@ -71,7 +71,7 @@ describe("handleFlow", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleFlow({ action: "invalid_action" })
+      const result = await handleFlow({ action_type: "invalid_action" })
       // Zod discriminated union returns "Invalid input" for invalid discriminator values
       expect(result.text).toContain("Invalid input")
     })
@@ -84,13 +84,13 @@ describe("handleFlow", () => {
 
   describe("flow_alerts action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleFlow({ action: "flow_alerts" })
+      await handleFlow({ action_type: "flow_alerts" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/option-trades/flow-alerts", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleFlow({
-        action: "flow_alerts",
+        action_type: "flow_alerts",
         ticker_symbol: "AAPL,TSLA",
         min_premium: 10000,
         max_premium: 1000000,
@@ -110,7 +110,7 @@ describe("handleFlow", () => {
 
     it("rejects negative premium", async () => {
       const result = await handleFlow({
-        action: "flow_alerts",
+        action_type: "flow_alerts",
         min_premium: -100,
       })
       expect(result.text).toContain("Invalid input")
@@ -119,19 +119,19 @@ describe("handleFlow", () => {
 
   describe("full_tape action", () => {
     it("returns error when date is missing", async () => {
-      const result = await handleFlow({ action: "full_tape" })
+      const result = await handleFlow({ action_type: "full_tape" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleFlow({ action: "full_tape", date: "2024-01-15" })
+      await handleFlow({ action_type: "full_tape", date: "2024-01-15" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/option-trades/full-tape/2024-01-15")
     })
   })
 
   describe("net_flow_expiry action", () => {
     it("calls uwFetch without date", async () => {
-      await handleFlow({ action: "net_flow_expiry" })
+      await handleFlow({ action_type: "net_flow_expiry" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/net-flow/expiry", expect.objectContaining({
         date: undefined,
       }))
@@ -139,7 +139,7 @@ describe("handleFlow", () => {
 
     it("passes date and filter params", async () => {
       await handleFlow({
-        action: "net_flow_expiry",
+        action_type: "net_flow_expiry",
         date: "2024-01-15",
         moneyness: "all",
         tide_type: "bullish",
@@ -154,18 +154,18 @@ describe("handleFlow", () => {
 
   describe("group_greek_flow action", () => {
     it("returns error when flow_group is missing", async () => {
-      const result = await handleFlow({ action: "group_greek_flow" })
+      const result = await handleFlow({ action_type: "group_greek_flow" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleFlow({ action: "group_greek_flow", flow_group: "mag7" })
+      await handleFlow({ action_type: "group_greek_flow", flow_group: "mag7" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/group-flow/mag7/greek-flow", { date: undefined })
     })
 
     it("passes date parameter", async () => {
       await handleFlow({
-        action: "group_greek_flow",
+        action_type: "group_greek_flow",
         flow_group: "semi",
         date: "2024-01-15",
       })
@@ -178,7 +178,7 @@ describe("handleFlow", () => {
   describe("group_greek_flow_expiry action", () => {
     it("returns error when flow_group is missing", async () => {
       const result = await handleFlow({
-        action: "group_greek_flow_expiry",
+        action_type: "group_greek_flow_expiry",
         expiry: "2024-01-19",
       })
       // Zod validation error for missing required field
@@ -187,7 +187,7 @@ describe("handleFlow", () => {
 
     it("returns error when expiry is missing", async () => {
       const result = await handleFlow({
-        action: "group_greek_flow_expiry",
+        action_type: "group_greek_flow_expiry",
         flow_group: "mag7",
       })
       // Zod validation error for missing required field
@@ -196,7 +196,7 @@ describe("handleFlow", () => {
 
     it("calls uwFetch with correct endpoint", async () => {
       await handleFlow({
-        action: "group_greek_flow_expiry",
+        action_type: "group_greek_flow_expiry",
         flow_group: "mag7",
         expiry: "2024-01-19",
       })
@@ -208,13 +208,13 @@ describe("handleFlow", () => {
 
   describe("lit_flow_recent action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleFlow({ action: "lit_flow_recent" })
+      await handleFlow({ action_type: "lit_flow_recent" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/lit-flow/recent", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleFlow({
-        action: "lit_flow_recent",
+        action_type: "lit_flow_recent",
         date: "2024-01-15",
         limit: 100,
         min_premium: 10000,
@@ -239,18 +239,18 @@ describe("handleFlow", () => {
 
   describe("lit_flow_ticker action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handleFlow({ action: "lit_flow_ticker" })
+      const result = await handleFlow({ action_type: "lit_flow_ticker" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handleFlow({ action: "lit_flow_ticker", ticker: "AAPL" })
+      await handleFlow({ action_type: "lit_flow_ticker", ticker: "AAPL" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/lit-flow/AAPL", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleFlow({
-        action: "lit_flow_ticker",
+        action_type: "lit_flow_ticker",
         ticker: "TSLA",
         date: "2024-01-15",
         limit: 200,

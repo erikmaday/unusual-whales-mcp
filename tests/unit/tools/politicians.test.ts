@@ -60,7 +60,7 @@ describe("handlePoliticians", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handlePoliticians({ action: "invalid_action" })
+      const result = await handlePoliticians({ action_type: "invalid_action" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -72,25 +72,25 @@ describe("handlePoliticians", () => {
 
   describe("people action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handlePoliticians({ action: "people" })
+      await handlePoliticians({ action_type: "people" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/politician-portfolios/people")
     })
   })
 
   describe("portfolio action", () => {
     it("returns error when politician_id is missing", async () => {
-      const result = await handlePoliticians({ action: "portfolio" })
+      const result = await handlePoliticians({ action_type: "portfolio" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handlePoliticians({ action: "portfolio", politician_id: "12345678-1234-4234-8234-123456789012" })
+      await handlePoliticians({ action_type: "portfolio", politician_id: "12345678-1234-4234-8234-123456789012" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/politician-portfolios/12345678-1234-4234-8234-123456789012", expect.any(Object))
     })
 
     it("passes aggregate parameter", async () => {
       await handlePoliticians({
-        action: "portfolio",
+        action_type: "portfolio",
         politician_id: "12345678-1234-4234-8234-123456789012",
         aggregate_all_portfolios: true,
       })
@@ -102,13 +102,13 @@ describe("handlePoliticians", () => {
 
   describe("recent_trades action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handlePoliticians({ action: "recent_trades" })
+      await handlePoliticians({ action_type: "recent_trades" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/politician-portfolios/recent_trades", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handlePoliticians({
-        action: "recent_trades",
+        action_type: "recent_trades",
         date: "2024-01-15",
         ticker: "AAPL",
         politician_id: "12345678-1234-4234-8234-123456789012",
@@ -126,7 +126,7 @@ describe("handlePoliticians", () => {
 
     it("passes date range filters", async () => {
       await handlePoliticians({
-        action: "recent_trades",
+        action_type: "recent_trades",
         disclosure_newer_than: "2024-01-01",
         disclosure_older_than: "2024-01-31",
         transaction_newer_than: "2024-01-01",
@@ -143,18 +143,18 @@ describe("handlePoliticians", () => {
 
   describe("holders action", () => {
     it("returns error when ticker is missing", async () => {
-      const result = await handlePoliticians({ action: "holders" })
+      const result = await handlePoliticians({ action_type: "holders" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
-      await handlePoliticians({ action: "holders", ticker: "NVDA" })
+      await handlePoliticians({ action_type: "holders", ticker: "NVDA" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/politician-portfolios/holders/NVDA", expect.any(Object))
     })
 
     it("passes aggregate parameter", async () => {
       await handlePoliticians({
-        action: "holders",
+        action_type: "holders",
         ticker: "TSLA",
         aggregate_all_portfolios: true,
       })
@@ -166,13 +166,13 @@ describe("handlePoliticians", () => {
 
   describe("disclosures action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handlePoliticians({ action: "disclosures" })
+      await handlePoliticians({ action_type: "disclosures" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/politician-portfolios/disclosures", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handlePoliticians({
-        action: "disclosures",
+        action_type: "disclosures",
         politician_id: "12345678-1234-4234-8234-123456789012",
         latest_only: true,
         year: 2024,

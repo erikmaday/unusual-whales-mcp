@@ -60,7 +60,7 @@ describe("handleOptions", () => {
 
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
-      const result = await handleOptions({ action: "invalid_action", id: "AAPL240119C00150000" })
+      const result = await handleOptions({ action_type: "invalid_action", id: "AAPL240119C00150000" })
       expect(result.text).toContain("Invalid input")
     })
 
@@ -70,13 +70,13 @@ describe("handleOptions", () => {
     })
 
     it("returns error for missing id", async () => {
-      const result = await handleOptions({ action: "flow" })
+      const result = await handleOptions({ action_type: "flow" })
       expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for negative premium", async () => {
       const result = await handleOptions({
-        action: "flow",
+        action_type: "flow",
         id: "AAPL240119C00150000",
         min_premium: -100,
       })
@@ -86,13 +86,13 @@ describe("handleOptions", () => {
 
   describe("flow action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleOptions({ action: "flow", id: "AAPL240119C00150000" })
+      await handleOptions({ action_type: "flow", id: "AAPL240119C00150000" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/option-contract/AAPL240119C00150000/flow", expect.any(Object))
     })
 
     it("passes filter parameters", async () => {
       await handleOptions({
-        action: "flow",
+        action_type: "flow",
         id: "TSLA240119P00200000",
         side: "ASK",
         min_premium: 1000,
@@ -110,13 +110,13 @@ describe("handleOptions", () => {
 
   describe("historic action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleOptions({ action: "historic", id: "NVDA240119C00500000" })
+      await handleOptions({ action_type: "historic", id: "NVDA240119C00500000" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/option-contract/NVDA240119C00500000/historic", expect.any(Object))
     })
 
     it("passes limit parameter", async () => {
       await handleOptions({
-        action: "historic",
+        action_type: "historic",
         id: "NVDA240119C00500000",
         limit: 100,
       })
@@ -128,13 +128,13 @@ describe("handleOptions", () => {
 
   describe("intraday action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleOptions({ action: "intraday", id: "MSFT240119C00400000" })
+      await handleOptions({ action_type: "intraday", id: "MSFT240119C00400000" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/option-contract/MSFT240119C00400000/intraday", expect.any(Object))
     })
 
     it("passes date parameter", async () => {
       await handleOptions({
-        action: "intraday",
+        action_type: "intraday",
         id: "MSFT240119C00400000",
         date: "2024-01-15",
       })
@@ -146,13 +146,13 @@ describe("handleOptions", () => {
 
   describe("volume_profile action", () => {
     it("calls uwFetch with correct endpoint", async () => {
-      await handleOptions({ action: "volume_profile", id: "AMD240119C00180000" })
+      await handleOptions({ action_type: "volume_profile", id: "AMD240119C00180000" })
       expect(mockUwFetch).toHaveBeenCalledWith("/api/option-contract/AMD240119C00180000/volume-profile", expect.any(Object))
     })
 
     it("passes date parameter", async () => {
       await handleOptions({
-        action: "volume_profile",
+        action_type: "volume_profile",
         id: "AMD240119C00180000",
         date: "2024-01-15",
       })
