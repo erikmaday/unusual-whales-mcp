@@ -379,6 +379,14 @@ function extractImplementedActions() {
 }
 
 /**
+ * Normalize parameter name by removing array notation suffix
+ * OpenAPI uses "param[]" for arrays, but MCP schemas use "param"
+ */
+function normalizeParamName(param) {
+  return param.endsWith('[]') ? param.slice(0, -2) : param
+}
+
+/**
  * Compare parameters between implementation and spec
  */
 function compareParameters(actionName, impl, spec, results) {
@@ -386,21 +394,26 @@ function compareParameters(actionName, impl, spec, results) {
   const extra = []
 
   // Check for missing parameters (in spec but not in impl)
+  // Normalize spec param names by removing [] suffix
   for (const param of spec.params.required) {
-    if (!impl.params.all.has(param)) {
+    const normalizedParam = normalizeParamName(param)
+    if (!impl.params.all.has(normalizedParam)) {
       missing.required.push(param)
     }
   }
 
   for (const param of spec.params.optional) {
-    if (!impl.params.all.has(param)) {
+    const normalizedParam = normalizeParamName(param)
+    if (!impl.params.all.has(normalizedParam)) {
       missing.optional.push(param)
     }
   }
 
   // Check for extra parameters (in impl but not in spec)
+  // For each impl param, check if spec has it with or without [] suffix
   for (const param of impl.params.all) {
-    if (!spec.params.all.has(param)) {
+    const withBrackets = `${param}[]`
+    if (!spec.params.all.has(param) && !spec.params.all.has(withBrackets)) {
       extra.push(param)
     }
   }
