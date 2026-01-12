@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-01-12
+
+### Added
+
+- **Dependabot**: Automated dependency updates for npm packages and GitHub Actions
+- **Security Scanning**: `npm audit` step in CI pipeline to catch vulnerabilities
+- **Path Params Tests**: 31 new tests for `path-params.ts` bringing it to 100% coverage
+
+### Changed
+
+- **Coverage Threshold**: Raised from 80% to 90% (now enforced, not just a warning)
+- **Documentation**: Expanded API sync checker docs in CONTRIBUTING.md
+- **Code Comments**: Cleaned up comments in `check-api-sync.js` for readability
+
+### Technical
+
+- Total test count increased from 532 to 563
+- Overall coverage now at 99.1% statements, 95.5% branches
+
 ## [0.1.4] - 2026-01-11
 
 ### Added
