@@ -1,26 +1,44 @@
 import { z } from "zod"
-import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import {
-  toJsonSchema,
-  formatZodError,
-  dateSchema,
-  limitSchema,
-  sideSchema,
-} from "../schemas/index.js"
+import { uwFetch } from "../client.js"
+import { toJsonSchema, dateSchema, limitSchema, sideSchema } from "../schemas/index.js"
+import { createToolHandler } from "./base/tool-factory.js"
+import { PathParamBuilder } from "../utils/path-params.js"
 
-const optionsActions = ["flow", "historic", "intraday", "volume_profile"] as const
-
-const optionsInputSchema = z.object({
-  action: z.enum(optionsActions).describe("The action to perform"),
+// Explicit per-action schemas - each is a complete specification
+const flowSchema = z.object({
+  action: z.literal("flow"),
   id: z.string().describe("Option contract ID/symbol (e.g., AAPL240119C00150000)"),
-  // flow action parameters
   side: sideSchema.describe("Trade side (ALL, ASK, BID, or MID)").default("ALL").optional(),
-  min_premium: z.number().int().nonnegative("Premium cannot be negative").describe("Minimum premium filter").default(0).optional(),
+  min_premium: z.number().int().nonnegative().describe("Minimum premium filter").default(0).optional(),
   limit: limitSchema.optional(),
-  // date parameter used by flow, intraday, and volume_profile actions
   date: dateSchema.optional(),
 })
 
+const historicSchema = z.object({
+  action: z.literal("historic"),
+  id: z.string().describe("Option contract ID/symbol (e.g., AAPL240119C00150000)"),
+  limit: limitSchema.optional(),
+})
+
+const intradaySchema = z.object({
+  action: z.literal("intraday"),
+  id: z.string().describe("Option contract ID/symbol (e.g., AAPL240119C00150000)"),
+  date: dateSchema.optional(),
+})
+
+const volumeProfileSchema = z.object({
+  action: z.literal("volume_profile"),
+  id: z.string().describe("Option contract ID/symbol (e.g., AAPL240119C00150000)"),
+  date: dateSchema.optional(),
+})
+
+// Discriminated union of all action schemas
+const optionsInputSchema = z.discriminatedUnion("action", [
+  flowSchema,
+  historicSchema,
+  intradaySchema,
+  volumeProfileSchema,
+])
 
 export const optionsTool = {
   name: "uw_options",
@@ -43,39 +61,43 @@ The 'id' parameter is the option contract symbol (e.g., AAPL240119C00150000).`,
 }
 
 /**
- * Handle options tool requests.
- *
- * @param args - Tool arguments containing action and option contract ID
- * @returns JSON string with option contract data or error message
+ * Handle options tool requests using the tool factory pattern
  */
-export async function handleOptions(args: Record<string, unknown>): Promise<string> {
-  const parsed = optionsInputSchema.safeParse(args)
-  if (!parsed.success) {
-    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
-  }
+export const handleOptions = createToolHandler(optionsInputSchema, {
+  flow: async (data) => {
+    const path = new PathParamBuilder()
+      .add("id", data.id)
+      .build("/api/option-contract/{id}/flow")
 
-  const { action, id, side, min_premium, limit, date } = parsed.data
-  const safeId = encodePath(id)
+    return uwFetch(path, {
+      side: data.side,
+      min_premium: data.min_premium,
+      limit: data.limit,
+      date: data.date,
+    })
+  },
 
-  switch (action) {
-    case "flow":
-      return formatResponse(await uwFetch(`/api/option-contract/${safeId}/flow`, {
-        side,
-        min_premium,
-        limit,
-        date,
-      }))
+  historic: async (data) => {
+    const path = new PathParamBuilder()
+      .add("id", data.id)
+      .build("/api/option-contract/{id}/historic")
 
-    case "historic":
-      return formatResponse(await uwFetch(`/api/option-contract/${safeId}/historic`, { limit }))
+    return uwFetch(path, { limit: data.limit })
+  },
 
-    case "intraday":
-      return formatResponse(await uwFetch(`/api/option-contract/${safeId}/intraday`, { date }))
+  intraday: async (data) => {
+    const path = new PathParamBuilder()
+      .add("id", data.id)
+      .build("/api/option-contract/{id}/intraday")
 
-    case "volume_profile":
-      return formatResponse(await uwFetch(`/api/option-contract/${safeId}/volume-profile`, { date }))
+    return uwFetch(path, { date: data.date })
+  },
 
-    default:
-      return formatError(`Unknown action: ${action}`)
-  }
-}
+  volume_profile: async (data) => {
+    const path = new PathParamBuilder()
+      .add("id", data.id)
+      .build("/api/option-contract/{id}/volume-profile")
+
+    return uwFetch(path, { date: data.date })
+  },
+})
