@@ -1,6 +1,6 @@
 {
   "name": "@erikmaday/unusual-whales-mcp",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "MCP server for UnusualWhales API - access options flow, dark pool, congress trades, and more",
   "type": "module",
   "main": "dist/index.js",
