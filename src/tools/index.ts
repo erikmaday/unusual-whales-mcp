@@ -14,11 +14,9 @@ import { seasonalityTool, handleSeasonality } from "./seasonality.js"
 import { newsTool, handleNews } from "./news.js"
 import { alertsTool, handleAlerts } from "./alerts.js"
 import { politiciansTool, handlePoliticians } from "./politicians.js"
+import type { ToolResponse } from "./base/response.js"
 
-export interface ToolResponse {
-  text: string
-  structuredContent?: unknown
-}
+export type { ToolResponse }
 
 export type ToolHandler = (args: Record<string, unknown>) => Promise<string | ToolResponse>
 
@@ -30,7 +28,7 @@ export interface ToolDefinition {
     properties: Record<string, unknown>
     required: string[]
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   zodInputSchema?: any // Store the original Zod schema for McpServer
   outputSchema?: {
     type: "object"

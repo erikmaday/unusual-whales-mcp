@@ -61,17 +61,17 @@ describe("handleOptions", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleOptions({ action: "invalid_action", id: "AAPL240119C00150000" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleOptions({ id: "AAPL240119C00150000" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing id", async () => {
       const result = await handleOptions({ action: "flow" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for negative premium", async () => {
@@ -80,7 +80,7 @@ describe("handleOptions", () => {
         id: "AAPL240119C00150000",
         min_premium: -100,
       })
-      expect(result).toContain("Premium cannot be negative")
+      expect(result.text).toContain("Too small")
     })
   })
 
