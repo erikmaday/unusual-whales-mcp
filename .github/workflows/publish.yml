@@ -43,6 +43,28 @@ jobs:
       - name: 🔍 Lint
         run: npm run lint
 
+      - name: 🧪 Test
+        run: npm test
+
+      - name: 📊 Check Coverage
+        run: |
+          npm run test:coverage
+          COVERAGE=$(node -p "
+            const report = require('./coverage/coverage-summary.json');
+            const total = report.total;
+            Math.min(
+              total.lines.pct,
+              total.statements.pct,
+              total.functions.pct,
+              total.branches.pct
+            );
+          ")
+          echo "Coverage: $COVERAGE%"
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "Coverage $COVERAGE% is below 80% threshold"
+            exit 1
+          fi
+
       - name: 🔨 Build
         run: npm run build
 
