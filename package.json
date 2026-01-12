@@ -46,7 +46,6 @@
     "lint:fix": "eslint src/ --fix",
     "fetch-spec": "node scripts/fetch-api-spec.js",
     "check-api": "node scripts/check-api-sync.js",
-    "check-api:v2": "node scripts/check-api-sync-v2.js",
     "prepublishOnly": "npm run lint && npm run build",
     "test": "vitest run",
     "test:unit": "vitest run tests/unit",
