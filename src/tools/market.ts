@@ -1,23 +1,10 @@
 import { z } from "zod"
-import { uwFetch, formatResponse, encodePath, formatError } from "../client.js"
-import { toJsonSchema, tickerSchema, dateSchema, limitSchema, formatZodError } from "../schemas/index.js"
+import { uwFetch } from "../client.js"
+import { toJsonSchema, tickerSchema, dateSchema } from "../schemas/index.js"
+import { createToolHandler } from "./base/tool-factory.js"
+import { PathParamBuilder } from "../utils/path-params.js"
 
-const marketActions = [
-  "market_tide",
-  "sector_tide",
-  "etf_tide",
-  "sector_etfs",
-  "economic_calendar",
-  "fda_calendar",
-  "correlations",
-  "insider_buy_sells",
-  "oi_change",
-  "spike",
-  "top_net_impact",
-  "total_options_volume",
-] as const
-
-// Action-specific schemas
+// Explicit per-action schemas
 const marketTideSchema = z.object({
   action: z.literal("market_tide"),
   date: dateSchema.optional(),
@@ -53,7 +40,7 @@ const fdaCalendarSchema = z.object({
   target_date_max: z.string().describe("Maximum target date for FDA calendar").optional(),
   drug: z.string().describe("Drug name filter for FDA calendar").optional(),
   ticker: tickerSchema.optional(),
-  limit: z.number().int().min(1).max(200).describe("Maximum number of results").default(100).optional(),
+  limit: z.number().int().min(1).max(500).describe("Maximum number of results").optional(),
 })
 
 const correlationsSchema = z.object({
@@ -72,8 +59,8 @@ const insiderBuySellsSchema = z.object({
 const oiChangeSchema = z.object({
   action: z.literal("oi_change"),
   date: dateSchema.optional(),
-  limit: z.number().int().min(1).max(200).describe("Maximum number of results").default(100).optional(),
-  order: z.enum(["asc", "desc"]).describe("Order direction").default("desc").optional(),
+  limit: z.number().int().min(1).max(500).describe("Maximum number of results").optional(),
+  order: z.enum(["asc", "desc"]).describe("Order direction").optional(),
 })
 
 const spikeSchema = z.object({
@@ -85,15 +72,15 @@ const topNetImpactSchema = z.object({
   action: z.literal("top_net_impact"),
   date: dateSchema.optional(),
   issue_types: z.string().describe("Issue types filter (for top_net_impact)").optional(),
-  limit: z.number().int().min(1).max(100).describe("Maximum number of results").default(20).optional(),
+  limit: z.number().int().min(1).max(500).describe("Maximum number of results").optional(),
 })
 
 const totalOptionsVolumeSchema = z.object({
   action: z.literal("total_options_volume"),
-  limit: z.number().int().min(1).max(500).describe("Maximum number of results").default(1).optional(),
+  limit: z.number().int().min(1).max(500).describe("Maximum number of results").optional(),
 })
 
-// Union of all action schemas
+// Discriminated union of all action schemas
 const marketInputSchema = z.discriminatedUnion("action", [
   marketTideSchema,
   sectorTideSchema,
@@ -108,7 +95,6 @@ const marketInputSchema = z.discriminatedUnion("action", [
   topNetImpactSchema,
   totalOptionsVolumeSchema,
 ])
-
 
 export const marketTool = {
   name: "uw_market",
@@ -137,92 +123,95 @@ Available actions:
 }
 
 /**
- * Handle market tool requests.
- *
- * @param args - Tool arguments containing action and optional market parameters
- * @returns JSON string with market data or error message
+ * Handle market tool requests using the tool factory pattern
  */
-export async function handleMarket(args: Record<string, unknown>): Promise<string> {
-  const parsed = marketInputSchema.safeParse(args)
-  if (!parsed.success) {
-    return formatError(`Invalid input: ${formatZodError(parsed.error)}`)
-  }
+export const handleMarket = createToolHandler(marketInputSchema, {
+  market_tide: async (data) => {
+    return uwFetch("/api/market/market-tide", {
+      date: data.date,
+      otm_only: data.otm_only,
+      interval_5m: data.interval_5m,
+    })
+  },
 
-  const data = parsed.data
+  sector_tide: async (data) => {
+    const path = new PathParamBuilder()
+      .add("sector", data.sector)
+      .build("/api/market/{sector}/sector-tide")
+    return uwFetch(path, {
+      date: data.date,
+    })
+  },
 
-  switch (data.action) {
-    case "market_tide":
-      return formatResponse(await uwFetch("/api/market/market-tide", {
-        date: data.date,
-        otm_only: data.otm_only,
-        interval_5m: data.interval_5m,
-      }))
+  etf_tide: async (data) => {
+    const path = new PathParamBuilder()
+      .add("ticker", data.ticker)
+      .build("/api/market/{ticker}/etf-tide")
+    return uwFetch(path, {
+      date: data.date,
+    })
+  },
 
-    case "sector_tide":
-      return formatResponse(await uwFetch(`/api/market/${encodePath(data.sector)}/sector-tide`, {
-        date: data.date
-      }))
+  sector_etfs: async () => {
+    return uwFetch("/api/market/sector-etfs")
+  },
 
-    case "etf_tide":
-      return formatResponse(await uwFetch(`/api/market/${encodePath(data.ticker)}/etf-tide`, {
-        date: data.date
-      }))
+  economic_calendar: async () => {
+    return uwFetch("/api/market/economic-calendar")
+  },
 
-    case "sector_etfs":
-      return formatResponse(await uwFetch("/api/market/sector-etfs"))
+  fda_calendar: async (data) => {
+    return uwFetch("/api/market/fda-calendar", {
+      announced_date_min: data.announced_date_min,
+      announced_date_max: data.announced_date_max,
+      target_date_min: data.target_date_min,
+      target_date_max: data.target_date_max,
+      drug: data.drug,
+      ticker: data.ticker,
+      limit: data.limit,
+    })
+  },
 
-    case "economic_calendar":
-      return formatResponse(await uwFetch("/api/market/economic-calendar"))
+  correlations: async (data) => {
+    return uwFetch("/api/market/correlations", {
+      tickers: data.tickers,
+      interval: data.interval,
+      start_date: data.start_date,
+      end_date: data.end_date,
+    })
+  },
 
-    case "fda_calendar":
-      return formatResponse(await uwFetch("/api/market/fda-calendar", {
-        announced_date_min: data.announced_date_min,
-        announced_date_max: data.announced_date_max,
-        target_date_min: data.target_date_min,
-        target_date_max: data.target_date_max,
-        drug: data.drug,
-        ticker: data.ticker,
-        limit: data.limit,
-      }))
+  insider_buy_sells: async (data) => {
+    return uwFetch("/api/market/insider-buy-sells", {
+      limit: data.limit,
+    })
+  },
 
-    case "correlations":
-      return formatResponse(await uwFetch("/api/market/correlations", {
-        tickers: data.tickers,
-        interval: data.interval,
-        start_date: data.start_date,
-        end_date: data.end_date,
-      }))
+  oi_change: async (data) => {
+    return uwFetch("/api/market/oi-change", {
+      date: data.date,
+      limit: data.limit,
+      order: data.order,
+    })
+  },
 
-    case "insider_buy_sells":
-      return formatResponse(await uwFetch("/api/market/insider-buy-sells", {
-        limit: data.limit
-      }))
+  spike: async (data) => {
+    return uwFetch("/api/market/spike", {
+      date: data.date,
+    })
+  },
 
-    case "oi_change":
-      return formatResponse(await uwFetch("/api/market/oi-change", {
-        date: data.date,
-        limit: data.limit,
-        order: data.order,
-      }))
+  top_net_impact: async (data) => {
+    return uwFetch("/api/market/top-net-impact", {
+      date: data.date,
+      "issue_types[]": data.issue_types,
+      limit: data.limit,
+    })
+  },
 
-    case "spike":
-      return formatResponse(await uwFetch("/api/market/spike", {
-        date: data.date
-      }))
-
-    case "top_net_impact":
-      return formatResponse(await uwFetch("/api/market/top-net-impact", {
-        date: data.date,
-        "issue_types[]": data.issue_types,
-        limit: data.limit,
-      }))
-
-    case "total_options_volume":
-      return formatResponse(await uwFetch("/api/market/total-options-volume", {
-        limit: data.limit
-      }))
-
-    default:
-      return formatError(`Unknown action: ${(data as { action: string }).action}`)
-  }
-}
+  total_options_volume: async (data) => {
+    return uwFetch("/api/market/total-options-volume", {
+      limit: data.limit,
+    })
+  },
+})

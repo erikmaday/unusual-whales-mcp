@@ -62,12 +62,12 @@ describe("handleMarket", () => {
     it("returns error for invalid action", async () => {
       const result = await handleMarket({ action: "invalid_action" })
       // Zod discriminated union returns "Invalid input" for invalid discriminator values
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleMarket({})
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
   })
 
@@ -95,7 +95,7 @@ describe("handleMarket", () => {
   describe("sector_tide action", () => {
     it("returns error when sector is missing", async () => {
       const result = await handleMarket({ action: "sector_tide" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -118,7 +118,7 @@ describe("handleMarket", () => {
   describe("etf_tide action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleMarket({ action: "etf_tide" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -184,7 +184,7 @@ describe("handleMarket", () => {
   describe("correlations action", () => {
     it("returns error when tickers is missing", async () => {
       const result = await handleMarket({ action: "correlations" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
