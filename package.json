@@ -41,14 +41,20 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsc --watch",
+    "dev:inspector": "npx @modelcontextprotocol/inspector node dist/index.js",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "fetch-spec": "node scripts/fetch-api-spec.js",
     "check-api": "node scripts/check-api-sync.js",
     "prepublishOnly": "npm run lint && npm run build",
     "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:watch:unit": "vitest tests/unit",
+    "test:coverage": "vitest run --coverage",
+    "coverage:open": "vitest run --coverage && open coverage/index.html",
+    "validate": "npm run lint && npm run build && npm test"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
