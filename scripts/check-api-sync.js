@@ -1,21 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * API Sync Checker for Discriminated Union Schemas
- *
- * Compares the UnusualWhales OpenAPI spec against implemented endpoints,
- * checking both endpoint coverage and parameter coverage.
- *
- * Size: 417 lines (down from 3,038 lines in the original composition-based version)
- *
- * Why So Small?
- * With explicit per-action schemas using z.discriminatedUnion(), validation is straightforward:
- * 1. Extract action schemas from discriminated unions (direct property access)
- * 2. Map actions to API endpoints (parse handler code)
- * 3. Compare parameters directly (no composition tracking needed)
- *
- * Each action schema is a complete, self-contained specification with all parameters
- * explicitly listed, making validation trivial compared to the old composition-based approach.
+ * Checks if our tool implementations match the Unusual Whales OpenAPI spec.
  */
 
 import { readFileSync, readdirSync } from 'fs'
@@ -27,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = join(__dirname, '..')
 const SPEC_FILE = join(ROOT_DIR, 'uw-api-spec.yaml')
 
-// Endpoints we intentionally don't implement (WebSocket, deprecated, etc.)
+// Skip these - websockets we can't support, plus some deprecated stuff
 const IGNORED_ENDPOINTS = [
   '/api/socket',
   '/api/socket/flow_alerts',
@@ -35,14 +21,11 @@ const IGNORED_ENDPOINTS = [
   '/api/socket/news',
   '/api/socket/option_trades',
   '/api/socket/price',
-  // Deprecated endpoints - migrated to newer versions
-  '/api/stock/{ticker}/flow-alerts', // Deprecated - use /api/option-trades/flow-alerts instead
-  '/api/stock/{ticker}/spot-exposures/{expiry}/strike', // Deprecated - use spot_exposures_expiry_strike v2
+  // Old endpoints that have newer versions
+  '/api/stock/{ticker}/flow-alerts',
+  '/api/stock/{ticker}/spot-exposures/{expiry}/strike',
 ]
 
-/**
- * Load and parse the OpenAPI spec
- */
 function loadOpenAPISpec() {
   console.log('Loading OpenAPI spec...')
   try {
@@ -54,9 +37,7 @@ function loadOpenAPISpec() {
   }
 }
 
-/**
- * Resolve a $ref path in the OpenAPI spec
- */
+// Follow $ref pointers in the spec
 function resolveRef(ref, spec) {
   if (!ref || typeof ref !== 'string' || !ref.startsWith('#/')) return null
 
@@ -73,9 +54,7 @@ function resolveRef(ref, spec) {
   return current
 }
 
-/**
- * Extract all endpoints and their parameters from the OpenAPI spec
- */
+// Pull out all endpoints from the spec with their params
 function extractSpecEndpoints(spec) {
   const endpoints = new Map()
 
@@ -118,36 +97,30 @@ function extractSpecEndpoints(spec) {
   return endpoints
 }
 
-/**
- * Extract action schemas from a tool file's discriminated union
- * Returns: Map<actionName, { required: Set, optional: Set, all: Set }>
- */
+// Parse a tool file and pull out all the action schemas from its discriminated union
 function extractActionSchemas(toolFile) {
   const actions = new Map()
 
   try {
     const content = readFileSync(toolFile, 'utf-8')
 
-    // Find discriminated union: z.discriminatedUnion("action_type", [...])
+    // Find the discriminated union
     const unionMatch = content.match(/z\.discriminatedUnion\("action_type",\s*\[([\s\S]*?)\]\)/)
     if (!unionMatch) {
       console.warn(`No discriminated union found in ${toolFile}`)
       return actions
     }
 
-    // Extract schema names from the union array
     const schemaNames = unionMatch[1]
       .split(',')
       .map(s => s.trim())
       .filter(s => s && !s.startsWith('//') && !s.startsWith('/*'))
 
-    // For each schema, find its definition and extract parameters
     for (const schemaName of schemaNames) {
       try {
-        // Escape special regex characters in schema name (like $)
+        // Handle schema names with special chars like $
         const escapedName = schemaName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-        // Find: const schemaName = z.object({...})
         const schemaPattern = new RegExp(
           `const\\s+${escapedName}\\s*=\\s*z\\.object\\(\\{([\\s\\S]*?)\\}\\)`,
           ''
@@ -156,8 +129,6 @@ function extractActionSchemas(toolFile) {
         if (!schemaMatch) continue
 
         const schemaBody = schemaMatch[1]
-
-        // Extract action name from: action_type: z.literal("action_name")
         const actionMatch = schemaBody.match(/action_type: z.literal\(["'](\w+)["']\)/)
         if (!actionMatch) continue
 
@@ -168,8 +139,7 @@ function extractActionSchemas(toolFile) {
           all: new Set()
         }
 
-        // Extract parameters: paramName: schemaDefinition
-        // Handles multi-line definitions by matching until comma or end
+        // Go through each line looking for param definitions
         const lines = schemaBody.split('\n')
         for (let i = 0; i < lines.length; i++) {
           const line = lines[i].trim()
@@ -181,11 +151,9 @@ function extractActionSchemas(toolFile) {
           const paramName = paramMatch[1]
           let paramDef = paramMatch[2]
 
-          // Skip the 'action_type' field itself (discriminator)
           if (paramName === 'action_type') continue
 
-          // If the definition doesn't end with a comma, it might span multiple lines
-          // Collect the full definition
+          // Multi-line definitions - keep reading until we hit a comma
           if (!paramDef.endsWith(',')) {
             let j = i + 1
             while (j < lines.length && !lines[j].trim().match(/,\s*$/)) {
@@ -218,25 +186,18 @@ function extractActionSchemas(toolFile) {
   return actions
 }
 
-/**
- * Extract handler implementations to map actions to API endpoints
- * Returns: Map<actionName, endpoint>
- *
- * This manually parses the handler object to avoid regex issues with
- * multi-line patterns and nested braces.
- */
+// Figure out which API endpoint each action calls by parsing the handler code
 function extractActionToEndpoint(toolFile) {
   const mapping = new Map()
 
   try {
     const content = readFileSync(toolFile, 'utf-8')
 
-    // Find the handler export block
     const handlerStart = content.indexOf('createToolHandler(')
     if (handlerStart === -1) return mapping
 
-    // Find the comma separating the two arguments at top level (not inside parens/braces)
-    let parenDepth = 1 // Start at 1 because we're inside createToolHandler(
+    // Walk through to find where the handlers object starts (tracking nesting depth)
+    let parenDepth = 1
     let braceDepth = 0
     let bracketDepth = 0
     let argSeparatorPos = -1
@@ -247,7 +208,7 @@ function extractActionToEndpoint(toolFile) {
       if (char === '(') parenDepth++
       else if (char === ')') {
         parenDepth--
-        if (parenDepth === 0) break // End of createToolHandler call
+        if (parenDepth === 0) break
       }
       else if (char === '{') braceDepth++
       else if (char === '}') braceDepth--
@@ -261,7 +222,6 @@ function extractActionToEndpoint(toolFile) {
 
     if (argSeparatorPos === -1) return mapping
 
-    // Find the opening { of handlers object after the comma
     let handlersStart = -1
     for (let i = argSeparatorPos + 1; i < content.length; i++) {
       if (content[i] === '{') {
@@ -272,7 +232,6 @@ function extractActionToEndpoint(toolFile) {
 
     if (handlersStart === -1) return mapping
 
-    // Find matching closing brace for handlers object
     braceDepth = 1
     let handlersEnd = -1
     for (let i = handlersStart + 1; i < content.length; i++) {
@@ -289,31 +248,26 @@ function extractActionToEndpoint(toolFile) {
     if (handlersEnd === -1) return mapping
 
     const handlersBlock = content.substring(handlersStart + 1, handlersEnd)
-
-    // Extract handlers using line-by-line parsing
     const lines = handlersBlock.split('\n')
     let currentAction = null
     let currentBody = []
     let handlerBraceDepth = 0
 
     for (const line of lines) {
-      // Check if this line starts a new handler
       const actionMatch = line.match(/^\s*(\w+):\s*async\s*\(/)
       if (actionMatch && handlerBraceDepth === 0) {
-        // Process previous handler if exists
         if (currentAction && currentBody.length > 0) {
           const body = currentBody.join('\n')
           const endpoint = extractEndpointFromBody(body)
           if (endpoint) mapping.set(currentAction, endpoint)
         }
-        // Start new handler
         currentAction = actionMatch[1]
         currentBody = [line]
       } else if (currentAction) {
         currentBody.push(line)
       }
 
-      // Track brace depth (ignore braces inside strings)
+      // Track braces but ignore ones inside strings
       let inString = false
       let stringChar = null
       let escaped = false
@@ -344,7 +298,7 @@ function extractActionToEndpoint(toolFile) {
       }
     }
 
-    // Process last handler
+    // Don't forget the last one
     if (currentAction && currentBody.length > 0) {
       const body = currentBody.join('\n')
       const endpoint = extractEndpointFromBody(body)
@@ -358,31 +312,26 @@ function extractActionToEndpoint(toolFile) {
   return mapping
 }
 
-/**
- * Extract endpoint from handler body
- */
+// Look for the endpoint URL in a handler body
 function extractEndpointFromBody(body) {
-  // Check for PathParamBuilder.build() first
+  // PathParamBuilder.build() or direct uwFetch call
   const buildMatch = body.match(/\.build\(["']([^"']+)["']\)/)
   if (buildMatch) return buildMatch[1]
 
-  // Otherwise check for direct uwFetch with string literal
   const uwFetchMatch = body.match(/uwFetch\(["']([^"']+)["']/)
   if (uwFetchMatch) return uwFetchMatch[1]
 
   return null
 }
 
-/**
- * Process all tool files and extract action schemas + endpoint mappings
- */
+// Go through all tool files and build a map of what we've implemented
 function extractImplementedActions() {
   const toolsDir = join(ROOT_DIR, 'src', 'tools')
   const files = readdirSync(toolsDir).filter(
     f => f.endsWith('.ts') && f !== 'index.ts' && !f.startsWith('base')
   )
 
-  const allActions = new Map() // `${file}:${actionName}` -> { file, actionName, params, endpoint }
+  const allActions = new Map()
 
   for (const file of files) {
     const filePath = join(toolsDir, file)
@@ -396,7 +345,6 @@ function extractImplementedActions() {
         continue
       }
 
-      // Use composite key to handle duplicate action names across different tools
       const key = `${file}:${actionName}`
       allActions.set(key, {
         file,
@@ -411,23 +359,16 @@ function extractImplementedActions() {
   return allActions
 }
 
-/**
- * Normalize parameter name by removing array notation suffix
- * OpenAPI uses "param[]" for arrays, but MCP schemas use "param"
- */
+// OpenAPI uses "param[]" for arrays, we just use "param"
 function normalizeParamName(param) {
   return param.endsWith('[]') ? param.slice(0, -2) : param
 }
 
-/**
- * Compare parameters between implementation and spec
- */
 function compareParameters(actionName, impl, spec, results) {
   const missing = { required: [], optional: [] }
   const extra = []
 
-  // Check for missing parameters (in spec but not in impl)
-  // Normalize spec param names by removing [] suffix
+  // What's in the spec that we're missing?
   for (const param of spec.params.required) {
     const normalizedParam = normalizeParamName(param)
     if (!impl.params.all.has(normalizedParam)) {
@@ -442,8 +383,7 @@ function compareParameters(actionName, impl, spec, results) {
     }
   }
 
-  // Check for extra parameters (in impl but not in spec)
-  // For each impl param, check if spec has it with or without [] suffix
+  // What do we have that's not in the spec?
   for (const param of impl.params.all) {
     const withBrackets = `${param}[]`
     if (!spec.params.all.has(param) && !spec.params.all.has(withBrackets)) {
@@ -462,9 +402,7 @@ function compareParameters(actionName, impl, spec, results) {
   }
 }
 
-/**
- * Compare implemented actions against spec endpoints
- */
+// The main comparison - match up our actions with spec endpoints
 function compareAPIs(specEndpoints, implementedActions) {
   const results = {
     missingEndpoints: [],
@@ -474,12 +412,11 @@ function compareAPIs(specEndpoints, implementedActions) {
 
   const checkedSpec = new Set()
 
-  // For each implemented action, find its spec endpoint and compare
   for (const [key, impl] of implementedActions) {
     const endpoint = impl.endpoint
     const actionName = impl.actionName
 
-    // Try GET first (most common), then POST
+    // Most are GET, but check POST too
     let specKey = `GET ${endpoint}`
     let spec = specEndpoints.get(specKey)
 
@@ -500,7 +437,7 @@ function compareAPIs(specEndpoints, implementedActions) {
     }
   }
 
-  // Find spec endpoints we haven't implemented
+  // What's in the spec that we haven't touched?
   for (const [key, spec] of specEndpoints) {
     if (!checkedSpec.has(key) && !IGNORED_ENDPOINTS.includes(spec.path)) {
       results.missingEndpoints.push({
@@ -514,9 +451,6 @@ function compareAPIs(specEndpoints, implementedActions) {
   return results
 }
 
-/**
- * Print results in a readable format
- */
 function printResults(results) {
   console.log('\n' + '='.repeat(60))
   console.log('API SYNC CHECK RESULTS')
@@ -570,9 +504,6 @@ function printResults(results) {
   }
 }
 
-/**
- * Main execution
- */
 function main() {
   try {
     const spec = loadOpenAPISpec()
