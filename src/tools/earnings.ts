@@ -14,26 +14,26 @@ const earningsLimitSchema = z.number()
 
 // Explicit per-action schemas
 const premarketSchema = z.object({
-  action: z.literal("premarket"),
+  action_type: z.literal("premarket"),
   date: dateSchema.optional(),
   limit: earningsLimitSchema.optional(),
   page: pageSchema.optional(),
 })
 
 const afterhoursSchema = z.object({
-  action: z.literal("afterhours"),
+  action_type: z.literal("afterhours"),
   date: dateSchema.optional(),
   limit: earningsLimitSchema.optional(),
   page: pageSchema.optional(),
 })
 
 const tickerSchema$ = z.object({
-  action: z.literal("ticker"),
+  action_type: z.literal("ticker"),
   ticker: tickerSchema.describe("Ticker symbol (required for ticker action)"),
 })
 
 // Discriminated union of all action schemas
-const earningsInputSchema = z.discriminatedUnion("action", [
+const earningsInputSchema = z.discriminatedUnion("action_type", [
   premarketSchema,
   afterhoursSchema,
   tickerSchema$,

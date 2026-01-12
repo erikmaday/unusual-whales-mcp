@@ -6,7 +6,7 @@ import { PathParamBuilder } from "../utils/path-params.js"
 
 // Explicit per-action schemas
 const transactionsSchema = z.object({
-  action: z.literal("transactions"),
+  action_type: z.literal("transactions"),
   ticker_symbol: z.string().describe("Comma-separated list of ticker symbols for transactions action (e.g., AAPL,INTC). Prefix with - to exclude.").optional(),
   limit: z.number().int().min(1).max(500).default(500).optional(),
   page: z.number().describe("Page number for pagination").optional(),
@@ -35,22 +35,22 @@ const transactionsSchema = z.object({
 })
 
 const sectorFlowSchema = z.object({
-  action: z.literal("sector_flow"),
+  action_type: z.literal("sector_flow"),
   sector: z.string().describe("Market sector"),
 })
 
 const tickerFlowSchema = z.object({
-  action: z.literal("ticker_flow"),
+  action_type: z.literal("ticker_flow"),
   ticker: tickerSchema.describe("Single stock ticker symbol for ticker_flow and insiders actions"),
 })
 
 const insidersSchema = z.object({
-  action: z.literal("insiders"),
+  action_type: z.literal("insiders"),
   ticker: tickerSchema.describe("Single stock ticker symbol for ticker_flow and insiders actions"),
 })
 
 // Discriminated union of all action schemas
-const insiderInputSchema = z.discriminatedUnion("action", [
+const insiderInputSchema = z.discriminatedUnion("action_type", [
   transactionsSchema,
   sectorFlowSchema,
   tickerFlowSchema,

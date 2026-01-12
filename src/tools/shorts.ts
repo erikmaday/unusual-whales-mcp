@@ -6,32 +6,32 @@ import { PathParamBuilder } from "../utils/path-params.js"
 
 // Explicit per-action schemas
 const dataSchema = z.object({
-  action: z.literal("data"),
+  action_type: z.literal("data"),
   ticker: tickerSchema,
 })
 
 const ftdsSchema = z.object({
-  action: z.literal("ftds"),
+  action_type: z.literal("ftds"),
   ticker: tickerSchema,
 })
 
 const interestFloatSchema = z.object({
-  action: z.literal("interest_float"),
+  action_type: z.literal("interest_float"),
   ticker: tickerSchema,
 })
 
 const volumeRatioSchema = z.object({
-  action: z.literal("volume_ratio"),
+  action_type: z.literal("volume_ratio"),
   ticker: tickerSchema,
 })
 
 const volumesByExchangeSchema = z.object({
-  action: z.literal("volumes_by_exchange"),
+  action_type: z.literal("volumes_by_exchange"),
   ticker: tickerSchema,
 })
 
 // Discriminated union of all action schemas
-const shortsInputSchema = z.discriminatedUnion("action", [
+const shortsInputSchema = z.discriminatedUnion("action_type", [
   dataSchema,
   ftdsSchema,
   interestFloatSchema,

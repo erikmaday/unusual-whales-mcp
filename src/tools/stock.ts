@@ -36,12 +36,12 @@ const sectorEnum = z.enum([
 
 // Explicit per-action schemas
 const infoSchema = z.object({
-  action: z.literal("info"),
+  action_type: z.literal("info"),
   ticker: tickerSchema,
 })
 
 const ohlcSchema = z.object({
-  action: z.literal("ohlc"),
+  action_type: z.literal("ohlc"),
   ticker: tickerSchema,
   candle_size: candleSizeSchema,
   date: dateSchema.optional(),
@@ -51,13 +51,13 @@ const ohlcSchema = z.object({
 })
 
 const optionChainsSchema = z.object({
-  action: z.literal("option_chains"),
+  action_type: z.literal("option_chains"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const optionContractsSchema = z.object({
-  action: z.literal("option_contracts"),
+  action_type: z.literal("option_contracts"),
   ticker: tickerSchema,
   expiry: expirySchema,
   option_type: optionTypeSchema.optional(),
@@ -72,72 +72,72 @@ const optionContractsSchema = z.object({
 })
 
 const greeksSchema = z.object({
-  action: z.literal("greeks"),
+  action_type: z.literal("greeks"),
   ticker: tickerSchema,
   expiry: expirySchema,
   date: dateSchema.optional(),
 })
 
 const greekExposureSchema = z.object({
-  action: z.literal("greek_exposure"),
+  action_type: z.literal("greek_exposure"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
   timeframe: timeframeSchema.optional(),
 })
 
 const greekExposureByExpirySchema = z.object({
-  action: z.literal("greek_exposure_by_expiry"),
+  action_type: z.literal("greek_exposure_by_expiry"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const greekExposureByStrikeSchema = z.object({
-  action: z.literal("greek_exposure_by_strike"),
+  action_type: z.literal("greek_exposure_by_strike"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const greekExposureByStrikeExpirySchema = z.object({
-  action: z.literal("greek_exposure_by_strike_expiry"),
+  action_type: z.literal("greek_exposure_by_strike_expiry"),
   ticker: tickerSchema,
   expiry: expirySchema,
   date: dateSchema.optional(),
 })
 
 const greekFlowSchema = z.object({
-  action: z.literal("greek_flow"),
+  action_type: z.literal("greek_flow"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const greekFlowByExpirySchema = z.object({
-  action: z.literal("greek_flow_by_expiry"),
+  action_type: z.literal("greek_flow_by_expiry"),
   ticker: tickerSchema,
   expiry: expirySchema,
   date: dateSchema.optional(),
 })
 
 const ivRankSchema = z.object({
-  action: z.literal("iv_rank"),
+  action_type: z.literal("iv_rank"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
   timespan: timespanSchema.optional(),
 })
 
 const interpolatedIvSchema = z.object({
-  action: z.literal("interpolated_iv"),
+  action_type: z.literal("interpolated_iv"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const maxPainSchema = z.object({
-  action: z.literal("max_pain"),
+  action_type: z.literal("max_pain"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const oiChangeSchema = z.object({
-  action: z.literal("oi_change"),
+  action_type: z.literal("oi_change"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
   limit: limitSchema.optional(),
@@ -146,98 +146,98 @@ const oiChangeSchema = z.object({
 })
 
 const oiPerExpirySchema = z.object({
-  action: z.literal("oi_per_expiry"),
+  action_type: z.literal("oi_per_expiry"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const oiPerStrikeSchema = z.object({
-  action: z.literal("oi_per_strike"),
+  action_type: z.literal("oi_per_strike"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const optionsVolumeSchema = z.object({
-  action: z.literal("options_volume"),
+  action_type: z.literal("options_volume"),
   ticker: tickerSchema,
   limit: z.number().int().min(1).max(500).default(1).optional(),
 })
 
 const volumeOiExpirySchema = z.object({
-  action: z.literal("volume_oi_expiry"),
+  action_type: z.literal("volume_oi_expiry"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const atmChainsSchema = z.object({
-  action: z.literal("atm_chains"),
+  action_type: z.literal("atm_chains"),
   ticker: tickerSchema,
   expirations: z.array(expirySchema).min(1),
 })
 
 const expiryBreakdownSchema = z.object({
-  action: z.literal("expiry_breakdown"),
+  action_type: z.literal("expiry_breakdown"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const flowPerExpirySchema = z.object({
-  action: z.literal("flow_per_expiry"),
+  action_type: z.literal("flow_per_expiry"),
   ticker: tickerSchema,
 })
 
 const flowPerStrikeSchema = z.object({
-  action: z.literal("flow_per_strike"),
+  action_type: z.literal("flow_per_strike"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const flowPerStrikeIntradaySchema = z.object({
-  action: z.literal("flow_per_strike_intraday"),
+  action_type: z.literal("flow_per_strike_intraday"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
   filter: filterSchema.optional(),
 })
 
 const flowRecentSchema = z.object({
-  action: z.literal("flow_recent"),
+  action_type: z.literal("flow_recent"),
   ticker: tickerSchema,
   side: sideSchema.default("ALL").optional(),
   min_premium: z.number().min(0).default(0).optional(),
 })
 
 const netPremTicksSchema = z.object({
-  action: z.literal("net_prem_ticks"),
+  action_type: z.literal("net_prem_ticks"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const nopeSchema = z.object({
-  action: z.literal("nope"),
+  action_type: z.literal("nope"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const stockPriceLevelsSchema = z.object({
-  action: z.literal("stock_price_levels"),
+  action_type: z.literal("stock_price_levels"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const stockVolumePriceLevelsSchema = z.object({
-  action: z.literal("stock_volume_price_levels"),
+  action_type: z.literal("stock_volume_price_levels"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const spotExposuresSchema = z.object({
-  action: z.literal("spot_exposures"),
+  action_type: z.literal("spot_exposures"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const spotExposuresByExpiryStrikeSchema = z.object({
-  action: z.literal("spot_exposures_by_expiry_strike"),
+  action_type: z.literal("spot_exposures_by_expiry_strike"),
   ticker: tickerSchema,
   expirations: z.array(expirySchema).min(1),
   date: dateSchema.optional(),
@@ -250,7 +250,7 @@ const spotExposuresByExpiryStrikeSchema = z.object({
 })
 
 const spotExposuresByStrikeSchema = z.object({
-  action: z.literal("spot_exposures_by_strike"),
+  action_type: z.literal("spot_exposures_by_strike"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
   min_strike: z.number().min(0).optional(),
@@ -260,16 +260,20 @@ const spotExposuresByStrikeSchema = z.object({
 })
 
 const spotExposuresExpiryStrikeSchema = z.object({
-  action: z.literal("spot_exposures_expiry_strike"),
+  action_type: z.literal("spot_exposures_expiry_strike"),
   ticker: tickerSchema,
-  expiry: expirySchema,
+  expirations: z.array(expirySchema).min(1),
   date: dateSchema.optional(),
+  limit: z.number().int().min(1).max(500).default(500).optional(),
+  page: pageSchema.optional(),
   min_strike: z.number().min(0).optional(),
   max_strike: z.number().min(0).optional(),
+  min_dte: z.number().int().nonnegative().optional(),
+  max_dte: z.number().int().nonnegative().optional(),
 })
 
 const historicalRiskReversalSkewSchema = z.object({
-  action: z.literal("historical_risk_reversal_skew"),
+  action_type: z.literal("historical_risk_reversal_skew"),
   ticker: tickerSchema,
   expiry: expirySchema,
   delta: deltaSchema,
@@ -278,51 +282,51 @@ const historicalRiskReversalSkewSchema = z.object({
 })
 
 const volatilityRealizedSchema = z.object({
-  action: z.literal("volatility_realized"),
+  action_type: z.literal("volatility_realized"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
   timeframe: timeframeSchema.optional(),
 })
 
 const volatilityStatsSchema = z.object({
-  action: z.literal("volatility_stats"),
+  action_type: z.literal("volatility_stats"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const volatilityTermStructureSchema = z.object({
-  action: z.literal("volatility_term_structure"),
+  action_type: z.literal("volatility_term_structure"),
   ticker: tickerSchema,
   date: dateSchema.optional(),
 })
 
 const stockStateSchema = z.object({
-  action: z.literal("stock_state"),
+  action_type: z.literal("stock_state"),
   ticker: tickerSchema,
 })
 
 const insiderBuySellsSchema = z.object({
-  action: z.literal("insider_buy_sells"),
+  action_type: z.literal("insider_buy_sells"),
   ticker: tickerSchema,
 })
 
 const ownershipSchema = z.object({
-  action: z.literal("ownership"),
+  action_type: z.literal("ownership"),
   ticker: tickerSchema,
   limit: z.number().int().min(1).max(100).default(20).optional(),
 })
 
 const tickersBySectorSchema = z.object({
-  action: z.literal("tickers_by_sector"),
+  action_type: z.literal("tickers_by_sector"),
   sector: sectorEnum,
 })
 
 const tickerExchangesSchema = z.object({
-  action: z.literal("ticker_exchanges"),
+  action_type: z.literal("ticker_exchanges"),
 })
 
 // Discriminated union of all action schemas
-const stockInputSchema = z.discriminatedUnion("action", [
+const stockInputSchema = z.discriminatedUnion("action_type", [
   infoSchema,
   ohlcSchema,
   optionChainsSchema,
@@ -404,7 +408,7 @@ Available actions:
 - spot_exposures: Get spot exposures (ticker required; date optional)
 - spot_exposures_by_expiry_strike: Get spot exposures by expiry/strike (ticker, expirations required; date, filters optional)
 - spot_exposures_by_strike: Get spot exposures by strike (ticker required; date, filters optional)
-- spot_exposures_expiry_strike: Get spot exposures for specific expiry (ticker, expiry required; date, strike filters optional)
+- spot_exposures_expiry_strike: Get spot exposures for specific expiry (ticker, expirations required; date, strike filters optional)
 - historical_risk_reversal_skew: Get risk reversal skew (ticker, expiry, delta required; date, timeframe optional)
 - volatility_realized: Get realized volatility (ticker required; date, timeframe optional)
 - volatility_stats: Get volatility stats (ticker required; date optional)
@@ -712,10 +716,14 @@ export const handleStock = createToolHandler(stockInputSchema, {
       .add("ticker", data.ticker)
       .build("/api/stock/{ticker}/spot-exposures/expiry-strike")
     return uwFetch(path, {
-      "expirations[]": [data.expiry],
+      "expirations[]": data.expirations,
       date: data.date,
+      limit: data.limit,
+      page: data.page,
       min_strike: data.min_strike,
       max_strike: data.max_strike,
+      min_dte: data.min_dte,
+      max_dte: data.max_dte,
     })
   },
 

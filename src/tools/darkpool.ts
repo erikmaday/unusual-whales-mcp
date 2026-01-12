@@ -6,11 +6,9 @@ import { PathParamBuilder } from "../utils/path-params.js"
 
 // Explicit per-action schemas
 const recentSchema = z.object({
-  action: z.literal("recent"),
+  action_type: z.literal("recent"),
   date: dateSchema.optional(),
   limit: z.number().int().min(1).max(200).describe("Maximum number of results").default(100).optional(),
-  newer_than: z.string().describe("Filter trades newer than timestamp").optional(),
-  older_than: z.string().describe("Filter trades older than timestamp").optional(),
   min_premium: z.number().int().nonnegative().default(0).describe("The minimum premium on the alert or trade").optional(),
   max_premium: z.number().int().nonnegative().describe("The maximum premium on the alert or trade").optional(),
   min_size: z.number().int().nonnegative().default(0).describe("The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert").optional(),
@@ -20,7 +18,7 @@ const recentSchema = z.object({
 })
 
 const tickerSchema$ = z.object({
-  action: z.literal("ticker"),
+  action_type: z.literal("ticker"),
   ticker: tickerSchema.describe("Ticker symbol (required for ticker action)"),
   date: dateSchema.optional(),
   limit: z.number().int().min(1).max(500).describe("Maximum number of results").default(500).optional(),
@@ -35,7 +33,7 @@ const tickerSchema$ = z.object({
 })
 
 // Discriminated union of all action schemas
-const darkpoolInputSchema = z.discriminatedUnion("action", [
+const darkpoolInputSchema = z.discriminatedUnion("action_type", [
   recentSchema,
   tickerSchema$,
 ])
@@ -72,8 +70,6 @@ export const handleDarkpool = createToolHandler(darkpoolInputSchema, {
       max_size: data.max_size,
       min_volume: data.min_volume,
       max_volume: data.max_volume,
-      newer_than: data.newer_than,
-      older_than: data.older_than,
     })
   },
 
@@ -84,14 +80,14 @@ export const handleDarkpool = createToolHandler(darkpoolInputSchema, {
     return uwFetch(path, {
       date: data.date,
       limit: data.limit,
+      newer_than: data.newer_than,
+      older_than: data.older_than,
       min_premium: data.min_premium,
       max_premium: data.max_premium,
       min_size: data.min_size,
       max_size: data.max_size,
       min_volume: data.min_volume,
       max_volume: data.max_volume,
-      newer_than: data.newer_than,
-      older_than: data.older_than,
     })
   },
 })

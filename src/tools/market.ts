@@ -6,34 +6,34 @@ import { PathParamBuilder } from "../utils/path-params.js"
 
 // Explicit per-action schemas
 const marketTideSchema = z.object({
-  action: z.literal("market_tide"),
+  action_type: z.literal("market_tide"),
   date: dateSchema.optional(),
   otm_only: z.boolean().describe("Only use OTM options (for market_tide)").default(false).optional(),
   interval_5m: z.boolean().describe("Use 5-minute intervals instead of 1-minute (for market_tide)").default(true).optional(),
 })
 
 const sectorTideSchema = z.object({
-  action: z.literal("sector_tide"),
+  action_type: z.literal("sector_tide"),
   sector: z.string().describe("Market sector (for sector_tide)"),
   date: dateSchema.optional(),
 })
 
 const etfTideSchema = z.object({
-  action: z.literal("etf_tide"),
+  action_type: z.literal("etf_tide"),
   ticker: tickerSchema.describe("Ticker symbol (for etf_tide)"),
   date: dateSchema.optional(),
 })
 
 const sectorEtfsSchema = z.object({
-  action: z.literal("sector_etfs"),
+  action_type: z.literal("sector_etfs"),
 })
 
 const economicCalendarSchema = z.object({
-  action: z.literal("economic_calendar"),
+  action_type: z.literal("economic_calendar"),
 })
 
 const fdaCalendarSchema = z.object({
-  action: z.literal("fda_calendar"),
+  action_type: z.literal("fda_calendar"),
   announced_date_min: z.string().describe("Minimum announced date for FDA calendar").optional(),
   announced_date_max: z.string().describe("Maximum announced date for FDA calendar").optional(),
   target_date_min: z.string().describe("Minimum target date for FDA calendar").optional(),
@@ -44,7 +44,7 @@ const fdaCalendarSchema = z.object({
 })
 
 const correlationsSchema = z.object({
-  action: z.literal("correlations"),
+  action_type: z.literal("correlations"),
   tickers: z.string().describe("Ticker list for correlations"),
   interval: z.string().describe("Time interval (1y, 6m, 3m, 1m) for correlations").default("1Y").optional(),
   start_date: z.string().describe("Start date for correlations (YYYY-MM-DD)").optional(),
@@ -52,36 +52,36 @@ const correlationsSchema = z.object({
 })
 
 const insiderBuySellsSchema = z.object({
-  action: z.literal("insider_buy_sells"),
+  action_type: z.literal("insider_buy_sells"),
   limit: z.number().int().min(1).max(500).describe("Maximum number of results").optional(),
 })
 
 const oiChangeSchema = z.object({
-  action: z.literal("oi_change"),
+  action_type: z.literal("oi_change"),
   date: dateSchema.optional(),
   limit: z.number().int().min(1).max(500).describe("Maximum number of results").optional(),
   order: z.enum(["asc", "desc"]).describe("Order direction").optional(),
 })
 
 const spikeSchema = z.object({
-  action: z.literal("spike"),
+  action_type: z.literal("spike"),
   date: dateSchema.optional(),
 })
 
 const topNetImpactSchema = z.object({
-  action: z.literal("top_net_impact"),
+  action_type: z.literal("top_net_impact"),
   date: dateSchema.optional(),
   issue_types: z.string().describe("Issue types filter (for top_net_impact)").optional(),
   limit: z.number().int().min(1).max(500).describe("Maximum number of results").optional(),
 })
 
 const totalOptionsVolumeSchema = z.object({
-  action: z.literal("total_options_volume"),
+  action_type: z.literal("total_options_volume"),
   limit: z.number().int().min(1).max(500).describe("Maximum number of results").optional(),
 })
 
 // Discriminated union of all action schemas
-const marketInputSchema = z.discriminatedUnion("action", [
+const marketInputSchema = z.discriminatedUnion("action_type", [
   marketTideSchema,
   sectorTideSchema,
   etfTideSchema,

@@ -13,10 +13,9 @@ import { PathParamBuilder } from "../utils/path-params.js"
 
 // Explicit per-action schemas with all parameters inlined
 const flowAlertsSchema = z.object({
-  action: z.literal("flow_alerts"),
+  action_type: z.literal("flow_alerts"),
   ticker_symbol: z.string().describe("Comma-separated list of ticker symbols to filter by. Prefix with '-' to exclude tickers (e.g., 'AAPL,INTC' or '-TSLA,NVDA')").optional(),
   limit: z.number().int().min(1).max(500).describe("Maximum number of results").default(100).optional(),
-  date: dateSchema.optional(),
   // Premium filters
   min_premium: z.number().int().nonnegative().default(0).describe("The minimum premium on the alert or trade").optional(),
   max_premium: z.number().int().nonnegative().describe("The maximum premium on the alert or trade").optional(),
@@ -86,12 +85,12 @@ const flowAlertsSchema = z.object({
 })
 
 const fullTapeSchema = z.object({
-  action: z.literal("full_tape"),
+  action_type: z.literal("full_tape"),
   date: dateSchema.describe("Date in YYYY-MM-DD format (required for full_tape)"),
 })
 
 const netFlowExpirySchema = z.object({
-  action: z.literal("net_flow_expiry"),
+  action_type: z.literal("net_flow_expiry"),
   date: dateSchema.optional(),
   moneyness: z.string().describe("Filter results by moneyness (all, itm, otm, atm). Setting to 'otm' will filter out any contract that was not out of the money at the time of the transaction").optional(),
   tide_type: z.string().describe("Filter results by tide type (all, equity_only, etf_only, index_only). Setting to 'equity_only' will filter out ETFs and indexes").optional(),
@@ -99,20 +98,20 @@ const netFlowExpirySchema = z.object({
 })
 
 const groupGreekFlowSchema = z.object({
-  action: z.literal("group_greek_flow"),
+  action_type: z.literal("group_greek_flow"),
   flow_group: flowGroupSchema,
   date: dateSchema.optional(),
 })
 
 const groupGreekFlowExpirySchema = z.object({
-  action: z.literal("group_greek_flow_expiry"),
+  action_type: z.literal("group_greek_flow_expiry"),
   flow_group: flowGroupSchema,
   expiry: expirySchema,
   date: dateSchema.optional(),
 })
 
 const litFlowRecentSchema = z.object({
-  action: z.literal("lit_flow_recent"),
+  action_type: z.literal("lit_flow_recent"),
   date: dateSchema.optional(),
   limit: z.number().int().min(1).max(500).default(100).optional(),
   min_premium: z.number().int().nonnegative().default(0).describe("The minimum premium on the alert or trade").optional(),
@@ -121,27 +120,25 @@ const litFlowRecentSchema = z.object({
   max_size: z.number().int().nonnegative().describe("The maximum size on that alert").optional(),
   min_volume: z.number().int().nonnegative().default(0).describe("The minimum volume on the contract").optional(),
   max_volume: z.number().int().nonnegative().describe("The maximum volume on the contract").optional(),
-  newer_than: z.string().describe("Filter trades newer than timestamp").optional(),
-  older_than: z.string().describe("Filter trades older than timestamp").optional(),
 })
 
 const litFlowTickerSchema = z.object({
-  action: z.literal("lit_flow_ticker"),
+  action_type: z.literal("lit_flow_ticker"),
   ticker: tickerSchema.describe("Ticker symbol (required for lit_flow_ticker action)"),
   date: dateSchema.optional(),
   limit: z.number().int().min(1).max(500).default(500).optional(),
+  newer_than: z.string().describe("Filter trades newer than timestamp").optional(),
+  older_than: z.string().describe("Filter trades older than timestamp").optional(),
   min_premium: z.number().int().nonnegative().default(0).describe("The minimum premium on the alert or trade").optional(),
   max_premium: z.number().int().nonnegative().describe("The maximum premium on the alert or trade").optional(),
   min_size: z.number().int().nonnegative().default(0).describe("The minimum size on that alert").optional(),
   max_size: z.number().int().nonnegative().describe("The maximum size on that alert").optional(),
   min_volume: z.number().int().nonnegative().default(0).describe("The minimum volume on the contract").optional(),
   max_volume: z.number().int().nonnegative().describe("The maximum volume on the contract").optional(),
-  newer_than: z.string().describe("Filter trades newer than timestamp").optional(),
-  older_than: z.string().describe("Filter trades older than timestamp").optional(),
 })
 
 // Discriminated union of all action schemas
-const flowInputSchema = z.discriminatedUnion("action", [
+const flowInputSchema = z.discriminatedUnion("action_type", [
   flowAlertsSchema,
   fullTapeSchema,
   netFlowExpirySchema,
@@ -283,8 +280,6 @@ export const handleFlow = createToolHandler(flowInputSchema, {
       max_size: data.max_size,
       min_volume: data.min_volume,
       max_volume: data.max_volume,
-      newer_than: data.newer_than,
-      older_than: data.older_than,
     })
   },
 
@@ -295,14 +290,14 @@ export const handleFlow = createToolHandler(flowInputSchema, {
     return uwFetch(path, {
       date: data.date,
       limit: data.limit,
+      newer_than: data.newer_than,
+      older_than: data.older_than,
       min_premium: data.min_premium,
       max_premium: data.max_premium,
       min_size: data.min_size,
       max_size: data.max_size,
       min_volume: data.min_volume,
       max_volume: data.max_volume,
-      newer_than: data.newer_than,
-      older_than: data.older_than,
     })
   },
 })

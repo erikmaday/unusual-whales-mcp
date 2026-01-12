@@ -10,11 +10,11 @@ import { PathParamBuilder } from "../utils/path-params.js"
 
 // Explicit per-action schemas
 const marketSchema = z.object({
-  action: z.literal("market"),
+  action_type: z.literal("market"),
 })
 
 const performersSchema = z.object({
-  action: z.literal("performers"),
+  action_type: z.literal("performers"),
   month: z.number().min(1).max(12).describe("Month number (1-12)"),
   min_years: minYearsSchema.optional(),
   ticker_for_sector: tickerSchema.describe("A ticker whose sector will be used to filter results").optional(),
@@ -26,17 +26,17 @@ const performersSchema = z.object({
 })
 
 const monthlySchema = z.object({
-  action: z.literal("monthly"),
+  action_type: z.literal("monthly"),
   ticker: tickerSchema,
 })
 
 const yearMonthSchema = z.object({
-  action: z.literal("year_month"),
+  action_type: z.literal("year_month"),
   ticker: tickerSchema,
 })
 
 // Discriminated union of all action schemas
-const seasonalityInputSchema = z.discriminatedUnion("action", [
+const seasonalityInputSchema = z.discriminatedUnion("action_type", [
   marketSchema,
   performersSchema,
   monthlySchema,

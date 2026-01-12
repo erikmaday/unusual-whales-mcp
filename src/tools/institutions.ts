@@ -13,7 +13,7 @@ import {
 
 // Explicit per-action schemas
 const listSchema = z.object({
-  action: z.literal("list"),
+  action_type: z.literal("list"),
   name: z.string().optional(),
   limit: limitSchema.default(500).optional(),
   page: z.number().optional(),
@@ -21,11 +21,13 @@ const listSchema = z.object({
   order_direction: orderDirectionSchema.default("desc").optional(),
   min_total_value: z.number().optional(),
   max_total_value: z.number().optional(),
+  min_share_value: z.number().optional(),
+  max_share_value: z.number().optional(),
   tags: z.string().optional(),
 })
 
 const holdingsSchema = z.object({
-  action: z.literal("holdings"),
+  action_type: z.literal("holdings"),
   name: z.string().describe("Institution name"),
   date: dateSchema.optional(),
   start_date: z.string().optional(),
@@ -38,8 +40,9 @@ const holdingsSchema = z.object({
 })
 
 const activitySchema = z.object({
-  action: z.literal("activity"),
+  action_type: z.literal("activity"),
   name: z.string().describe("Institution name"),
+  date: dateSchema.optional(),
   limit: limitSchema.default(500).optional(),
   page: z.number().optional(),
   order: institutionalActivityOrderBySchema.optional(),
@@ -47,14 +50,15 @@ const activitySchema = z.object({
 })
 
 const sectorsSchema = z.object({
-  action: z.literal("sectors"),
+  action_type: z.literal("sectors"),
   name: z.string().describe("Institution name"),
+  date: dateSchema.optional(),
   limit: limitSchema.default(500).optional(),
-  order: z.string().optional(),
+  page: z.number().optional(),
 })
 
 const ownershipSchema = z.object({
-  action: z.literal("ownership"),
+  action_type: z.literal("ownership"),
   ticker: tickerSchema.describe("Ticker symbol (for ownership)"),
   date: dateSchema.optional(),
   start_date: z.string().optional(),
@@ -67,18 +71,17 @@ const ownershipSchema = z.object({
 })
 
 const latestFilingsSchema = z.object({
-  action: z.literal("latest_filings"),
+  action_type: z.literal("latest_filings"),
   name: z.string().optional(),
   date: dateSchema.optional(),
   limit: limitSchema.default(500).optional(),
+  page: z.number().optional(),
   order: latestInstitutionalFilingsOrderBySchema.optional(),
   order_direction: orderDirectionSchema.default("desc").optional(),
-  min_share_value: z.number().optional(),
-  max_share_value: z.number().optional(),
 })
 
 // Discriminated union of all action schemas
-const institutionsInputSchema = z.discriminatedUnion("action", [
+const institutionsInputSchema = z.discriminatedUnion("action_type", [
   listSchema,
   holdingsSchema,
   activitySchema,
@@ -120,6 +123,8 @@ export const handleInstitutions = createToolHandler(institutionsInputSchema, {
       order_direction: data.order_direction,
       min_total_value: data.min_total_value,
       max_total_value: data.max_total_value,
+      min_share_value: data.min_share_value,
+      max_share_value: data.max_share_value,
       tags: data.tags,
     })
   },
@@ -145,6 +150,7 @@ export const handleInstitutions = createToolHandler(institutionsInputSchema, {
       .add("name", data.name)
       .build("/api/institution/{name}/activity")
     return uwFetch(path, {
+      date: data.date,
       limit: data.limit,
       page: data.page,
       order: data.order,
@@ -157,8 +163,9 @@ export const handleInstitutions = createToolHandler(institutionsInputSchema, {
       .add("name", data.name)
       .build("/api/institution/{name}/sectors")
     return uwFetch(path, {
+      date: data.date,
       limit: data.limit,
-      order: data.order,
+      page: data.page,
     })
   },
 
@@ -183,10 +190,9 @@ export const handleInstitutions = createToolHandler(institutionsInputSchema, {
       name: data.name,
       date: data.date,
       limit: data.limit,
+      page: data.page,
       order: data.order,
       order_direction: data.order_direction,
-      min_share_value: data.min_share_value,
-      max_share_value: data.max_share_value,
     })
   },
 })

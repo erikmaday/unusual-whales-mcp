@@ -5,7 +5,7 @@ import { createToolHandler } from "./base/tool-factory.js"
 
 // Explicit per-action schemas
 const alertsSchema = z.object({
-  action: z.literal("alerts"),
+  action_type: z.literal("alerts"),
   limit: limitSchema.default(1).optional(),
   ticker_symbols: z.string().describe("Comma-separated list of tickers to filter by. Prefix with '-' to exclude tickers (e.g., 'AAPL,INTC' or '-TSLA,NVDA')").optional(),
   intraday_only: z.boolean().describe("Only show intraday alerts").default(true).optional(),
@@ -16,11 +16,11 @@ const alertsSchema = z.object({
 })
 
 const configurationsSchema = z.object({
-  action: z.literal("configurations"),
+  action_type: z.literal("configurations"),
 })
 
 // Discriminated union of all action schemas
-const alertsInputSchema = z.discriminatedUnion("action", [
+const alertsInputSchema = z.discriminatedUnion("action_type", [
   alertsSchema,
   configurationsSchema,
 ])

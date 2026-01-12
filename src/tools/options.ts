@@ -6,7 +6,7 @@ import { PathParamBuilder } from "../utils/path-params.js"
 
 // Explicit per-action schemas - each is a complete specification
 const flowSchema = z.object({
-  action: z.literal("flow"),
+  action_type: z.literal("flow"),
   id: z.string().describe("Option contract ID/symbol (e.g., AAPL240119C00150000)"),
   side: sideSchema.describe("Trade side (ALL, ASK, BID, or MID)").default("ALL").optional(),
   min_premium: z.number().int().nonnegative().describe("Minimum premium filter").default(0).optional(),
@@ -15,25 +15,25 @@ const flowSchema = z.object({
 })
 
 const historicSchema = z.object({
-  action: z.literal("historic"),
+  action_type: z.literal("historic"),
   id: z.string().describe("Option contract ID/symbol (e.g., AAPL240119C00150000)"),
   limit: limitSchema.optional(),
 })
 
 const intradaySchema = z.object({
-  action: z.literal("intraday"),
+  action_type: z.literal("intraday"),
   id: z.string().describe("Option contract ID/symbol (e.g., AAPL240119C00150000)"),
   date: dateSchema.optional(),
 })
 
 const volumeProfileSchema = z.object({
-  action: z.literal("volume_profile"),
+  action_type: z.literal("volume_profile"),
   id: z.string().describe("Option contract ID/symbol (e.g., AAPL240119C00150000)"),
   date: dateSchema.optional(),
 })
 
 // Discriminated union of all action schemas
-const optionsInputSchema = z.discriminatedUnion("action", [
+const optionsInputSchema = z.discriminatedUnion("action_type", [
   flowSchema,
   historicSchema,
   intradaySchema,

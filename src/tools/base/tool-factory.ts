@@ -13,23 +13,23 @@ type ActionHandler<TInput> = (data: TInput) => Promise<ApiResponse>
  * Map of action names to their handler functions
  */
 type ActionHandlers<TInput> = {
-  [K in TInput extends { action: infer A } ? A & string : never]: ActionHandler<
-    Extract<TInput, { action: K }>
+  [K in TInput extends { action_type: infer A } ? A & string : never]: ActionHandler<
+    Extract<TInput, { action_type: K }>
   >
 }
 
 /**
  * Create a tool handler function with automatic validation, routing, and error handling
  *
- * @param schema - Zod schema for input validation (should be discriminated union on 'action')
+ * @param schema - Zod schema for input validation (should be discriminated union on 'type')
  * @param handlers - Map of action names to handler functions
  * @returns Tool handler function that validates input, routes to action handler, and formats response
  *
  * @example
  * ```typescript
- * const myToolSchema = z.discriminatedUnion("action", [
- *   z.object({ action: z.literal("action1"), ticker: tickerSchema }),
- *   z.object({ action: z.literal("action2"), date: dateSchema }),
+ * const myToolSchema = z.discriminatedUnion("action_type", [
+ *   z.object({ action_type: z.literal("action1"), ticker: tickerSchema }),
+ *   z.object({ action_type: z.literal("action2"), date: dateSchema }),
  * ])
  *
  * export const handleMyTool = createToolHandler(
@@ -43,7 +43,7 @@ type ActionHandlers<TInput> = {
  */
 export function createToolHandler<TInput>(
   schema: ZodSchema<TInput>,
-  handlers: ActionHandlers<TInput>
+  handlers: ActionHandlers<TInput>,
 ): (args: Record<string, unknown>) => Promise<ToolResponse> {
   return async (args: Record<string, unknown>): Promise<ToolResponse> => {
     // Validate input
@@ -54,8 +54,8 @@ export function createToolHandler<TInput>(
     }
 
     // Extract action from validated data
-    const data = parsed.data as TInput & { action: string }
-    const action = data.action
+    const data = parsed.data as TInput & { action_type: string }
+    const action = data.action_type
 
     // Get handler for this action
     const handler = handlers[action as keyof typeof handlers]
