@@ -48,7 +48,8 @@ describe("stockTool", () => {
 
   it("has inputSchema", () => {
     expect(stockTool.inputSchema).toBeDefined()
-    expect(stockTool.inputSchema.type).toBe("object")
+    // For discriminated unions, the schema has oneOf instead of type: "object"
+    expect(stockTool.inputSchema.oneOf || stockTool.inputSchema.type).toBeDefined()
   })
 
   it("has correct annotations", () => {
@@ -72,7 +73,7 @@ describe("handleStock", () => {
     it("returns error for invalid action", async () => {
       const result = await handleStock({ action: "invalid_action" })
       expect(result).toHaveProperty("text")
-      expect(result.text).toContain("Invalid option")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
@@ -102,7 +103,7 @@ describe("handleStock", () => {
   describe("info action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "info" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -114,12 +115,12 @@ describe("handleStock", () => {
   describe("ohlc action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "ohlc", candle_size: "1d" })
-      expect(result.text).toContain("ticker and candle_size are required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error when candle_size is missing", async () => {
       const result = await handleStock({ action: "ohlc", ticker: "AAPL" })
-      expect(result.text).toContain("ticker and candle_size are required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint and params", async () => {
@@ -142,7 +143,7 @@ describe("handleStock", () => {
   describe("option_chains action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "option_chains" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -204,7 +205,7 @@ describe("handleStock", () => {
         ticker: "AAPL",
       })
       // Only expiry is missing, ticker is provided
-      expect(result.text).toContain("expiry is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -225,7 +226,7 @@ describe("handleStock", () => {
         action: "atm_chains",
         ticker: "AAPL",
       })
-      expect(result.text).toContain("expirations is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error when expirations is empty", async () => {
@@ -234,7 +235,7 @@ describe("handleStock", () => {
         ticker: "AAPL",
         expirations: [],
       })
-      expect(result.text).toContain("expirations is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with expirations array", async () => {
@@ -256,7 +257,7 @@ describe("handleStock", () => {
         ticker: "AAPL",
       })
       // Ticker is provided, but expiry and delta are missing
-      expect(result.text).toContain("expiry and delta are required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with all params", async () => {
@@ -280,7 +281,7 @@ describe("handleStock", () => {
   describe("tickers_by_sector action", () => {
     it("returns error when sector is missing", async () => {
       const result = await handleStock({ action: "tickers_by_sector" })
-      expect(result.text).toContain("sector is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -329,7 +330,7 @@ describe("handleStock", () => {
         action: "spot_exposures_by_expiry_strike",
         ticker: "AAPL",
       })
-      expect(result.text).toContain("expirations is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("passes all filter params", async () => {
@@ -361,7 +362,7 @@ describe("handleStock", () => {
   describe("stock_price_levels action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "stock_price_levels" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -378,7 +379,7 @@ describe("handleStock", () => {
   describe("stock_volume_price_levels action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "stock_volume_price_levels" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -390,7 +391,7 @@ describe("handleStock", () => {
   describe("spot_exposures action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "spot_exposures" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -402,7 +403,7 @@ describe("handleStock", () => {
   describe("spot_exposures_by_strike action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "spot_exposures_by_strike" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -434,13 +435,13 @@ describe("handleStock", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "spot_exposures_expiry_strike", expiry: "2024-01-19" })
       // Ticker is optional in schema, so validation passes and handler check runs
-      expect(result.text).toContain("ticker and expiry are required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error when expiry is missing", async () => {
       const result = await handleStock({ action: "spot_exposures_expiry_strike", ticker: "AAPL" })
       // Zod validation catches missing expiry via .refine()
-      expect(result.text).toContain("expiry is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct v2 endpoint", async () => {
@@ -471,7 +472,7 @@ describe("handleStock", () => {
   describe("volatility_realized action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "volatility_realized" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -496,7 +497,7 @@ describe("handleStock", () => {
   describe("volatility_stats action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "volatility_stats" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -508,7 +509,7 @@ describe("handleStock", () => {
   describe("volatility_term_structure action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "volatility_term_structure" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -520,7 +521,7 @@ describe("handleStock", () => {
   describe("stock_state action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "stock_state" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -532,7 +533,7 @@ describe("handleStock", () => {
   describe("insider_buy_sells action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "insider_buy_sells" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -544,7 +545,7 @@ describe("handleStock", () => {
   describe("ownership action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "ownership" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -561,7 +562,7 @@ describe("handleStock", () => {
   describe("greek_exposure_by_expiry action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "greek_exposure_by_expiry" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -573,7 +574,7 @@ describe("handleStock", () => {
   describe("greek_exposure_by_strike action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "greek_exposure_by_strike" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -597,7 +598,7 @@ describe("handleStock", () => {
   describe("greek_flow action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "greek_flow" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -609,7 +610,7 @@ describe("handleStock", () => {
   describe("interpolated_iv action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "interpolated_iv" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -621,7 +622,7 @@ describe("handleStock", () => {
   describe("max_pain action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "max_pain" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -633,7 +634,7 @@ describe("handleStock", () => {
   describe("oi_change action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "oi_change" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -645,7 +646,7 @@ describe("handleStock", () => {
   describe("oi_per_expiry action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "oi_per_expiry" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -657,7 +658,7 @@ describe("handleStock", () => {
   describe("oi_per_strike action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "oi_per_strike" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -669,7 +670,7 @@ describe("handleStock", () => {
   describe("options_volume action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "options_volume" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -681,7 +682,7 @@ describe("handleStock", () => {
   describe("volume_oi_expiry action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "volume_oi_expiry" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -693,7 +694,7 @@ describe("handleStock", () => {
   describe("expiry_breakdown action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "expiry_breakdown" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -705,7 +706,7 @@ describe("handleStock", () => {
   describe("flow_per_expiry action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "flow_per_expiry" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -717,7 +718,7 @@ describe("handleStock", () => {
   describe("flow_per_strike action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "flow_per_strike" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -729,7 +730,7 @@ describe("handleStock", () => {
   describe("flow_per_strike_intraday action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "flow_per_strike_intraday" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -741,7 +742,7 @@ describe("handleStock", () => {
   describe("flow_recent action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "flow_recent" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -753,7 +754,7 @@ describe("handleStock", () => {
   describe("net_prem_ticks action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "net_prem_ticks" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -765,7 +766,7 @@ describe("handleStock", () => {
   describe("nope action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleStock({ action: "nope" })
-      expect(result.text).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {

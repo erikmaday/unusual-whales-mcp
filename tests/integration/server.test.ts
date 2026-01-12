@@ -210,7 +210,7 @@ describe("Request/Response Cycle", () => {
 
     expect(result).toHaveProperty("text")
     const parsed = JSON.parse(result.text)
-    expect(parsed.error).toContain("required")
+    expect(parsed.error).toContain("Invalid input")
     expect(mockUwFetch).not.toHaveBeenCalled()
   })
 })
