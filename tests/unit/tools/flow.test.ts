@@ -113,14 +113,14 @@ describe("handleFlow", () => {
         action: "flow_alerts",
         min_premium: -100,
       })
-      expect(result.text).toContain("Premium cannot be negative")
+      expect(result.text).toContain("Invalid input")
     })
   })
 
   describe("full_tape action", () => {
     it("returns error when date is missing", async () => {
       const result = await handleFlow({ action: "full_tape" })
-      expect(result.text).toContain("date is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
