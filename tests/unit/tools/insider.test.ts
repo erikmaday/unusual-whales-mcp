@@ -61,12 +61,12 @@ describe("handleInsider", () => {
   describe("input validation", () => {
     it("returns error for invalid action", async () => {
       const result = await handleInsider({ action: "invalid_action" })
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("returns error for missing action", async () => {
       const result = await handleInsider({})
-      expect(result).toContain("Invalid input")
+      expect(result.text).toContain("Invalid input")
     })
   })
 
@@ -112,7 +112,7 @@ describe("handleInsider", () => {
   describe("sector_flow action", () => {
     it("returns error when sector is missing", async () => {
       const result = await handleInsider({ action: "sector_flow" })
-      expect(result).toContain("sector is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -124,7 +124,7 @@ describe("handleInsider", () => {
   describe("ticker_flow action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleInsider({ action: "ticker_flow" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
@@ -136,7 +136,7 @@ describe("handleInsider", () => {
   describe("insiders action", () => {
     it("returns error when ticker is missing", async () => {
       const result = await handleInsider({ action: "insiders" })
-      expect(result).toContain("ticker is required")
+      expect(result.text).toContain("Invalid input")
     })
 
     it("calls uwFetch with correct endpoint", async () => {
