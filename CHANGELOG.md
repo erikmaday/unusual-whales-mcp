@@ -5,6 +5,57 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2026-01-11
+
+### Added
+
+- **Test Suite**: Comprehensive unit and integration tests with 459+ tests covering all tools, circuit breaker, rate limiter, client, schemas, prompts, and resources
+- **Circuit Breaker**: Resilient API failure handling with circuit breaker pattern
+- **Exponential Backoff**: Retry logic with exponential backoff for transient API failures
+- **Idempotent Hints**: Added idempotent hints to all 16 tool files for improved reliability
+- **Lit Flow Endpoints**: New `lit_flow_recent` and `lit_flow_ticker` actions in flow tool for lit exchange trade data
+- **API Sync Checker Enhancements**:
+  - Enum value validation to detect missing/extra enum values
+  - Deprecated endpoint detection
+  - Default value consistency checking
+  - Required vs optional parameter mismatch detection
+  - Numeric constraint validation (min/max/exclusiveMin/exclusiveMax)
+
+### Fixed
+
+- **Missing Enum Values**: Added 171+ missing enum values:
+  - 103 in screener tool
+  - 59 in institutions tool
+  - 9 in stock tool
+- **Numeric Constraint Mismatches**: Fixed 81+ numeric constraints across tools:
+  - 39 in flow tool
+  - 13 in stock tool
+  - 8 in darkpool tool
+  - 6 in institutions tool
+  - 4 in market tool
+  - 3 in insider tool
+  - 2 each in earnings and seasonality tools
+  - 1 each in politicians, screener, news, options, and alerts tools
+- **Default Value Mismatches**: Fixed 74+ default value issues:
+  - 16 in flow tool
+  - 13 in stock tool
+  - 11 in institutions tool
+  - 8 each in market and darkpool tools
+  - 4 each in seasonality and congress tools
+  - 3 in screener tool
+  - 2 each in earnings, news, options, politicians, alerts, and insider tools
+- **Format Validations**: Added 2 missing format validations (alerts, politicians)
+- **Extra Enum Values**: Removed 12 extra enum values (10 from institutions, 2 from options)
+- **Required/Optional Mismatches**: Fixed 7 required/optional parameter mismatches (6 in stock, 1 in market)
+- **Flow Tool**: Renamed `ticker` to `ticker_symbol` to match API spec
+- **Market Tool**: Clarified tickers parameter handling
+- **Screener Tool**: Added missing optional parameters
+
+### Changed
+
+- Updated OpenAPI spec to latest version
+- Updated README documentation
+
 ## [0.1.3] - 2026-01-08
 
 ### Added
