@@ -971,6 +971,12 @@ components:
       minimum: 0
       title: DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc
       type: integer
+    DynLimitAdkratqfxpttuikswfsgrkduwbjoaduuvloykssebddztmwerof:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAdkratqfxpttuikswfsgrkduwbjoaduuvloykssebddztmwerof
+      type: boolean
     DynLimitAffeikqbyekurtovimkansbsiccwgoegywuqqvsoihqzsmxnzaj:
       default: true
       description: Boolean flag whether a transaction is a call.
@@ -989,6 +995,12 @@ components:
       example: true
       title: DynLimitAhomldehwnhewskqqhemmslqfwbmnlmtaarnmxippimtslblykl
       type: boolean
+    DynLimitAjutsdgwbkyrcuqvrzepdytxbndtxhvzqzjzcypffsetbjdqtga:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAjutsdgwbkyrcuqvrzepdytxbndtxhvzqzjzcypffsetbjdqtga
+      type: boolean
     DynLimitAlahtlrvqdvguxtordtkfiscaujacykhkaorilrtlcjzudpqxrk:
       description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1000,12 +1012,6 @@ components:
       description: Boolean flag whether a transaction is from the floor.
       example: true
       title: DynLimitAmcyopkxjebmpznsleupobvmjlthajcfusbqrkmwmkdkuuavnkp
-      type: boolean
-    DynLimitAofjfnyrwikdyibozuljnhmfmhehlhubbvxoopufpbabjexqpph:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAofjfnyrwikdyibozuljnhmfmhehlhubbvxoopufpbabjexqpph
       type: boolean
     DynLimitApgtmcbkxuqtpisumkzjwcjljwbxrgaitcsolyxoaaprpsgzhhx:
       default: true
@@ -1031,12 +1037,6 @@ components:
       minimum: 0
       title: DynLimitAqpmukvtnqzjopoweoyvpeharwijcwnkajzocucgocoqugeobql
       type: integer
-    DynLimitAshnflthbliddxpkqhdjneohjglnxvbvunmsyzplvyqfxbxzttu:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAshnflthbliddxpkqhdjneohjglnxvbvunmsyzplvyqfxbxzttu
-      type: boolean
     DynLimitAvaeipmocfyuzgsdjomzahaezgrqrgqjzusbxjtbqnkywntzzgf:
       default: true
       description: Boolean flag whether a transaction is a put.
@@ -5997,42 +5997,50 @@ components:
       example:
         data:
           - cik: ''
+            entity_type: other
             name: OTHER
-            ownership: 0.5778598057824399
-            ownership_perc: 57.79
+            ownership: '0.5778598057824398968559314757'
+            ownership_perc: '57.79'
             units: 1258514670
           - cik: '0001548760'
+            entity_type: insider
             name: ZUCKERBERG MARK
-            ownership: 0.15735679030061836
-            ownership_perc: 15.74
+            ownership: '0.1573567903006183552668030525'
+            ownership_perc: '15.74'
             units: 342705665
           - cik: '0000102909'
+            entity_type: institution
             name: VANGUARD GROUP INC
-            ownership: 0.0884922634696172
-            ownership_perc: 8.85
+            ownership: '0.08849226346961719659402940931'
+            ownership_perc: '8.85'
             units: 192726351
           - cik: '0002012383'
+            entity_type: institution
             name: BLACKROCK, INC.
-            ownership: 0.07690733150859747
-            ownership_perc: 7.69
+            ownership: '0.07690733150859746487873438344'
+            ownership_perc: '7.69'
             units: 167495652
           - cik: '0000315066'
+            entity_type: institution
             name: FMR LLC
-            ownership: 0.059691441089514824
-            ownership_perc: 5.97
+            ownership: '0.05969144108951482234425757667'
+            ownership_perc: '5.97'
             units: 130001349
           - cik: '0000093751'
+            entity_type: institution
             name: STATE STREET CORP
-            ownership: 0.03969236784921226
-            ownership_perc: 3.97
+            ownership: '0.03969236784921226406024410234'
+            ownership_perc: '3.97'
             units: 86445582
       properties:
         cik:
           $ref: '#/components/schemas/Ownership CIK'
+        entity_type:
+          $ref: '#/components/schemas/Ownership Entity Type'
         name:
           $ref: '#/components/schemas/Ownership Name'
         ownership:
-          $ref: '#/components/schemas/Ownership Units'
+          $ref: '#/components/schemas/Ownership Relative'
         ownership_perc:
           $ref: '#/components/schemas/Ownership Percentage'
         units:
@@ -6044,6 +6052,15 @@ components:
       example: '0001548760'
       title: Ownership CIK
       type: string
+    Ownership Entity Type:
+      description: The type of entity owning the ticker shares.
+      enum:
+        - institution
+        - insider
+        - politician
+        - other
+      title: Ownership Entity Type
+      type: string
     Ownership Name:
       description: The name of the institution, insider trader or politician owning the shares.
       example: MARK ZUCKERBERG
@@ -6052,7 +6069,11 @@ components:
     Ownership Percentage:
       description: The percentage of ticker shares owned by the institution, insider trader or politician.
       title: Ownership Percentage
-      type: number
+      type: string
+    Ownership Relative:
+      description: The relative amount of ticker shares owned by the institution, insider trader or politician.
+      title: Ownership Relative
+      type: string
     Ownership Units:
       description: The absolute amount of ticker shares owned by the institution, insider trader or politician.
       title: Ownership Units
@@ -7894,8 +7915,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -14405,13 +14426,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAofjfnyrwikdyibozuljnhmfmhehlhubbvxoopufpbabjexqpph'
+            $ref: '#/components/schemas/DynLimitAjutsdgwbkyrcuqvrzepdytxbndtxhvzqzjzcypffsetbjdqtga'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAshnflthbliddxpkqhdjneohjglnxvbvunmsyzplvyqfxbxzttu'
+            $ref: '#/components/schemas/DynLimitAdkratqfxpttuikswfsgrkduwbjoaduuvloykssebddztmwerof'
       responses:
         '200':
           content:
