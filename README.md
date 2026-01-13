@@ -1,10 +1,10 @@
 # Unusual Whales MCP Server
 
-An MCP server that gives Claude access to [Unusual Whales](https://unusualwhales.com) market data - options flow, dark pool activity, congressional trades, and more.
+An MCP server that provides access to [Unusual Whales](https://unusualwhales.com) market data - options flow, dark pool activity, congressional trades, and more. Works with any MCP-compatible client (Claude, or any LLM/application that supports MCP).
 
 ## What You Can Do
 
-Ask Claude about the market using natural language:
+Ask about the market using natural language:
 
 - "What's the options flow for AAPL today?"
 - "Show me the latest congressional trades"
@@ -36,13 +36,80 @@ Ask Claude about the market using natural language:
 
 ### Built-in Analysis Prompts
 
-The server includes ready-to-use prompts for common workflows:
+The server includes many ready-to-use prompts. Just ask to use any prompt by name.
 
-- **daily-summary** - Comprehensive market overview combining tide, sectors, flow, and dark pool
-- **ticker-analysis** - Deep dive on a single stock with options, dark pool, insiders, and catalysts
-- **congress-tracker** - Recent congressional trading with pattern detection
+#### Market Overview
+| Prompt | Description | Example |
+|--------|-------------|---------|
+| `daily-summary` | Comprehensive market overview with tide, sectors, flow, dark pool | "Use the daily-summary prompt" |
+| `morning-briefing` | Start the day with tide, earnings, and key activity | "Use the morning-briefing prompt" |
+| `end-of-day-recap` | EOD summary with top movers, sectors, and themes | "Use end-of-day-recap" |
+| `weekly-expiration` | Max pain, gamma, and OI for weekly expiration | "Use weekly-expiration for SPY, QQQ, IWM" |
+| `top-movers` | Top tickers by net premium and options impact | "Use top-movers" |
 
-Just ask Claude to "use the daily-summary prompt" or "analyze NVDA with the ticker-analysis prompt".
+#### Ticker Analysis
+| Prompt | Description | Example |
+|--------|-------------|---------|
+| `ticker-analysis` | Deep dive on a stock with options, dark pool, insiders, catalysts | "Use ticker-analysis for NVDA" |
+| `options-setup` | IV rank, term structure, max pain - is premium cheap or expensive? | "Use options-setup for TSLA" |
+| `pre-earnings` | Historical moves, IV, positioning before earnings | "Use pre-earnings for AAPL" |
+| `greek-exposure` | Gamma, delta, vanna exposure by strike | "Use greek-exposure for SPY" |
+| `short-interest` | Short interest, FTDs, squeeze potential | "Use short-interest for GME" |
+| `option-contract` | Deep dive on a specific option contract | "Use option-contract for AAPL240119C00150000" |
+| `correlation-analysis` | Analyze correlations between tickers | "Use correlation-analysis for NVDA,AMD,INTC" |
+
+#### Flow & Activity
+| Prompt | Description | Example |
+|--------|-------------|---------|
+| `unusual-flow` | Scan for unusual options activity across the market | "Use unusual-flow with min_premium 500000" |
+| `dark-pool-scanner` | Find large dark pool prints and institutional activity | "Use dark-pool-scanner" |
+| `sector-flow` | Options flow sentiment for sector groups (mag7, semi, bank, etc.) | "Use sector-flow for semi" |
+
+#### Smart Money
+| Prompt | Description | Example |
+|--------|-------------|---------|
+| `congress-tracker` | Recent congressional trading with pattern detection | "Use congress-tracker" |
+| `politician-portfolio` | Portfolio holdings and trades for a specific politician | "Use politician-portfolio for Nancy Pelosi" |
+| `insider-scanner` | Scan for insider buying/selling patterns | "Use insider-scanner" |
+| `institutional-activity` | 13F filings, holdings changes, sector rotation | "Use institutional-activity for technology" |
+| `analyst-tracker` | Analyst ratings with options flow correlation | "Use analyst-tracker" |
+
+#### Calendars & Events
+| Prompt | Description | Example |
+|--------|-------------|---------|
+| `earnings-calendar` | Earnings with IV, expected moves, and positioning | "Use earnings-calendar for this week" |
+| `fda-calendar` | FDA events with biotech options activity | "Use fda-calendar" |
+| `economic-calendar` | FOMC, CPI, jobs data with market positioning | "Use economic-calendar" |
+
+#### Screening & Discovery
+| Prompt | Description | Example |
+|--------|-------------|---------|
+| `iv-screener` | Find high or low IV rank stocks for options strategies | "Use iv-screener" |
+| `bullish-confluence` | Stocks with bullish flow + dark pool + insider buying | "Use bullish-confluence" |
+| `bearish-confluence` | Stocks with bearish flow + distribution + insider selling | "Use bearish-confluence" |
+| `news-scanner` | Market news headlines with related flow | "Use news-scanner" or "Use news-scanner for TSLA" |
+
+#### Other
+| Prompt | Description | Example |
+|--------|-------------|---------|
+| `seasonality` | Historical seasonal patterns for a ticker or market | "Use seasonality for AAPL" |
+| `etf-flow` | ETF inflows/outflows or find ETF exposure for a stock | "Use etf-flow for QQQ" |
+
+#### Combining Prompts
+
+Chain prompts together for comprehensive analysis:
+
+```
+Use morning-briefing, then use unusual-flow to dig into the top movers
+```
+
+```
+Use pre-earnings for NVDA, then use greek-exposure to see dealer positioning
+```
+
+```
+Use bullish-confluence to find candidates, then use ticker-analysis on the top result
+```
 
 ## Getting Started
 
@@ -79,7 +146,7 @@ Add to your config file:
 
 ### 3. Start Asking Questions
 
-Once configured, just ask Claude about the market. It'll use the Unusual Whales data automatically.
+Once configured, just ask about the market. The Unusual Whales data will be used automatically.
 
 ## Configuration (Optional)
 

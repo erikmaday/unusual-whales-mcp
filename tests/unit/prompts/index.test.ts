@@ -213,11 +213,255 @@ describe("handlers", () => {
   })
 })
 
+describe("new prompts", () => {
+  it("includes all 29 prompts", () => {
+    expect(prompts.length).toBe(29)
+  })
+
+  it("includes morning-briefing prompt", () => {
+    const prompt = prompts.find((p) => p.name === "morning-briefing")
+    expect(prompt).toBeDefined()
+    expect(prompt?.description).toContain("Morning")
+    expect(prompt?.arguments?.length).toBe(0)
+  })
+
+  it("includes options-setup prompt", () => {
+    const prompt = prompts.find((p) => p.name === "options-setup")
+    expect(prompt).toBeDefined()
+    expect(prompt?.arguments?.length).toBe(1)
+    expect(prompt?.arguments?.[0].name).toBe("ticker")
+    expect(prompt?.arguments?.[0].required).toBe(true)
+  })
+
+  it("includes unusual-flow prompt", () => {
+    const prompt = prompts.find((p) => p.name === "unusual-flow")
+    expect(prompt).toBeDefined()
+    expect(prompt?.arguments?.[0].name).toBe("min_premium")
+    expect(prompt?.arguments?.[0].required).toBe(false)
+  })
+
+  it("includes bullish-confluence prompt", () => {
+    const prompt = prompts.find((p) => p.name === "bullish-confluence")
+    expect(prompt).toBeDefined()
+    expect(prompt?.arguments?.length).toBe(0)
+  })
+
+  it("includes bearish-confluence prompt", () => {
+    const prompt = prompts.find((p) => p.name === "bearish-confluence")
+    expect(prompt).toBeDefined()
+    expect(prompt?.arguments?.length).toBe(0)
+  })
+
+  describe("options-setup handler", () => {
+    it("throws error when ticker is missing", async () => {
+      await expect(handlers["options-setup"]({})).rejects.toThrow("ticker argument is required")
+    })
+
+    it("returns messages with IV and volatility analysis", async () => {
+      const result = await handlers["options-setup"]({ ticker: "AAPL" })
+      const content = result[0].content.text
+      expect(content).toContain("AAPL")
+      expect(content).toContain("IV rank")
+      expect(content).toContain("volatility term structure")
+      expect(content).toContain("max pain")
+    })
+  })
+
+  describe("pre-earnings handler", () => {
+    it("throws error when ticker is missing", async () => {
+      await expect(handlers["pre-earnings"]({})).rejects.toThrow("ticker argument is required")
+    })
+
+    it("returns messages with earnings analysis", async () => {
+      const result = await handlers["pre-earnings"]({ ticker: "NVDA" })
+      const content = result[0].content.text
+      expect(content).toContain("NVDA")
+      expect(content).toContain("historical earnings")
+      expect(content).toContain("IV rank")
+      expect(content).toContain("unusual options activity")
+    })
+  })
+
+  describe("unusual-flow handler", () => {
+    it("uses default min_premium when not provided", async () => {
+      const result = await handlers["unusual-flow"]({})
+      const content = result[0].content.text
+      expect(content).toContain("$100000")
+    })
+
+    it("uses provided min_premium argument", async () => {
+      const result = await handlers["unusual-flow"]({ min_premium: "500000" })
+      const content = result[0].content.text
+      expect(content).toContain("$500000")
+    })
+  })
+
+  describe("sector-flow handler", () => {
+    it("defaults to mag7 group", async () => {
+      const result = await handlers["sector-flow"]({})
+      const content = result[0].content.text
+      expect(content).toContain("mag7")
+    })
+
+    it("uses provided group argument", async () => {
+      const result = await handlers["sector-flow"]({ group: "semi" })
+      const content = result[0].content.text
+      expect(content).toContain("semi")
+    })
+  })
+
+  describe("greek-exposure handler", () => {
+    it("throws error when ticker is missing", async () => {
+      await expect(handlers["greek-exposure"]({})).rejects.toThrow("ticker argument is required")
+    })
+
+    it("returns messages with greek analysis", async () => {
+      const result = await handlers["greek-exposure"]({ ticker: "SPY" })
+      const content = result[0].content.text
+      expect(content).toContain("SPY")
+      expect(content).toContain("gamma exposure")
+      expect(content).toContain("delta exposure")
+      expect(content).toContain("vanna")
+    })
+  })
+
+  describe("politician-portfolio handler", () => {
+    it("throws error when name is missing", async () => {
+      await expect(handlers["politician-portfolio"]({})).rejects.toThrow("name argument is required")
+    })
+
+    it("returns messages with politician analysis", async () => {
+      const result = await handlers["politician-portfolio"]({ name: "Nancy Pelosi" })
+      const content = result[0].content.text
+      expect(content).toContain("Nancy Pelosi")
+      expect(content).toContain("portfolio holdings")
+      expect(content).toContain("recent trades")
+    })
+  })
+
+  describe("bullish-confluence handler", () => {
+    it("returns messages with confluence criteria", async () => {
+      const result = await handlers["bullish-confluence"]({})
+      const content = result[0].content.text
+      expect(content).toContain("Bullish options flow")
+      expect(content).toContain("Dark pool accumulation")
+      expect(content).toContain("Insider buying")
+      expect(content).toContain("IV rank")
+    })
+  })
+
+  describe("bearish-confluence handler", () => {
+    it("returns messages with confluence criteria", async () => {
+      const result = await handlers["bearish-confluence"]({})
+      const content = result[0].content.text
+      expect(content).toContain("Bearish options flow")
+      expect(content).toContain("Dark pool distribution")
+      expect(content).toContain("Insider selling")
+      expect(content).toContain("short interest")
+    })
+  })
+
+  describe("economic-calendar handler", () => {
+    it("returns messages with economic events", async () => {
+      const result = await handlers["economic-calendar"]({})
+      const content = result[0].content.text
+      expect(content).toContain("economic events")
+      expect(content).toContain("FOMC")
+      expect(content).toContain("CPI")
+    })
+  })
+
+  describe("end-of-day-recap handler", () => {
+    it("returns messages with EOD summary", async () => {
+      const result = await handlers["end-of-day-recap"]({})
+      const content = result[0].content.text
+      expect(content).toContain("market tide")
+      expect(content).toContain("top tickers")
+      expect(content).toContain("dark pool")
+      expect(content).toContain("sectors")
+    })
+  })
+
+  describe("correlation-analysis handler", () => {
+    it("throws error when tickers is missing", async () => {
+      await expect(handlers["correlation-analysis"]({})).rejects.toThrow("tickers argument is required")
+    })
+
+    it("returns messages with correlation analysis", async () => {
+      const result = await handlers["correlation-analysis"]({ tickers: "NVDA,AMD" })
+      const content = result[0].content.text
+      expect(content).toContain("NVDA,AMD")
+      expect(content).toContain("correlation")
+    })
+  })
+
+  describe("top-movers handler", () => {
+    it("uses default limit when not provided", async () => {
+      const result = await handlers["top-movers"]({})
+      const content = result[0].content.text
+      expect(content).toContain("10")
+      expect(content).toContain("net premium")
+    })
+  })
+
+  describe("news-scanner handler", () => {
+    it("returns messages with news analysis", async () => {
+      const result = await handlers["news-scanner"]({})
+      const content = result[0].content.text
+      expect(content).toContain("news headlines")
+      expect(content).toContain("Options flow reaction")
+    })
+
+    it("filters by ticker when provided", async () => {
+      const result = await handlers["news-scanner"]({ ticker: "AAPL" })
+      const content = result[0].content.text
+      expect(content).toContain("AAPL")
+    })
+  })
+
+  describe("option-contract handler", () => {
+    it("throws error when contract is missing", async () => {
+      await expect(handlers["option-contract"]({})).rejects.toThrow("contract argument is required")
+    })
+
+    it("returns messages with contract analysis", async () => {
+      const result = await handlers["option-contract"]({ contract: "AAPL240119C00150000" })
+      const content = result[0].content.text
+      expect(content).toContain("AAPL240119C00150000")
+      expect(content).toContain("Greeks")
+      expect(content).toContain("volume")
+    })
+  })
+
+  describe("analyst-tracker handler", () => {
+    it("returns messages with analyst ratings", async () => {
+      const result = await handlers["analyst-tracker"]({})
+      const content = result[0].content.text
+      expect(content).toContain("analyst ratings")
+      expect(content).toContain("upgrades")
+      expect(content).toContain("downgrades")
+    })
+  })
+})
+
 describe("prompt handler integration", () => {
+  // Map of prompts that require specific arguments
+  const requiredArgs: Record<string, Record<string, string>> = {
+    "ticker-analysis": { ticker: "TEST" },
+    "options-setup": { ticker: "TEST" },
+    "pre-earnings": { ticker: "TEST" },
+    "greek-exposure": { ticker: "TEST" },
+    "short-interest": { ticker: "TEST" },
+    "etf-flow": { ticker: "TEST" },
+    "politician-portfolio": { name: "Test Person" },
+    "correlation-analysis": { tickers: "AAPL,MSFT" },
+    "option-contract": { contract: "AAPL240119C00150000" },
+  }
+
   it("all handlers return valid message structure", async () => {
     for (const [name, handler] of Object.entries(handlers)) {
       // Use appropriate args for each handler
-      const args = name === "ticker-analysis" ? { ticker: "TEST" } : {}
+      const args = requiredArgs[name] || {}
 
       const result = await handler(args)
 
