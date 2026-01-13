@@ -106,6 +106,33 @@ src/
     └── ...
 ```
 
+## Resilience Features
+
+The server includes several features to handle API issues gracefully. These are configured via environment variables.
+
+### Rate Limiting
+
+A sliding window rate limiter prevents exceeding API limits. Default is 120 requests/minute (matching the Unusual Whales API limit). Adjust with `UW_RATE_LIMIT_PER_MINUTE` if your plan has different limits.
+
+### Retries
+
+Failed requests (5xx errors, network timeouts) automatically retry with exponential backoff:
+- 1st retry after 1 second
+- 2nd retry after 2 seconds
+- 3rd retry after 4 seconds
+
+Client errors (4xx) are not retried since they indicate bad input. Set `UW_MAX_RETRIES=0` to disable retries entirely.
+
+### Circuit Breaker
+
+Protects against cascading failures when the API is down:
+
+- **CLOSED** (normal): Requests go through normally
+- **OPEN** (failing fast): After `UW_CIRCUIT_BREAKER_THRESHOLD` consecutive failures (default 5), requests immediately fail without hitting the API
+- **HALF_OPEN** (testing): After `UW_CIRCUIT_BREAKER_RESET_TIMEOUT` ms (default 30000), allows test requests through. Two successes close the circuit; any failure reopens it.
+
+This prevents hammering a broken API and lets it recover.
+
 ## Adding a New Tool
 
 1. Create `src/tools/mytool.ts`:
@@ -173,7 +200,8 @@ The Unusual Whales API evolves over time - new endpoints get added, parameters c
 ### Running the Check
 
 ```bash
-npm run check-api
+npm run check-api                         # Standard check
+CREATE_ISSUES=true npm run check-api      # Also create GitHub issues for problems
 ```
 
 This compares what we've implemented against the official OpenAPI spec and tells you about any gaps.
