@@ -947,12 +947,6 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAaljtzwhnhmuxzeqiekmexqyobltddztveeolhbqhfrbizjkczq:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAaljtzwhnhmuxzeqiekmexqyobltddztveeolhbqhfrbizjkczq
-      type: boolean
     DynLimitAcqmwisfabczorjgqtnspqrgvefxlooepbdmdbnmxtlgnpakurc:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -977,12 +971,6 @@ components:
       minimum: 0
       title: DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc
       type: integer
-    DynLimitAfdwskcoqegzivddawyunhhfiegpiaoecoaqadgixbhrmrwmmqs:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAfdwskcoqegzivddawyunhhfiegpiaoecoaqadgixbhrmrwmmqs
-      type: boolean
     DynLimitAffeikqbyekurtovimkansbsiccwgoegywuqqvsoihqzsmxnzaj:
       default: true
       description: Boolean flag whether a transaction is a call.
@@ -1031,12 +1019,24 @@ components:
       example: true
       title: DynLimitAqilnusthpqeghicgqznvtwmcumcdgknqkqbtxuochkmrvgdgdy
       type: boolean
+    DynLimitAqlhpqashivwyivwvvlowdbwgzukasluxlncxegsqqzgarowdne:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAqlhpqashivwyivwvvlowdbwgzukasluxlncxegsqqzgarowdne
+      type: boolean
     DynLimitAqpmukvtnqzjopoweoyvpeharwijcwnkajzocucgocoqugeobql:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
       title: DynLimitAqpmukvtnqzjopoweoyvpeharwijcwnkajzocucgocoqugeobql
       type: integer
+    DynLimitAuevxipbhxkcgmppbhvhzetaqjvvzupzaysjbeptzkhrmerxoja:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAuevxipbhxkcgmppbhvhzetaqjvvzupzaysjbeptzkhrmerxoja
+      type: boolean
     DynLimitAvaeipmocfyuzgsdjomzahaezgrqrgqjzusbxjtbqnkywntzzgf:
       default: true
       description: Boolean flag whether a transaction is a put.
@@ -14426,13 +14426,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAaljtzwhnhmuxzeqiekmexqyobltddztveeolhbqhfrbizjkczq'
+            $ref: '#/components/schemas/DynLimitAqlhpqashivwyivwvvlowdbwgzukasluxlncxegsqqzgarowdne'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfdwskcoqegzivddawyunhhfiegpiaoecoaqadgixbhrmrwmmqs'
+            $ref: '#/components/schemas/DynLimitAuevxipbhxkcgmppbhvhzetaqjvvzupzaysjbeptzkhrmerxoja'
       responses:
         '200':
           content:
