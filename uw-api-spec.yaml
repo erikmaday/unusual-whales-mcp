@@ -995,12 +995,6 @@ components:
       minimum: 0
       title: DynLimitAlahtlrvqdvguxtordtkfiscaujacykhkaorilrtlcjzudpqxrk
       type: integer
-    DynLimitAlwiazdmxzstfgmyhnhbtkqwqezvndzvrxnukprlubzgmmrrlgq:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAlwiazdmxzstfgmyhnhbtkqwqezvndzvrxnukprlubzgmmrrlgq
-      type: boolean
     DynLimitAmcyopkxjebmpznsleupobvmjlthajcfusbqrkmwmkdkuuavnkp:
       default: true
       description: Boolean flag whether a transaction is from the floor.
@@ -1012,12 +1006,6 @@ components:
       description: Boolean flag whether a transaction is bid side.
       example: true
       title: DynLimitApgtmcbkxuqtpisumkzjwcjljwbxrgaitcsolyxoaaprpsgzhhx
-      type: boolean
-    DynLimitAqcfbwxdzfhqrreattvscdepllfodxieqyktqdnjebqtlcbxxsa:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAqcfbwxdzfhqrreattvscdepllfodxieqyktqdnjebqtlcbxxsa
       type: boolean
     DynLimitAqiinljimiudbowgxjbmggahntvklxnkdiblmvcvmghqqoxgwbm:
       default: true
@@ -1037,6 +1025,12 @@ components:
       minimum: 0
       title: DynLimitAqpmukvtnqzjopoweoyvpeharwijcwnkajzocucgocoqugeobql
       type: integer
+    DynLimitAunomxjekbnqvipusrngsrsnhdaayxjqdaqzrfloeduwwvxdtpi:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAunomxjekbnqvipusrngsrsnhdaayxjqdaqzrfloeduwwvxdtpi
+      type: boolean
     DynLimitAvaeipmocfyuzgsdjomzahaezgrqrgqjzusbxjtbqnkywntzzgf:
       default: true
       description: Boolean flag whether a transaction is a put.
@@ -1049,6 +1043,12 @@ components:
       minimum: 0
       title: DynLimitAyfspabcutofapltqkvgakuzeugnhbxmorudchfyyecytfwrbnk
       type: integer
+    DynLimitAytdjpmmphjyecwlfbvwoyfycbbnptkbtcrypngzuteemrjefgw:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAytdjpmmphjyecwlfbvwoyfycbbnptkbtcrypngzuteemrjefgw
+      type: boolean
     DynLimitAzgxtgzkaqsehpnvmuqluywcryqrjswbekyhabjcauqselwhujm:
       default: true
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume.
@@ -14426,13 +14426,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlwiazdmxzstfgmyhnhbtkqwqezvndzvrxnukprlubzgmmrrlgq'
+            $ref: '#/components/schemas/DynLimitAunomxjekbnqvipusrngsrsnhdaayxjqdaqzrfloeduwwvxdtpi'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqcfbwxdzfhqrreattvscdepllfodxieqyktqdnjebqtlcbxxsa'
+            $ref: '#/components/schemas/DynLimitAytdjpmmphjyecwlfbvwoyfycbbnptkbtcrypngzuteemrjefgw'
       responses:
         '200':
           content:
