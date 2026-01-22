@@ -971,17 +971,17 @@ components:
       minimum: 0
       title: DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc
       type: integer
-    DynLimitAenesbuefuacefupqcbnlmaoiyqtwvwcipagjpjmcozgipasoga:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAenesbuefuacefupqcbnlmaoiyqtwvwcipagjpjmcozgipasoga
-      type: boolean
     DynLimitAffeikqbyekurtovimkansbsiccwgoegywuqqvsoihqzsmxnzaj:
       default: true
       description: Boolean flag whether a transaction is a call.
       example: true
       title: DynLimitAffeikqbyekurtovimkansbsiccwgoegywuqqvsoihqzsmxnzaj
+      type: boolean
+    DynLimitAfnkkuxltqifmetdosyctyalqdwpyqfjnwlhzjrbidgzffergzs:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAfnkkuxltqifmetdosyctyalqdwpyqfjnwlhzjrbidgzffergzs
       type: boolean
     DynLimitAglrizahlaixloxbmeagqjjyseprymmprzxozzndbjzxcedvvux:
       description: 'The maximum size on that alert. Min: 0.'
@@ -1007,12 +1007,6 @@ components:
       example: true
       title: DynLimitAmcyopkxjebmpznsleupobvmjlthajcfusbqrkmwmkdkuuavnkp
       type: boolean
-    DynLimitAmdxfzpiciggugsdtgttthrnotmrflhnmiqndeucktukxetrnvn:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAmdxfzpiciggugsdtgttthrnotmrflhnmiqndeucktukxetrnvn
-      type: boolean
     DynLimitApgtmcbkxuqtpisumkzjwcjljwbxrgaitcsolyxoaaprpsgzhhx:
       default: true
       description: Boolean flag whether a transaction is bid side.
@@ -1037,6 +1031,12 @@ components:
       minimum: 0
       title: DynLimitAqpmukvtnqzjopoweoyvpeharwijcwnkajzocucgocoqugeobql
       type: integer
+    DynLimitAruwsltsegrzdhwsyjvijkepstwafovteodjkalgexscexzarhq:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAruwsltsegrzdhwsyjvijkepstwafovteodjkalgexscexzarhq
+      type: boolean
     DynLimitAvaeipmocfyuzgsdjomzahaezgrqrgqjzusbxjtbqnkywntzzgf:
       default: true
       description: Boolean flag whether a transaction is a put.
@@ -13718,6 +13718,43 @@ paths:
       summary: Short Interest and Float
       tags:
         - short
+  /api/shorts/{ticker}/interest-float/v2:
+    get:
+      callbacks: {}
+      description: |
+        Returns short interest and float data for percentage calculations for a ticker.
+        This endpoint provides information about the percentage of float that is shorted,
+        the float size, and the days to cover metric.
+      operationId: PublicApi.ShortController.short_interest_and_float_v2
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Short Interest and Float'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Short Interest and Float
+      tags:
+        - short
   /api/shorts/{ticker}/volume-and-ratio:
     get:
       callbacks: {}
@@ -14426,13 +14463,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmdxfzpiciggugsdtgttthrnotmrflhnmiqndeucktukxetrnvn'
+            $ref: '#/components/schemas/DynLimitAfnkkuxltqifmetdosyctyalqdwpyqfjnwlhzjrbidgzffergzs'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAenesbuefuacefupqcbnlmaoiyqtwvwcipagjpjmcozgipasoga'
+            $ref: '#/components/schemas/DynLimitAruwsltsegrzdhwsyjvijkepstwafovteodjkalgexscexzarhq'
       responses:
         '200':
           content:
