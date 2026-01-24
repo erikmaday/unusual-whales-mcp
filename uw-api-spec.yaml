@@ -971,6 +971,12 @@ components:
       minimum: 0
       title: DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc
       type: integer
+    DynLimitAeopewerxcdsyuadtkhyucajlhdyhivfmdrrznzbdioqxktczqi:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAeopewerxcdsyuadtkhyucajlhdyhivfmdrrznzbdioqxktczqi
+      type: boolean
     DynLimitAffeikqbyekurtovimkansbsiccwgoegywuqqvsoihqzsmxnzaj:
       default: true
       description: Boolean flag whether a transaction is a call.
@@ -983,23 +989,17 @@ components:
       minimum: 0
       title: DynLimitAglrizahlaixloxbmeagqjjyseprymmprzxozzndbjzxcedvvux
       type: integer
-    DynLimitAgyrozmonwpzllyjsyenxtmxkrnycqbxhvejgvnvtmczjnnmiph:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAgyrozmonwpzllyjsyenxtmxkrnycqbxhvejgvnvtmczjnnmiph
-      type: boolean
     DynLimitAhomldehwnhewskqqhemmslqfwbmnlmtaarnmxippimtslblykl:
       default: true
       description: Boolean flag whether a transaction is ask side.
       example: true
       title: DynLimitAhomldehwnhewskqqhemmslqfwbmnlmtaarnmxippimtslblykl
       type: boolean
-    DynLimitAiqkveeabyyaspgmnlzotytfyujdrhozbodeqpicwjyxsktftyt:
+    DynLimitAippehfjvshwzmtoxcbbxkkqkgawomeuikmvvivwqllealrisew:
       default: true
-      description: Boolean flag whether a transaction is bid side.
+      description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAiqkveeabyyaspgmnlzotytfyujdrhozbodeqpicwjyxsktftyt
+      title: DynLimitAippehfjvshwzmtoxcbbxkkqkgawomeuikmvvivwqllealrisew
       type: boolean
     DynLimitAlahtlrvqdvguxtordtkfiscaujacykhkaorilrtlcjzudpqxrk:
       description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
@@ -6088,7 +6088,7 @@ components:
       example:
         - Paul Singer
       title: People
-      type: string
+      type: array
     Perc of Share Value:
       description: The percentage of the total share value of this institution that this holding represents. For example, if the sum of all the institution's holdings total $100 million and this holding has reported value $4 million, then the perc_of_share_value result will be 0.04.
       example: 0.04
@@ -14463,13 +14463,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgyrozmonwpzllyjsyenxtmxkrnycqbxhvejgvnvtmczjnnmiph'
+            $ref: '#/components/schemas/DynLimitAippehfjvshwzmtoxcbbxkkqkgawomeuikmvvivwqllealrisew'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAiqkveeabyyaspgmnlzotytfyujdrhozbodeqpicwjyxsktftyt'
+            $ref: '#/components/schemas/DynLimitAeopewerxcdsyuadtkhyucajlhdyhivfmdrrznzbdioqxktczqi'
       responses:
         '200':
           content:
