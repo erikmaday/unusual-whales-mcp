@@ -947,6 +947,12 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
+    DynLimitAccckghlitofrdalaqhbaluykerjelzbaqjgxdhepoqnhgkzefx:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAccckghlitofrdalaqhbaluykerjelzbaqjgxdhepoqnhgkzefx
+      type: boolean
     DynLimitAcqmwisfabczorjgqtnspqrgvefxlooepbdmdbnmxtlgnpakurc:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -971,11 +977,11 @@ components:
       minimum: 0
       title: DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc
       type: integer
-    DynLimitAeopewerxcdsyuadtkhyucajlhdyhivfmdrrznzbdioqxktczqi:
+    DynLimitAeetazzbjebusloicrgjgihlrsrhqjdqtbeoedghtgiyypgtedv:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAeopewerxcdsyuadtkhyucajlhdyhivfmdrrznzbdioqxktczqi
+      title: DynLimitAeetazzbjebusloicrgjgihlrsrhqjdqtbeoedghtgiyypgtedv
       type: boolean
     DynLimitAffeikqbyekurtovimkansbsiccwgoegywuqqvsoihqzsmxnzaj:
       default: true
@@ -994,12 +1000,6 @@ components:
       description: Boolean flag whether a transaction is ask side.
       example: true
       title: DynLimitAhomldehwnhewskqqhemmslqfwbmnlmtaarnmxippimtslblykl
-      type: boolean
-    DynLimitAippehfjvshwzmtoxcbbxkkqkgawomeuikmvvivwqllealrisew:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAippehfjvshwzmtoxcbbxkkqkgawomeuikmvvivwqllealrisew
       type: boolean
     DynLimitAlahtlrvqdvguxtordtkfiscaujacykhkaorilrtlcjzudpqxrk:
       description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
@@ -3049,6 +3049,8 @@ components:
       example:
         - 4103
         - 4423
+      items:
+        type: integer
       title: Historical Units
       type: array
     Holdings:
@@ -6087,6 +6089,8 @@ components:
       description: Persons of interest in the institution.
       example:
         - Paul Singer
+      items:
+        type: string
       title: People
       type: array
     Perc of Share Value:
@@ -7915,8 +7919,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -8287,8 +8291,9 @@ components:
       example:
         - activist
         - value_investor
+      items:
+        type: string
       title: Tags
-      type: array
     The alert id:
       description: ''
       example: ebe24953-a0bf-4b4d-98be-14f721a1199a
@@ -14463,13 +14468,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAippehfjvshwzmtoxcbbxkkqkgawomeuikmvvivwqllealrisew'
+            $ref: '#/components/schemas/DynLimitAccckghlitofrdalaqhbaluykerjelzbaqjgxdhepoqnhgkzefx'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAeopewerxcdsyuadtkhyucajlhdyhivfmdrrznzbdioqxktczqi'
+            $ref: '#/components/schemas/DynLimitAeetazzbjebusloicrgjgihlrsrhqjdqtbeoedghtgiyypgtedv'
       responses:
         '200':
           content:
