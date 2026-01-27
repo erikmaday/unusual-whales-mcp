@@ -9838,7 +9838,7 @@ paths:
         Returns the latest insider transactions.
         
         By default all transacations that have been filled by the same person on the same day with the same trade code are aggregated into a single row.
-        Each of those aggregated rows will a field `trade_ids` which contains the ids of the single transactions that were aggregated as well as the amount
+        Each of those aggregated rows will contain a field `ids` which contains the ids of the single transactions that were aggregated as well as the amount
         of transactions that were aggregated.
         
         If you want to disable this behaviour you can set the `group` parameter to false to receive the single transacations as they have been filled.
@@ -10011,6 +10011,13 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Page'
+        - description: Group insider transactions with same person and trade code on the same day into a single row
+          example: true
+          in: query
+          name: group
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           content:
