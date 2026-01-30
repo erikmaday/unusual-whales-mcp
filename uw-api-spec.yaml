@@ -947,35 +947,40 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
+    DynLimitAajtqrrxjmstdhrhiwinkvoohkzugdopzjfqrrbtvzebvnjuaxh:
+      description: The min si_float_with_synth_long_pct_of_total_shares.
+      example: 0.05
+      title: DynLimitAajtqrrxjmstdhrhiwinkvoohkzugdopzjfqrrbtvzebvnjuaxh
+      type: integer
+    DynLimitAawebvqcxymmkrybzyqnyedocqfahxgjvuvbfmbwutgaflcooyw:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAawebvqcxymmkrybzyqnyedocqfahxgjvuvbfmbwutgaflcooyw
+      type: boolean
+    DynLimitAbfnzrdmzwbpsemqtgsdrydckuchmcmlptvazagyctxbrxpbajz:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAbfnzrdmzwbpsemqtgsdrydckuchmcmlptvazagyctxbrxpbajz
+      type: integer
     DynLimitAccckghlitofrdalaqhbaluykerjelzbaqjgxdhepoqnhgkzefx:
       default: true
       description: Boolean flag whether a transaction is ask side.
       example: true
       title: DynLimitAccckghlitofrdalaqhbaluykerjelzbaqjgxdhepoqnhgkzefx
       type: boolean
-    DynLimitAcqmwisfabczorjgqtnspqrgvefxlooepbdmdbnmxtlgnpakurc:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAcqmwisfabczorjgqtnspqrgvefxlooepbdmdbnmxtlgnpakurc
+    DynLimitAccecuuojmvdcakvssnsucrzkmadmkkvfzvoebcjspmoaamjljq:
+      description: The max short shares available.
+      example: 10000
+      title: DynLimitAccecuuojmvdcakvssnsucrzkmadmkkvfzvoebcjspmoaamjljq
       type: integer
-    DynLimitAcufrcrmynokovqvsfgnaykolfuxvkhzenghkapesjcenokqdoc:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
+    DynLimitAdlfwyoqxqcxbusalobfllxqbqecqsoxtjkfihdtvknslbwnykt:
+      default: 0
+      description: 'The offset of results. Default: 0. Min: 0.'
+      example: 100
       minimum: 0
-      title: DynLimitAcufrcrmynokovqvsfgnaykolfuxvkhzenghkapesjcenokqdoc
-      type: integer
-    DynLimitAcuwovnjamkufgbraigocmsozniilxcdrqtxxonmhftsehiqhas:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAcuwovnjamkufgbraigocmsozniilxcdrqtxxonmhftsehiqhas
-      type: integer
-    DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc
+      title: DynLimitAdlfwyoqxqcxbusalobfllxqbqecqsoxtjkfihdtvknslbwnykt
       type: integer
     DynLimitAeetazzbjebusloicrgjgihlrsrhqjdqtbeoedghtgiyypgtedv:
       default: true
@@ -983,78 +988,168 @@ components:
       example: true
       title: DynLimitAeetazzbjebusloicrgjgihlrsrhqjdqtbeoedghtgiyypgtedv
       type: boolean
-    DynLimitAffeikqbyekurtovimkansbsiccwgoegywuqqvsoihqzsmxnzaj:
+    DynLimitAezathameowzlmnzluagrkshgnakmgdqycfydelwgnkbtpazljn:
+      description: The min short interest float ratio.
+      example: 0.1
+      title: DynLimitAezathameowzlmnzluagrkshgnakmgdqycfydelwgnkbtpazljn
+      type: integer
+    DynLimitAfyxgjpwgnfnqpdlkdtxyzvgohnefmkcfbpwueefxkfvdswpibg:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAfyxgjpwgnfnqpdlkdtxyzvgohnefmkcfbpwueefxkfvdswpibg
+      type: integer
+    DynLimitAhepsmuqimtmzuapgvhquhsfdktkzwztrqhjrfwicbmwazfimqc:
       default: true
       description: Boolean flag whether a transaction is a call.
       example: true
-      title: DynLimitAffeikqbyekurtovimkansbsiccwgoegywuqqvsoihqzsmxnzaj
+      title: DynLimitAhepsmuqimtmzuapgvhquhsfdktkzwztrqhjrfwicbmwazfimqc
       type: boolean
-    DynLimitAglrizahlaixloxbmeagqjjyseprymmprzxozzndbjzxcedvvux:
-      description: 'The maximum size on that alert. Min: 0.'
+    DynLimitAhpqmjqvkoryuafnosmoxjpolhklygnvnrznikezmrjwdgiapjw:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
       example: 125
       minimum: 0
-      title: DynLimitAglrizahlaixloxbmeagqjjyseprymmprzxozzndbjzxcedvvux
+      title: DynLimitAhpqmjqvkoryuafnosmoxjpolhklygnvnrznikezmrjwdgiapjw
       type: integer
-    DynLimitAhomldehwnhewskqqhemmslqfwbmnlmtaarnmxippimtslblykl:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAhomldehwnhewskqqhemmslqfwbmnlmtaarnmxippimtslblykl
-      type: boolean
-    DynLimitAlahtlrvqdvguxtordtkfiscaujacykhkaorilrtlcjzudpqxrk:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAlahtlrvqdvguxtordtkfiscaujacykhkaorilrtlcjzudpqxrk
+    DynLimitAitjfahtttetubtqplwxeuamsdgshhhapqoomzjchyfdcxnqwgs:
+      description: The min fee rate.
+      example: 0.01
+      title: DynLimitAitjfahtttetubtqplwxeuamsdgshhhapqoomzjchyfdcxnqwgs
       type: integer
-    DynLimitAmcyopkxjebmpznsleupobvmjlthajcfusbqrkmwmkdkuuavnkp:
+    DynLimitAkcczsrmizrfexnabrzwtybgojxxmtiwumvafwurkylgktggqxh:
       default: true
       description: Boolean flag whether a transaction is from the floor.
       example: true
-      title: DynLimitAmcyopkxjebmpznsleupobvmjlthajcfusbqrkmwmkdkuuavnkp
+      title: DynLimitAkcczsrmizrfexnabrzwtybgojxxmtiwumvafwurkylgktggqxh
       type: boolean
-    DynLimitApgtmcbkxuqtpisumkzjwcjljwbxrgaitcsolyxoaaprpsgzhhx:
+    DynLimitAkfthhtyvkqqyqenlnuggbkckqisfdvrfpbvyhaiejpiitgmbsx:
+      description: The max rebate rate.
+      example: 5.34
+      title: DynLimitAkfthhtyvkqqyqenlnuggbkckqisfdvrfpbvyhaiejpiitgmbsx
+      type: integer
+    DynLimitAkqvaqgbluqeaabfcfepzrgyysmidigfjpjwytyugrtomsygwzr:
+      description: The max short interest float ratio.
+      example: 0.05
+      title: DynLimitAkqvaqgbluqeaabfcfepzrgyysmidigfjpjwytyugrtomsygwzr
+      type: integer
+    DynLimitAlayosbtvzspyccmjrnygwwyjvvcivitknmfxocmdhyjyksnpqx:
+      description: The min days to cover.
+      example: 1.1
+      title: DynLimitAlayosbtvzspyccmjrnygwwyjvvcivitknmfxocmdhyjyksnpqx
+      type: integer
+    DynLimitAnonlcunqwtthppscibcdbtxgrcivgeusbhrbomdourewfykrre:
       default: true
-      description: Boolean flag whether a transaction is bid side.
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
-      title: DynLimitApgtmcbkxuqtpisumkzjwcjljwbxrgaitcsolyxoaaprpsgzhhx
+      title: DynLimitAnonlcunqwtthppscibcdbtxgrcivgeusbhrbomdourewfykrre
       type: boolean
-    DynLimitAqiinljimiudbowgxjbmggahntvklxnkdiblmvcvmghqqoxgwbm:
+    DynLimitAopujuilhiueyxgwtqfittidxlfcxbarwvplhchcoagjjixxaar:
+      description: The min total float.
+      example: 10000000
+      title: DynLimitAopujuilhiueyxgwtqfittidxlfcxbarwvplhchcoagjjixxaar
+      type: integer
+    DynLimitApgqemyenoulalsclsigduqqwvgnykeleigbwkeuiwzbyguroyh:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
       example: true
-      title: DynLimitAqiinljimiudbowgxjbmggahntvklxnkdiblmvcvmghqqoxgwbm
+      title: DynLimitApgqemyenoulalsclsigduqqwvgnykeleigbwkeuiwzbyguroyh
       type: boolean
+    DynLimitAqhgcvgqyqptyoldcoqjmypmhrfleszwauifsdmgvknbxvfkcso:
+      description: The max total float.
+      example: 100000000
+      title: DynLimitAqhgcvgqyqptyoldcoqjmypmhrfleszwauifsdmgvknbxvfkcso
+      type: integer
     DynLimitAqilnusthpqeghicgqznvtwmcumcdgknqkqbtxuochkmrvgdgdy:
       default: true
       description: Boolean flag whether to return only intraday alerts.
       example: true
       title: DynLimitAqilnusthpqeghicgqznvtwmcumcdgknqkqbtxuochkmrvgdgdy
       type: boolean
-    DynLimitAqpmukvtnqzjopoweoyvpeharwijcwnkajzocucgocoqugeobql:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAqkelrwzijkziukxjclufnmjtivbdshrbhubgbmuncuzsxpypua:
+      description: The min short shares available.
+      example: 0
+      title: DynLimitAqkelrwzijkziukxjclufnmjtivbdshrbhubgbmuncuzsxpypua
+      type: integer
+    DynLimitArvyknllogeainltbscltbtxagmgqntdjpmecweglcilqabeblw:
+      description: The max si_float_with_synth_long_pct_of_total_shares.
+      example: 0.05
+      title: DynLimitArvyknllogeainltbscltbtxagmgqntdjpmecweglcilqabeblw
+      type: integer
+    DynLimitAsnlrllolcjbpgsbzzioqfiymilvovzlkcxgicwewgamohfmbjt:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAqpmukvtnqzjopoweoyvpeharwijcwnkajzocucgocoqugeobql
+      title: DynLimitAsnlrllolcjbpgsbzzioqfiymilvovzlkcxgicwewgamohfmbjt
       type: integer
-    DynLimitAvaeipmocfyuzgsdjomzahaezgrqrgqjzusbxjtbqnkywntzzgf:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAvaeipmocfyuzgsdjomzahaezgrqrgqjzusbxjtbqnkywntzzgf
-      type: boolean
-    DynLimitAyfspabcutofapltqkvgakuzeugnhbxmorudchfyyecytfwrbnk:
+    DynLimitAtpnqvwtvlfbtwlawxzuelwagvbpfovotfyetmeeuckzhinkzem:
       description: 'The minimum premium on that alert. Min: 0.'
       example: 12500.5
       minimum: 0
-      title: DynLimitAyfspabcutofapltqkvgakuzeugnhbxmorudchfyyecytfwrbnk
+      title: DynLimitAtpnqvwtvlfbtwlawxzuelwagvbpfovotfyetmeeuckzhinkzem
       type: integer
-    DynLimitAzgxtgzkaqsehpnvmuqluywcryqrjswbekyhabjcauqselwhujm:
+    DynLimitAtvplypnhbyhcjznmbgtusuxqxvfagqcgjekrdsokndgtmbjtfo:
+      description: 'The maximum size on that alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAtvplypnhbyhcjznmbgtusuxqxvfagqcgjekrdsokndgtmbjtfo
+      type: integer
+    DynLimitAubgzmsasqlcewqzteojrfitevlkxijuqkbokzdvlzjbgknduks:
+      default: 100
+      description: 'The limit of results. Default: 100. Max: 500. Min: 0.'
+      example: 125
+      maximum: 500
+      minimum: 0
+      title: DynLimitAubgzmsasqlcewqzteojrfitevlkxijuqkbokzdvlzjbgknduks
+      type: integer
+    DynLimitAusrcnhprftoluhorkkpuuoplnxouxpefrmoanbelgneiewjprn:
+      description: The max days to cover.
+      example: 5.3
+      title: DynLimitAusrcnhprftoluhorkkpuuoplnxouxpefrmoanbelgneiewjprn
+      type: integer
+    DynLimitAvftpvruusthftkkpgnabwemoxirmkuybzmbzbauguwywplygkh:
+      description: The min rebate rate.
+      example: 0.11
+      title: DynLimitAvftpvruusthftkkpgnabwemoxirmkuybzmbzbauguwywplygkh
+      type: integer
+    DynLimitAwxwkwotindqxivzpnqjcdypmharlkavvuqxullbjvhplxjmvce:
       default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume.
+      description: Boolean flag whether a transaction is a put.
       example: true
-      title: DynLimitAzgxtgzkaqsehpnvmuqluywcryqrjswbekyhabjcauqselwhujm
+      title: DynLimitAwxwkwotindqxivzpnqjcdypmharlkavvuqxullbjvhplxjmvce
       type: boolean
+    DynLimitAxqsztuxvvqkjemjrlbuwgxtakfyvtztbbrzugsilewxzafkyyy:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAxqsztuxvvqkjemjrlbuwgxtakfyvtztbbrzugsilewxzafkyyy
+      type: integer
+    DynLimitAyjkwjsupgnlikeofflcvzkoyknntzubycqlcpmgikqdyzavuau:
+      description: The max fee rate.
+      example: 0.45
+      title: DynLimitAyjkwjsupgnlikeofflcvzkoyknntzubycqlcpmgikqdyzavuau
+      type: integer
+    DynLimitAyotmxgsunfldgqoenhppohoicxzkbafbczushjufbnflzeprip:
+      description: The max short interest.
+      example: 100000
+      title: DynLimitAyotmxgsunfldgqoenhppohoicxzkbafbczushjufbnflzeprip
+      type: integer
+    DynLimitAzgwgxtofbutrzdlfliofuapghqotvgwxdrkvjjjuqkhpfrfavc:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAzgwgxtofbutrzdlfliofuapghqotvgwxdrkvjjjuqkhpfrfavc
+      type: boolean
+    DynLimitAzorruyzzhngyeihrthwqzojqusjskeoffxusgtbhzfbqezbzdp:
+      description: The min short interest.
+      example: 5000
+      title: DynLimitAzorruyzzhngyeihrthwqzojqusjskeoffxusgtbhzfbqezbzdp
+      type: integer
+    DynLimitAzpssmafkumnpnfzrhwjcsobmnsunyduzouromxajmxqpbnxdfq:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAzpssmafkumnpnfzrhwjcsobmnsunyduzouromxajmxqpbnxdfq
+      type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
       example: '21.60'
@@ -7209,50 +7304,61 @@ components:
           type: string
       title: Short Data
       type: object
-    Short Interest and Float:
-      description: |
-        Short interest data and float information for percentage calculations for a specific ticker.
-        This endpoint provides information about the relationship between short interest and the float,
-        including the percentage of the float that is shorted and the days to cover metric.
-      example:
-        data:
-          created_at: 2023-04-15T16:30:00Z
-          days_to_cover_returned: '2.1'
-          market_date: 2023-04-15
-          percent_returned: '5.67'
-          si_float_returned: 4250000
-          symbol: EXMP
-          total_float_returned: 75000000
-      properties:
-        created_at:
-          description: The datetime the record was created.
-          format: date_time
-          type: string
-        days_to_cover_returned:
-          description: The estimated number of days to cover all short positions based on average daily trading volume.
-          type: string
-        market_date:
-          description: The date of the short interest data.
-          type: date
-        percent_returned:
-          description: The percentage of float that is shorted.
-          type: string
-        si_float_returned:
-          description: The number of shares shorted.
-          type: integer
-        symbol:
-          description: The ticker symbol.
-          type: string
-        total_float_returned:
-          description: The float (available shares for trading).
-          type: integer
-      title: Short Interest and Float
-      type: object
     Short Name:
       description: The institution's short name.
       example: Vanguard
       title: Short Name
       type: string
+    Short Screener:
+      description: |
+        Short interest data and float information for percentage calculations based of filter parameters.
+        This endpoint provides information about the relationship between short interest and the float,
+        including the percentage of the float that is shorted and the days to cover metric.
+      example:
+        data:
+          days_to_cover: '2.1'
+          fee_rate: '0.2782'
+          market_date: 2023-04-15
+          rebate_rate: '3.3518'
+          short_interest: 75000
+          short_shares_available: 10000000
+          si_float: '0.017647058'
+          si_float_with_synth_long_pct_of_total_shares: '0.01734104046'
+          symbol: EXMP
+          total_float: 4250000
+      properties:
+        days_to_cover:
+          description: The estimated number of days to cover all short positions based on average daily trading volume.
+          type: string
+        fee_rate:
+          description: The fee rate.
+          type: date
+        market_date:
+          description: The date of the short interest data.
+          type: date
+        rebate_rate:
+          description: The rebate rate.
+          type: date
+        short_interest:
+          description: The total number of shares sold short.
+          type: integer
+        short_shares_available:
+          description: The short shares available.
+          type: date
+        si_float:
+          description: The short interest float ratio.
+          type: string
+        si_float_with_synth_long_pct_of_total_shares:
+          description: The short interest float ratio with volume of shares sold short added to total float.
+          type: string
+        symbol:
+          description: The ticker symbol.
+          type: string
+        total_float:
+          description: The float (available shares for trading).
+          type: integer
+      title: Short Screener
+      type: object
     Short Straddle 1 Day:
       description: The 1 day % returns for the closest expiry short ATM straddle. The straddle expiry is equal to or greater than 1 day after earnings.
       example: '0.3421'
@@ -7342,6 +7448,11 @@ components:
           type: integer
       title: Short Volume By Exchange
       type: object
+    ShortScreenerOrderBy:
+      description: ordering options.
+      example: market_date
+      title: ShortScreenerOrderBy
+      type: string
     Side:
       default: ALL
       description: The side of a stock trade. Must be one of ASK, BID, MID. If not set, will return all side's trades.
@@ -8657,6 +8768,95 @@ components:
       example: true
       title: UseOtmOnly
       type: boolean
+    V1 Short Interest and Float (Deprecated):
+      description: |
+        Short interest data and float information for percentage calculations for a specific ticker.
+        This endpoint provides information about the relationship between short interest and the float,
+        including the percentage of the float that is shorted and the days to cover metric.
+      example:
+        data:
+          created_at: 2023-04-15T16:30:00Z
+          days_to_cover_returned: '2.1'
+          market_date: 2023-04-15
+          percent_returned: '5.67'
+          si_float_returned: 4250000
+          symbol: EXMP
+          total_float_returned: 75000000
+      properties:
+        created_at:
+          description: The datetime the record was created.
+          format: date_time
+          type: string
+        days_to_cover_returned:
+          description: The estimated number of days to cover all short positions based on average daily trading volume.
+          type: string
+        market_date:
+          description: The date of the short interest data.
+          type: date
+        percent_returned:
+          description: The percentage of float that is shorted.
+          type: string
+        si_float_returned:
+          description: The number of shares shorted.
+          type: integer
+        symbol:
+          description: The ticker symbol.
+          type: string
+        total_float_returned:
+          description: The float (available shares for trading).
+          type: integer
+      title: V1 Short Interest and Float (Deprecated)
+      type: object
+    V2 Short Interest and Float:
+      description: |
+        Short interest data and float information for percentage calculations for a specific ticker.
+        This endpoint provides information about the relationship between short interest and the float,
+        including the percentage of the float that is shorted and the days to cover metric.
+      example:
+        data:
+          days_to_cover: '2.1'
+          fee_rate: '0.2782'
+          market_date: 2023-04-15
+          rebate_rate: '3.3518'
+          short_interest: 75000
+          short_shares_available: 10000000
+          si_float: '0.017647058'
+          si_float_with_synth_long_pct_of_total_shares: '0.01734104046'
+          symbol: EXMP
+          total_float: 4250000
+      properties:
+        days_to_cover:
+          description: The estimated number of days to cover all short positions based on average daily trading volume.
+          type: string
+        fee_rate:
+          description: The fee rate.
+          type: date
+        market_date:
+          description: The date of the short interest data.
+          type: date
+        rebate_rate:
+          description: The rebate rate.
+          type: date
+        short_interest:
+          description: The total number of shares sold short.
+          type: integer
+        short_shares_available:
+          description: The short shares available.
+          type: date
+        si_float:
+          description: The short interest float ratio.
+          type: string
+        si_float_with_synth_long_pct_of_total_shares:
+          description: The short interest float ratio with volume of shares sold short added to total float.
+          type: string
+        symbol:
+          description: The ticker symbol.
+          type: string
+        total_float:
+          description: The float (available shares for trading).
+          type: integer
+      title: V2 Short Interest and Float
+      type: object
     VEX Per One Percent Move Directionalized Volume:
       description: |
         The vanna 1% move based on directionalized volume
@@ -8837,6 +9037,12 @@ info:
     Please inquire within regarding redistribution licenses or custom solutions.
     
     ## Changelog
+    
+    # 2026.01.20
+    - Updated interest-float endpoint with new version and deprecated old version
+    - [`/shorts/:ticker/interest-float/v2`](https://api.unusualwhales.com/docs#/operations/PublicApi.ShortController.short_interest_and_float_v2)
+    - Added interest-float search screener endpoint
+    - [`/short_screener`](https://api.unusualwhales.com/docs#/operations/PublicApi.ShortController.short_screener)
     
     # 2025.09.23
     
@@ -10018,6 +10224,22 @@ paths:
           required: false
           schema:
             type: boolean
+        - description: 'Filter for transaction dates occurring on or after this date (ISO format: YYYY-MM-DD)'
+          example: 2026-01-01
+          in: query
+          name: start_date
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: 'Filter for transaction dates occurring on or before this date (ISO format: YYYY-MM-DD)'
+          example: 2026-01-23
+          in: query
+          name: end_date
+          required: false
+          schema:
+            format: date
+            type: string
       responses:
         '200':
           content:
@@ -11617,91 +11839,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAyfspabcutofapltqkvgakuzeugnhbxmorudchfyyecytfwrbnk'
+            $ref: '#/components/schemas/DynLimitAtpnqvwtvlfbtwlawxzuelwagvbpfovotfyetmeeuckzhinkzem'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcxszsbvytztrxtgzekeggvmkmpgyxmlxhdfsrdvrlntdgnmkpc'
+            $ref: '#/components/schemas/DynLimitAbfnzrdmzwbpsemqtgsdrydckuchmcmlptvazagyctxbrxpbajz'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcuwovnjamkufgbraigocmsozniilxcdrqtxxonmhftsehiqhas'
+            $ref: '#/components/schemas/DynLimitAhpqmjqvkoryuafnosmoxjpolhklygnvnrznikezmrjwdgiapjw'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAglrizahlaixloxbmeagqjjyseprymmprzxozzndbjzxcedvvux'
+            $ref: '#/components/schemas/DynLimitAtvplypnhbyhcjznmbgtusuxqxvfagqcgjekrdsokndgtmbjtfo'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqpmukvtnqzjopoweoyvpeharwijcwnkajzocucgocoqugeobql'
+            $ref: '#/components/schemas/DynLimitAxqsztuxvvqkjemjrlbuwgxtakfyvtztbbrzugsilewxzafkyyy'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlahtlrvqdvguxtordtkfiscaujacykhkaorilrtlcjzudpqxrk'
+            $ref: '#/components/schemas/DynLimitAzpssmafkumnpnfzrhwjcsobmnsunyduzouromxajmxqpbnxdfq'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcqmwisfabczorjgqtnspqrgvefxlooepbdmdbnmxtlgnpakurc'
+            $ref: '#/components/schemas/DynLimitAfyxgjpwgnfnqpdlkdtxyzvgohnefmkcfbpwueefxkfvdswpibg'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcufrcrmynokovqvsfgnaykolfuxvkhzenghkapesjcenokqdoc'
+            $ref: '#/components/schemas/DynLimitAsnlrllolcjbpgsbzzioqfiymilvovzlkcxgicwewgamohfmbjt'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzgxtgzkaqsehpnvmuqluywcryqrjswbekyhabjcauqselwhujm'
+            $ref: '#/components/schemas/DynLimitAnonlcunqwtthppscibcdbtxgrcivgeusbhrbomdourewfykrre'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmcyopkxjebmpznsleupobvmjlthajcfusbqrkmwmkdkuuavnkp'
+            $ref: '#/components/schemas/DynLimitAkcczsrmizrfexnabrzwtybgojxxmtiwumvafwurkylgktggqxh'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqiinljimiudbowgxjbmggahntvklxnkdiblmvcvmghqqoxgwbm'
+            $ref: '#/components/schemas/DynLimitApgqemyenoulalsclsigduqqwvgnykeleigbwkeuiwzbyguroyh'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAffeikqbyekurtovimkansbsiccwgoegywuqqvsoihqzsmxnzaj'
+            $ref: '#/components/schemas/DynLimitAhepsmuqimtmzuapgvhquhsfdktkzwztrqhjrfwicbmwazfimqc'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAvaeipmocfyuzgsdjomzahaezgrqrgqjzusbxjtbqnkywntzzgf'
+            $ref: '#/components/schemas/DynLimitAwxwkwotindqxivzpnqjcdypmharlkavvuqxullbjvhplxjmvce'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhomldehwnhewskqqhemmslqfwbmnlmtaarnmxippimtslblykl'
+            $ref: '#/components/schemas/DynLimitAawebvqcxymmkrybzyqnyedocqfahxgjvuvbfmbwutgaflcooyw'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApgtmcbkxuqtpisumkzjwcjljwbxrgaitcsolyxoaaprpsgzhhx'
+            $ref: '#/components/schemas/DynLimitAzgwgxtofbutrzdlfliofuapghqotvgwxdrkvjjjuqkhpfrfavc'
         - description: ''
           in: query
           name: rule_name[]
@@ -13622,6 +13844,181 @@ paths:
       summary: Price change per month per year
       tags:
         - seasonality
+  /api/short_screener:
+    get:
+      callbacks: {}
+      description: |
+        Returns short interest and float data for percentage calculations based off search params.
+        This endpoint provides information about the percentage of float that is shorted,
+        the float size, and the days to cover metric.
+      operationId: PublicApi.ShortController.short_screener
+      parameters:
+        - description: ''
+          in: query
+          name: tickers
+          required: false
+          schema:
+            $ref: '#/components/schemas/Ticker'
+        - description: ''
+          in: query
+          name: excluded_tickers
+          required: false
+          schema:
+            $ref: '#/components/schemas/Ticker'
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAubgzmsasqlcewqzteojrfitevlkxijuqkbokzdvlzjbgknduks'
+        - description: ''
+          in: query
+          name: offset
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAdlfwyoqxqcxbusalobfllxqbqecqsoxtjkfihdtvknslbwnykt'
+        - description: ''
+          in: query
+          name: min_short_interest
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAzorruyzzhngyeihrthwqzojqusjskeoffxusgtbhzfbqezbzdp'
+        - description: ''
+          in: query
+          name: max_short_interest
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAyotmxgsunfldgqoenhppohoicxzkbafbczushjufbnflzeprip'
+        - description: ''
+          in: query
+          name: min_days_to_cover
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAlayosbtvzspyccmjrnygwwyjvvcivitknmfxocmdhyjyksnpqx'
+        - description: ''
+          in: query
+          name: max_days_to_cover
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAusrcnhprftoluhorkkpuuoplnxouxpefrmoanbelgneiewjprn'
+        - description: ''
+          in: query
+          name: min_si_float
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAezathameowzlmnzluagrkshgnakmgdqycfydelwgnkbtpazljn'
+        - description: ''
+          in: query
+          name: max_si_float
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAkqvaqgbluqeaabfcfepzrgyysmidigfjpjwytyugrtomsygwzr'
+        - description: ''
+          in: query
+          name: min_si_float_with_synth_long_pct_of_total_shares
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAajtqrrxjmstdhrhiwinkvoohkzugdopzjfqrrbtvzebvnjuaxh'
+        - description: ''
+          in: query
+          name: max_si_float_with_synth_long_pct_of_total_shares
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitArvyknllogeainltbscltbtxagmgqntdjpmecweglcilqabeblw'
+        - description: ''
+          in: query
+          name: min_total_float
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAopujuilhiueyxgwtqfittidxlfcxbarwvplhchcoagjjixxaar'
+        - description: ''
+          in: query
+          name: max_total_float
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAqhgcvgqyqptyoldcoqjmypmhrfleszwauifsdmgvknbxvfkcso'
+        - description: ''
+          in: query
+          name: order_by
+          required: false
+          schema:
+            $ref: '#/components/schemas/ShortScreenerOrderBy'
+        - description: ''
+          in: query
+          name: order_direction
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderDirection'
+        - description: ''
+          in: query
+          name: min_market_date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Market Date'
+        - description: ''
+          in: query
+          name: max_market_date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Market Date'
+        - description: ''
+          in: query
+          name: min_fee_rate
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAitjfahtttetubtqplwxeuamsdgshhhapqoomzjchyfdcxnqwgs'
+        - description: ''
+          in: query
+          name: max_fee_rate
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAyjkwjsupgnlikeofflcvzkoyknntzubycqlcpmgikqdyzavuau'
+        - description: ''
+          in: query
+          name: min_rebate_rate
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAvftpvruusthftkkpgnabwemoxirmkuybzmbzbauguwywplygkh'
+        - description: ''
+          in: query
+          name: max_rebate_rate
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAkfthhtyvkqqyqenlnuggbkckqisfdvrfpbvyhaiejpiitgmbsx'
+        - description: ''
+          in: query
+          name: min_short_shares_available
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAqkelrwzijkziukxjclufnmjtivbdshrbhubgbmuncuzsxpypua'
+        - description: ''
+          in: query
+          name: max_short_shares_available
+          required: false
+          schema:
+            $ref: '#/components/schemas/DynLimitAccecuuojmvdcakvssnsucrzkmadmkkvfzvoebcjspmoaamjljq'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Short Screener'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Short Screener
+      tags:
+        - short
   /api/shorts/{ticker}/data:
     get:
       callbacks: {}
@@ -13697,7 +14094,7 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returns short interest and float data for percentage calculations for a ticker.
+        (This endpoint has been deprecated, use V2 now) Returns short interest and float data for percentage calculations for a ticker.
         This endpoint provides information about the percentage of float that is shorted,
         the float size, and the days to cover metric.
       operationId: PublicApi.ShortController.short_interest_and_float
@@ -13713,7 +14110,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Short Interest and Float'
+                $ref: '#/components/schemas/V1 Short Interest and Float (Deprecated)'
           description: ''
         '422':
           content:
@@ -13727,7 +14124,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
-      summary: Short Interest and Float
+      summary: V1 Short Interest and Float (Deprecated)
       tags:
         - short
   /api/shorts/{ticker}/interest-float/v2:
@@ -13750,7 +14147,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Short Interest and Float'
+                $ref: '#/components/schemas/V2 Short Interest and Float'
           description: ''
         '422':
           content:
@@ -13764,7 +14161,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
-      summary: Short Interest and Float
+      summary: V2 Short Interest and Float
       tags:
         - short
   /api/shorts/{ticker}/volume-and-ratio:
