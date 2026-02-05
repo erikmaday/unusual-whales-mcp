@@ -952,12 +952,6 @@ components:
       example: 0.11
       title: DynLimitAazyuhsbqlnvhqimnzuyenylearatavsnvtowglgaaudhxcrofe
       type: integer
-    DynLimitAbgdxddkhbpjoueqfhuwzojdjrlfwovqdvfvszowolkxeprtmit:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAbgdxddkhbpjoueqfhuwzojdjrlfwovqdvfvszowolkxeprtmit
-      type: boolean
     DynLimitAcbncxhwwidhcfovvdasnpnorthaolsoxzbhtndkmccmmzvlfko:
       default: true
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
@@ -997,6 +991,12 @@ components:
       example: 1.1
       title: DynLimitAegysxpwcsxoezyscpnfzglmvdqsmvbnyrstvhwuhqztpnsehpo
       type: integer
+    DynLimitAgqzvbadpbvujpzihboerozclosmopinvlhgztuzoemkjqemwkb:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAgqzvbadpbvujpzihboerozclosmopinvlhgztuzoemkjqemwkb
+      type: boolean
     DynLimitAhgakzmfmgyjzaryvpuagyfllskmpnpvisrnjpzkfcovahphkcj:
       description: The max fee rate.
       example: 0.45
@@ -1068,12 +1068,6 @@ components:
       minimum: 0
       title: DynLimitAnjmfxjjtdluqdtftjgnozigxcmplqcnrrxltgfahvgfmlxtagj
       type: integer
-    DynLimitAotfspbehadagdqlnkfyarevitxwkbubhcgzgkfihzdyfgbwzxg:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAotfspbehadagdqlnkfyarevitxwkbubhcgzgkfihzdyfgbwzxg
-      type: boolean
     DynLimitApufgscjzuhkjkitpdezfdemciyntrkrrzknfvinusknsvkaqtn:
       description: 'The maximum size on that alert. Min: 0.'
       example: 125
@@ -1144,6 +1138,12 @@ components:
       example: 5.3
       title: DynLimitAujwfpwshzkqghkpmwcmwgxriqnuytycnjlxctrimdrufvkotwg
       type: integer
+    DynLimitAzhszjqdjaaemzivpjhbkswwqiykojenmmrojwwnnyfscjekaqy:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAzhszjqdjaaemzivpjhbkswwqiykojenmmrojwwnnyfscjekaqy
+      type: boolean
     DynLimitAznqogypgwuoeldzaneikhzdjrzzgovhragazfjrtsonsqdledj:
       default: true
       description: Boolean flag whether a transaction is ask side.
@@ -14874,13 +14874,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAotfspbehadagdqlnkfyarevitxwkbubhcgzgkfihzdyfgbwzxg'
+            $ref: '#/components/schemas/DynLimitAgqzvbadpbvujpzihboerozclosmopinvlhgztuzoemkjqemwkb'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbgdxddkhbpjoueqfhuwzojdjrlfwovqdvfvszowolkxeprtmit'
+            $ref: '#/components/schemas/DynLimitAzhszjqdjaaemzivpjhbkswwqiykojenmmrojwwnnyfscjekaqy'
       responses:
         '200':
           content:
