@@ -991,17 +991,17 @@ components:
       example: 1.1
       title: DynLimitAegysxpwcsxoezyscpnfzglmvdqsmvbnyrstvhwuhqztpnsehpo
       type: integer
-    DynLimitAgqzvbadpbvujpzihboerozclosmopinvlhgztuzoemkjqemwkb:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAgqzvbadpbvujpzihboerozclosmopinvlhgztuzoemkjqemwkb
-      type: boolean
     DynLimitAhgakzmfmgyjzaryvpuagyfllskmpnpvisrnjpzkfcovahphkcj:
       description: The max fee rate.
       example: 0.45
       title: DynLimitAhgakzmfmgyjzaryvpuagyfllskmpnpvisrnjpzkfcovahphkcj
       type: integer
+    DynLimitAighdrtjyrusgxjcugtedyirdvcgsrgzekazmxcmgsnaubtnggy:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAighdrtjyrusgxjcugtedyirdvcgsrgzekazmxcmgsnaubtnggy
+      type: boolean
     DynLimitAihynatnxdglptpjshebetfpjvoqlocfwlrgfeqhxzurhlhycrl:
       description: The max total float.
       example: 100000000
@@ -1133,17 +1133,17 @@ components:
       minimum: 0
       title: DynLimitAtkwitcjfbgizivtnmughahrzidceyfrbwpgbnbzdappnhmcock
       type: integer
+    DynLimitAtlmjbdjzujvdwxeghuzwhghgpkopgthnrnugpfpzdmnzbjnjqd:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAtlmjbdjzujvdwxeghuzwhghgpkopgthnrnugpfpzdmnzbjnjqd
+      type: boolean
     DynLimitAujwfpwshzkqghkpmwcmwgxriqnuytycnjlxctrimdrufvkotwg:
       description: The max days to cover.
       example: 5.3
       title: DynLimitAujwfpwshzkqghkpmwcmwgxriqnuytycnjlxctrimdrufvkotwg
       type: integer
-    DynLimitAzhszjqdjaaemzivpjhbkswwqiykojenmmrojwwnnyfscjekaqy:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAzhszjqdjaaemzivpjhbkswwqiykojenmmrojwwnnyfscjekaqy
-      type: boolean
     DynLimitAznqogypgwuoeldzaneikhzdjrzzgovhragazfjrtsonsqdledj:
       default: true
       description: Boolean flag whether a transaction is ask side.
@@ -14874,13 +14874,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgqzvbadpbvujpzihboerozclosmopinvlhgztuzoemkjqemwkb'
+            $ref: '#/components/schemas/DynLimitAtlmjbdjzujvdwxeghuzwhghgpkopgthnrnugpfpzdmnzbjnjqd'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzhszjqdjaaemzivpjhbkswwqiykojenmmrojwwnnyfscjekaqy'
+            $ref: '#/components/schemas/DynLimitAighdrtjyrusgxjcugtedyirdvcgsrgzekazmxcmgsnaubtnggy'
       responses:
         '200':
           content:
