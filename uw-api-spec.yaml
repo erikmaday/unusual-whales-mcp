@@ -964,6 +964,12 @@ components:
       minimum: 0
       title: DynLimitAcjblhcqpltqpsnhumqezawwwehxlctppnmsrjgweadmefyxrlp
       type: integer
+    DynLimitAcvaepweipjvygshuipoolzswuqgzodldixccerfnhsfgbopgsf:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAcvaepweipjvygshuipoolzswuqgzodldixccerfnhsfgbopgsf
+      type: boolean
     DynLimitAdtzwrhteqnzjkooyknwtufukjlngrcudmehinpgclttydvepdc:
       description: The min short interest float ratio.
       example: 0.1
@@ -991,17 +997,17 @@ components:
       example: 1.1
       title: DynLimitAegysxpwcsxoezyscpnfzglmvdqsmvbnyrstvhwuhqztpnsehpo
       type: integer
+    DynLimitAfofzglawzbatajmgbkpwnxhrfyiucllhhfsrfzgnuqffhuzywq:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAfofzglawzbatajmgbkpwnxhrfyiucllhhfsrfzgnuqffhuzywq
+      type: boolean
     DynLimitAhgakzmfmgyjzaryvpuagyfllskmpnpvisrnjpzkfcovahphkcj:
       description: The max fee rate.
       example: 0.45
       title: DynLimitAhgakzmfmgyjzaryvpuagyfllskmpnpvisrnjpzkfcovahphkcj
       type: integer
-    DynLimitAighdrtjyrusgxjcugtedyirdvcgsrgzekazmxcmgsnaubtnggy:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAighdrtjyrusgxjcugtedyirdvcgsrgzekazmxcmgsnaubtnggy
-      type: boolean
     DynLimitAihynatnxdglptpjshebetfpjvoqlocfwlrgfeqhxzurhlhycrl:
       description: The max total float.
       example: 100000000
@@ -1133,12 +1139,6 @@ components:
       minimum: 0
       title: DynLimitAtkwitcjfbgizivtnmughahrzidceyfrbwpgbnbzdappnhmcock
       type: integer
-    DynLimitAtlmjbdjzujvdwxeghuzwhghgpkopgthnrnugpfpzdmnzbjnjqd:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAtlmjbdjzujvdwxeghuzwhghgpkopgthnrnugpfpzdmnzbjnjqd
-      type: boolean
     DynLimitAujwfpwshzkqghkpmwcmwgxriqnuytycnjlxctrimdrufvkotwg:
       description: The max days to cover.
       example: 5.3
@@ -13173,6 +13173,13 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Optional Market Date'
+        - description: Return only new option contracts
+          example: 'true'
+          in: query
+          name: is_new
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           content:
@@ -14874,13 +14881,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtlmjbdjzujvdwxeghuzwhghgpkopgthnrnugpfpzdmnzbjnjqd'
+            $ref: '#/components/schemas/DynLimitAfofzglawzbatajmgbkpwnxhrfyiucllhhfsrfzgnuqffhuzywq'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAighdrtjyrusgxjcugtedyirdvcgsrgzekazmxcmgsnaubtnggy'
+            $ref: '#/components/schemas/DynLimitAcvaepweipjvygshuipoolzswuqgzodldixccerfnhsfgbopgsf'
       responses:
         '200':
           content:
