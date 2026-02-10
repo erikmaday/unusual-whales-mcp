@@ -947,12 +947,6 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAaioqukmudetulfsaikzpbkkzlxjtqrtjloolgkqtbvazquoqfa:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAaioqukmudetulfsaikzpbkkzlxjtqrtjloolgkqtbvazquoqfa
-      type: boolean
     DynLimitAazyuhsbqlnvhqimnzuyenylearatavsnvtowglgaaudhxcrofe:
       description: The min rebate rate.
       example: 0.11
@@ -997,6 +991,12 @@ components:
       example: 1.1
       title: DynLimitAegysxpwcsxoezyscpnfzglmvdqsmvbnyrstvhwuhqztpnsehpo
       type: integer
+    DynLimitAgocmiiljmizufvtwzsvlspzthhuywrtnjtfjdvexenmoddnfby:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAgocmiiljmizufvtwzsvlspzthhuywrtnjtfjdvexenmoddnfby
+      type: boolean
     DynLimitAhgakzmfmgyjzaryvpuagyfllskmpnpvisrnjpzkfcovahphkcj:
       description: The max fee rate.
       example: 0.45
@@ -1068,12 +1068,6 @@ components:
       minimum: 0
       title: DynLimitAnjmfxjjtdluqdtftjgnozigxcmplqcnrrxltgfahvgfmlxtagj
       type: integer
-    DynLimitAnzywqxndjnrmxiwfqpgqenkdmmwyzdipeopvbzbrtfkyszfqsc:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAnzywqxndjnrmxiwfqpgqenkdmmwyzdipeopvbzbrtfkyszfqsc
-      type: boolean
     DynLimitApufgscjzuhkjkitpdezfdemciyntrkrrzknfvinusknsvkaqtn:
       description: 'The maximum size on that alert. Min: 0.'
       example: 125
@@ -1105,6 +1099,12 @@ components:
       minimum: 0
       title: DynLimitAquxhrxrrpjisknyllzswuiuxsqylqtvblaqowqdfgcymahcpux
       type: integer
+    DynLimitArgdaomcgwxgmtvtlxkhnrxcbfycmrgpbtaiadpqqmubrtzjmmr:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitArgdaomcgwxgmtvtlxkhnrxcbfycmrgpbtaiadpqqmubrtzjmmr
+      type: boolean
     DynLimitAsqnnomgflpbugllrxjutwbhjesjvukkbamlgsnahomgasydodq:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -14881,13 +14881,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAnzywqxndjnrmxiwfqpgqenkdmmwyzdipeopvbzbrtfkyszfqsc'
+            $ref: '#/components/schemas/DynLimitArgdaomcgwxgmtvtlxkhnrxcbfycmrgpbtaiadpqqmubrtzjmmr'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAaioqukmudetulfsaikzpbkkzlxjtqrtjloolgkqtbvazquoqfa'
+            $ref: '#/components/schemas/DynLimitAgocmiiljmizufvtwzsvlspzthhuywrtnjtfjdvexenmoddnfby'
       responses:
         '200':
           content:
