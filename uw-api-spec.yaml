@@ -1012,12 +1012,6 @@ components:
       example: true
       title: DynLimitAiymlnsjtouugykqaduttlfwmyhubarjesanxgfzdkoyejnovzr
       type: boolean
-    DynLimitAjihsexgkrxrhvcisqnfmtbjxioumayokxcntyehmzzwovvdrsc:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAjihsexgkrxrhvcisqnfmtbjxioumayokxcntyehmzzwovvdrsc
-      type: boolean
     DynLimitAjqajfejyjjrbghnlwtoqemldrliffbejjazhvpfznemvggckrw:
       description: The max short interest float ratio.
       example: 0.05
@@ -1099,6 +1093,12 @@ components:
       minimum: 0
       title: DynLimitAquxhrxrrpjisknyllzswuiuxsqylqtvblaqowqdfgcymahcpux
       type: integer
+    DynLimitAqvdcmrgflnelonsixesmdkdqkjszaivrdmgsvaxbcnmcodlzik:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAqvdcmrgflnelonsixesmdkdqkjszaivrdmgsvaxbcnmcodlzik
+      type: boolean
     DynLimitAsqnnomgflpbugllrxjutwbhjesjvukkbamlgsnahomgasydodq:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -1109,6 +1109,12 @@ components:
       example: 5000
       title: DynLimitAstvxygewddieqkthiilgroryjjewpvoyohvaffiymqhosnqpky
       type: integer
+    DynLimitAsunonoauiotmxatgqllnugpbxnwfznadmimofoytkxcvwawhvx:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAsunonoauiotmxatgqllnugpbxnwfznadmimofoytkxcvwawhvx
+      type: boolean
     DynLimitAsutjawbgginkrmieevigxsextjyodbokrdqeeaguwnikxkaufe:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
@@ -1138,12 +1144,6 @@ components:
       example: 5.3
       title: DynLimitAujwfpwshzkqghkpmwcmwgxriqnuytycnjlxctrimdrufvkotwg
       type: integer
-    DynLimitAwyfcfhjaiurrykplzqgszwxlxjtpewejlmlczvuqnaqaspfdhz:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAwyfcfhjaiurrykplzqgszwxlxjtpewejlmlczvuqnaqaspfdhz
-      type: boolean
     DynLimitAznqogypgwuoeldzaneikhzdjrzzgovhragazfjrtsonsqdledj:
       default: true
       description: Boolean flag whether a transaction is ask side.
@@ -3962,10 +3962,9 @@ components:
       title: Institutional Activity
       type: object
     Institutional Activity Order By:
-      description: Optional columns to order the result by.
+      default: units
+      description: Optional columns to order the result by per report period end date.
       enum:
-        - ticker
-        - security_type
         - units
         - units_change
       example: units
@@ -4116,6 +4115,14 @@ components:
         Only data with dates on or before this date will be returned.
       example: 2023-03-31
       title: Institutional Reporting End Date
+      type: date
+    Institutional Reporting Start Date:
+      description: |
+        Start date to filter institutional reporting data in the format YYYY-MM-DD.
+        
+        Only data with dates on or after this date will be returned.
+      example: 2023-01-01
+      title: Institutional Reporting Start Date
       type: date
     Interpolated IV:
       description: Interpolated implied volatility data for different time horizons
@@ -10393,6 +10400,92 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
+      summary: Institutional Activity (Deprecated)
+      tags:
+        - institution
+  /api/institution/{name}/activity/v2:
+    get:
+      callbacks: {}
+      description: |
+        The trading activities for a given institution.
+        
+        If the result contains multiple report periods, it will contain first the latest report period results ordered by the `order` and `order_direction`,
+        then the second latest report period ordered by the `order` and `order_direction` and so on, e.g. first all results for report period 2025-09-30, then
+        all results for report period 2025-06-30 ...
+        
+        Per default the results per report period will be ordered by `units` descending.
+        
+        If you provide the same date for `start_date` and `end_date` you will only get the results for filings with that date as the report period end date
+        e.g. if you set `start_date` and `end_date` to 2025-09-30 you will only get the results for the report period ending on 2025-09-30.
+      operationId: PublicApi.InstitutionController.activity_v2
+      parameters:
+        - description: ''
+          in: path
+          name: name
+          required: true
+          schema:
+            $ref: '#/components/schemas/Institution'
+        - description: ''
+          in: query
+          name: ticker_symbol
+          required: false
+          schema:
+            $ref: '#/components/schemas/Ticker'
+        - description: ''
+          in: query
+          name: start_date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Institutional Reporting Start Date'
+        - description: ''
+          in: query
+          name: end_date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Institutional Reporting End Date'
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+        - description: ''
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
+        - description: ''
+          in: query
+          name: order
+          required: false
+          schema:
+            $ref: '#/components/schemas/Institutional Activity Order By'
+        - description: ''
+          in: query
+          name: order_direction
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderDirection'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institutional Activity'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
       summary: Institutional Activity
       tags:
         - institution
@@ -10409,6 +10502,12 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/Institution'
+        - description: ''
+          in: query
+          name: ticker_symbol
+          required: false
+          schema:
+            $ref: '#/components/schemas/Ticker'
         - description: ''
           in: query
           name: date
@@ -14881,13 +14980,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwyfcfhjaiurrykplzqgszwxlxjtpewejlmlczvuqnaqaspfdhz'
+            $ref: '#/components/schemas/DynLimitAqvdcmrgflnelonsixesmdkdqkjszaivrdmgsvaxbcnmcodlzik'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjihsexgkrxrhvcisqnfmtbjxioumayokxcntyehmzzwovvdrsc'
+            $ref: '#/components/schemas/DynLimitAsunonoauiotmxatgqllnugpbxnwfznadmimofoytkxcvwawhvx'
       responses:
         '200':
           content:
