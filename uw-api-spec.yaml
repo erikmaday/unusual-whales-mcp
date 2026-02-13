@@ -991,6 +991,12 @@ components:
       example: 1.1
       title: DynLimitAegysxpwcsxoezyscpnfzglmvdqsmvbnyrstvhwuhqztpnsehpo
       type: integer
+    DynLimitAgcghdenzcocawskxcpxihktawxyhjwehwcucoyzxqgcdrmnnhj:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAgcghdenzcocawskxcpxihktawxyhjwehwcucoyzxqgcdrmnnhj
+      type: boolean
     DynLimitAhgakzmfmgyjzaryvpuagyfllskmpnpvisrnjpzkfcovahphkcj:
       description: The max fee rate.
       example: 0.45
@@ -1093,12 +1099,6 @@ components:
       minimum: 0
       title: DynLimitAquxhrxrrpjisknyllzswuiuxsqylqtvblaqowqdfgcymahcpux
       type: integer
-    DynLimitAqvdcmrgflnelonsixesmdkdqkjszaivrdmgsvaxbcnmcodlzik:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAqvdcmrgflnelonsixesmdkdqkjszaivrdmgsvaxbcnmcodlzik
-      type: boolean
     DynLimitAsqnnomgflpbugllrxjutwbhjesjvukkbamlgsnahomgasydodq:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -1109,12 +1109,6 @@ components:
       example: 5000
       title: DynLimitAstvxygewddieqkthiilgroryjjewpvoyohvaffiymqhosnqpky
       type: integer
-    DynLimitAsunonoauiotmxatgqllnugpbxnwfznadmimofoytkxcvwawhvx:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAsunonoauiotmxatgqllnugpbxnwfznadmimofoytkxcvwawhvx
-      type: boolean
     DynLimitAsutjawbgginkrmieevigxsextjyodbokrdqeeaguwnikxkaufe:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
@@ -1144,6 +1138,12 @@ components:
       example: 5.3
       title: DynLimitAujwfpwshzkqghkpmwcmwgxriqnuytycnjlxctrimdrufvkotwg
       type: integer
+    DynLimitAvmucoeiiranpxynwlkmpgrxmurfcenrxgrerlovkysxdmduici:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAvmucoeiiranpxynwlkmpgrxmurfcenrxgrerlovkysxdmduici
+      type: boolean
     DynLimitAznqogypgwuoeldzaneikhzdjrzzgovhragazfjrtsonsqdledj:
       default: true
       description: Boolean flag whether a transaction is ask side.
@@ -14980,13 +14980,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqvdcmrgflnelonsixesmdkdqkjszaivrdmgsvaxbcnmcodlzik'
+            $ref: '#/components/schemas/DynLimitAgcghdenzcocawskxcpxihktawxyhjwehwcucoyzxqgcdrmnnhj'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsunonoauiotmxatgqllnugpbxnwfznadmimofoytkxcvwawhvx'
+            $ref: '#/components/schemas/DynLimitAvmucoeiiranpxynwlkmpgrxmurfcenrxgrerlovkysxdmduici'
       responses:
         '200':
           content:
