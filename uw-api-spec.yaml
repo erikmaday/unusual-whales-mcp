@@ -964,11 +964,11 @@ components:
       minimum: 0
       title: DynLimitAcjblhcqpltqpsnhumqezawwwehxlctppnmsrjgweadmefyxrlp
       type: integer
-    DynLimitActmtjentiadcyijdtbrrhmrugezqebtridnxuxwzcykrdhhzrz:
+    DynLimitAcpzadzmkqxijprfrromckuhpnaordrgizwybwkyzgpwrdtnhew:
       default: true
       description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitActmtjentiadcyijdtbrrhmrugezqebtridnxuxwzcykrdhhzrz
+      title: DynLimitAcpzadzmkqxijprfrromckuhpnaordrgizwybwkyzgpwrdtnhew
       type: boolean
     DynLimitAdtzwrhteqnzjkooyknwtufukjlngrcudmehinpgclttydvepdc:
       description: The min short interest float ratio.
@@ -1138,11 +1138,11 @@ components:
       example: 5.3
       title: DynLimitAujwfpwshzkqghkpmwcmwgxriqnuytycnjlxctrimdrufvkotwg
       type: integer
-    DynLimitAvldfjmxhkclvuserkfgkhhiqgnbtfhyihnrfopvgkpuugtiwgz:
+    DynLimitAxgyewkhubyjnnvgmhtsheqbwexfdvfnnnboykpaledbcgkefuh:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAvldfjmxhkclvuserkfgkhhiqgnbtfhyihnrfopvgkpuugtiwgz
+      title: DynLimitAxgyewkhubyjnnvgmhtsheqbwexfdvfnnnboykpaledbcgkefuh
       type: boolean
     DynLimitAznqogypgwuoeldzaneikhzdjrzzgovhragazfjrtsonsqdledj:
       default: true
@@ -14980,13 +14980,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitActmtjentiadcyijdtbrrhmrugezqebtridnxuxwzcykrdhhzrz'
+            $ref: '#/components/schemas/DynLimitAcpzadzmkqxijprfrromckuhpnaordrgizwybwkyzgpwrdtnhew'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAvldfjmxhkclvuserkfgkhhiqgnbtfhyihnrfopvgkpuugtiwgz'
+            $ref: '#/components/schemas/DynLimitAxgyewkhubyjnnvgmhtsheqbwexfdvfnnnboykpaledbcgkefuh'
       responses:
         '200':
           content:
