@@ -977,11 +977,17 @@ components:
       minimum: 0
       title: DynLimitAegztubvepncuwzomdjjyvljdswmmfcslvchnoifgvctgzvcdbc
       type: integer
-    DynLimitAfzcwyogxouowqqlmjwjvbuvazpsqloqlliqxfqxsmvvkuptxqx:
+    DynLimitAgiquohwhgzqkzgrzngxljkmcbvvwuyfduuydtoktgoxjhtamxz:
       default: true
       description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAfzcwyogxouowqqlmjwjvbuvazpsqloqlliqxfqxsmvvkuptxqx
+      title: DynLimitAgiquohwhgzqkzgrzngxljkmcbvvwuyfduuydtoktgoxjhtamxz
+      type: boolean
+    DynLimitAgspijztfqlyytcmgxzosroyamoypdwhpvskxshwgfmtfvvvvov:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAgspijztfqlyytcmgxzosroyamoypdwhpvskxshwgfmtfvvvvov
       type: boolean
     DynLimitAhaefblrlnblvnojnuylzmtrxjpqklmzjmsvsufjdbyopblnisw:
       description: The min total float.
@@ -998,12 +1004,6 @@ components:
       description: Boolean flag whether a transaction is bid side.
       example: true
       title: DynLimitAjxalmzktcvtcjbxhupuvzyqbyprnearjrlmzaceutnmveruhys
-      type: boolean
-    DynLimitAkmcvfhzaqqsbmvhguqwslrntottffoddftgmtoseowtlzsiiwn:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAkmcvfhzaqqsbmvhguqwslrntottffoddftgmtoseowtlzsiiwn
       type: boolean
     DynLimitAkwvkdrptiylhbizedbbudyvmftbjqsoghlpxmlvgxlptwghyiz:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
@@ -14987,13 +14987,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfzcwyogxouowqqlmjwjvbuvazpsqloqlliqxfqxsmvvkuptxqx'
+            $ref: '#/components/schemas/DynLimitAgiquohwhgzqkzgrzngxljkmcbvvwuyfduuydtoktgoxjhtamxz'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAkmcvfhzaqqsbmvhguqwslrntottffoddftgmtoseowtlzsiiwn'
+            $ref: '#/components/schemas/DynLimitAgspijztfqlyytcmgxzosroyamoypdwhpvskxshwgfmtfvvvvov'
       responses:
         '200':
           content:
