@@ -977,17 +977,11 @@ components:
       minimum: 0
       title: DynLimitAegztubvepncuwzomdjjyvljdswmmfcslvchnoifgvctgzvcdbc
       type: integer
-    DynLimitAgiquohwhgzqkzgrzngxljkmcbvvwuyfduuydtoktgoxjhtamxz:
+    DynLimitAguqdlizjddszvseqhezogygaxpsocamplqjddurkgujumdsndh:
       default: true
       description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAgiquohwhgzqkzgrzngxljkmcbvvwuyfduuydtoktgoxjhtamxz
-      type: boolean
-    DynLimitAgspijztfqlyytcmgxzosroyamoypdwhpvskxshwgfmtfvvvvov:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAgspijztfqlyytcmgxzosroyamoypdwhpvskxshwgfmtfvvvvov
+      title: DynLimitAguqdlizjddszvseqhezogygaxpsocamplqjddurkgujumdsndh
       type: boolean
     DynLimitAhaefblrlnblvnojnuylzmtrxjpqklmzjmsvsufjdbyopblnisw:
       description: The min total float.
@@ -1044,6 +1038,12 @@ components:
       description: Boolean flag whether a transaction is a put.
       example: true
       title: DynLimitAppkjwhobxsoxmpmzjiltvjqmajxgbbxahatjgqfaklwcjbeepm
+      type: boolean
+    DynLimitApvgsxmqmdcuhuunzlaxitwgvpbbirccevzmrkpqlyeiyvpyvmj:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitApvgsxmqmdcuhuunzlaxitwgvpbbirccevzmrkpqlyeiyvpyvmj
       type: boolean
     DynLimitAqdjwkomowsttceehurfmlkkjkughhvubwbxocqnayvgzofgoja:
       description: The max days to cover.
@@ -14987,13 +14987,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgiquohwhgzqkzgrzngxljkmcbvvwuyfduuydtoktgoxjhtamxz'
+            $ref: '#/components/schemas/DynLimitAguqdlizjddszvseqhezogygaxpsocamplqjddurkgujumdsndh'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgspijztfqlyytcmgxzosroyamoypdwhpvskxshwgfmtfvvvvov'
+            $ref: '#/components/schemas/DynLimitApvgsxmqmdcuhuunzlaxitwgvpbbirccevzmrkpqlyeiyvpyvmj'
       responses:
         '200':
           content:
