@@ -977,12 +977,6 @@ components:
       minimum: 0
       title: DynLimitAegztubvepncuwzomdjjyvljdswmmfcslvchnoifgvctgzvcdbc
       type: integer
-    DynLimitAguqdlizjddszvseqhezogygaxpsocamplqjddurkgujumdsndh:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAguqdlizjddszvseqhezogygaxpsocamplqjddurkgujumdsndh
-      type: boolean
     DynLimitAhaefblrlnblvnojnuylzmtrxjpqklmzjmsvsufjdbyopblnisw:
       description: The min total float.
       example: 10000000
@@ -1027,6 +1021,12 @@ components:
       example: 5000
       title: DynLimitAoolbpjgnbbmrfvpfpuatydavcrkuqcaixbiukfoygbuoumzmqg
       type: integer
+    DynLimitApiuebmvrdnupvmejlrddwgkhgitgfprkjbhkeanunrdazkqdve:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitApiuebmvrdnupvmejlrddwgkhgitgfprkjbhkeanunrdazkqdve
+      type: boolean
     DynLimitApktkpdtkwndjhgsiaeivvicltdkbkcjlybdmkjaedtnwaigphe:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1038,12 +1038,6 @@ components:
       description: Boolean flag whether a transaction is a put.
       example: true
       title: DynLimitAppkjwhobxsoxmpmzjiltvjqmajxgbbxahatjgqfaklwcjbeepm
-      type: boolean
-    DynLimitApvgsxmqmdcuhuunzlaxitwgvpbbirccevzmrkpqlyeiyvpyvmj:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitApvgsxmqmdcuhuunzlaxitwgvpbbirccevzmrkpqlyeiyvpyvmj
       type: boolean
     DynLimitAqdjwkomowsttceehurfmlkkjkughhvubwbxocqnayvgzofgoja:
       description: The max days to cover.
@@ -1122,6 +1116,12 @@ components:
       example: 0.01
       title: DynLimitAvluxehmfjefjorjwmmrltmmrpelpjgprmombfqfmctiugmfxfa
       type: integer
+    DynLimitAweqxqgrxdlgawjhxecegjwfckxdgdyobdxlguxoexmmqvgouha:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAweqxqgrxdlgawjhxecegjwfckxdgdyobdxlguxoexmmqvgouha
+      type: boolean
     DynLimitAwxezlafgwqpocbhbqlsvrafvlzhxxhphweueuzlpacrcgpfeus:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -14987,13 +14987,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAguqdlizjddszvseqhezogygaxpsocamplqjddurkgujumdsndh'
+            $ref: '#/components/schemas/DynLimitAweqxqgrxdlgawjhxecegjwfckxdgdyobdxlguxoexmmqvgouha'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApvgsxmqmdcuhuunzlaxitwgvpbbirccevzmrkpqlyeiyvpyvmj'
+            $ref: '#/components/schemas/DynLimitApiuebmvrdnupvmejlrddwgkhgitgfprkjbhkeanunrdazkqdve'
       responses:
         '200':
           content:
