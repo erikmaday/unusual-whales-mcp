@@ -977,6 +977,12 @@ components:
       minimum: 0
       title: DynLimitAegztubvepncuwzomdjjyvljdswmmfcslvchnoifgvctgzvcdbc
       type: integer
+    DynLimitAfzfqriqxsgjgdqczljslpqfwmawcwwktcabagyejiaasqcinto:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAfzfqriqxsgjgdqczljslpqfwmawcwwktcabagyejiaasqcinto
+      type: boolean
     DynLimitAhaefblrlnblvnojnuylzmtrxjpqklmzjmsvsufjdbyopblnisw:
       description: The min total float.
       example: 10000000
@@ -1010,6 +1016,12 @@ components:
       example: 0.45
       title: DynLimitAnfgbmeioiebjhmxzqyeqychklrvrduujgoobeuljglspfuxbji
       type: integer
+    DynLimitAnkftudjvdypxyaexlppwdcgofmveplxeredixpfdprwmtrwffm:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAnkftudjvdypxyaexlppwdcgofmveplxeredixpfdprwmtrwffm
+      type: boolean
     DynLimitAogvjfhrlurucscfktjzsbsglrrcuhkbltdnljlxcvfqgvovlvz:
       default: true
       description: Boolean flag whether to return only intraday alerts.
@@ -1021,12 +1033,6 @@ components:
       example: 5000
       title: DynLimitAoolbpjgnbbmrfvpfpuatydavcrkuqcaixbiukfoygbuoumzmqg
       type: integer
-    DynLimitAowgcicguvaenypqrjdxwylznrntvkbcqfsacezukbjukofonmd:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAowgcicguvaenypqrjdxwylznrntvkbcqfsacezukbjukofonmd
-      type: boolean
     DynLimitApktkpdtkwndjhgsiaeivvicltdkbkcjlybdmkjaedtnwaigphe:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1060,12 +1066,6 @@ components:
       example: 10000
       title: DynLimitAqrirflsygpkmadeekqtbvndrsbhdradcusfvxqjanspuboapau
       type: integer
-    DynLimitAreiazbfuubyorpcpwfhnfhurtxcrviyjqozdeiywezoblpqnmd:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAreiazbfuubyorpcpwfhnfhurtxcrviyjqozdeiywezoblpqnmd
-      type: boolean
     DynLimitArqbshgusaqvapvyivvhclxlluzuqufdvaufuaatjitymrugiio:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
@@ -14987,13 +14987,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAreiazbfuubyorpcpwfhnfhurtxcrviyjqozdeiywezoblpqnmd'
+            $ref: '#/components/schemas/DynLimitAfzfqriqxsgjgdqczljslpqfwmawcwwktcabagyejiaasqcinto'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAowgcicguvaenypqrjdxwylznrntvkbcqfsacezukbjukofonmd'
+            $ref: '#/components/schemas/DynLimitAnkftudjvdypxyaexlppwdcgofmveplxeredixpfdprwmtrwffm'
       responses:
         '200':
           content:
