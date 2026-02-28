@@ -977,12 +977,6 @@ components:
       minimum: 0
       title: DynLimitAegztubvepncuwzomdjjyvljdswmmfcslvchnoifgvctgzvcdbc
       type: integer
-    DynLimitAfzfqriqxsgjgdqczljslpqfwmawcwwktcabagyejiaasqcinto:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAfzfqriqxsgjgdqczljslpqfwmawcwwktcabagyejiaasqcinto
-      type: boolean
     DynLimitAhaefblrlnblvnojnuylzmtrxjpqklmzjmsvsufjdbyopblnisw:
       description: The min total float.
       example: 10000000
@@ -1016,12 +1010,6 @@ components:
       example: 0.45
       title: DynLimitAnfgbmeioiebjhmxzqyeqychklrvrduujgoobeuljglspfuxbji
       type: integer
-    DynLimitAnkftudjvdypxyaexlppwdcgofmveplxeredixpfdprwmtrwffm:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAnkftudjvdypxyaexlppwdcgofmveplxeredixpfdprwmtrwffm
-      type: boolean
     DynLimitAogvjfhrlurucscfktjzsbsglrrcuhkbltdnljlxcvfqgvovlvz:
       default: true
       description: Boolean flag whether to return only intraday alerts.
@@ -1089,6 +1077,12 @@ components:
       example: true
       title: DynLimitAsothdkljsrfpdspvwuqeuvumjmbippolwltgohnpavlsumwcex
       type: boolean
+    DynLimitAssncqkuvroukvnwqxgtjlqvkbcthpyktjeetjpssbftdveloyf:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAssncqkuvroukvnwqxgtjlqvkbcthpyktjeetjpssbftdveloyf
+      type: boolean
     DynLimitAtgfdbdwxlwszhwlhtutusjwujpwutxouyjedbdldyswtcpqxvv:
       description: The min short shares available.
       example: 0
@@ -1122,6 +1116,12 @@ components:
       example: 0.01
       title: DynLimitAvluxehmfjefjorjwmmrltmmrpelpjgprmombfqfmctiugmfxfa
       type: integer
+    DynLimitAwjdquwyzfsrpxqnocovbimtbpovtlokaliermmvobqlhtkirtp:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAwjdquwyzfsrpxqnocovbimtbpovtlokaliermmvobqlhtkirtp
+      type: boolean
     DynLimitAwxezlafgwqpocbhbqlsvrafvlzhxxhphweueuzlpacrcgpfeus:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -8042,8 +8042,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
-      example: '13.52369891956068210400'
+      description: The 30 day implied volatility from 1 month ago.
+      example: '0.2136848270893097'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -14987,13 +14987,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfzfqriqxsgjgdqczljslpqfwmawcwwktcabagyejiaasqcinto'
+            $ref: '#/components/schemas/DynLimitAwjdquwyzfsrpxqnocovbimtbpovtlokaliermmvobqlhtkirtp'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAnkftudjvdypxyaexlppwdcgofmveplxeredixpfdprwmtrwffm'
+            $ref: '#/components/schemas/DynLimitAssncqkuvroukvnwqxgtjlqvkbcthpyktjeetjpssbftdveloyf'
       responses:
         '200':
           content:
