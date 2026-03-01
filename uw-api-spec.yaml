@@ -966,6 +966,12 @@ components:
       minimum: 0
       title: DynLimitAchorieajxjywvaciwrxatcnjzdudtoxoutpmunyowfhmtldgts
       type: integer
+    DynLimitAdjajxwxgajyqwtslnakgqhuriyoemtvhipgovrnjzlwnovdtjr:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAdjajxwxgajyqwtslnakgqhuriyoemtvhipgovrnjzlwnovdtjr
+      type: boolean
     DynLimitAdtwwqweyyidrlvzcunanrnctcogvmvoxxtmzbduwdbmsuosgzh:
       description: The max total float.
       example: 100000000
@@ -1021,6 +1027,12 @@ components:
       example: 5000
       title: DynLimitAoolbpjgnbbmrfvpfpuatydavcrkuqcaixbiukfoygbuoumzmqg
       type: integer
+    DynLimitApcvdmaoqfstaokqpxjounkgstipxkakggahbzxpexqsachwnha:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitApcvdmaoqfstaokqpxjounkgstipxkakggahbzxpexqsachwnha
+      type: boolean
     DynLimitApktkpdtkwndjhgsiaeivvicltdkbkcjlybdmkjaedtnwaigphe:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1077,12 +1089,6 @@ components:
       example: true
       title: DynLimitAsothdkljsrfpdspvwuqeuvumjmbippolwltgohnpavlsumwcex
       type: boolean
-    DynLimitAssncqkuvroukvnwqxgtjlqvkbcthpyktjeetjpssbftdveloyf:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAssncqkuvroukvnwqxgtjlqvkbcthpyktjeetjpssbftdveloyf
-      type: boolean
     DynLimitAtgfdbdwxlwszhwlhtutusjwujpwutxouyjedbdldyswtcpqxvv:
       description: The min short shares available.
       example: 0
@@ -1116,12 +1122,6 @@ components:
       example: 0.01
       title: DynLimitAvluxehmfjefjorjwmmrltmmrpelpjgprmombfqfmctiugmfxfa
       type: integer
-    DynLimitAwjdquwyzfsrpxqnocovbimtbpovtlokaliermmvobqlhtkirtp:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAwjdquwyzfsrpxqnocovbimtbpovtlokaliermmvobqlhtkirtp
-      type: boolean
     DynLimitAwxezlafgwqpocbhbqlsvrafvlzhxxhphweueuzlpacrcgpfeus:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -3359,15 +3359,17 @@ components:
       description: An insider
       example:
         data:
-          - display_name: KARP ALEXANDER
+          - cik: '0001823951'
+            display_name: KARP ALEXANDER
             id: 10343
             is_person: true
             logo_url: https://storage.googleapis.com/uwassets/insiders/10343
             name: KARP ALEXANDER
             name_slug: karp-alexander
-            social_links: []
             ticker: PLTR
       properties:
+        cik:
+          $ref: '#/components/schemas/Insider CIK'
         id:
           $ref: '#/components/schemas/Insider ID'
         is_person:
@@ -3393,6 +3395,11 @@ components:
       description: The average price of the insider trade.
       example: '123.45'
       title: Insider Average Price
+      type: string
+    Insider CIK:
+      description: The insider's CIK (Central Index Key).
+      example: '0000902015'
+      title: Insider CIK
       type: string
     Insider Date Excercisable:
       description: The date excercisable of the insider trade.
@@ -8042,8 +8049,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -14987,13 +14994,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwjdquwyzfsrpxqnocovbimtbpovtlokaliermmvobqlhtkirtp'
+            $ref: '#/components/schemas/DynLimitAdjajxwxgajyqwtslnakgqhuriyoemtvhipgovrnjzlwnovdtjr'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAssncqkuvroukvnwqxgtjlqvkbcthpyktjeetjpssbftdveloyf'
+            $ref: '#/components/schemas/DynLimitApcvdmaoqfstaokqpxjounkgstipxkakggahbzxpexqsachwnha'
       responses:
         '200':
           content:
