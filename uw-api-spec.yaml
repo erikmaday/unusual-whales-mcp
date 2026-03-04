@@ -9060,6 +9060,10 @@ info:
     
     ## Changelog
     
+    # 2026.03.02
+    - Added authenticated MCP endpoint [`/api/mcp`](https://api.unusualwhales.com/docs) to expose existing AI tools to API subscribers using the same `Authorization: Bearer <API_TOKEN>` flow.
+    - Supports MCP `initialize`, `tools/list`, and `tools/call` methods backed by the existing internal tool registry and execution pipeline.
+    
     # 2026.01.20
     - Updated interest-float endpoint with new version and deprecated old version
     - [`/shorts/:ticker/interest-float/v2`](https://api.unusualwhales.com/docs#/operations/PublicApi.ShortController.short_interest_and_float_v2)
@@ -9552,6 +9556,117 @@ paths:
       summary: Recent Congress Trades
       tags:
         - congress
+  /api/crypto/whale-transactions:
+    get:
+      callbacks: {}
+      description: |
+        Returns whale transactions across blockchains with optional filtering by blockchain and token.
+        Supported blockchains: ethereum, bitcoin, solana, polygon, arbitrum, avalanche, binance_smart_chain,
+        cardano, dogecoin, fantom, optimism, polkadot, ripple, tron
+      operationId: PublicApi.CryptoController.whale_transactions
+      parameters:
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+        - description: ''
+          in: query
+          name: blockchain
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: token_symbol
+          required: false
+          schema:
+            type: string
+      responses: {}
+      summary: Crypto Whale Transactions
+      tags:
+        - crypto
+  /api/crypto/whales/recent:
+    get:
+      callbacks: {}
+      description: |
+        Returns recent large crypto trades (whale trades) across all pairs.
+      operationId: PublicApi.CryptoController.whales_recent
+      parameters:
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+      responses: {}
+      summary: Recent Crypto Whale Trades
+      tags:
+        - crypto
+  /api/crypto/{pair}/ohlc/{candle_size}:
+    get:
+      callbacks: {}
+      description: |
+        Returns OHLC candle data for a crypto pair.
+        Available candle sizes: 1m, 5m, 10m, 15m, 30m, 1h, 4h, 1d, 1w
+      operationId: PublicApi.CryptoController.ohlc
+      parameters:
+        - description: ''
+          in: path
+          name: pair
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: path
+          name: candle_size
+          required: true
+          schema:
+            enum:
+              - 1m
+              - 5m
+              - 10m
+              - 15m
+              - 30m
+              - 1h
+              - 4h
+              - 1d
+              - 1w
+            type: string
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses: {}
+      summary: Crypto OHLC Candles
+      tags:
+        - crypto
+  /api/crypto/{pair}/state:
+    get:
+      callbacks: {}
+      description: |
+        Returns the current state for a crypto pair including 24h OHLCV data.
+      operationId: PublicApi.CryptoController.state
+      parameters:
+        - description: ''
+          in: path
+          name: pair
+          required: true
+          schema:
+            type: string
+      responses: {}
+      summary: Crypto Pair State
+      tags:
+        - crypto
   /api/darkpool/recent:
     get:
       callbacks: {}
@@ -15179,6 +15294,24 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Recent flows
+      tags:
+        - stock
+  /api/stock/{ticker}/fundamental-breakdown:
+    get:
+      callbacks: {}
+      description: |
+        Returns the fundamental financial data for the given ticker, including earnings per share,
+        revenue, dividends, share counts, RSU data, and revenue breakdowns by product and geography.
+      operationId: PublicApi.FundamentalController.show
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+      responses: {}
+      summary: Fundamental Breakdown
       tags:
         - stock
   /api/stock/{ticker}/greek-exposure:
