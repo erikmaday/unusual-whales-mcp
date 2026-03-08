@@ -947,12 +947,6 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAagxzrqxjjckwzbqlwascpoojsoufhoydpoytdljffepgnyrukz:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAagxzrqxjjckwzbqlwascpoojsoufhoydpoytdljffepgnyrukz
-      type: boolean
     DynLimitAajiytdvxdmamudpvuogfeaaxbuyewdcxkixlvsxnqyakykavhx:
       description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -988,12 +982,6 @@ components:
       example: 10000000
       title: DynLimitAhaefblrlnblvnojnuylzmtrxjpqklmzjmsvsufjdbyopblnisw
       type: integer
-    DynLimitAhsxyunakrppybixlsoifbfemdaygcqqygthvquvobrfndzpqov:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAhsxyunakrppybixlsoifbfemdaygcqqygthvquvobrfndzpqov
-      type: boolean
     DynLimitAipmqumowjvuavtphqiieptjcxavtkyilkmrlxcemfvlbmadsmb:
       description: The max rebate rate.
       example: 5.34
@@ -1011,6 +999,12 @@ components:
       minimum: 0
       title: DynLimitAkwvkdrptiylhbizedbbudyvmftbjqsoghlpxmlvgxlptwghyiz
       type: integer
+    DynLimitAlaypbpjgpchtwohxdxcvwbryyhdvrntxnpscxhcernolsybocg:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAlaypbpjgpchtwohxdxcvwbryyhdvrntxnpscxhcernolsybocg
+      type: boolean
     DynLimitAmergdcderhlasqthtdmegysgkargyddcspolfacbgyqlmipfzd:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
@@ -1027,6 +1021,12 @@ components:
       description: Boolean flag whether to return only intraday alerts.
       example: true
       title: DynLimitAogvjfhrlurucscfktjzsbsglrrcuhkbltdnljlxcvfqgvovlvz
+      type: boolean
+    DynLimitAommubzmujskdzusqvamhobyzpnidmjivdgemytlohiergrxkwt:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAommubzmujskdzusqvamhobyzpnidmjivdgemytlohiergrxkwt
       type: boolean
     DynLimitAoolbpjgnbbmrfvpfpuatydavcrkuqcaixbiukfoygbuoumzmqg:
       description: The min short interest.
@@ -15109,13 +15109,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhsxyunakrppybixlsoifbfemdaygcqqygthvquvobrfndzpqov'
+            $ref: '#/components/schemas/DynLimitAommubzmujskdzusqvamhobyzpnidmjivdgemytlohiergrxkwt'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAagxzrqxjjckwzbqlwascpoojsoufhoydpoytdljffepgnyrukz'
+            $ref: '#/components/schemas/DynLimitAlaypbpjgpchtwohxdxcvwbryyhdvrntxnpscxhcernolsybocg'
       responses:
         '200':
           content:
