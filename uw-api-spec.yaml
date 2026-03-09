@@ -966,6 +966,12 @@ components:
       minimum: 0
       title: DynLimitAchorieajxjywvaciwrxatcnjzdudtoxoutpmunyowfhmtldgts
       type: integer
+    DynLimitAdmzaaegywenqdrohusymifbsmlvvkzvzxgwcslnjymmzlmnedj:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAdmzaaegywenqdrohusymifbsmlvvkzvzxgwcslnjymmzlmnedj
+      type: boolean
     DynLimitAdtwwqweyyidrlvzcunanrnctcogvmvoxxtmzbduwdbmsuosgzh:
       description: The max total float.
       example: 100000000
@@ -999,12 +1005,6 @@ components:
       minimum: 0
       title: DynLimitAkwvkdrptiylhbizedbbudyvmftbjqsoghlpxmlvgxlptwghyiz
       type: integer
-    DynLimitAlaypbpjgpchtwohxdxcvwbryyhdvrntxnpscxhcernolsybocg:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAlaypbpjgpchtwohxdxcvwbryyhdvrntxnpscxhcernolsybocg
-      type: boolean
     DynLimitAmergdcderhlasqthtdmegysgkargyddcspolfacbgyqlmipfzd:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
@@ -1022,12 +1022,6 @@ components:
       example: true
       title: DynLimitAogvjfhrlurucscfktjzsbsglrrcuhkbltdnljlxcvfqgvovlvz
       type: boolean
-    DynLimitAommubzmujskdzusqvamhobyzpnidmjivdgemytlohiergrxkwt:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAommubzmujskdzusqvamhobyzpnidmjivdgemytlohiergrxkwt
-      type: boolean
     DynLimitAoolbpjgnbbmrfvpfpuatydavcrkuqcaixbiukfoygbuoumzmqg:
       description: The min short interest.
       example: 5000
@@ -1044,6 +1038,12 @@ components:
       description: Boolean flag whether a transaction is a put.
       example: true
       title: DynLimitAppkjwhobxsoxmpmzjiltvjqmajxgbbxahatjgqfaklwcjbeepm
+      type: boolean
+    DynLimitApssnibtyuicprxukwlorwllsvsqppmrvdeldrkriowyyjlrdvs:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitApssnibtyuicprxukwlorwllsvsqppmrvdeldrkriowyyjlrdvs
       type: boolean
     DynLimitAqdjwkomowsttceehurfmlkkjkughhvubwbxocqnayvgzofgoja:
       description: The max days to cover.
@@ -15109,13 +15109,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAommubzmujskdzusqvamhobyzpnidmjivdgemytlohiergrxkwt'
+            $ref: '#/components/schemas/DynLimitAdmzaaegywenqdrohusymifbsmlvvkzvzxgwcslnjymmzlmnedj'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlaypbpjgpchtwohxdxcvwbryyhdvrntxnpscxhcernolsybocg'
+            $ref: '#/components/schemas/DynLimitApssnibtyuicprxukwlorwllsvsqppmrvdeldrkriowyyjlrdvs'
       responses:
         '200':
           content:
