@@ -966,12 +966,6 @@ components:
       minimum: 0
       title: DynLimitAchorieajxjywvaciwrxatcnjzdudtoxoutpmunyowfhmtldgts
       type: integer
-    DynLimitAcmrrarcfwshprthynapswqnhythpfaqwkmvgyevqfzfygtslcx:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAcmrrarcfwshprthynapswqnhythpfaqwkmvgyevqfzfygtslcx
-      type: boolean
     DynLimitAdtwwqweyyidrlvzcunanrnctcogvmvoxxtmzbduwdbmsuosgzh:
       description: The max total float.
       example: 100000000
@@ -993,11 +987,23 @@ components:
       example: 5.34
       title: DynLimitAipmqumowjvuavtphqiieptjcxavtkyilkmrlxcemfvlbmadsmb
       type: integer
+    DynLimitAiygkuszauuesiaeshjqjfuxyhsoufanuqxxayopqjtnhakjthb:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAiygkuszauuesiaeshjqjfuxyhsoufanuqxxayopqjtnhakjthb
+      type: boolean
     DynLimitAjxalmzktcvtcjbxhupuvzyqbyprnearjrlmzaceutnmveruhys:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
       title: DynLimitAjxalmzktcvtcjbxhupuvzyqbyprnearjrlmzaceutnmveruhys
+      type: boolean
+    DynLimitAklosjzyukzngtxmjbtuauqicpxyyzarjvyodmqbjrhvctszjdv:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAklosjzyukzngtxmjbtuauqicpxyyzarjvyodmqbjrhvctszjdv
       type: boolean
     DynLimitAkwvkdrptiylhbizedbbudyvmftbjqsoghlpxmlvgxlptwghyiz:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
@@ -1016,12 +1022,6 @@ components:
       example: 0.45
       title: DynLimitAnfgbmeioiebjhmxzqyeqychklrvrduujgoobeuljglspfuxbji
       type: integer
-    DynLimitAnincvcqvfnqgdwhiwthdqadjacsgnqxpvteqnuruusgbeuawna:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAnincvcqvfnqgdwhiwthdqadjacsgnqxpvteqnuruusgbeuawna
-      type: boolean
     DynLimitAogvjfhrlurucscfktjzsbsglrrcuhkbltdnljlxcvfqgvovlvz:
       default: true
       description: Boolean flag whether to return only intraday alerts.
@@ -15182,13 +15182,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcmrrarcfwshprthynapswqnhythpfaqwkmvgyevqfzfygtslcx'
+            $ref: '#/components/schemas/DynLimitAiygkuszauuesiaeshjqjfuxyhsoufanuqxxayopqjtnhakjthb'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAnincvcqvfnqgdwhiwthdqadjacsgnqxpvteqnuruusgbeuawna'
+            $ref: '#/components/schemas/DynLimitAklosjzyukzngtxmjbtuauqicpxyyzarjvyodmqbjrhvctszjdv'
       responses:
         '200':
           content:
@@ -17024,8 +17024,8 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returns a technical indicator time series for any ticker, including international stocks and OTC.
-        Available indicators: SMA, EMA, RSI, MACD, BBANDS, STOCH, ADX, ATR, OBV, VWAP, CCI, WILLR, AROON, MFI.
+        Returns any Alpha Vantage technical indicator time series for a ticker, including international stocks and OTC.
+        See the Alpha Vantage technical indicator documentation for supported function names and per-function parameters.
       operationId: PublicApi.AvFundamentalController.technical_indicator
       parameters:
         - description: ''
