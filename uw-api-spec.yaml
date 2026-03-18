@@ -1038,12 +1038,6 @@ components:
       example: 10000
       title: DynLimitAlpwslufuzrbkntxvoedndrgnntfiaugduydnnkludnxtqmwedt
       type: integer
-    DynLimitAlzqpagloztwjfayhsxkjlejhzakfcbvyuglakfaclbcebfqbmg:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAlzqpagloztwjfayhsxkjlejhzakfcbvyuglakfaclbcebfqbmg
-      type: boolean
     DynLimitAmlgetyjqeovpsymjoqqeaqhbtbmiuwphidfekmkflrdgbqgezh:
       description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1056,6 +1050,12 @@ components:
       minimum: 0
       title: DynLimitAmtudpbvpppzipecdlnmmkmjflaioyckqclhpsgaanmzmxybgfm
       type: integer
+    DynLimitAmzdqkjgtagpzyffdiqnaohedtqrqvfetqbcnmcirhdfkatupol:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAmzdqkjgtagpzyffdiqnaohedtqrqvfetqbcnmcirhdfkatupol
+      type: boolean
     DynLimitAndgbjddsihrvquklegxmhhbbyfpopfggfxnpmyxqrkeiaxoqtg:
       description: 'The minimum premium on that alert. Min: 0.'
       example: 12500.5
@@ -1083,17 +1083,17 @@ components:
       example: 100000
       title: DynLimitApzkfvaoojevspjvejwnkzzrzjnvktwqacvsprhdymqgczbdqmf
       type: integer
-    DynLimitAqhjtarwjcnmkbwbvsptpclrnlkcddnyxavhnltwkzkhednfgdm:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAqhjtarwjcnmkbwbvsptpclrnlkcddnyxavhnltwkzkhednfgdm
-      type: boolean
     DynLimitAsjbhemaezycgfltyaxbjvwjpeenomjktbxrcmccwrutwwjpxpl:
       default: true
       description: Boolean flag whether a transaction is a call.
       example: true
       title: DynLimitAsjbhemaezycgfltyaxbjvwjpeenomjktbxrcmccwrutwwjpxpl
+      type: boolean
+    DynLimitAsrgqpvxldhtlytpiefphnijxqbyevvwdketmsbrdcmvjjqywts:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAsrgqpvxldhtlytpiefphnijxqbyevvwdketmsbrdcmvjjqywts
       type: boolean
     DynLimitAsudvvsntwuzosuguxzvaemwpnhexsqhtjedpqnxgqntcdkqmpv:
       description: The max fee rate.
@@ -6706,24 +6706,6 @@ components:
       example: true
       title: S&P 500/Nasdaq Only
       type: boolean
-    SPIKE value:
-      description: |
-        The SPIKE value at a time.
-      example:
-        data:
-          - time: 2023-02-14T14:31:00Z
-            value: '20.42'
-          - time: 2023-02-14T14:32:00Z
-            value: '20.55'
-          - time: 2023-02-14T14:33:00Z
-            value: '20.52'
-      properties:
-        publish_date:
-          $ref: '#/components/schemas/Spike Time'
-        title:
-          $ref: '#/components/schemas/Spike Value'
-      title: SPIKE value
-      type: object
     Screener contract order by field:
       description: The field to order by.
       enum:
@@ -7783,16 +7765,6 @@ components:
       example: company
       title: Source
       type: string
-    Spike Time:
-      description: The timestamp for the SPIKE value.
-      example: 2023-02-14T14:31:00Z
-      title: Spike Time
-      type: date
-    Spike Value:
-      description: The SPIKE value.
-      example: '24.53'
-      title: Spike Value
-      type: string
     Spot Call Charm Ask Side Exposure:
       description: The call charm exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
       example: '102382359.5786'
@@ -8175,8 +8147,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -11616,42 +11588,6 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Sector Etfs
-      tags:
-        - market
-  /api/market/spike:
-    get:
-      callbacks: {}
-      description: |
-        Returns the SPIKE values for the given date.
-        Date must be the current or a past date. If no date is given, returns data for the current/last market day.
-      operationId: PublicApi.MarketController.spike
-      parameters:
-        - description: ''
-          in: query
-          name: date
-          required: false
-          schema:
-            $ref: '#/components/schemas/Optional Market Date'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SPIKE value'
-          description: ''
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error Message'
-          description: Unprocessable Entity
-        '500':
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/Error Message on an internal server error.'
-          description: Internal Server Error
-      summary: SPIKE
       tags:
         - market
   /api/market/top-net-impact:
@@ -15510,13 +15446,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqhjtarwjcnmkbwbvsptpclrnlkcddnyxavhnltwkzkhednfgdm'
+            $ref: '#/components/schemas/DynLimitAsrgqpvxldhtlytpiefphnijxqbyevvwdketmsbrdcmvjjqywts'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlzqpagloztwjfayhsxkjlejhzakfcbvyuglakfaclbcebfqbmg'
+            $ref: '#/components/schemas/DynLimitAmzdqkjgtagpzyffdiqnaohedtqrqvfetqbcnmcirhdfkatupol'
       responses:
         '200':
           content:
