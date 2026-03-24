@@ -484,20 +484,6 @@ components:
       example: '54.29'
       title: Candle Open
       type: string
-    Candle Size:
-      description: The size of the candles.
-      enum:
-        - 1m
-        - 5m
-        - 10m
-        - 15m
-        - 30m
-        - 1h
-        - 4h
-        - 1d
-      example: 5m
-      title: Candle Size
-      type: string
     Candle Start time:
       description: The start time of the candle as UTC timestamp.
       example: 2023-09-07T20:06:00Z
@@ -960,6 +946,12 @@ components:
       example: true
       title: DynLimitAbcuyxqmpoeyfwhugeebuotchstxzgzlqbanvmrvcgpcqtoasit
       type: boolean
+    DynLimitAcabkxvlyzvaujccnlmydymxnhqzinddhaaggkkrdcsquvneupn:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAcabkxvlyzvaujccnlmydymxnhqzinddhaaggkkrdcsquvneupn
+      type: boolean
     DynLimitAcmoqjpflkwtlzvamhgcmiitxpwdxhcvrsjtkfmvyxehgasbcbv:
       description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
       example: 125
@@ -1011,6 +1003,12 @@ components:
       minimum: 0
       title: DynLimitAfmwpvdvievmvadxckghznrtryniqroklpilrmmfqcyfujahstj
       type: integer
+    DynLimitAgmjyonzvzztelzhzkjmlxsjybbfpxpacnzlqkpjcgpifwgqugt:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAgmjyonzvzztelzhzkjmlxsjybbfpxpacnzlqkpjcgpifwgqugt
+      type: boolean
     DynLimitAgngfrhogbeldvlwjfgzxmivkfyxcwenonvlnexbmkptwslwwxn:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -1044,12 +1042,6 @@ components:
       minimum: 0
       title: DynLimitAmlgetyjqeovpsymjoqqeaqhbtbmiuwphidfekmkflrdgbqgezh
       type: integer
-    DynLimitAmrrfwfbzknyyxoaxaattxyfmetnkbxriofqwbocddfrypmpsfj:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAmrrfwfbzknyyxoaxaattxyfmetnkbxriofqwbocddfrypmpsfj
-      type: boolean
     DynLimitAmtudpbvpppzipecdlnmmkmjflaioyckqclhpsgaanmzmxybgfm:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1083,12 +1075,6 @@ components:
       example: 100000
       title: DynLimitApzkfvaoojevspjvejwnkzzrzjnvktwqacvsprhdymqgczbdqmf
       type: integer
-    DynLimitArqiivmzzwvdfjwzbytoshnqeadmlvmxqehlusrgcjjwsjmhpud:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitArqiivmzzwvdfjwzbytoshnqeadmlvmxqehlusrgcjjwsjmhpud
-      type: boolean
     DynLimitAsjbhemaezycgfltyaxbjvwjpeenomjktbxrcmccwrutwwjpxpl:
       default: true
       description: Boolean flag whether a transaction is a call.
@@ -15446,13 +15432,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmrrfwfbzknyyxoaxaattxyfmetnkbxriofqwbocddfrypmpsfj'
+            $ref: '#/components/schemas/DynLimitAgmjyonzvzztelzhzkjmlxsjybbfpxpacnzlqkpjcgpifwgqugt'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitArqiivmzzwvdfjwzbytoshnqeadmlvmxqehlusrgcjjwsjmhpud'
+            $ref: '#/components/schemas/DynLimitAcabkxvlyzvaujccnlmydymxnhqzinddhaaggkkrdcsquvneupn'
       responses:
         '200':
           content:
@@ -16396,7 +16382,17 @@ paths:
           name: candle_size
           required: true
           schema:
-            $ref: '#/components/schemas/Candle Size'
+            enum:
+              - 1m
+              - 5m
+              - 10m
+              - 15m
+              - 30m
+              - 1h
+              - 4h
+              - 1d
+              - 1w
+            type: string
         - description: ''
           in: query
           name: timeframe
@@ -17288,8 +17284,8 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returns any Alpha Vantage technical indicator time series for a ticker, including international stocks and OTC.
-        See the Alpha Vantage technical indicator documentation for supported function names and per-function parameters.
+        Returns any technical indicator time series for a ticker, including international stocks and OTC.
+        See the technical indicator documentation for supported function names and per-function parameters.
       operationId: PublicApi.AvFundamentalController.technical_indicator
       parameters:
         - description: ''
