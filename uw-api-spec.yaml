@@ -946,12 +946,6 @@ components:
       example: true
       title: DynLimitAbcuyxqmpoeyfwhugeebuotchstxzgzlqbanvmrvcgpcqtoasit
       type: boolean
-    DynLimitAcabkxvlyzvaujccnlmydymxnhqzinddhaaggkkrdcsquvneupn:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAcabkxvlyzvaujccnlmydymxnhqzinddhaaggkkrdcsquvneupn
-      type: boolean
     DynLimitAcmoqjpflkwtlzvamhgcmiitxpwdxhcvrsjtkfmvyxehgasbcbv:
       description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
       example: 125
@@ -992,6 +986,12 @@ components:
       example: 10000000
       title: DynLimitAfdmhinvufjhhpsvtaowjwkkllwgeaycrtsorlmrcrnwiiiskkf
       type: integer
+    DynLimitAfdmiwfnyynaanqvhkkufdnmmcnjdjnkputrjaszsumipygkffk:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAfdmiwfnyynaanqvhkkufdnmmcnjdjnkputrjaszsumipygkffk
+      type: boolean
     DynLimitAfeudvepkttroeekpapzoejskknbhiyrednbbyvrhwhbbwmgttz:
       description: The min short shares available.
       example: 0
@@ -1003,12 +1003,6 @@ components:
       minimum: 0
       title: DynLimitAfmwpvdvievmvadxckghznrtryniqroklpilrmmfqcyfujahstj
       type: integer
-    DynLimitAgmjyonzvzztelzhzkjmlxsjybbfpxpacnzlqkpjcgpifwgqugt:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAgmjyonzvzztelzhzkjmlxsjybbfpxpacnzlqkpjcgpifwgqugt
-      type: boolean
     DynLimitAgngfrhogbeldvlwjfgzxmivkfyxcwenonvlnexbmkptwslwwxn:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -1070,6 +1064,12 @@ components:
       example: 0.11
       title: DynLimitAptdadrvzsysrrhvjodvzewyrjhmbxwwhjxdlvpvuzmxgmgonhj
       type: integer
+    DynLimitApvycmznvrxzurnjgralqxaxcvjfeyuypwaaihcqmgplyyomppq:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitApvycmznvrxzurnjgralqxaxcvjfeyuypwaaihcqmgplyyomppq
+      type: boolean
     DynLimitApzkfvaoojevspjvejwnkzzrzjnvktwqacvsprhdymqgczbdqmf:
       description: The max short interest.
       example: 100000
@@ -15293,60 +15293,6 @@ paths:
       summary: ATM Chains
       tags:
         - stock
-  /api/stock/{ticker}/balance-sheets:
-    get:
-      callbacks: {}
-      description: |
-        Returns balance sheet data including assets, liabilities, equity, debt structure,
-        intangibles, goodwill, receivables, inventory, and shares outstanding.
-      operationId: PublicApi.AvFundamentalController.balance_sheets
-      parameters:
-        - description: ''
-          in: path
-          name: ticker
-          required: true
-          schema:
-            $ref: '#/components/schemas/SingleTicker'
-      responses: {}
-      summary: Balance Sheets
-      tags:
-        - stock
-  /api/stock/{ticker}/cash-flows:
-    get:
-      callbacks: {}
-      description: |
-        Returns cash flow data including operating, investing, and financing cashflows,
-        capital expenditures, dividend payouts, stock buybacks, and stock-based compensation.
-      operationId: PublicApi.AvFundamentalController.cash_flows
-      parameters:
-        - description: ''
-          in: path
-          name: ticker
-          required: true
-          schema:
-            $ref: '#/components/schemas/SingleTicker'
-      responses: {}
-      summary: Cash Flow Statements
-      tags:
-        - stock
-  /api/stock/{ticker}/earnings:
-    get:
-      callbacks: {}
-      description: |
-        Returns earnings data including reported EPS, estimated EPS, surprise amount,
-        surprise percentage, and report timing (pre/post market).
-      operationId: PublicApi.AvFundamentalController.earnings
-      parameters:
-        - description: ''
-          in: path
-          name: ticker
-          required: true
-          schema:
-            $ref: '#/components/schemas/SingleTicker'
-      responses: {}
-      summary: Earnings History
-      tags:
-        - stock
   /api/stock/{ticker}/expiry-breakdown:
     get:
       callbacks: {}
@@ -15388,25 +15334,6 @@ paths:
       summary: Expiry Breakdown
       tags:
         - option-contract
-  /api/stock/{ticker}/financials:
-    get:
-      callbacks: {}
-      description: |
-        Returns full financial data for the given ticker, including
-        income statements, balance sheets, cash flows, and earnings.
-        Supports both annual and quarterly data.
-      operationId: PublicApi.AvFundamentalController.financials
-      parameters:
-        - description: ''
-          in: path
-          name: ticker
-          required: true
-          schema:
-            $ref: '#/components/schemas/SingleTicker'
-      responses: {}
-      summary: Full Financials
-      tags:
-        - stock
   /api/stock/{ticker}/flow-alerts:
     get:
       callbacks: {}
@@ -15432,13 +15359,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgmjyonzvzztelzhzkjmlxsjybbfpxpacnzlqkpjcgpifwgqugt'
+            $ref: '#/components/schemas/DynLimitApvycmznvrxzurnjgralqxaxcvjfeyuypwaaihcqmgplyyomppq'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcabkxvlyzvaujccnlmydymxnhqzinddhaaggkkrdcsquvneupn'
+            $ref: '#/components/schemas/DynLimitAfdmiwfnyynaanqvhkkufdnmmcnjdjnkputrjaszsumipygkffk'
       responses:
         '200':
           content:
@@ -15999,24 +15926,6 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Historical Risk Reversal Skew
-      tags:
-        - stock
-  /api/stock/{ticker}/income-statements:
-    get:
-      callbacks: {}
-      description: |
-        Returns income statement data including revenue, gross profit, operating income,
-        EBIT, EBITDA, net income, R&D, SG&A, depreciation, interest, and tax expenses.
-      operationId: PublicApi.AvFundamentalController.income_statements
-      parameters:
-        - description: ''
-          in: path
-          name: ticker
-          required: true
-          schema:
-            $ref: '#/components/schemas/SingleTicker'
-      responses: {}
-      summary: Income Statements
       tags:
         - stock
   /api/stock/{ticker}/info:
@@ -17278,30 +17187,6 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Off/Lit Price Levels
-      tags:
-        - stock
-  /api/stock/{ticker}/technical-indicator/{function}:
-    get:
-      callbacks: {}
-      description: |
-        Returns any technical indicator time series for a ticker, including international stocks and OTC.
-        See the technical indicator documentation for supported function names and per-function parameters.
-      operationId: PublicApi.AvFundamentalController.technical_indicator
-      parameters:
-        - description: ''
-          in: path
-          name: ticker
-          required: true
-          schema:
-            $ref: '#/components/schemas/SingleTicker'
-        - description: ''
-          in: path
-          name: function
-          required: true
-          schema:
-            type: string
-      responses: {}
-      summary: Technical Indicator
       tags:
         - stock
   /api/stock/{ticker}/volatility/realized:
