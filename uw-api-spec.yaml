@@ -981,17 +981,17 @@ components:
       example: 0.1
       title: DynLimitAdpekwvehjoigevcwatdqjyqguthbzsyjjxnrydxnvpbsscwrdj
       type: integer
+    DynLimitAeqcwebkijxijigdodxwbpkuvphagmbwyubiljjgzhbsgihcsmn:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAeqcwebkijxijigdodxwbpkuvphagmbwyubiljjgzhbsgihcsmn
+      type: boolean
     DynLimitAfdmhinvufjhhpsvtaowjwkkllwgeaycrtsorlmrcrnwiiiskkf:
       description: The min total float.
       example: 10000000
       title: DynLimitAfdmhinvufjhhpsvtaowjwkkllwgeaycrtsorlmrcrnwiiiskkf
       type: integer
-    DynLimitAfdmiwfnyynaanqvhkkufdnmmcnjdjnkputrjaszsumipygkffk:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAfdmiwfnyynaanqvhkkufdnmmcnjdjnkputrjaszsumipygkffk
-      type: boolean
     DynLimitAfeudvepkttroeekpapzoejskknbhiyrednbbyvrhwhbbwmgttz:
       description: The min short shares available.
       example: 0
@@ -1030,6 +1030,12 @@ components:
       example: 10000
       title: DynLimitAlpwslufuzrbkntxvoedndrgnntfiaugduydnnkludnxtqmwedt
       type: integer
+    DynLimitAmbdyxrphxwfhudhwepqvlpcgbknubyffbvvyaacbfzknfhlfdo:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAmbdyxrphxwfhudhwepqvlpcgbknubyffbvvyaacbfzknfhlfdo
+      type: boolean
     DynLimitAmlgetyjqeovpsymjoqqeaqhbtbmiuwphidfekmkflrdgbqgezh:
       description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1064,12 +1070,6 @@ components:
       example: 0.11
       title: DynLimitAptdadrvzsysrrhvjodvzewyrjhmbxwwhjxdlvpvuzmxgmgonhj
       type: integer
-    DynLimitApvycmznvrxzurnjgralqxaxcvjfeyuypwaaihcqmgplyyomppq:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitApvycmznvrxzurnjgralqxaxcvjfeyuypwaaihcqmgplyyomppq
-      type: boolean
     DynLimitApzkfvaoojevspjvejwnkzzrzjnvktwqacvsprhdymqgczbdqmf:
       description: The max short interest.
       example: 100000
@@ -8133,8 +8133,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
-      example: '13.52369891956068210400'
+      description: The 30 day implied volatility from 1 month ago.
+      example: '0.2136848270893097'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -15293,6 +15293,60 @@ paths:
       summary: ATM Chains
       tags:
         - stock
+  /api/stock/{ticker}/balance-sheets:
+    get:
+      callbacks: {}
+      description: |
+        Returns balance sheet data including assets, liabilities, equity, debt structure,
+        intangibles, goodwill, receivables, inventory, and shares outstanding.
+      operationId: PublicApi.AvFundamentalController.balance_sheets
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+      responses: {}
+      summary: Balance Sheets
+      tags:
+        - stock
+  /api/stock/{ticker}/cash-flows:
+    get:
+      callbacks: {}
+      description: |
+        Returns cash flow data including operating, investing, and financing cashflows,
+        capital expenditures, dividend payouts, stock buybacks, and stock-based compensation.
+      operationId: PublicApi.AvFundamentalController.cash_flows
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+      responses: {}
+      summary: Cash Flow Statements
+      tags:
+        - stock
+  /api/stock/{ticker}/earnings:
+    get:
+      callbacks: {}
+      description: |
+        Returns earnings data including reported EPS, estimated EPS, surprise amount,
+        surprise percentage, and report timing (pre/post market).
+      operationId: PublicApi.AvFundamentalController.earnings
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+      responses: {}
+      summary: Earnings History
+      tags:
+        - stock
   /api/stock/{ticker}/expiry-breakdown:
     get:
       callbacks: {}
@@ -15334,6 +15388,25 @@ paths:
       summary: Expiry Breakdown
       tags:
         - option-contract
+  /api/stock/{ticker}/financials:
+    get:
+      callbacks: {}
+      description: |
+        Returns full financial data for the given ticker, including
+        income statements, balance sheets, cash flows, and earnings.
+        Supports both annual and quarterly data.
+      operationId: PublicApi.AvFundamentalController.financials
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+      responses: {}
+      summary: Full Financials
+      tags:
+        - stock
   /api/stock/{ticker}/flow-alerts:
     get:
       callbacks: {}
@@ -15359,13 +15432,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApvycmznvrxzurnjgralqxaxcvjfeyuypwaaihcqmgplyyomppq'
+            $ref: '#/components/schemas/DynLimitAmbdyxrphxwfhudhwepqvlpcgbknubyffbvvyaacbfzknfhlfdo'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfdmiwfnyynaanqvhkkufdnmmcnjdjnkputrjaszsumipygkffk'
+            $ref: '#/components/schemas/DynLimitAeqcwebkijxijigdodxwbpkuvphagmbwyubiljjgzhbsgihcsmn'
       responses:
         '200':
           content:
@@ -15926,6 +15999,24 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Historical Risk Reversal Skew
+      tags:
+        - stock
+  /api/stock/{ticker}/income-statements:
+    get:
+      callbacks: {}
+      description: |
+        Returns income statement data including revenue, gross profit, operating income,
+        EBIT, EBITDA, net income, R&D, SG&A, depreciation, interest, and tax expenses.
+      operationId: PublicApi.AvFundamentalController.income_statements
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+      responses: {}
+      summary: Income Statements
       tags:
         - stock
   /api/stock/{ticker}/info:
@@ -17187,6 +17278,81 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Off/Lit Price Levels
+      tags:
+        - stock
+  /api/stock/{ticker}/technical-indicator/{function}:
+    get:
+      callbacks: {}
+      description: |
+        Returns any technical indicator time series for a ticker. Supports international stocks and OTC.
+        
+        **Supported functions:** SMA, EMA, WMA, DEMA, TEMA, TRIMA, KAMA, MAMA, T3, MACD, MACDEXT, STOCH, STOCHF, RSI, STOCHRSI, WILLR, ADX, ADXR, APO, PPO, MOM, BOP, CCI, CMO, ROC, ROCR, AROON, AROONOSC, MFI, TRIX, ULTOSC, DX, MINUS_DI, PLUS_DI, MINUS_DM, PLUS_DM, BBANDS, MIDPOINT, MIDPRICE, SAR, TRANGE, ATR, NATR, AD, ADOSC, OBV, HT_TRENDLINE, HT_SINE, HT_TRENDMODE, HT_DCPERIOD, HT_DCPHASE, HT_PHASOR, VWAP.
+        
+        Not all parameters apply to every function. For example, STOCH and BOP only use `interval`, while RSI uses all three (`interval`, `time_period`, `series_type`).
+        
+        The `month` parameter is only relevant for intraday intervals (1min, 5min, 15min, 30min, 60min). For daily/weekly/monthly intervals, full history is returned and `month` is ignored.
+      operationId: PublicApi.AvFundamentalController.technical_indicator
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: path
+          name: function
+          required: true
+          schema:
+            description: The technical indicator function name (e.g. RSI, SMA, MACD, BBANDS)
+            type: string
+        - description: ''
+          in: query
+          name: interval
+          required: false
+          schema:
+            default: daily
+            description: Time interval between data points
+            enum:
+              - 1min
+              - 5min
+              - 15min
+              - 30min
+              - 60min
+              - daily
+              - weekly
+              - monthly
+            type: string
+        - description: ''
+          in: query
+          name: time_period
+          required: false
+          schema:
+            default: 14
+            description: Number of data points used to calculate the indicator (e.g. 14 for RSI, 20 for SMA)
+            type: integer
+        - description: ''
+          in: query
+          name: series_type
+          required: false
+          schema:
+            default: close
+            description: The price type used in the calculation
+            enum:
+              - close
+              - open
+              - high
+              - low
+            type: string
+        - description: ''
+          in: query
+          name: month
+          required: false
+          schema:
+            description: Target month for intraday data in YYYY-MM format (e.g. 2026-02). Only applies to intraday intervals.
+            type: string
+      responses: {}
+      summary: Technical Indicator
       tags:
         - stock
   /api/stock/{ticker}/volatility/realized:
