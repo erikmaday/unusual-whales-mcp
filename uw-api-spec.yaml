@@ -981,6 +981,12 @@ components:
       example: 0.1
       title: DynLimitAdpekwvehjoigevcwatdqjyqguthbzsyjjxnrydxnvpbsscwrdj
       type: integer
+    DynLimitAdwvreaforofmuzxateniijgudnjnvahfydpyssunxfjsmuuaur:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAdwvreaforofmuzxateniijgudnjnvahfydpyssunxfjsmuuaur
+      type: boolean
     DynLimitAfdmhinvufjhhpsvtaowjwkkllwgeaycrtsorlmrcrnwiiiskkf:
       description: The min total float.
       example: 10000000
@@ -1069,6 +1075,12 @@ components:
       example: true
       title: DynLimitAsjbhemaezycgfltyaxbjvwjpeenomjktbxrcmccwrutwwjpxpl
       type: boolean
+    DynLimitAsqsjsuhogiwtokjcteqalwstpmazgbnwrrqznqswiymekcpuxy:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAsqsjsuhogiwtokjcteqalwstpmazgbnwrrqznqswiymekcpuxy
+      type: boolean
     DynLimitAsudvvsntwuzosuguxzvaemwpnhexsqhtjedpqnxgqntcdkqmpv:
       description: The max fee rate.
       example: 0.45
@@ -1084,12 +1096,6 @@ components:
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
       title: DynLimitAuumnjclspyratkyshwmsidvnekbvvwxulbkmfnlgrqfitfluzo
-      type: boolean
-    DynLimitAuxikblpmfvnvyqibfkdzardxsksxdnrdxheqswagrzbejdrryn:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAuxikblpmfvnvyqibfkdzardxsksxdnrdxheqswagrzbejdrryn
       type: boolean
     DynLimitAvdqpydnpjynoiafjnlyntluzgaoqxihbdsrfvilqtwzztoctoq:
       description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
@@ -1123,12 +1129,6 @@ components:
       description: Boolean flag whether a transaction is a put.
       example: true
       title: DynLimitAzdfnrxytwqesgxyogswnodmidjqcklisrabjwnvqhviofgpjwr
-      type: boolean
-    DynLimitAzpuotlvrxibhgqqoxiysjqlewczwkknbifkwfptjellmgkonhn:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAzpuotlvrxibhgqqoxiysjqlewczwkknbifkwfptjellmgkonhn
       type: boolean
     DynLimitAzqwqbnmhpipmejeoqsvevxilpakevqseigrzxfoaspqagmshlr:
       default: true
@@ -15432,13 +15432,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAuxikblpmfvnvyqibfkdzardxsksxdnrdxheqswagrzbejdrryn'
+            $ref: '#/components/schemas/DynLimitAdwvreaforofmuzxateniijgudnjnvahfydpyssunxfjsmuuaur'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzpuotlvrxibhgqqoxiysjqlewczwkknbifkwfptjellmgkonhn'
+            $ref: '#/components/schemas/DynLimitAsqsjsuhogiwtokjcteqalwstpmazgbnwrrqznqswiymekcpuxy'
       responses:
         '200':
           content:
