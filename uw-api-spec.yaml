@@ -955,6 +955,12 @@ components:
       minimum: 0
       title: DynLimitAcmoqjpflkwtlzvamhgcmiitxpwdxhcvrsjtkfmvyxehgasbcbv
       type: integer
+    DynLimitAdhsdlvspamqbcjlmxpkaqhfqshqoczvbinnagvvbmlfsusqdtn:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAdhsdlvspamqbcjlmxpkaqhfqshqoczvbinnagvvbmlfsusqdtn
+      type: boolean
     DynLimitAdldowhrjlohlmneelqljbvgmrfpopugrayacmtpogtgftkykmn:
       default: true
       description: Boolean flag whether a transaction is bid side.
@@ -1011,6 +1017,12 @@ components:
       example: 0.11
       title: DynLimitAjqlmfofyzsqygcmvrwmgmtvzixyvrndbfogpqvztxjfenlxawk
       type: integer
+    DynLimitAjrzuvrahzzmvbchnkuthkpykwruoaexgcioddsartqyokjtmso:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAjrzuvrahzzmvbchnkuthkpykwruoaexgcioddsartqyokjtmso
+      type: boolean
     DynLimitAjwlrrwtywknyexypxaqtoxaqrfaotagkldcsvlpmduaknplvpl:
       description: The max short interest float ratio.
       example: 0.05
@@ -1028,12 +1040,6 @@ components:
       minimum: 0
       title: DynLimitAmtudpbvpppzipecdlnmmkmjflaioyckqclhpsgaanmzmxybgfm
       type: integer
-    DynLimitAncqtmsxxxjxvukytvxrmnryynmztwsvejvtwlldlsuhugwjpaa:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAncqtmsxxxjxvukytvxrmnryynmztwsvejvtwlldlsuhugwjpaa
-      type: boolean
     DynLimitAndgbjddsihrvquklegxmhhbbyfpopfggfxnpmyxqrkeiaxoqtg:
       description: 'The minimum premium on that alert. Min: 0.'
       example: 12500.5
@@ -1118,12 +1124,6 @@ components:
       description: Boolean flag whether a transaction is a put.
       example: true
       title: DynLimitAzdfnrxytwqesgxyogswnodmidjqcklisrabjwnvqhviofgpjwr
-      type: boolean
-    DynLimitAzmpnuryipuujnhdnuqodbirujwcljpbkuknupbdnhshzjpovsr:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAzmpnuryipuujnhdnuqodbirujwcljpbkuknupbdnhshzjpovsr
       type: boolean
     DynLimitAzqwqbnmhpipmejeoqsvevxilpakevqseigrzxfoaspqagmshlr:
       default: true
@@ -15447,13 +15447,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzmpnuryipuujnhdnuqodbirujwcljpbkuknupbdnhshzjpovsr'
+            $ref: '#/components/schemas/DynLimitAjrzuvrahzzmvbchnkuthkpykwruoaexgcioddsartqyokjtmso'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAncqtmsxxxjxvukytvxrmnryynmztwsvejvtwlldlsuhugwjpaa'
+            $ref: '#/components/schemas/DynLimitAdhsdlvspamqbcjlmxpkaqhfqshqoczvbinnagvvbmlfsusqdtn'
       responses:
         '200':
           content:
