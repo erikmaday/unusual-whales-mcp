@@ -955,12 +955,6 @@ components:
       minimum: 0
       title: DynLimitAcmoqjpflkwtlzvamhgcmiitxpwdxhcvrsjtkfmvyxehgasbcbv
       type: integer
-    DynLimitAdhsdlvspamqbcjlmxpkaqhfqshqoczvbinnagvvbmlfsusqdtn:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAdhsdlvspamqbcjlmxpkaqhfqshqoczvbinnagvvbmlfsusqdtn
-      type: boolean
     DynLimitAdldowhrjlohlmneelqljbvgmrfpopugrayacmtpogtgftkykmn:
       default: true
       description: Boolean flag whether a transaction is bid side.
@@ -1017,17 +1011,17 @@ components:
       example: 0.11
       title: DynLimitAjqlmfofyzsqygcmvrwmgmtvzixyvrndbfogpqvztxjfenlxawk
       type: integer
-    DynLimitAjrzuvrahzzmvbchnkuthkpykwruoaexgcioddsartqyokjtmso:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAjrzuvrahzzmvbchnkuthkpykwruoaexgcioddsartqyokjtmso
-      type: boolean
     DynLimitAjwlrrwtywknyexypxaqtoxaqrfaotagkldcsvlpmduaknplvpl:
       description: The max short interest float ratio.
       example: 0.05
       title: DynLimitAjwlrrwtywknyexypxaqtoxaqrfaotagkldcsvlpmduaknplvpl
       type: integer
+    DynLimitAldueuyknofwivmzkswoydncslxjeexrtyltquzwcxdhtjvyqrx:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAldueuyknofwivmzkswoydncslxjeexrtyltquzwcxdhtjvyqrx
+      type: boolean
     DynLimitAmlgetyjqeovpsymjoqqeaqhbtbmiuwphidfekmkflrdgbqgezh:
       description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1064,6 +1058,12 @@ components:
       description: Boolean flag whether a transaction is from the floor.
       example: true
       title: DynLimitAogzugwokkokumbonoqltcmgtidhstltvbursymnyvrrglgpzht
+      type: boolean
+    DynLimitAokzvulluvbkjcqbwjtxovmttfkqzygwpsqfrkuxyftrgoehhvj:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAokzvulluvbkjcqbwjtxovmttfkqzygwpsqfrkuxyftrgoehhvj
       type: boolean
     DynLimitApnycmvgdkclwezvfsmayvkfciphswrslujhimassfqfwwpiork:
       description: The max fee rate.
@@ -15447,13 +15447,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjrzuvrahzzmvbchnkuthkpykwruoaexgcioddsartqyokjtmso'
+            $ref: '#/components/schemas/DynLimitAokzvulluvbkjcqbwjtxovmttfkqzygwpsqfrkuxyftrgoehhvj'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdhsdlvspamqbcjlmxpkaqhfqshqoczvbinnagvvbmlfsusqdtn'
+            $ref: '#/components/schemas/DynLimitAldueuyknofwivmzkswoydncslxjeexrtyltquzwcxdhtjvyqrx'
       responses:
         '200':
           content:
