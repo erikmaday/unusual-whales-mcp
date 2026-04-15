@@ -933,12 +933,6 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAadsmmqfctdfcbisttmoqubniblisecjzowbschhjqvcrpunfdl:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAadsmmqfctdfcbisttmoqubniblisecjzowbschhjqvcrpunfdl
-      type: boolean
     DynLimitAakfeygvnykjueeyhkdkqpshzgxqvzueuxlxbposkclglvbnhed:
       default: true
       description: Boolean flag whether a transaction is a call.
@@ -1013,12 +1007,6 @@ components:
       example: 5.34
       title: DynLimitAhzyfrhjmruhajgtdxrwrlvawaykjwuvqkzexxnprcljdpaaxye
       type: integer
-    DynLimitAiarxetoxlkhseiycrjzetmsxbylfdeuygvrxpbzyqymeszoizu:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAiarxetoxlkhseiycrjzetmsxbylfdeuygvrxpbzyqymeszoizu
-      type: boolean
     DynLimitAkjcqlbyxyfjxrwrhdxvzacriqpdnsaeneevfojkjnncxkpwrqs:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1035,6 +1023,18 @@ components:
       description: Boolean flag whether a transaction is ask side.
       example: true
       title: DynLimitAkzsthchxyghfdwynwjbumancjaqdqsdqkybyxkckkakulqdbny
+      type: boolean
+    DynLimitAlbjyuuyfbsrxeqfynhorprlpeqjfcygcomhvzgnybkucyjudtk:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAlbjyuuyfbsrxeqfynhorprlpeqjfcygcomhvzgnybkucyjudtk
+      type: boolean
+    DynLimitAmviboztluxrlyzzidfszxbgdspbjinzrovqgdybpdoistzrexs:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAmviboztluxrlyzzidfszxbgdspbjinzrovqgdybpdoistzrexs
       type: boolean
     DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs:
       default: true
@@ -2648,32 +2648,32 @@ components:
         data:
           - call_charm: '102382359.5786'
             call_delta: '227549667.4651'
-            call_gamma: '9356683.4241'
+            call_gex: '9356683.4241'
             call_vanna: '152099632406.9564'
             date: 2022-05-20
             dte: 5
             expiry: 2022-05-25
             put_charm: '-943028472.4815'
             put_delta: '-191893077.7193'
-            put_gamma: '-12337386.0524'
+            put_gex: '-12337386.0524'
             put_vanna: '488921784213.1121'
           - call_charm: '81465130.0002'
             call_delta: '210202465.3421'
-            call_gamma: '8456599.8505'
+            call_gex: '8456599.8505'
             call_vanna: '161231587973.6811'
             date: 2022-05-20
             dte: 5
             expiry: 2022-05-25
             put_charm: '-1054548432.6111'
             put_delta: '-210881557.3003'
-            put_gamma: '-12703877.0243'
+            put_gex: '-12703877.0243'
             put_vanna: '488921784213.1121'
       properties:
         call_charm:
           $ref: '#/components/schemas/Gex Call Charm'
         call_delta:
           $ref: '#/components/schemas/Gex Call Delta'
-        call_gamma:
+        call_gex:
           $ref: '#/components/schemas/Gex Call Gamma'
         call_vanna:
           $ref: '#/components/schemas/Gex Call Vanna'
@@ -2683,7 +2683,7 @@ components:
           $ref: '#/components/schemas/Gex Put Charm'
         put_delta:
           $ref: '#/components/schemas/Gex Put Delta'
-        put_gamma:
+        put_gex:
           $ref: '#/components/schemas/Gex Put Gamma'
         put_vanna:
           $ref: '#/components/schemas/Gex Put Vanna'
@@ -2695,20 +2695,20 @@ components:
         data:
           - call_charm: '102382359.5786'
             call_delta: '227549667.4651'
-            call_gamma: '9356683.4241'
+            call_gex: '9356683.4241'
             call_vanna: '152099632406.9564'
             put_charm: '-943028472.4815'
             put_delta: '-191893077.7193'
-            put_gamma: '-12337386.0524'
+            put_gex: '-12337386.0524'
             put_vanna: '488921784213.1121'
             strike: '150'
           - call_charm: '81465130.0002'
             call_delta: '210202465.3421'
-            call_gamma: '8456599.8505'
+            call_gex: '8456599.8505'
             call_vanna: '161231587973.6811'
             put_charm: '-1054548432.6111'
             put_delta: '-210881557.3003'
-            put_gamma: '-12703877.0243'
+            put_gex: '-12703877.0243'
             put_vanna: '488921784213.1121'
             strike: '152.5'
       properties:
@@ -2716,7 +2716,7 @@ components:
           $ref: '#/components/schemas/Gex Call Charm'
         call_delta:
           $ref: '#/components/schemas/Gex Call Delta'
-        call_gamma:
+        call_gex:
           $ref: '#/components/schemas/Gex Call Gamma'
         call_vanna:
           $ref: '#/components/schemas/Gex Call Vanna'
@@ -2724,7 +2724,7 @@ components:
           $ref: '#/components/schemas/Gex Put Charm'
         put_delta:
           $ref: '#/components/schemas/Gex Put Delta'
-        put_gamma:
+        put_gex:
           $ref: '#/components/schemas/Gex Put Gamma'
         put_vanna:
           $ref: '#/components/schemas/Gex Put Vanna'
@@ -2738,22 +2738,22 @@ components:
         data:
           - call_charm: '102382359.5786'
             call_delta: '227549667.4651'
-            call_gamma: '9356683.4241'
+            call_gex: '9356683.4241'
             call_vanna: '152099632406.9564'
             expiry: 2022-05-25
             put_charm: '-943028472.4815'
             put_delta: '-191893077.7193'
-            put_gamma: '-12337386.0524'
+            put_gex: '-12337386.0524'
             put_vanna: '488921784213.1121'
             strike: '150'
           - call_charm: '81465130.0002'
             call_delta: '210202465.3421'
-            call_gamma: '8456599.8505'
+            call_gex: '8456599.8505'
             call_vanna: '161231587973.6811'
             expiry: 2022-05-25
             put_charm: '-1054548432.6111'
             put_delta: '-210881557.3003'
-            put_gamma: '-12703877.0243'
+            put_gex: '-12703877.0243'
             put_vanna: '488921784213.1121'
             strike: '152.5'
       properties:
@@ -2761,7 +2761,7 @@ components:
           $ref: '#/components/schemas/Gex Call Charm'
         call_delta:
           $ref: '#/components/schemas/Gex Call Delta'
-        call_gamma:
+        call_gex:
           $ref: '#/components/schemas/Gex Call Gamma'
         call_vanna:
           $ref: '#/components/schemas/Gex Call Vanna'
@@ -2771,7 +2771,7 @@ components:
           $ref: '#/components/schemas/Gex Put Charm'
         put_delta:
           $ref: '#/components/schemas/Gex Put Delta'
-        put_gamma:
+        put_gex:
           $ref: '#/components/schemas/Gex Put Gamma'
         put_vanna:
           $ref: '#/components/schemas/Gex Put Vanna'
@@ -9144,6 +9144,10 @@ info:
     
     ## Changelog
     
+    # 2026.04.14
+    - Enhanced MCP [`/api/mcp`](https://api.unusualwhales.com/docs) `tools/call` validation to reject unsupported arguments, missing required arguments, and invalid enum values before tool execution.
+    - MCP tool errors now include retry guidance telling clients to inspect `tools/list` `inputSchema` and retry with supported arguments.
+    
     # 2026.03.02
     - Added authenticated MCP endpoint [`/api/mcp`](https://api.unusualwhales.com/docs) to expose existing AI tools to API subscribers using the same `Authorization: Bearer <API_TOKEN>` flow.
     - Supports MCP `initialize`, `tools/list`, and `tools/call` methods backed by the existing internal tool registry and execution pipeline.
@@ -9496,6 +9500,10 @@ paths:
       callbacks: {}
       description: |
         Returns the recent reports by the given congress member.
+        
+        Supports pagination via `page` (1-indexed) and `limit` parameters.
+        Date range filtering: use `date` for upper bound and `date_from` for lower bound.
+        To query a single day, set both to the same date (e.g. `?date_from=2025-06-15&date=2025-06-15`).
       operationId: PublicApi.CongressController.congress_trader
       parameters:
         - description: ''
@@ -9522,6 +9530,18 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Congress Member'
+        - description: ''
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
+        - description: ''
+          in: query
+          name: date_from
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
       responses:
         '200':
           content:
@@ -9590,6 +9610,45 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Recent Late Reports
+      tags:
+        - congress
+  /api/congress/politicians:
+    get:
+      callbacks: {}
+      description: |
+        Returns a distinct list of politicians for which trade data exists.
+        Use `last_traded_within_months` to filter to only recently-active politicians (e.g. 13 for last 13 months).
+        Each entry includes trade count, first/last trade date, party, chamber, and gender.
+      operationId: PublicApi.CongressController.congress_politicians
+      parameters:
+        - description: ''
+          in: query
+          name: last_traded_within_months
+          required: false
+          schema:
+            maximum: 240
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Senate Stock'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: List of Politicians with Trade Data
       tags:
         - congress
   /api/congress/recent-trades:
@@ -15467,13 +15526,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAiarxetoxlkhseiycrjzetmsxbylfdeuygvrxpbzyqymeszoizu'
+            $ref: '#/components/schemas/DynLimitAmviboztluxrlyzzidfszxbgdspbjinzrovqgdybpdoistzrexs'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAadsmmqfctdfcbisttmoqubniblisecjzowbschhjqvcrpunfdl'
+            $ref: '#/components/schemas/DynLimitAlbjyuuyfbsrxeqfynhorprlpeqjfcygcomhvzgnybkucyjudtk'
       responses:
         '200':
           content:
