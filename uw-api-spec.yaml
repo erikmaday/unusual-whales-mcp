@@ -951,6 +951,12 @@ components:
       minimum: 0
       title: DynLimitAboimnzftmtfiilcbcqucmvwlwusqvkhbndsevfchemzdowsxpg
       type: integer
+    DynLimitAcgbjvzikegbqvlwggyiulxzqqavukoxrqljguzutndkwzkqcnv:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAcgbjvzikegbqvlwggyiulxzqqavukoxrqljguzutndkwzkqcnv
+      type: boolean
     DynLimitAcugwtamyutzrhsdythdryvfbxtbevujviwztwiwhokgckmxhpi:
       description: 'The maximum size on that alert. Min: 0.'
       example: 125
@@ -1024,17 +1030,11 @@ components:
       example: true
       title: DynLimitAkzsthchxyghfdwynwjbumancjaqdqsdqkybyxkckkakulqdbny
       type: boolean
-    DynLimitAlbjyuuyfbsrxeqfynhorprlpeqjfcygcomhvzgnybkucyjudtk:
+    DynLimitAmmapufgqsladqfxalatougjywnurndjjibjrcrppvpohwlfekg:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAlbjyuuyfbsrxeqfynhorprlpeqjfcygcomhvzgnybkucyjudtk
-      type: boolean
-    DynLimitAmviboztluxrlyzzidfszxbgdspbjinzrovqgdybpdoistzrexs:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAmviboztluxrlyzzidfszxbgdspbjinzrovqgdybpdoistzrexs
+      title: DynLimitAmmapufgqsladqfxalatougjywnurndjjibjrcrppvpohwlfekg
       type: boolean
     DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs:
       default: true
@@ -8133,8 +8133,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -9138,9 +9138,11 @@ info:
     
     Documentation for the official [UnusualWhales](https://unusualwhales.com) api
     
+    ## Startup Tier
+    Building a product on our data? Get started immediately with our self-serve Startup tier at $750/mo — 500 req/min, 100K daily requests, 90-day lookback, and commercial use included. [Start building →](https://unusualwhales.com/checkout?plan=enterprise_startup&interval=monthly)
+    
     ## Enterprise/Professional Subscribers
-    Prospective Enterprise/Professional subscribers can email [support@unusualwhales.com](mailto:support@unusualwhales.com) for more information.
-    Please inquire within regarding redistribution licenses or custom solutions.
+    For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com](mailto:oskar@unusualwhales.com).
     
     ## Changelog
     
@@ -15526,13 +15528,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmviboztluxrlyzzidfszxbgdspbjinzrovqgdybpdoistzrexs'
+            $ref: '#/components/schemas/DynLimitAcgbjvzikegbqvlwggyiulxzqqavukoxrqljguzutndkwzkqcnv'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlbjyuuyfbsrxeqfynhorprlpeqjfcygcomhvzgnybkucyjudtk'
+            $ref: '#/components/schemas/DynLimitAmmapufgqsladqfxalatougjywnurndjjibjrcrppvpohwlfekg'
       responses:
         '200':
           content:
