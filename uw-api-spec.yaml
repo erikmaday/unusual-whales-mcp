@@ -951,12 +951,6 @@ components:
       minimum: 0
       title: DynLimitAboimnzftmtfiilcbcqucmvwlwusqvkhbndsevfchemzdowsxpg
       type: integer
-    DynLimitAcgbjvzikegbqvlwggyiulxzqqavukoxrqljguzutndkwzkqcnv:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAcgbjvzikegbqvlwggyiulxzqqavukoxrqljguzutndkwzkqcnv
-      type: boolean
     DynLimitAcugwtamyutzrhsdythdryvfbxtbevujviwztwiwhokgckmxhpi:
       description: 'The maximum size on that alert. Min: 0.'
       example: 125
@@ -1030,11 +1024,11 @@ components:
       example: true
       title: DynLimitAkzsthchxyghfdwynwjbumancjaqdqsdqkybyxkckkakulqdbny
       type: boolean
-    DynLimitAmmapufgqsladqfxalatougjywnurndjjibjrcrppvpohwlfekg:
+    DynLimitAlnnsixcmspybcyimkrhjbtrssqggzhpwdyolunhkeeucjqlrye:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAmmapufgqsladqfxalatougjywnurndjjibjrcrppvpohwlfekg
+      title: DynLimitAlnnsixcmspybcyimkrhjbtrssqggzhpwdyolunhkeeucjqlrye
       type: boolean
     DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs:
       default: true
@@ -1059,6 +1053,12 @@ components:
       example: 0.1
       title: DynLimitAokhzcvarfrqovunmljuklhyvqzoiadixzmbxvvrrtwkuvmzvov
       type: integer
+    DynLimitAorktwibcitgwimuziontamoioyzhdyygcoepplowuvzdtftegl:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAorktwibcitgwimuziontamoioyzhdyygcoepplowuvzdtftegl
+      type: boolean
     DynLimitApglpqpfphqqnlxikwogxrhzqrxzxmbvzpoqkqcwchzzjsyrqhq:
       description: The min total float.
       example: 10000000
@@ -3069,6 +3069,11 @@ components:
           $ref: '#/components/schemas/Volume'
       title: Group Flow Expiry
       type: object
+    Has More:
+      description: Indicates whether there are more results available beyond the current page.
+      example: false
+      title: Has More
+      type: boolean
     Has Options:
       description: Whether the company has options available for trading
       example: true
@@ -3630,6 +3635,7 @@ components:
             transactions: 54
             uniq_insiders: 10
             volume: 244331
+        has_more: false
       properties:
         avg_price:
           $ref: '#/components/schemas/Insider Average Price'
@@ -3637,6 +3643,8 @@ components:
           $ref: '#/components/schemas/Transaction Side'
         date:
           $ref: '#/components/schemas/Market General Trading day'
+        has_more:
+          $ref: '#/components/schemas/Has More'
         premium:
           $ref: '#/components/schemas/Insider Premium'
         transactions:
@@ -3684,6 +3692,7 @@ components:
             transactions: 54
             uniq_insiders: 10
             volume: 244331
+        has_more: false
       properties:
         avg_price:
           $ref: '#/components/schemas/Insider Average Price'
@@ -3691,6 +3700,8 @@ components:
           $ref: '#/components/schemas/Transaction Side'
         date:
           $ref: '#/components/schemas/Market General Trading day'
+        has_more:
+          $ref: '#/components/schemas/Has More'
         premium:
           $ref: '#/components/schemas/Insider Premium'
         transactions:
@@ -10164,7 +10175,8 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returns an ETF's inflow and outflow
+        Returns an ETF's inflow and outflow.
+        Defaults to the last year of data. Maximum date range is 3 years.
       operationId: PublicApi.EtfController.in_outflow
       parameters:
         - description: ''
@@ -10173,6 +10185,18 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: start_date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+        - description: ''
+          in: query
+          name: end_date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
       responses:
         '200':
           content:
@@ -10547,6 +10571,18 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/Sector'
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+        - description: ''
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
       responses:
         '200':
           content:
@@ -10595,6 +10631,18 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+        - description: ''
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
       responses:
         '200':
           content:
@@ -15528,13 +15576,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcgbjvzikegbqvlwggyiulxzqqavukoxrqljguzutndkwzkqcnv'
+            $ref: '#/components/schemas/DynLimitAorktwibcitgwimuziontamoioyzhdyygcoepplowuvzdtftegl'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmmapufgqsladqfxalatougjywnurndjjibjrcrppvpohwlfekg'
+            $ref: '#/components/schemas/DynLimitAlnnsixcmspybcyimkrhjbtrssqggzhpwdyolunhkeeucjqlrye'
       responses:
         '200':
           content:
