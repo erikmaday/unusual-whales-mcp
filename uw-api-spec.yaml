@@ -933,12 +933,24 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAdbqnmyydjctkotzsmkhvpgpuoeeoloztzfyljoamvnzdwjfrcp:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
+    DynLimitAasehcyzrnbfolbecbyrcpbzpwqyqabztieoezklphoibkvkcgo:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
       minimum: 0
-      title: DynLimitAdbqnmyydjctkotzsmkhvpgpuoeeoloztzfyljoamvnzdwjfrcp
+      title: DynLimitAasehcyzrnbfolbecbyrcpbzpwqyqabztieoezklphoibkvkcgo
       type: integer
+    DynLimitAbhbiaiwhondayavwkzlanqyiohwrhhbuyidaoteczwqdldxmqe:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAbhbiaiwhondayavwkzlanqyiohwrhhbuyidaoteczwqdldxmqe
+      type: integer
+    DynLimitAeuujctpfjyqdtomshfgobgkflreaupwjtqhdklbidvykhjqwxt:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAeuujctpfjyqdtomshfgobgkflreaupwjtqhdklbidvykhjqwxt
+      type: boolean
     DynLimitAficzgrthmfjixhhjhcthjxnncwuhzikcxirmzccbgxxixfieel:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
@@ -966,74 +978,92 @@ components:
       example: 0.05
       title: DynLimitAgkxgicaoudkjsfcelelnjoxgloccqxrewmejiwciswotovvwoe
       type: integer
-    DynLimitAhnhpxffhyouwvttxgjevodmkseceqffpjcvtjloshlunhbtxod:
-      default: true
-      description: Boolean flag whether a transaction is a call.
-      example: true
-      title: DynLimitAhnhpxffhyouwvttxgjevodmkseceqffpjcvtjloshlunhbtxod
-      type: boolean
-    DynLimitAhobuljlnmjksbncwmlrcujuygojhvzfxzwfzxrmzidyzyilwvr:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAhobuljlnmjksbncwmlrcujuygojhvzfxzwfzxrmzidyzyilwvr
-      type: boolean
-    DynLimitAhodqkdivhunzghjpsqpvtzdnwmawssxbsxyvxizxrdocwkosft:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAhodqkdivhunzghjpsqpvtzdnwmawssxbsxyvxizxrdocwkosft
-      type: integer
     DynLimitAhzyfrhjmruhajgtdxrwrlvawaykjwuvqkzexxnprcljdpaaxye:
       description: The max rebate rate.
       example: 5.34
       title: DynLimitAhzyfrhjmruhajgtdxrwrlvawaykjwuvqkzexxnprcljdpaaxye
       type: integer
-    DynLimitAihaitxzkrlbablbcxewrtjrakyvhszouysqefrdbzkqfbnmino:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAirogqajzjbiztafkmpvisxusbghhraspvdzgayhxrgdcgjtlud:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAihaitxzkrlbablbcxewrtjrakyvhszouysqefrdbzkqfbnmino
+      title: DynLimitAirogqajzjbiztafkmpvisxusbghhraspvdzgayhxrgdcgjtlud
       type: integer
+    DynLimitAjmngikdjqpsrcppwydeiobkcspzhzbcburrmeihablpeikyitl:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAjmngikdjqpsrcppwydeiobkcspzhzbcburrmeihablpeikyitl
+      type: boolean
+    DynLimitAjtzyzxnifadgnsfdfovfufmcntnwkernfrhqrdkoxcgnihwdli:
+      default: true
+      description: Boolean flag whether a transaction is a call.
+      example: true
+      title: DynLimitAjtzyzxnifadgnsfdfovfufmcntnwkernfrhqrdkoxcgnihwdli
+      type: boolean
     DynLimitAkyglllcizqaouhhydjjlzzzplkidkvswpcjgighmfdmcgkncxm:
       description: The max days to cover.
       example: 5.3
       title: DynLimitAkyglllcizqaouhhydjjlzzzplkidkvswpcjgighmfdmcgkncxm
       type: integer
-    DynLimitAmqamodkvqdgopltukqnokchvzhhuhvepvrauturedobkkbbegj:
+    DynLimitAlekpifhwpekypvguzhmeumcmtadhcldkhjwfnfyqzubhwphalc:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAlekpifhwpekypvguzhmeumcmtadhcldkhjwfnfyqzubhwphalc
+      type: integer
+    DynLimitAlvgtrvfihhbihkxhvpzmbgcrwzbfrkjbxaetqgmgvjwvsssulv:
       default: true
       description: Boolean flag whether a transaction is a put.
       example: true
-      title: DynLimitAmqamodkvqdgopltukqnokchvzhhuhvepvrauturedobkkbbegj
+      title: DynLimitAlvgtrvfihhbihkxhvpzmbgcrwzbfrkjbxaetqgmgvjwvsssulv
       type: boolean
-    DynLimitAmvigdvzdnwbmydikeljqjqazgtvbqhncdilfbeysgimnfkqkdh:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAmvigdvzdnwbmydikeljqjqazgtvbqhncdilfbeysgimnfkqkdh
-      type: integer
+    DynLimitAmqvymgfhfmkqykuwpbdwbogojkwojoqtxzfcrhrhavvjadoowu:
+      default: true
+      description: Boolean flag whether a transaction is from the floor.
+      example: true
+      title: DynLimitAmqvymgfhfmkqykuwpbdwbogojkwojoqtxzfcrhrhavvjadoowu
+      type: boolean
     DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs:
       default: true
       description: Boolean flag whether to return only intraday alerts.
       example: true
       title: DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs
       type: boolean
+    DynLimitAoisoexiuwktfclfhwgonotvkunkskdoyuleszezcraefwbitcs:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAoisoexiuwktfclfhwgonotvkunkskdoyuleszezcraefwbitcs
+      type: integer
     DynLimitAokhzcvarfrqovunmljuklhyvqzoiadixzmbxvvrrtwkuvmzvov:
       description: The min short interest float ratio.
       example: 0.1
       title: DynLimitAokhzcvarfrqovunmljuklhyvqzoiadixzmbxvvrrtwkuvmzvov
       type: integer
-    DynLimitApdiqmllchuyqwjtvblejovidnsvupnbhxvaoteixthrlcnjmio:
+    DynLimitAolmbjrojmpzhrhzxylsxfwnyqkuefznhbiljbwbanyuzpfwugv:
       default: true
-      description: Boolean flag whether a transaction is ask side.
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
-      title: DynLimitApdiqmllchuyqwjtvblejovidnsvupnbhxvaoteixthrlcnjmio
+      title: DynLimitAolmbjrojmpzhrhzxylsxfwnyqkuefznhbiljbwbanyuzpfwugv
       type: boolean
+    DynLimitApfglduntdwhtbpmqvbfzvcqfuiekartoluijdjderqtyllphmf:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitApfglduntdwhtbpmqvbfzvcqfuiekartoluijdjderqtyllphmf
+      type: integer
     DynLimitApglpqpfphqqnlxikwogxrhzqrxzxmbvzpoqkqcwchzzjsyrqhq:
       description: The min total float.
       example: 10000000
       title: DynLimitApglpqpfphqqnlxikwogxrhzqrxzxmbvzpoqkqcwchzzjsyrqhq
       type: integer
+    DynLimitApmftndjmfxcdfslrivwxxlsaqoofgvnmhbwyiwqiveqatqblhm:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitApmftndjmfxcdfslrivwxxlsaqoofgvnmhbwyiwqiveqatqblhm
+      type: boolean
     DynLimitApmwsbquunwbpbkknxjpbfdkzmgqombbkgyfxlautwtxgbubppz:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -1044,23 +1074,11 @@ components:
       example: 0.05
       title: DynLimitApurpqogbomnqwnvndkzdekviozfsfjjwsadumwnewhwwrcxeaj
       type: integer
-    DynLimitAqjvirvliybnnafrcarmmgteexhvnceuceyctkxxufnqnfvynpd:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAqjvirvliybnnafrcarmmgteexhvnceuceyctkxxufnqnfvynpd
-      type: integer
     DynLimitAqxmbdwxdyhxeastcjitrpuvyqwxqwtkxmurdozmqdhfrtjurki:
       description: The min short interest.
       example: 5000
       title: DynLimitAqxmbdwxdyhxeastcjitrpuvyqwxqwtkxmurdozmqdhfrtjurki
       type: integer
-    DynLimitAqysiovoaenfkqgxnxvxqttzrtywluxkgkuyhpoyxtrfrzfkmic:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAqysiovoaenfkqgxnxvxqttzrtywluxkgkuyhpoyxtrfrzfkmic
-      type: boolean
     DynLimitArczpxcqeapctexackxaaqclonpzsiyoqrwbggyhzjpklriwnmd:
       description: The max short shares available.
       example: 10000
@@ -1076,40 +1094,34 @@ components:
       example: 0.45
       title: DynLimitAtopsnigzwbaysbfgklyazeaydrqbdlwyqalnqxofgltqilbtqt
       type: integer
-    DynLimitAtygvktrstipyygajlonvlpkbsiaiiceanqnbjmddrtmsplkhox:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAtygvktrstipyygajlonvlpkbsiaiiceanqnbjmddrtmsplkhox
-      type: integer
-    DynLimitAublrwudllqomvqzbuzmknbyipvkzakkafwcqcecbkjrrjtmmch:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAublrwudllqomvqzbuzmknbyipvkzakkafwcqcecbkjrrjtmmch
-      type: boolean
-    DynLimitAufhgzfdrslprojhjovrhahtizhymwiwqgdntwuujekhilnxrfc:
-      default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
-      example: true
-      title: DynLimitAufhgzfdrslprojhjovrhahtizhymwiwqgdntwuujekhilnxrfc
-      type: boolean
-    DynLimitAumjguxdqcbahsefcjmwbnrpxnoujcljzwkpmvqcxjjqcjpanph:
+    DynLimitAujounpenrnmysmyekqhadfrlhwmnzfljlukvrovmlwcycdhggs:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
       example: true
-      title: DynLimitAumjguxdqcbahsefcjmwbnrpxnoujcljzwkpmvqcxjjqcjpanph
+      title: DynLimitAujounpenrnmysmyekqhadfrlhwmnzfljlukvrovmlwcycdhggs
       type: boolean
-    DynLimitAupjflihslmrmwoleghjqmonyucvfdnkedjgzonwnoisoyditxz:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAupjflihslmrmwoleghjqmonyucvfdnkedjgzonwnoisoyditxz
-      type: integer
     DynLimitAvdpfkluzzbgagyddhpdqnuvbuybwnxsyovrpwqsgxtcyikcicx:
       description: The max total float.
       example: 100000000
       title: DynLimitAvdpfkluzzbgagyddhpdqnuvbuybwnxsyovrpwqsgxtcyikcicx
+      type: integer
+    DynLimitAwrdbcevyihrcmsrjxumakvoylrtflmonjamgaekqogenioubsj:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAwrdbcevyihrcmsrjxumakvoylrtflmonjamgaekqogenioubsj
+      type: integer
+    DynLimitAwrlwurqsasfnidvvoizvpzcvnthfkefecvxotolsqnwqclujkm:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAwrlwurqsasfnidvvoizvpzcvnthfkefecvxotolsqnwqclujkm
+      type: boolean
+    DynLimitAwtukxvezittiknvmzyiasedejlydkosndxjnjvgslfjhzovyuz:
+      description: 'The maximum size on that alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAwtukxvezittiknvmzyiasedejlydkosndxjnjvgslfjhzovyuz
       type: integer
     DynLimitAxhbzdmpgjefkykmsccobukcclrsezxqabdvhgswnhmytzbfvkn:
       default: 100
@@ -1123,18 +1135,6 @@ components:
       description: The min rebate rate.
       example: 0.11
       title: DynLimitAxwraiflqmoqzapfwvmhtwfizitklfjatqgxeoxiwthzqxhfxxu
-      type: integer
-    DynLimitAzteutptefkgsinmffuaqdzotzsgtsaqwjfehngaaekqffqnvwy:
-      default: true
-      description: Boolean flag whether a transaction is from the floor.
-      example: true
-      title: DynLimitAzteutptefkgsinmffuaqdzotzsgtsaqwjfehngaaekqffqnvwy
-      type: boolean
-    DynLimitAzxfgcmdvumgktosgxomcyafuxbmetyemefkyzpkxuhwczotlal:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAzxfgcmdvumgktosgxomcyafuxbmetyemefkyzpkxuhwczotlal
       type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -8154,8 +8154,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
-      example: '13.52369891956068210400'
+      description: The 30 day implied volatility from 1 month ago.
+      example: '0.2136848270893097'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -12257,91 +12257,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtygvktrstipyygajlonvlpkbsiaiiceanqnbjmddrtmsplkhox'
+            $ref: '#/components/schemas/DynLimitAlekpifhwpekypvguzhmeumcmtadhcldkhjwfnfyqzubhwphalc'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdbqnmyydjctkotzsmkhvpgpuoeeoloztzfyljoamvnzdwjfrcp'
+            $ref: '#/components/schemas/DynLimitAoisoexiuwktfclfhwgonotvkunkskdoyuleszezcraefwbitcs'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmvigdvzdnwbmydikeljqjqazgtvbqhncdilfbeysgimnfkqkdh'
+            $ref: '#/components/schemas/DynLimitAbhbiaiwhondayavwkzlanqyiohwrhhbuyidaoteczwqdldxmqe'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqjvirvliybnnafrcarmmgteexhvnceuceyctkxxufnqnfvynpd'
+            $ref: '#/components/schemas/DynLimitAwtukxvezittiknvmzyiasedejlydkosndxjnjvgslfjhzovyuz'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAupjflihslmrmwoleghjqmonyucvfdnkedjgzonwnoisoyditxz'
+            $ref: '#/components/schemas/DynLimitAirogqajzjbiztafkmpvisxusbghhraspvdzgayhxrgdcgjtlud'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhodqkdivhunzghjpsqpvtzdnwmawssxbsxyvxizxrdocwkosft'
+            $ref: '#/components/schemas/DynLimitApfglduntdwhtbpmqvbfzvcqfuiekartoluijdjderqtyllphmf'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAihaitxzkrlbablbcxewrtjrakyvhszouysqefrdbzkqfbnmino'
+            $ref: '#/components/schemas/DynLimitAwrdbcevyihrcmsrjxumakvoylrtflmonjamgaekqogenioubsj'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzxfgcmdvumgktosgxomcyafuxbmetyemefkyzpkxuhwczotlal'
+            $ref: '#/components/schemas/DynLimitAasehcyzrnbfolbecbyrcpbzpwqyqabztieoezklphoibkvkcgo'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAufhgzfdrslprojhjovrhahtizhymwiwqgdntwuujekhilnxrfc'
+            $ref: '#/components/schemas/DynLimitAolmbjrojmpzhrhzxylsxfwnyqkuefznhbiljbwbanyuzpfwugv'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzteutptefkgsinmffuaqdzotzsgtsaqwjfehngaaekqffqnvwy'
+            $ref: '#/components/schemas/DynLimitAmqvymgfhfmkqykuwpbdwbogojkwojoqtxzfcrhrhavvjadoowu'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAumjguxdqcbahsefcjmwbnrpxnoujcljzwkpmvqcxjjqcjpanph'
+            $ref: '#/components/schemas/DynLimitAujounpenrnmysmyekqhadfrlhwmnzfljlukvrovmlwcycdhggs'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhnhpxffhyouwvttxgjevodmkseceqffpjcvtjloshlunhbtxod'
+            $ref: '#/components/schemas/DynLimitAjtzyzxnifadgnsfdfovfufmcntnwkernfrhqrdkoxcgnihwdli'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmqamodkvqdgopltukqnokchvzhhuhvepvrauturedobkkbbegj'
+            $ref: '#/components/schemas/DynLimitAlvgtrvfihhbihkxhvpzmbgcrwzbfrkjbxaetqgmgvjwvsssulv'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApdiqmllchuyqwjtvblejovidnsvupnbhxvaoteixthrlcnjmio'
+            $ref: '#/components/schemas/DynLimitAwrlwurqsasfnidvvoizvpzcvnthfkefecvxotolsqnwqclujkm'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhobuljlnmjksbncwmlrcujuygojhvzfxzwfzxrmzidyzyilwvr'
+            $ref: '#/components/schemas/DynLimitApmftndjmfxcdfslrivwxxlsaqoofgvnmhbwyiwqiveqatqblhm'
         - description: ''
           in: query
           name: rule_name[]
@@ -15612,13 +15612,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqysiovoaenfkqgxnxvxqttzrtywluxkgkuyhpoyxtrfrzfkmic'
+            $ref: '#/components/schemas/DynLimitAeuujctpfjyqdtomshfgobgkflreaupwjtqhdklbidvykhjqwxt'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAublrwudllqomvqzbuzmknbyipvkzakkafwcqcecbkjrrjtmmch'
+            $ref: '#/components/schemas/DynLimitAjmngikdjqpsrcppwydeiobkcspzhzbcburrmeihablpeikyitl'
       responses:
         '200':
           content:
@@ -16545,7 +16545,7 @@ paths:
         
         Results are limited to 2,500 elements even if there are more available.
         
-        Note: If you select 1d as a candle_size then the candles won't have a start & end time.
+        Note: If you select 1d or 1w as a candle_size then the candles won't have a start & end time. For 1w, the `date` field is the Monday of the ISO week.
         
         Note: Suppose you enter end_date value 2024-11-25 which was a Monday. Your response will include 1-2 hours of data from Tuesday 2024-11-26 due to UTC date rollover.
         Rest-assured, the response data covers the full trading day (based on Eastern time) according to your entered end_date.
