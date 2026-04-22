@@ -933,18 +933,18 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAaueoxlblofmfhzeeglowyhowfswtsbmacdeaudujfrqmrogezl:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAaueoxlblofmfhzeeglowyhowfswtsbmacdeaudujfrqmrogezl
-      type: boolean
     DynLimitAbvzfsxkrgogroypchsmizssknvbmakpzatmzbecmhiziqonsmz:
       description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
       title: DynLimitAbvzfsxkrgogroypchsmizssknvbmakpzatmzbecmhiziqonsmz
       type: integer
+    DynLimitAcbdnewvpdhfitgokbnlgrlhmfkygdeclmiazlvqbopyajpmnfi:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAcbdnewvpdhfitgokbnlgrlhmfkygdeclmiazlvqbopyajpmnfi
+      type: boolean
     DynLimitAdbvhiknpadhfqznbckzetalffutgdnnrrhndhmznovzkblgxcq:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
@@ -969,12 +969,6 @@ components:
       minimum: 0
       title: DynLimitAeybxnnpylrrrdysbcnepsqpvqiitwynohnmycaarwlwzhalawy
       type: integer
-    DynLimitAfheuzdookithohixwvhjamreikcbtjmbikjmfgoslpysuqyiib:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAfheuzdookithohixwvhjamreikcbtjmbikjmfgoslpysuqyiib
-      type: boolean
     DynLimitAficzgrthmfjixhhjhcthjxnncwuhzikcxirmzccbgxxixfieel:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
@@ -1129,6 +1123,12 @@ components:
       description: Boolean flag whether a transaction is a call.
       example: true
       title: DynLimitAydejougqavgiyvjjorppwatngardcpzkedmwyriubjsyxuryik
+      type: boolean
+    DynLimitAyhokapasfuuvahltmwskjjgbskfewbjiehglsadfznevhwuvie:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAyhokapasfuuvahltmwskjjgbskfewbjiehglsadfznevhwuvie
       type: boolean
     DynLimitAyxswsstpyctolsybtrvzunrmnhcqynwlbqresjwckhdiqkqygd:
       default: true
@@ -15612,13 +15612,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAaueoxlblofmfhzeeglowyhowfswtsbmacdeaudujfrqmrogezl'
+            $ref: '#/components/schemas/DynLimitAcbdnewvpdhfitgokbnlgrlhmfkygdeclmiazlvqbopyajpmnfi'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfheuzdookithohixwvhjamreikcbtjmbikjmfgoslpysuqyiib'
+            $ref: '#/components/schemas/DynLimitAyhokapasfuuvahltmwskjjgbskfewbjiehglsadfznevhwuvie'
       responses:
         '200':
           content:
