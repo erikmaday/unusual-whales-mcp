@@ -918,16 +918,6 @@ components:
       example: '31243.04'
       title: Dir Vega Flow
       type: string
-    Disclosure Newer Than:
-      description: Filter for trades filed after a set date.
-      example: 2025-01-01
-      title: Disclosure Newer Than
-      type: date
-    Disclosure Older Than:
-      description: Filter for trades filed before a set date.
-      example: 2025-01-01
-      title: Disclosure Older Than
-      type: date
     Drug Name:
       description: Drug name to filter FDA calendar entries (partial match supported)
       example: Keytruda
@@ -945,11 +935,17 @@ components:
       example: 0.05
       title: DynLimitAayvejfabbcvikkthaygiccbfrufrplvmgtdxqzjbkyqsxdeivk
       type: integer
-    DynLimitAckxgsqqycjgpiqukhsbyuqiczugwargvepuianpeedqjrijxvv:
+    DynLimitAccfxkakwmtzejvlmazdvxqxfjtvtqfhywjzmqwggqoncrxaxxw:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAccfxkakwmtzejvlmazdvxqxfjtvtqfhywjzmqwggqoncrxaxxw
+      type: integer
+    DynLimitAcqmhfzawtrhgplsvcwndikgsktpywpwvceqygihxjdfsbhleev:
       default: true
-      description: Boolean flag whether a transaction is ask side.
+      description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAckxgsqqycjgpiqukhsbyuqiczugwargvepuianpeedqjrijxvv
+      title: DynLimitAcqmhfzawtrhgplsvcwndikgsktpywpwvceqygihxjdfsbhleev
       type: boolean
     DynLimitAcrbptanrpmbsowcidplgyttowrxrhilaitcrkgnbvajzshfbvg:
       description: The min short shares available.
@@ -961,79 +957,61 @@ components:
       example: 0.45
       title: DynLimitAdcvhrrslfsyqeajirgtoiztkaglvelljmcncfmqhlvhfoutlxm
       type: integer
-    DynLimitAdhewwnlbprvhryqwigwbppibyynfesxrnzydfsdipskthpwvey:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAdhewwnlbprvhryqwigwbppibyynfesxrnzydfsdipskthpwvey
-      type: boolean
+    DynLimitAdtnyhbfsqfzqgiwzozlnpvdslmsltghgihtojrtcbmqbrmixeu:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAdtnyhbfsqfzqgiwzozlnpvdslmsltghgihtojrtcbmqbrmixeu
+      type: integer
+    DynLimitAdxaibslfbtozvlepnrsewetjuijilwkhvfwujcwrztupflbcnm:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAdxaibslfbtozvlepnrsewetjuijilwkhvfwujcwrztupflbcnm
+      type: integer
     DynLimitAfceiexucvcqiwrrnotgyulwnsxhcpxhuhbtxowyzbqyrxyeplq:
       description: The min total float.
       example: 10000000
       title: DynLimitAfceiexucvcqiwrrnotgyulwnsxhcpxhuhbtxowyzbqyrxyeplq
       type: integer
-    DynLimitAggokvomuslcyqiksyffsjkfkqveaaoidweudvkoxthxnifbshy:
+    DynLimitAgaobrmtyosagoipyhdrhxwxeqeawrtqvlozpokgrjtjwqlntcq:
       default: true
       description: Boolean flag whether a transaction is a call.
       example: true
-      title: DynLimitAggokvomuslcyqiksyffsjkfkqveaaoidweudvkoxthxnifbshy
+      title: DynLimitAgaobrmtyosagoipyhdrhxwxeqeawrtqvlozpokgrjtjwqlntcq
       type: boolean
-    DynLimitAgwjeboyprfzfvdupuuhvihjsgzxqmraaaolaiggvatqekbvxgv:
+    DynLimitAgbzlbkolhxgnamnyfeshjiiksednlykkkrzywiwofjvopagxei:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAgbzlbkolhxgnamnyfeshjiiksednlykkkrzywiwofjvopagxei
+      type: integer
+    DynLimitAhmexjcivwoausnbcbjjlrmoyvokpelgobvyeawopfpxqlfpvoe:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAgwjeboyprfzfvdupuuhvihjsgzxqmraaaolaiggvatqekbvxgv
-      type: integer
-    DynLimitAhmazgvxlnqjlavnrbaohtxgkhrclgjvimzrtymeqshmdmgsvgv:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAhmazgvxlnqjlavnrbaohtxgkhrclgjvimzrtymeqshmdmgsvgv
+      title: DynLimitAhmexjcivwoausnbcbjjlrmoyvokpelgobvyeawopfpxqlfpvoe
       type: integer
     DynLimitAihalyitilqjytbtvebficzdzvnpwynmyfenpupjvdrogzgwllz:
       description: The max total float.
       example: 100000000
       title: DynLimitAihalyitilqjytbtvebficzdzvnpwynmyfenpupjvdrogzgwllz
       type: integer
-    DynLimitAilwjlgjpadeluzrztbktudoatmcqiivtvegvhhyuknkbyfntol:
+    DynLimitAijesszxzepwzajckgayykrzskzztjsbxrlnmwvjljmieovpwch:
       default: true
-      description: Boolean flag whether a transaction is bid side.
+      description: Boolean flag whether a transaction is a put.
       example: true
-      title: DynLimitAilwjlgjpadeluzrztbktudoatmcqiivtvegvhhyuknkbyfntol
+      title: DynLimitAijesszxzepwzajckgayykrzskzztjsbxrlnmwvjljmieovpwch
       type: boolean
-    DynLimitAjhvvwauzksdirrgtdlzhgrimtfkocqlwztjulzyxmubmmofeqm:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAjhvvwauzksdirrgtdlzhgrimtfkocqlwztjulzyxmubmmofeqm
-      type: integer
     DynLimitAjpusgwtnjhzdmgbawpzmrkmeepifbnfiveelycrejcthjrbkrq:
       description: The min rebate rate.
       example: 0.11
       title: DynLimitAjpusgwtnjhzdmgbawpzmrkmeepifbnfiveelycrejcthjrbkrq
       type: integer
-    DynLimitAkifovyitraiypdeuqnyrrdvbbyebzvzeskkxuoxafdekjcoyye:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAkifovyitraiypdeuqnyrrdvbbyebzvzeskkxuoxafdekjcoyye
-      type: integer
-    DynLimitAkixhldtjvhkzssnzwsegemyxrsfwzqxcdqyuqpafzriuzfdknv:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAkixhldtjvhkzssnzwsegemyxrsfwzqxcdqyuqpafzriuzfdknv
-      type: boolean
     DynLimitAkqtzrsmwcpagonymshzsygkzyxoyybpjfwcpzxsorigojylrkb:
       description: The max short shares available.
       example: 10000
       title: DynLimitAkqtzrsmwcpagonymshzsygkzyxoyybpjfwcpzxsorigojylrkb
-      type: integer
-    DynLimitAldqvnbnpnstrzwnphxuppgnkoppgdztipzmxhwcbahstfamqxh:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAldqvnbnpnstrzwnphxuppgnkoppgdztipzmxhwcbahstfamqxh
       type: integer
     DynLimitAlepwyzxagomsimdouaastqxcnstbwnbnvqtiulhkxwcsooemij:
       description: The max days to cover.
@@ -1053,33 +1031,63 @@ components:
       minimum: 0
       title: DynLimitAmpujboaoczxnnowrbscrthtjomplxrtrgjoyqzscdqjtptpksz
       type: integer
+    DynLimitAmyakgngkqvbsqfaymdtiovmvmnfehyksbvalbkjynvvofnixqe:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAmyakgngkqvbsqfaymdtiovmvmnfehyksbvalbkjynvvofnixqe
+      type: integer
+    DynLimitAnbwujqpuzyawvckdufbstaoksaeiaktccouukvfbkwexbgtbzi:
+      default: true
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+      example: true
+      title: DynLimitAnbwujqpuzyawvckdufbstaoksaeiaktccouukvfbkwexbgtbzi
+      type: boolean
     DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs:
       default: true
       description: Boolean flag whether to return only intraday alerts.
       example: true
       title: DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs
       type: boolean
-    DynLimitAoaapadzriuwulnxuiocpqsoxfgokagplbosffgnrnazbqruulm:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAoaapadzriuwulnxuiocpqsoxfgokagplbosffgnrnazbqruulm
-      type: integer
     DynLimitApzsrsjezvimeleqtvvsswyioteltmnnplbtpkghrmwxkcuqqpp:
       description: The min fee rate.
       example: 0.01
       title: DynLimitApzsrsjezvimeleqtvvsswyioteltmnnplbtpkghrmwxkcuqqpp
       type: integer
+    DynLimitAsquhiqaesckiispfjfmenrfjjvehoeghjclsyrupusrmvbjbht:
+      description: 'The maximum size on that alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAsquhiqaesckiispfjfmenrfjjvehoeghjclsyrupusrmvbjbht
+      type: integer
+    DynLimitAsrpyccmudubjmuepqgsmodukegbarlqsceyptihdbxnyzbsrzo:
+      default: true
+      description: Boolean flag whether a transaction is from the floor.
+      example: true
+      title: DynLimitAsrpyccmudubjmuepqgsmodukegbarlqsceyptihdbxnyzbsrzo
+      type: boolean
+    DynLimitAsszkkmkganoscigvmhcckmmvyjsbyhnwvryixtezdsbswhqoxz:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAsszkkmkganoscigvmhcckmmvyjsbyhnwvryixtezdsbswhqoxz
+      type: boolean
     DynLimitAtcazbghflmpjybccdbevokdfbkrmrhwdmwjoiyovpdrairjmin:
       description: The max short interest float ratio.
       example: 0.05
       title: DynLimitAtcazbghflmpjybccdbevokdfbkrmrhwdmwjoiyovpdrairjmin
       type: integer
-    DynLimitAtubmecgaphtkppqzuugwfszzzhrfkyunttiltgtbpyhrqtcato:
+    DynLimitAtlndfltksvtastcpzkeaepsmdwfotxrwvlwggnesacstloficj:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAtlndfltksvtastcpzkeaepsmdwfotxrwvlwggnesacstloficj
+      type: integer
+    DynLimitAtuswolpwwdcklzdhvymanvilwmqlhtaqxowckwpopxlooqkipt:
       default: true
-      description: Boolean flag whether a transaction is from the floor.
+      description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAtubmecgaphtkppqzuugwfszzzhrfkyunttiltgtbpyhrqtcato
+      title: DynLimitAtuswolpwwdcklzdhvymanvilwmqlhtaqxowckwpopxlooqkipt
       type: boolean
     DynLimitAuufjiawhvkifiregvlgkfwvgkxxqhlkfidkflgovcwjjjhjwwj:
       description: The min short interest.
@@ -1091,50 +1099,32 @@ components:
       example: 1.1
       title: DynLimitAuxdufwicgqzcxjapdkadkfceaovucpibqagxnkmhulamosobmj
       type: integer
-    DynLimitAviediorrybtazdfayikyrvaripssfjljxixkqdpnlyptvrqsrw:
-      default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
-      example: true
-      title: DynLimitAviediorrybtazdfayikyrvaripssfjljxixkqdpnlyptvrqsrw
-      type: boolean
-    DynLimitAvuooqdljleqcbsewnvlcigpojhcezkruxmxbuspcggoxspanax:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAvuooqdljleqcbsewnvlcigpojhcezkruxmxbuspcggoxspanax
-      type: integer
-    DynLimitAwjzvzihhvofryafqfsqkykkpadtprtxpwbjvnulssbdbxrzoxx:
+    DynLimitAwescxuntiufkobvgdkmonrdlmnidoapahxrzctyixztatwjsur:
       default: true
       description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAwjzvzihhvofryafqfsqkykkpadtprtxpwbjvnulssbdbxrzoxx
+      title: DynLimitAwescxuntiufkobvgdkmonrdlmnidoapahxrzctyixztatwjsur
       type: boolean
     DynLimitAwtyjxwxnjrhwscaknxphndqisegsdynhlkmkbsnibqmuyazhnw:
       description: The max short interest.
       example: 100000
       title: DynLimitAwtyjxwxnjrhwscaknxphndqisegsdynhlkmkbsnibqmuyazhnw
       type: integer
+    DynLimitAwwmiuyouxxvviqsrurqgeaihmvjqcjfavrzqzajvmfsbfaiehe:
+      default: true
+      description: Boolean flag whether a transaction is a intermarket sweep.
+      example: true
+      title: DynLimitAwwmiuyouxxvviqsrurqgeaihmvjqcjfavrzqzajvmfsbfaiehe
+      type: boolean
     DynLimitAzelecqqnmropwiascpapmlnmzicfdkuwnprgdsmlbjnjetatwu:
       description: The min short interest float ratio.
       example: 0.1
       title: DynLimitAzelecqqnmropwiascpapmlnmzicfdkuwnprgdsmlbjnjetatwu
       type: integer
-    DynLimitAzghrhpdpehdnjndhzshqrcqxcvajqsajzcxmcjjbgoadgvzdgw:
-      default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
-      example: true
-      title: DynLimitAzghrhpdpehdnjndhzshqrcqxcvajqsajzcxmcjjbgoadgvzdgw
-      type: boolean
     DynLimitAznkbkvdqcnbltsawrilcdtbyjtdppspoyfakwlgrdbavahqlnc:
       description: The max rebate rate.
       example: 5.34
       title: DynLimitAznkbkvdqcnbltsawrilcdtbyjtdppspoyfakwlgrdbavahqlnc
-      type: integer
-    DynLimitAztyhlflsjsjajxnwvujlfrquywsqfmlqdctvhpiecwjxsxdfxd:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAztyhlflsjsjajxnwvujlfrquywsqfmlqdctvhpiecwjxsxdfxd
       type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -8154,8 +8144,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
-      example: '13.52369891956068210400'
+      description: The 30 day implied volatility from 1 month ago.
+      example: '0.2136848270893097'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -8835,16 +8825,6 @@ components:
       example: '350944.58'
       title: Total Vega Flow
       type: string
-    Transaction Newer Than:
-      description: Filter for trades executed after a set date.
-      example: 2025-01-01
-      title: Transaction Newer Than
-      type: date
-    Transaction Older Than:
-      description: Filter for trades execute before a set date.
-      example: 2025-01-01
-      title: Transaction Older Than
-      type: date
     Transaction Side:
       description: Whether the insider bought or sold.
       enum:
@@ -9840,6 +9820,8 @@ paths:
       callbacks: {}
       description: |
         Returns the latest darkpool trades.
+        
+        For real time streaming of darkpool trades, subscribe to the `off_lit_trades` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.off_lit_trades](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.off_lit_trades).
       operationId: PublicApi.DarkpoolController.darkpool_recent
       parameters:
         - description: ''
@@ -9918,6 +9900,8 @@ paths:
       description: |
         Returns the darkpool trades for the given ticker on a given day.
         Date must be the current or a past date. If no date is given, returns data for the current/last market day.
+        
+        For real time streaming of darkpool trades, subscribe to the `off_lit_trades` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.off_lit_trades](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.off_lit_trades).
       operationId: PublicApi.DarkpoolController.darkpool_ticker
       parameters:
         - description: ''
@@ -11618,6 +11602,8 @@ paths:
         
         For a market tide for ETF holdings check out [https://api.unusualwhales.com/docs/operations/PublicApi.MarketController.etf_tide](https://api.unusualwhales.com/docs/operations/PublicApi.MarketController.etf_tide).
         
+        For real time streaming market tide data, subscribe to the `market_tide` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.channels](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.channels).
+        
         ----
         This can be used to build a market overview such as:
         
@@ -12305,8 +12291,10 @@ paths:
         checkout out [https://unusualwhales.com/option-flow-alerts/rules](https://unusualwhales.com/option-flow-alerts/rules).
         
         For any given flow alert you can take a look at the individual trades that are making up the alert by taking the alert's id
-        and use [https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alert](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alert) 
+        and use [https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alert](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alert)
         to retrieve the individual transactions.
+        
+        For real time streaming of flow alerts, subscribe to the `flow-alerts` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.flow_alerts](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.flow_alerts).
       operationId: PublicApi.OptionTradeController.flow_alerts
       parameters:
         - description: ''
@@ -12320,91 +12308,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAoaapadzriuwulnxuiocpqsoxfgokagplbosffgnrnazbqruulm'
+            $ref: '#/components/schemas/DynLimitAtlndfltksvtastcpzkeaepsmdwfotxrwvlwggnesacstloficj'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjhvvwauzksdirrgtdlzhgrimtfkocqlwztjulzyxmubmmofeqm'
+            $ref: '#/components/schemas/DynLimitAgbzlbkolhxgnamnyfeshjiiksednlykkkrzywiwofjvopagxei'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAkifovyitraiypdeuqnyrrdvbbyebzvzeskkxuoxafdekjcoyye'
+            $ref: '#/components/schemas/DynLimitAdtnyhbfsqfzqgiwzozlnpvdslmsltghgihtojrtcbmqbrmixeu'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAldqvnbnpnstrzwnphxuppgnkoppgdztipzmxhwcbahstfamqxh'
+            $ref: '#/components/schemas/DynLimitAsquhiqaesckiispfjfmenrfjjvehoeghjclsyrupusrmvbjbht'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAztyhlflsjsjajxnwvujlfrquywsqfmlqdctvhpiecwjxsxdfxd'
+            $ref: '#/components/schemas/DynLimitAmyakgngkqvbsqfaymdtiovmvmnfehyksbvalbkjynvvofnixqe'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAvuooqdljleqcbsewnvlcigpojhcezkruxmxbuspcggoxspanax'
+            $ref: '#/components/schemas/DynLimitAccfxkakwmtzejvlmazdvxqxfjtvtqfhywjzmqwggqoncrxaxxw'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgwjeboyprfzfvdupuuhvihjsgzxqmraaaolaiggvatqekbvxgv'
+            $ref: '#/components/schemas/DynLimitAhmexjcivwoausnbcbjjlrmoyvokpelgobvyeawopfpxqlfpvoe'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhmazgvxlnqjlavnrbaohtxgkhrclgjvimzrtymeqshmdmgsvgv'
+            $ref: '#/components/schemas/DynLimitAdxaibslfbtozvlepnrsewetjuijilwkhvfwujcwrztupflbcnm'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzghrhpdpehdnjndhzshqrcqxcvajqsajzcxmcjjbgoadgvzdgw'
+            $ref: '#/components/schemas/DynLimitAnbwujqpuzyawvckdufbstaoksaeiaktccouukvfbkwexbgtbzi'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtubmecgaphtkppqzuugwfszzzhrfkyunttiltgtbpyhrqtcato'
+            $ref: '#/components/schemas/DynLimitAsrpyccmudubjmuepqgsmodukegbarlqsceyptihdbxnyzbsrzo'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAviediorrybtazdfayikyrvaripssfjljxixkqdpnlyptvrqsrw'
+            $ref: '#/components/schemas/DynLimitAwwmiuyouxxvviqsrurqgeaihmvjqcjfavrzqzajvmfsbfaiehe'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAggokvomuslcyqiksyffsjkfkqveaaoidweudvkoxthxnifbshy'
+            $ref: '#/components/schemas/DynLimitAgaobrmtyosagoipyhdrhxwxeqeawrtqvlozpokgrjtjwqlntcq'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdhewwnlbprvhryqwigwbppibyynfesxrnzydfsdipskthpwvey'
+            $ref: '#/components/schemas/DynLimitAijesszxzepwzajckgayykrzskzztjsbxrlnmwvjljmieovpwch'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwjzvzihhvofryafqfsqkykkpadtprtxpwbjvnulssbdbxrzoxx'
+            $ref: '#/components/schemas/DynLimitAwescxuntiufkobvgdkmonrdlmnidoapahxrzctyixztatwjsur'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAkixhldtjvhkzssnzwsegemyxrsfwzqxcdqyuqpafzriuzfdknv'
+            $ref: '#/components/schemas/DynLimitAcqmhfzawtrhgplsvcwndikgsktpywpwvceqygihxjdfsbhleev'
         - description: ''
           in: query
           name: rule_name[]
@@ -12899,25 +12887,25 @@ paths:
           name: disclosure_newer_than
           required: false
           schema:
-            $ref: '#/components/schemas/Disclosure Newer Than'
+            $ref: '#/components/schemas/NewerThan'
         - description: If provided, will only return trades with a disclosure date <= this date.
           in: query
           name: disclosure_older_than
           required: false
           schema:
-            $ref: '#/components/schemas/Disclosure Older Than'
+            $ref: '#/components/schemas/OlderThan'
         - description: If provided, will only return trades with a transaction date >= this date.
           in: query
           name: transaction_newer_than
           required: false
           schema:
-            $ref: '#/components/schemas/Transaction Newer Than'
+            $ref: '#/components/schemas/NewerThan'
         - description: If provided, will only return trades with a transaction date <= this date.
           in: query
           name: transaction_older_than
           required: false
           schema:
-            $ref: '#/components/schemas/Transaction Older Than'
+            $ref: '#/components/schemas/OlderThan'
       responses:
         '200':
           content:
@@ -13204,6 +13192,8 @@ paths:
         
         For an example of what can be build with this endpoint check out the [Hottest Contracts](https://unusualwhales.com/hottest-contracts?limit=100&hide_index_etf=true)
         on UnusualWhales.
+        
+        For real time streaming of the same data, subscribe to the `contract_screener` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.contract_screener](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.contract_screener).
         
         NOTE: Contracts with a volume of less than 200 are not being returned
       operationId: PublicApi.ScreenerController.contract_screener
@@ -14992,6 +14982,8 @@ paths:
         
         
         
+        If you are an AI or work with AI there is an available websocket skill at: https://unusualwhales.com/skills/websocket.md
+        
         The following channels are available:
         | Channel                     | Description                                                                                                           |
         |-----------------------------|-----------------------------------------------------------------------------------------------------------------------|
@@ -15005,6 +14997,10 @@ paths:
         | gex:TICKER                  | Receive live gex update for the given ticker.                                                                         |
         | gex_strike:TICKER           | Receive live gex strike updates for every strike of the given ticker.                                                 |
         | gex_strike_expiry:TICKER    | Receive live gex strike updates for every strike & expiry of the given ticker.                                        |
+        | market_tide                 | Receive live updates of both the market tide and the otm market tide.                                                 |
+        | net_flow:TICKER             | Receive live net call/put premium and volume aggregates for the specified ticker to build a net prem view.            |
+        | interval_flow               | Receive per interval option flow statistics for a ticker (sweeps, floors, multilegs, Greek flows, IV, net prem). Use this to build alert systems to spot spikes in tickers     |
+        | contract_screener           | Receive live option contract snapshots (Greeks, side volumes, OI growth indicators). This your entry point to build a screener on top of option contracts.                              |
         
         The `option_trades` channel will stream all 6,000,000 option trades in real-time, `option_trades:<TICKER>` will stream
         all option trades for the given ticker in real-time.
@@ -15090,6 +15086,78 @@ paths:
       parameters: []
       responses: {}
       summary: WebSocket channels
+      tags:
+        - websocket
+  /api/socket/contract_screener:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for websocket channel `contract_screener`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        The data on this channel is the exact same data shown on [https://unusualwhales.com/options-screener](https://unusualwhales.com/options-screener).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream: `contract_screener` for live hot-option-contract snapshots (Greeks, side volumes, OI growth indicators).
+        
+        Payload format:
+        
+        ```
+        [
+          "contract_screener",
+          {
+            "option_symbol": "WMT260501P00126000",
+            "tape_time": "2026-04-27T14:27:56Z",
+            "volume": 498,
+            "open_interest": 536,
+            "prev_oi": 349,
+            "trades": 143,
+            "premium": "32830.00",
+            "ask_side_volume": 231,
+            "bid_side_volume": 190,
+            "neutral_volume": 0,
+            "floor_volume": 50,
+            "high": "0.76",
+            "low": "0.51",
+            "open": "0.53",
+            "close": "0.75",
+            "iv": "0.3222611630685708",
+            "bid": "0.73",
+            "ask": "0.75",
+            "multileg_volume": 10,
+            "avg_price": "0.6592369477911646586345381529",
+            "mid_volume": 77,
+            "sweep_volume": 2,
+            "cross_volume": 0,
+            "stock_multi_leg_volume": 0,
+            "days_of_oi_increases": 3,
+            "days_of_vol_greater_than_oi": 0,
+            "chain_prev_close": "0.55",
+            "delta": "-0.2759145792070713",
+            "gamma": "0.0771084404181128",
+            "theta": "-0.180959140636331",
+            "vega": "0.04495190198751509",
+            "is_new": false,
+            "ask_side_perc_7_day": "0.750000",
+            "bid_side_perc_7_day": "0.250000"
+          }
+        ]
+        ```
+      operationId: PublicApi.SocketController.contract_screener
+      parameters: []
+      responses: {}
+      summary: Contract screener
       tags:
         - websocket
   /api/socket/flow_alerts:
@@ -15304,6 +15372,227 @@ paths:
       summary: GEX
       tags:
         - websocket
+  /api/socket/interval_flow:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for websocket channel `interval_flow`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        The data on this channel is the exact same data shown on [https://unusualwhales.com/ticker-interval-flow](https://unusualwhales.com/ticker-interval-flow).
+        
+        Ticker Interval flow shows you summary stats about option transactions for a given ticker in a 5min window. It shows the options volume, transactions count, greek exposure, net premium, implied move change and many more stats. This is very useful if you want to build an alerting system that alerts if there is a volume spike or some other sort of spike in a ticker in a short time frame.
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream: `interval_flow` for live per-interval option flow statistics. Each message carries a single ticker in its `ticker` field; subscribers receive updates for all tickers across the channel.
+        
+        Payload format:
+        
+        ```
+        [
+          "interval_flow",
+          {
+            "ticker": "CVNA",
+            "interval_type": "All",
+            "start_time": "2026-04-27T14:25:00Z",
+            "tape_time": "2026-04-27T14:27:54.391Z",
+            "call_vol": 76,
+            "put_vol": 155,
+            "transactions": 73,
+            "call_vol_ask_side": 38,
+            "call_vol_bid_side": 37,
+            "call_vol_neutral_side": 1,
+            "put_vol_ask_side": 28,
+            "put_vol_bid_side": 107,
+            "put_vol_neutral_side": 20,
+            "call_sweep_vol": 0,
+            "put_sweep_vol": 0,
+            "call_floor_vol": 0,
+            "put_floor_vol": 0,
+            "call_cross_vol": 0,
+            "put_cross_vol": 0,
+            "call_multi_vol": 22,
+            "put_multi_vol": 12,
+            "cum_net_call_delta": 200,
+            "cum_net_put_delta": -149,
+            "avg_dte": "4",
+            "avg_otm": "0.697458",
+            "avg_size": "1",
+            "avg_prem": "54",
+            "net_call_prem": 16424,
+            "net_put_prem": -10344,
+            "open": "407",
+            "close": "406.322",
+            "implied_move_perc_30d_open": 165,
+            "implied_move_perc_30d_close": 165,
+            "volatility_30d_open": 849,
+            "volatility_30d_close": 855,
+            "delta_flow": 1243,
+            "gamma_flow": 11,
+            "vega_flow": 6780,
+            "dir_delta_flow": 8,
+            "dir_gamma_flow": -38,
+            "dir_vega_flow": -892
+          }
+        ]
+        ```
+      operationId: PublicApi.SocketController.interval_flow
+      parameters: []
+      responses: {}
+      summary: Ticker Interval flow
+      tags:
+        - websocket
+  /api/socket/lit_trades:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for websocket channel `lit_trades`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream: `lit_trades` for all lit (exchange-based) trades.
+        
+        Payload format:
+        
+        ```
+        [
+          "lit_trades",
+          {
+            "symbol": "AAPL",
+            "price": "150.25",
+            "type": "lit",
+            "size": 100,
+            "volume": 1000,
+            "trade_settlement": "regular",
+            "trade_code": "opening_print",
+            "ext_hour_sold_codes": null,
+            "sale_cond_codes": "cross_trade",
+            "executed_at": "2024-09-22T14:30:00Z",
+            "nbbo_bid": "150.20",
+            "nbbo_ask": "150.25",
+            "nbbo_bid_quantity": 500,
+            "nbbo_ask_quantity": 800,
+            "sector": "Technology",
+            "next_earnings_date": "2024-10-25",
+            "avg30_volume": "75000000.0",
+            "issue_type": "Common Stock",
+            "marketcap": "2400000000000.0"
+          }
+        ]
+        ```
+      operationId: PublicApi.SocketController.lit_trades
+      parameters: []
+      responses: {}
+      summary: Lit trades
+      tags:
+        - websocket
+  /api/socket/market_tide:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for websocket channel `market_tide`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream: `market_tide` for the live market-wide net call/put premium and volume aggregate. The OTM-only breakout is included in the same payload via the `otm_net_*` fields.
+        
+        Payload format:
+        
+        ```
+        [
+          "market_tide",
+          {
+            "timestamp": "2026-04-27T14:27:54Z",
+            "net_volume": 991,
+            "net_call_premium": "488078.0",
+            "net_put_premium": "-218102.0",
+            "otm_net_volume": 1345,
+            "otm_net_call_premium": "272395.0",
+            "otm_net_put_premium": "-190694.0"
+          }
+        ]
+        ```
+      operationId: PublicApi.SocketController.market_tide
+      parameters: []
+      responses: {}
+      summary: Market tide
+      tags:
+        - websocket
+  /api/socket/net_flow:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for websocket channel `net_flow:<TICKER>`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream, for example `net_flow:SPY` for live net call/put premium and volume aggregates for SPY.
+        
+        Payload format:
+        
+        ```
+        [
+          "net_flow:SPY",
+          {
+            "ticker": "SPY",
+            "net_call_prem": "1716.00",
+            "net_call_vol": 6,
+            "net_put_prem": "1990.00",
+            "net_put_vol": 17,
+            "time": 1777300076003
+          }
+        ]
+        ```
+      operationId: PublicApi.SocketController.net_flow
+      parameters: []
+      responses: {}
+      summary: Net flow
+      tags:
+        - websocket
   /api/socket/news:
     get:
       callbacks: {}
@@ -15343,6 +15632,61 @@ paths:
       parameters: []
       responses: {}
       summary: News
+      tags:
+        - websocket
+  /api/socket/off_lit_trades:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for websocket channel `off_lit_trades`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream: `off_lit_trades` for all off-lit (dark pool) trades.
+        
+        Payload format:
+        
+        ```
+        [
+          "off_lit_trades",
+          {
+            "symbol": "AAPL",
+            "price": "150.25",
+            "type": "off_lit",
+            "size": 100,
+            "volume": 1000,
+            "trade_settlement": "regular",
+            "trade_code": null,
+            "ext_hour_sold_codes": "extended_hours_trade",
+            "sale_cond_codes": null,
+            "executed_at": "2024-09-22T14:30:00Z",
+            "nbbo_bid": "150.20",
+            "nbbo_ask": "150.25",
+            "nbbo_bid_quantity": 500,
+            "nbbo_ask_quantity": 800,
+            "sector": "Technology",
+            "next_earnings_date": "2024-10-25",
+            "avg30_volume": "75000000.0",
+            "issue_type": "Common Stock",
+            "marketcap": "2400000000000.0"
+          }
+        ]
+        ```
+      operationId: PublicApi.SocketController.off_lit_trades
+      parameters: []
+      responses: {}
+      summary: Off-lit trades
       tags:
         - websocket
   /api/socket/option_trades:
@@ -15689,13 +16033,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAckxgsqqycjgpiqukhsbyuqiczugwargvepuianpeedqjrijxvv'
+            $ref: '#/components/schemas/DynLimitAtuswolpwwdcklzdhvymanvilwmqlhtaqxowckwpopxlooqkipt'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAilwjlgjpadeluzrztbktudoatmcqiivtvegvhhyuknkbyfntol'
+            $ref: '#/components/schemas/DynLimitAsszkkmkganoscigvmhcckmmvyjsbyhnwvryixtezdsbswhqoxz'
       responses:
         '200':
           content:
