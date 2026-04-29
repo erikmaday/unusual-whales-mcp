@@ -923,6 +923,12 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
+    DynLimitAalgugezqjxmbczeeuanwwkuajkcpkbarvzqzhgiagcsvuiiizo:
+      default: true
+      description: Boolean flag whether a transaction is a intermarket sweep.
+      example: true
+      title: DynLimitAalgugezqjxmbczeeuanwwkuajkcpkbarvzqzhgiagcsvuiiizo
+      type: boolean
     DynLimitAarofabydfeioijgnilkpibkqzvcvahxdastczmfqlczztebamp:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
@@ -935,18 +941,6 @@ components:
       example: 0.05
       title: DynLimitAayvejfabbcvikkthaygiccbfrufrplvmgtdxqzjbkyqsxdeivk
       type: integer
-    DynLimitAccfxkakwmtzejvlmazdvxqxfjtvtqfhywjzmqwggqoncrxaxxw:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAccfxkakwmtzejvlmazdvxqxfjtvtqfhywjzmqwggqoncrxaxxw
-      type: integer
-    DynLimitAcqmhfzawtrhgplsvcwndikgsktpywpwvceqygihxjdfsbhleev:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAcqmhfzawtrhgplsvcwndikgsktpywpwvceqygihxjdfsbhleev
-      type: boolean
     DynLimitAcrbptanrpmbsowcidplgyttowrxrhilaitcrkgnbvajzshfbvg:
       description: The min short shares available.
       example: 0
@@ -957,57 +951,63 @@ components:
       example: 0.45
       title: DynLimitAdcvhrrslfsyqeajirgtoiztkaglvelljmcncfmqhlvhfoutlxm
       type: integer
-    DynLimitAdtnyhbfsqfzqgiwzozlnpvdslmsltghgihtojrtcbmqbrmixeu:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
+    DynLimitAdqvwigoqqzgewlfuiaofzqcvymcilehxtbtatrqxtacuaciycu:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
       minimum: 0
-      title: DynLimitAdtnyhbfsqfzqgiwzozlnpvdslmsltghgihtojrtcbmqbrmixeu
+      title: DynLimitAdqvwigoqqzgewlfuiaofzqcvymcilehxtbtatrqxtacuaciycu
       type: integer
-    DynLimitAdxaibslfbtozvlepnrsewetjuijilwkhvfwujcwrztupflbcnm:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAeavlozrdcdotgxunqiejlemjdotpymhlrfmlsezjfyecbjqrtq:
+      default: true
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+      example: true
+      title: DynLimitAeavlozrdcdotgxunqiejlemjdotpymhlrfmlsezjfyecbjqrtq
+      type: boolean
+    DynLimitAedwvwiorvoagrecyvgrnnzqxclhramewtkspvfedyczordmdro:
+      description: 'The maximum size on that alert. Min: 0.'
       example: 125
       minimum: 0
-      title: DynLimitAdxaibslfbtozvlepnrsewetjuijilwkhvfwujcwrztupflbcnm
+      title: DynLimitAedwvwiorvoagrecyvgrnnzqxclhramewtkspvfedyczordmdro
       type: integer
     DynLimitAfceiexucvcqiwrrnotgyulwnsxhcpxhuhbtxowyzbqyrxyeplq:
       description: The min total float.
       example: 10000000
       title: DynLimitAfceiexucvcqiwrrnotgyulwnsxhcpxhuhbtxowyzbqyrxyeplq
       type: integer
-    DynLimitAgaobrmtyosagoipyhdrhxwxeqeawrtqvlozpokgrjtjwqlntcq:
+    DynLimitAfpmihrwgncajorhlqvkagcwanckynudjmnqgvfbiiijjzucfur:
       default: true
-      description: Boolean flag whether a transaction is a call.
+      description: Boolean flag whether a transaction is from the floor.
       example: true
-      title: DynLimitAgaobrmtyosagoipyhdrhxwxeqeawrtqvlozpokgrjtjwqlntcq
+      title: DynLimitAfpmihrwgncajorhlqvkagcwanckynudjmnqgvfbiiijjzucfur
       type: boolean
-    DynLimitAgbzlbkolhxgnamnyfeshjiiksednlykkkrzywiwofjvopagxei:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAgbzlbkolhxgnamnyfeshjiiksednlykkkrzywiwofjvopagxei
-      type: integer
-    DynLimitAhmexjcivwoausnbcbjjlrmoyvokpelgobvyeawopfpxqlfpvoe:
+    DynLimitAhfstomjfonlkqluotttpauwyrkeeytrptthekzbukfljpssvwx:
+      default: true
+      description: Boolean flag whether a transaction is a put.
+      example: true
+      title: DynLimitAhfstomjfonlkqluotttpauwyrkeeytrptthekzbukfljpssvwx
+      type: boolean
+    DynLimitAidbclelyvzrpxohbvecdaxehdjsugzbhvhaabpwallohchmbre:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAhmexjcivwoausnbcbjjlrmoyvokpelgobvyeawopfpxqlfpvoe
+      title: DynLimitAidbclelyvzrpxohbvecdaxehdjsugzbhvhaabpwallohchmbre
       type: integer
     DynLimitAihalyitilqjytbtvebficzdzvnpwynmyfenpupjvdrogzgwllz:
       description: The max total float.
       example: 100000000
       title: DynLimitAihalyitilqjytbtvebficzdzvnpwynmyfenpupjvdrogzgwllz
       type: integer
-    DynLimitAijesszxzepwzajckgayykrzskzztjsbxrlnmwvjljmieovpwch:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAijesszxzepwzajckgayykrzskzztjsbxrlnmwvjljmieovpwch
-      type: boolean
     DynLimitAjpusgwtnjhzdmgbawpzmrkmeepifbnfiveelycrejcthjrbkrq:
       description: The min rebate rate.
       example: 0.11
       title: DynLimitAjpusgwtnjhzdmgbawpzmrkmeepifbnfiveelycrejcthjrbkrq
       type: integer
+    DynLimitAjqnoploeqcunmzhutxmpmpztlwrpaeeanvwmlqwkzfhsdydvtl:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAjqnoploeqcunmzhutxmpmpztlwrpaeeanvwmlqwkzfhsdydvtl
+      type: boolean
     DynLimitAkqtzrsmwcpagonymshzsygkzyxoyybpjfwcpzxsorigojylrkb:
       description: The max short shares available.
       example: 10000
@@ -1018,11 +1018,29 @@ components:
       example: 5.3
       title: DynLimitAlepwyzxagomsimdouaastqxcnstbwnbnvqtiulhkxwcsooemij
       type: integer
+    DynLimitAlgkqdxbcmizgjnlpycqksvqqcowdnvporbzgfwhylfzjawzhfq:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAlgkqdxbcmizgjnlpycqksvqqcowdnvporbzgfwhylfzjawzhfq
+      type: boolean
+    DynLimitAlijdhfueydjxnbqysgiebdvcnutfxpzivvfkyrbedvvjtntrjk:
+      default: true
+      description: Boolean flag whether a transaction is a call.
+      example: true
+      title: DynLimitAlijdhfueydjxnbqysgiebdvcnutfxpzivvfkyrbedvvjtntrjk
+      type: boolean
     DynLimitAmboylrwarfcjcygeogneryvbpkhojviqwtztexccmiqdvqzbae:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitAmboylrwarfcjcygeogneryvbpkhojviqwtztexccmiqdvqzbae
       type: integer
+    DynLimitAmhjzqsbireishmkyjvlahecuudnlazrkwsmhbwkhhxikaljcdt:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAmhjzqsbireishmkyjvlahecuudnlazrkwsmhbwkhhxikaljcdt
+      type: boolean
     DynLimitAmpujboaoczxnnowrbscrthtjomplxrtrgjoyqzscdqjtptpksz:
       default: 100
       description: 'The limit of results. Default: 100. Max: 500. Min: 0.'
@@ -1031,64 +1049,40 @@ components:
       minimum: 0
       title: DynLimitAmpujboaoczxnnowrbscrthtjomplxrtrgjoyqzscdqjtptpksz
       type: integer
-    DynLimitAmyakgngkqvbsqfaymdtiovmvmnfehyksbvalbkjynvvofnixqe:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAmyakgngkqvbsqfaymdtiovmvmnfehyksbvalbkjynvvofnixqe
-      type: integer
-    DynLimitAnbwujqpuzyawvckdufbstaoksaeiaktccouukvfbkwexbgtbzi:
-      default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
-      example: true
-      title: DynLimitAnbwujqpuzyawvckdufbstaoksaeiaktccouukvfbkwexbgtbzi
-      type: boolean
     DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs:
       default: true
       description: Boolean flag whether to return only intraday alerts.
       example: true
       title: DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs
       type: boolean
+    DynLimitAnjioxxjewysssmaegvyypfduhoevqropbuwpukbimehyvgpjlc:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAnjioxxjewysssmaegvyypfduhoevqropbuwpukbimehyvgpjlc
+      type: integer
+    DynLimitAoarjdlisfjtbelrtgydkqqoqrvqpmrzduxwxhorgxegqxuwcww:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAoarjdlisfjtbelrtgydkqqoqrvqpmrzduxwxhorgxegqxuwcww
+      type: integer
+    DynLimitAoycwhaoosblioenjfwiagdmobyeoyqitnxoailjnhgdmpjsmif:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAoycwhaoosblioenjfwiagdmobyeoyqitnxoailjnhgdmpjsmif
+      type: integer
     DynLimitApzsrsjezvimeleqtvvsswyioteltmnnplbtpkghrmwxkcuqqpp:
       description: The min fee rate.
       example: 0.01
       title: DynLimitApzsrsjezvimeleqtvvsswyioteltmnnplbtpkghrmwxkcuqqpp
       type: integer
-    DynLimitAsquhiqaesckiispfjfmenrfjjvehoeghjclsyrupusrmvbjbht:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAsquhiqaesckiispfjfmenrfjjvehoeghjclsyrupusrmvbjbht
-      type: integer
-    DynLimitAsrpyccmudubjmuepqgsmodukegbarlqsceyptihdbxnyzbsrzo:
-      default: true
-      description: Boolean flag whether a transaction is from the floor.
-      example: true
-      title: DynLimitAsrpyccmudubjmuepqgsmodukegbarlqsceyptihdbxnyzbsrzo
-      type: boolean
-    DynLimitAsszkkmkganoscigvmhcckmmvyjsbyhnwvryixtezdsbswhqoxz:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAsszkkmkganoscigvmhcckmmvyjsbyhnwvryixtezdsbswhqoxz
-      type: boolean
     DynLimitAtcazbghflmpjybccdbevokdfbkrmrhwdmwjoiyovpdrairjmin:
       description: The max short interest float ratio.
       example: 0.05
       title: DynLimitAtcazbghflmpjybccdbevokdfbkrmrhwdmwjoiyovpdrairjmin
       type: integer
-    DynLimitAtlndfltksvtastcpzkeaepsmdwfotxrwvlwggnesacstloficj:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAtlndfltksvtastcpzkeaepsmdwfotxrwvlwggnesacstloficj
-      type: integer
-    DynLimitAtuswolpwwdcklzdhvymanvilwmqlhtaqxowckwpopxlooqkipt:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAtuswolpwwdcklzdhvymanvilwmqlhtaqxowckwpopxlooqkipt
-      type: boolean
     DynLimitAuufjiawhvkifiregvlgkfwvgkxxqhlkfidkflgovcwjjjhjwwj:
       description: The min short interest.
       example: 5000
@@ -1099,22 +1093,22 @@ components:
       example: 1.1
       title: DynLimitAuxdufwicgqzcxjapdkadkfceaovucpibqagxnkmhulamosobmj
       type: integer
-    DynLimitAwescxuntiufkobvgdkmonrdlmnidoapahxrzctyixztatwjsur:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAwescxuntiufkobvgdkmonrdlmnidoapahxrzctyixztatwjsur
-      type: boolean
     DynLimitAwtyjxwxnjrhwscaknxphndqisegsdynhlkmkbsnibqmuyazhnw:
       description: The max short interest.
       example: 100000
       title: DynLimitAwtyjxwxnjrhwscaknxphndqisegsdynhlkmkbsnibqmuyazhnw
       type: integer
-    DynLimitAwwmiuyouxxvviqsrurqgeaihmvjqcjfavrzqzajvmfsbfaiehe:
+    DynLimitAwznxjufitluukczepuusevwndbmkhbisarzhshvfflsuxsmoyy:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAwznxjufitluukczepuusevwndbmkhbisarzhshvfflsuxsmoyy
+      type: integer
+    DynLimitAybketscrdqfpglqhakyinbyzjimntuwxyjanyaiydtvlagbtlb:
       default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
+      description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAwwmiuyouxxvviqsrurqgeaihmvjqcjfavrzqzajvmfsbfaiehe
+      title: DynLimitAybketscrdqfpglqhakyinbyzjimntuwxyjanyaiydtvlagbtlb
       type: boolean
     DynLimitAzelecqqnmropwiascpapmlnmzicfdkuwnprgdsmlbjnjetatwu:
       description: The min short interest float ratio.
@@ -1125,6 +1119,12 @@ components:
       description: The max rebate rate.
       example: 5.34
       title: DynLimitAznkbkvdqcnbltsawrilcdtbyjtdppspoyfakwlgrdbavahqlnc
+      type: integer
+    DynLimitAzxpasrhnvfzbxvwbxqxgxtmajnmelylvcjyxodpmkzxjkhytqr:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAzxpasrhnvfzbxvwbxqxgxtmajnmelylvcjyxodpmkzxjkhytqr
       type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -6576,6 +6576,243 @@ components:
       example: '23.49'
       title: Price On Report
       type: string
+    Private Markets Companies:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Private Markets Company'
+          type: array
+      title: Private Markets Companies
+      type: object
+    Private Markets Company:
+      properties:
+        description:
+          nullable: true
+          type: string
+        doing_business_as:
+          nullable: true
+          type: string
+        headquarters:
+          example: San Francisco, CA
+          nullable: true
+          type: string
+        id:
+          format: uuid
+          type: string
+        marketing_url:
+          example: https://openai.com
+          nullable: true
+          type: string
+        name:
+          example: OpenAI
+          type: string
+        npm_ticker:
+          description: Nasdaq Private Markets ticker for the company.
+          example: OPENAI
+          type: string
+        sector:
+          example: Technology
+          nullable: true
+          type: string
+        sub_sectors:
+          items:
+            type: string
+          nullable: true
+          type: array
+        year_founded:
+          example: 2015
+          nullable: true
+          type: integer
+      title: Private Markets Company
+      type: object
+    Private Markets Company Profile:
+      properties:
+        company:
+          $ref: '#/components/schemas/Private Markets Company'
+        investor_count:
+          description: Number of distinct disclosed investors.
+          type: integer
+        latest_price:
+          description: Most recent recorded pricing tick for the company.
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/Private Markets Pricing Tick'
+            - type: 'null'
+        total_funding:
+          description: Sum of all known funding-round investment amounts.
+          nullable: true
+          type: number
+      title: Private Markets Company Profile
+      type: object
+    Private Markets Company Profile Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/Private Markets Company Profile'
+      title: Private Markets Company Profile Response
+      type: object
+    Private Markets Funding Round:
+      properties:
+        financing_round:
+          example: Series E
+          nullable: true
+          type: string
+        id:
+          format: uuid
+          type: string
+        investment_amount:
+          example: 6600000000
+          nullable: true
+          type: number
+        investment_date:
+          format: date
+          nullable: true
+          type: string
+        npm_ticker:
+          example: OPENAI
+          type: string
+      title: Private Markets Funding Round
+      type: object
+    Private Markets Funding Rounds:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Private Markets Funding Round'
+          type: array
+      title: Private Markets Funding Rounds
+      type: object
+    Private Markets Investor:
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          example: Microsoft
+          type: string
+        npm_ticker:
+          example: OPENAI
+          type: string
+      title: Private Markets Investor
+      type: object
+    Private Markets Investor Profile:
+      properties:
+        companies:
+          items:
+            $ref: '#/components/schemas/Private Markets Company'
+          type: array
+        name:
+          example: Sequoia Capital
+          type: string
+      title: Private Markets Investor Profile
+      type: object
+    Private Markets Investor Profile Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/Private Markets Investor Profile'
+      title: Private Markets Investor Profile Response
+      type: object
+    Private Markets Investors:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Private Markets Investor'
+          type: array
+      title: Private Markets Investors
+      type: object
+    Private Markets Management:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Private Markets Management Member'
+          type: array
+      title: Private Markets Management
+      type: object
+    Private Markets Management Member:
+      properties:
+        first_name:
+          example: Sam
+          nullable: true
+          type: string
+        id:
+          format: uuid
+          type: string
+        last_name:
+          example: Altman
+          nullable: true
+          type: string
+        npm_ticker:
+          example: OPENAI
+          type: string
+        title:
+          example: CEO
+          nullable: true
+          type: string
+      title: Private Markets Management Member
+      type: object
+    Private Markets Pricing History:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Private Markets Pricing Tick'
+          type: array
+      title: Private Markets Pricing History
+      type: object
+    Private Markets Pricing Tick:
+      properties:
+        date:
+          format: date
+          type: string
+        id:
+          format: uuid
+          type: string
+        npm_ticker:
+          example: OPENAI
+          type: string
+        price:
+          description: Implied per-share price for the company on this date.
+          type: number
+      title: Private Markets Pricing Tick
+      type: object
+    Private Markets Search:
+      properties:
+        data:
+          properties:
+            companies:
+              items:
+                $ref: '#/components/schemas/Private Markets Search Hit (Company)'
+              type: array
+            investors:
+              items:
+                $ref: '#/components/schemas/Private Markets Search Hit (Investor)'
+              type: array
+          type: object
+      title: Private Markets Search
+      type: object
+    Private Markets Search Hit (Company):
+      properties:
+        headquarters:
+          nullable: true
+          type: string
+        name:
+          example: OpenAI
+          type: string
+        npm_ticker:
+          example: OPENAI
+          type: string
+        sector:
+          nullable: true
+          type: string
+      title: Private Markets Search Hit (Company)
+      type: object
+    Private Markets Search Hit (Investor):
+      properties:
+        company_count:
+          example: 14
+          type: integer
+        name:
+          example: Sequoia Capital
+          type: string
+      title: Private Markets Search Hit (Investor)
+      type: object
     Put Delta:
       description: |
           The total put delta obtained by multiplying the volume of all put options with their latest delta.
@@ -6703,6 +6940,15 @@ components:
       example: true
       title: S&P 500/Nasdaq Only
       type: boolean
+    SPY Daily Close:
+      properties:
+        close:
+          type: number
+        date:
+          format: date
+          type: string
+      title: SPY Daily Close
+      type: object
     Screener contract order by field:
       description: The field to order by.
       enum:
@@ -8144,8 +8390,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -8800,6 +9046,25 @@ components:
           $ref: '#/components/schemas/Stock Ticker'
       title: Top Net Impact
       type: object
+    Top Private Markets Investor:
+      properties:
+        company_count:
+          description: Distinct number of companies this investor has backed.
+          example: 14
+          type: integer
+        name:
+          example: Sequoia Capital
+          type: string
+      title: Top Private Markets Investor
+      type: object
+    Top Private Markets Investors:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Top Private Markets Investor'
+          type: array
+      title: Top Private Markets Investors
+      type: object
     Total Call Open interest:
       description: The total call open interest.
       example: 3994750
@@ -8858,6 +9123,163 @@ components:
       example: 2024-12-01
       title: Unshifted RV Date
       type: string
+    Unusual Congressional Trade:
+      properties:
+        amount:
+          description: The disclosed amount range as a string.
+          example: $1,001 - $15,000
+          type: string
+        asset:
+          description: Asset description as disclosed.
+          example: NVIDIA Corp - Common Stock
+          type: string
+        asset_type:
+          description: The asset type.
+          example: stock
+          type: string
+        company_name:
+          description: The full company name behind the traded ticker.
+          example: NVIDIA Corp
+          type: string
+        description:
+          description: Additional disclosure description, if any.
+          nullable: true
+          type: string
+        filing_date:
+          description: The date the trade was disclosed.
+          example: 2025-10-04
+          format: date
+          type: string
+        id:
+          description: The trade's unique ID.
+          example: 5fbe81ac-1157-4bc8-9d76-c77e6164fe25
+          format: uuid
+          type: string
+        politician_id:
+          description: The politician's ID.
+          example: e138f347-ae92-4cfb-8f41-7036ff09a213
+          format: uuid
+          type: string
+        politician_name:
+          description: The politician's full name.
+          example: Nancy Pelosi
+          type: string
+        ticker:
+          description: The traded ticker symbol.
+          example: NVDA
+          type: string
+        transaction_date:
+          description: The date the transaction occurred.
+          example: 2025-09-12
+          format: date
+          type: string
+        transaction_type:
+          description: The type of transaction (e.g., Buy, Sell, Sale Partial).
+          example: Buy
+          type: string
+        unusual_activity_meta:
+          description: Per-tag metadata explaining why each flag was applied.
+          items:
+            type: object
+          type: array
+        unusual_activity_tags:
+          description: Reason tags this trade was flagged as unusual.
+          example:
+            - committee_conflict
+          items:
+            enum:
+              - committee_conflict
+              - first_person_to_trade
+              - low_marketcap
+              - unusual_industry
+              - unusually_large_trade
+              - fec_donation_conflict
+            type: string
+          type: array
+      title: Unusual Congressional Trade
+      type: object
+    Unusual Trade Chart Point:
+      properties:
+        amount:
+          type: string
+        asset_type:
+          example: stock
+          type: string
+        company_name:
+          example: NVIDIA Corp
+          type: string
+        filing_date:
+          format: date
+          type: string
+        id:
+          format: uuid
+          type: string
+        is_unusual:
+          type: boolean
+        mid_value:
+          nullable: true
+          type: number
+        politician_name:
+          example: Nancy Pelosi
+          type: string
+        price_at_trade:
+          nullable: true
+          type: number
+        price_current:
+          nullable: true
+          type: number
+        sector:
+          example: Technology
+          nullable: true
+          type: string
+        ticker:
+          example: NVDA
+          type: string
+        transaction_date:
+          format: date
+          type: string
+        transaction_type:
+          example: Buy
+          type: string
+        unusual_activity_tags:
+          items:
+            type: string
+          type: array
+      title: Unusual Trade Chart Point
+      type: object
+    Unusual Trades:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Unusual Congressional Trade'
+          type: array
+      title: Unusual Trades
+      type: object
+    Unusual Trades Chart Data:
+      properties:
+        spy_prices:
+          items:
+            $ref: '#/components/schemas/SPY Daily Close'
+          type: array
+        trades:
+          items:
+            $ref: '#/components/schemas/Unusual Trade Chart Point'
+          type: array
+      title: Unusual Trades Chart Data
+      type: object
+    Unusual Trades Stats:
+      properties:
+        data:
+          description: Aggregated unusual-trade statistics. Includes top politicians, party/chamber breakdowns, committee groups, industry groups, top tickers, biggest trades, and per-day trade volumes (with SPY benchmark).
+          type: object
+        date:
+          format: date
+          type: string
+        type:
+          example: overview
+          type: string
+      title: Unusual Trades Stats
+      type: object
     Upstream Condition Detail:
       description: The upstream condition detail/trade code of the option trade.
       example: auto
@@ -9704,6 +10126,226 @@ paths:
       summary: Recent Congress Trades
       tags:
         - congress
+  /api/congress/unusual-trades:
+    get:
+      callbacks: {}
+      description: |
+        Returns congressional trades that have been flagged as unusual, optionally filtered by reason tags.
+        Supported `types` values include `committee_conflict`, `first_person_to_trade`, `low_marketcap`,
+        `unusual_industry`, `unusually_large_trade`, and `fec_donation_conflict`.
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.UnusualTradesController.recent
+      parameters:
+        - description: Comma-separated list of unusual-activity tags to filter by. Returns all unusual trades when omitted.
+          in: query
+          name: types
+          required: false
+          schema:
+            type: string
+        - description: Number of results per page (max 500).
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 100
+            maximum: 500
+            minimum: 1
+            type: integer
+        - description: Page number (1-indexed).
+          in: query
+          name: page
+          required: false
+          schema:
+            default: 1
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unusual Trades'
+          description: Unusual Trades
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Unusual Congressional Trades
+      tags:
+        - unusual_trades
+  /api/congress/unusual-trades/by-tickers:
+    get:
+      callbacks: {}
+      description: |
+        Returns congressional trades filtered by one or more tickers, with optional date range,
+        transaction type, and politician name filters. Includes price-at-trade and current-price context.
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.UnusualTradesController.by_tickers
+      parameters:
+        - description: Comma-separated list of tickers to filter by.
+          in: query
+          name: tickers
+          required: false
+          schema:
+            type: string
+        - description: Filter to either buy- or sell-side transactions.
+          in: query
+          name: transaction_type
+          required: false
+          schema:
+            enum:
+              - buy
+              - sell
+            type: string
+        - description: Inclusive lower bound on transaction_date (ISO 8601).
+          in: query
+          name: date_from
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: Inclusive upper bound on transaction_date (ISO 8601).
+          in: query
+          name: date_to
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: Case-insensitive substring match against the politician's full name.
+          in: query
+          name: politician
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 100
+            maximum: 500
+            minimum: 1
+            type: integer
+        - description: ''
+          in: query
+          name: page
+          required: false
+          schema:
+            default: 1
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unusual Trades'
+          description: Unusual Trades
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Unusual Trades by Ticker
+      tags:
+        - unusual_trades
+  /api/congress/unusual-trades/chart-data:
+    get:
+      callbacks: {}
+      description: |
+        Returns trade points (with price context) and SPY daily closes over the requested date range,
+        suitable for plotting congressional trade activity against the broader market.
+        Defaults to the last ~4 months when no range is supplied.
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.UnusualTradesController.chart_data
+      parameters:
+        - description: Inclusive lower bound on transaction_date (ISO 8601).
+          in: query
+          name: date_from
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: Inclusive upper bound on transaction_date (ISO 8601).
+          in: query
+          name: date_to
+          required: false
+          schema:
+            format: date
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unusual Trades Chart Data'
+          description: Unusual Trades Chart Data
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Unusual Trades Chart Data
+      tags:
+        - unusual_trades
+  /api/congress/unusual-trades/stats:
+    get:
+      callbacks: {}
+      description: |
+        Returns the most recent cached overview statistics: top 30 politicians by unusual trade count,
+        party/chamber breakdowns, committee and industry groupings, top tickers, biggest trades,
+        and daily trade volume series with SPY benchmark.
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.UnusualTradesController.stats
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unusual Trades Stats'
+          description: Unusual Trades Stats
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Unusual Trades Aggregate Stats
+      tags:
+        - unusual_trades
   /api/crypto/whale-transactions:
     get:
       callbacks: {}
@@ -12308,91 +12950,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtlndfltksvtastcpzkeaepsmdwfotxrwvlwggnesacstloficj'
+            $ref: '#/components/schemas/DynLimitAoycwhaoosblioenjfwiagdmobyeoyqitnxoailjnhgdmpjsmif'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgbzlbkolhxgnamnyfeshjiiksednlykkkrzywiwofjvopagxei'
+            $ref: '#/components/schemas/DynLimitAdqvwigoqqzgewlfuiaofzqcvymcilehxtbtatrqxtacuaciycu'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdtnyhbfsqfzqgiwzozlnpvdslmsltghgihtojrtcbmqbrmixeu'
+            $ref: '#/components/schemas/DynLimitAoarjdlisfjtbelrtgydkqqoqrvqpmrzduxwxhorgxegqxuwcww'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsquhiqaesckiispfjfmenrfjjvehoeghjclsyrupusrmvbjbht'
+            $ref: '#/components/schemas/DynLimitAedwvwiorvoagrecyvgrnnzqxclhramewtkspvfedyczordmdro'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmyakgngkqvbsqfaymdtiovmvmnfehyksbvalbkjynvvofnixqe'
+            $ref: '#/components/schemas/DynLimitAnjioxxjewysssmaegvyypfduhoevqropbuwpukbimehyvgpjlc'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAccfxkakwmtzejvlmazdvxqxfjtvtqfhywjzmqwggqoncrxaxxw'
+            $ref: '#/components/schemas/DynLimitAwznxjufitluukczepuusevwndbmkhbisarzhshvfflsuxsmoyy'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhmexjcivwoausnbcbjjlrmoyvokpelgobvyeawopfpxqlfpvoe'
+            $ref: '#/components/schemas/DynLimitAidbclelyvzrpxohbvecdaxehdjsugzbhvhaabpwallohchmbre'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdxaibslfbtozvlepnrsewetjuijilwkhvfwujcwrztupflbcnm'
+            $ref: '#/components/schemas/DynLimitAzxpasrhnvfzbxvwbxqxgxtmajnmelylvcjyxodpmkzxjkhytqr'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAnbwujqpuzyawvckdufbstaoksaeiaktccouukvfbkwexbgtbzi'
+            $ref: '#/components/schemas/DynLimitAeavlozrdcdotgxunqiejlemjdotpymhlrfmlsezjfyecbjqrtq'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsrpyccmudubjmuepqgsmodukegbarlqsceyptihdbxnyzbsrzo'
+            $ref: '#/components/schemas/DynLimitAfpmihrwgncajorhlqvkagcwanckynudjmnqgvfbiiijjzucfur'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwwmiuyouxxvviqsrurqgeaihmvjqcjfavrzqzajvmfsbfaiehe'
+            $ref: '#/components/schemas/DynLimitAalgugezqjxmbczeeuanwwkuajkcpkbarvzqzhgiagcsvuiiizo'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgaobrmtyosagoipyhdrhxwxeqeawrtqvlozpokgrjtjwqlntcq'
+            $ref: '#/components/schemas/DynLimitAlijdhfueydjxnbqysgiebdvcnutfxpzivvfkyrbedvvjtntrjk'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAijesszxzepwzajckgayykrzskzztjsbxrlnmwvjljmieovpwch'
+            $ref: '#/components/schemas/DynLimitAhfstomjfonlkqluotttpauwyrkeeytrptthekzbukfljpssvwx'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwescxuntiufkobvgdkmonrdlmnidoapahxrzctyixztatwjsur'
+            $ref: '#/components/schemas/DynLimitAjqnoploeqcunmzhutxmpmpztlwrpaeeanvwmlqwkzfhsdydvtl'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcqmhfzawtrhgplsvcwndikgsktpywpwvceqygihxjdfsbhleev'
+            $ref: '#/components/schemas/DynLimitAybketscrdqfpglqhakyinbyzjimntuwxyjanyaiydtvlagbtlb'
         - description: ''
           in: query
           name: rule_name[]
@@ -13130,6 +13772,453 @@ paths:
       summary: Prediction Market Whales
       tags:
         - predictions
+  /api/private-markets/companies:
+    get:
+      callbacks: {}
+      description: |
+        Returns Nasdaq Private Markets companies, optionally filtered by sector or name. Sorted alphabetically.
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.PrivateMarketsController.companies
+      parameters:
+        - description: Exact-match sector filter (e.g. "Technology").
+          in: query
+          name: sector
+          required: false
+          schema:
+            type: string
+        - description: Case-insensitive substring match against company name.
+          in: query
+          name: name
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 100
+            maximum: 500
+            minimum: 1
+            type: integer
+        - description: ''
+          in: query
+          name: offset
+          required: false
+          schema:
+            default: 0
+            minimum: 0
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Private Markets Companies'
+          description: Private Markets Companies
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: List Private Markets Companies
+      tags:
+        - private_markets
+  /api/private-markets/companies/{npm_ticker}:
+    get:
+      callbacks: {}
+      description: |
+        Returns a profile for a single private-markets company including the latest pricing tick,
+        total funding raised across known rounds, and the count of disclosed investors.
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.PrivateMarketsController.company_profile
+      parameters:
+        - description: Nasdaq Private Markets ticker (e.g. "OPENAI").
+          in: path
+          name: npm_ticker
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Private Markets Company Profile Response'
+          description: Private Markets Company Profile
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message stating that the requested element was not found causing an empty result to be generated.'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Private Markets Company Profile
+      tags:
+        - private_markets
+  /api/private-markets/companies/{npm_ticker}/funding:
+    get:
+      callbacks: {}
+      description: |
+        Returns the funding round history for a single private-markets company, ordered most-recent first.
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.PrivateMarketsController.funding
+      parameters:
+        - description: ''
+          in: path
+          name: npm_ticker
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+        - description: ''
+          in: query
+          name: offset
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Private Markets Funding Rounds'
+          description: Private Markets Funding Rounds
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Private Markets Funding Rounds
+      tags:
+        - private_markets
+  /api/private-markets/companies/{npm_ticker}/investors:
+    get:
+      callbacks: {}
+      description: |
+        Returns the disclosed investors for a single private-markets company, ordered alphabetically.
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.PrivateMarketsController.investors
+      parameters:
+        - description: ''
+          in: path
+          name: npm_ticker
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+        - description: ''
+          in: query
+          name: offset
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Private Markets Investors'
+          description: Private Markets Investors
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Private Markets Investors for Company
+      tags:
+        - private_markets
+  /api/private-markets/companies/{npm_ticker}/management:
+    get:
+      callbacks: {}
+      description: |
+        Returns disclosed management/leadership for a single private-markets company.
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.PrivateMarketsController.management
+      parameters:
+        - description: ''
+          in: path
+          name: npm_ticker
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+        - description: ''
+          in: query
+          name: offset
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Private Markets Management'
+          description: Private Markets Management
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Private Markets Management
+      tags:
+        - private_markets
+  /api/private-markets/companies/{npm_ticker}/pricing:
+    get:
+      callbacks: {}
+      description: |
+        Returns historical implied per-share pricing for a single private-markets company.
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.PrivateMarketsController.pricing
+      parameters:
+        - description: ''
+          in: path
+          name: npm_ticker
+          required: true
+          schema:
+            type: string
+        - description: Inclusive lower bound on pricing date (ISO 8601).
+          in: query
+          name: start_date
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: Inclusive upper bound on pricing date (ISO 8601).
+          in: query
+          name: end_date
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+        - description: ''
+          in: query
+          name: offset
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Private Markets Pricing History'
+          description: Private Markets Pricing
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Private Markets Pricing History
+      tags:
+        - private_markets
+  /api/private-markets/investors:
+    get:
+      callbacks: {}
+      description: |
+        Returns the most prolific investors across the private-markets dataset, ordered by distinct
+        company count (descending).
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.PrivateMarketsController.top_investors
+      parameters:
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+        - description: ''
+          in: query
+          name: offset
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Top Private Markets Investors'
+          description: Top Private Markets Investors
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Top Private Markets Investors
+      tags:
+        - private_markets
+  /api/private-markets/investors/{name}:
+    get:
+      callbacks: {}
+      description: |
+        Returns the portfolio of companies for a specific investor (by name).
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.PrivateMarketsController.investor_profile
+      parameters:
+        - description: The investor's name (URL-encoded).
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Private Markets Investor Profile Response'
+          description: Private Markets Investor Profile
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message stating that the requested element was not found causing an empty result to be generated.'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Private Markets Investor Profile
+      tags:
+        - private_markets
+  /api/private-markets/search:
+    get:
+      callbacks: {}
+      description: |
+        Substring-search across private-markets companies and investors.
+        
+        This is a premium endpoint. Contact dev@unusualwhales.com to request access.
+      operationId: PublicApi.PrivateMarketsController.search
+      parameters:
+        - description: Search string (case-insensitive substring match).
+          in: query
+          name: query
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 10
+            maximum: 50
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Private Markets Search'
+          description: Private Markets Search
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Search Private Markets
+      tags:
+        - private_markets
   /api/screener/analysts:
     get:
       callbacks: {}
@@ -16033,13 +17122,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtuswolpwwdcklzdhvymanvilwmqlhtaqxowckwpopxlooqkipt'
+            $ref: '#/components/schemas/DynLimitAlgkqdxbcmizgjnlpycqksvqqcowdnvporbzgfwhylfzjawzhfq'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsszkkmkganoscigvmhcckmmvyjsbyhnwvryixtezdsbswhqoxz'
+            $ref: '#/components/schemas/DynLimitAmhjzqsbireishmkyjvlahecuudnlazrkwsmhbwkhhxikaljcdt'
       responses:
         '200':
           content:
