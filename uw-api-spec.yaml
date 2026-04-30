@@ -329,6 +329,19 @@ components:
     Analyst Sector:
       description: A financial sector.
       title: Analyst Sector
+    Analytics Response:
+      properties:
+        data:
+          properties:
+            meta:
+              nullable: true
+              type: object
+            payload:
+              nullable: true
+              type: object
+          type: object
+      title: Analytics Response
+      type: object
     Annual Disclosure:
       properties:
         chamber:
@@ -553,6 +566,79 @@ components:
       nullable: true
       title: Company Market Cap
       type: string
+    Company Profile:
+      properties:
+        analyst_target_price:
+          nullable: true
+          type: number
+        asset_type:
+          example: Common Stock
+          type: string
+        beta:
+          nullable: true
+          type: number
+        cik:
+          nullable: true
+          type: string
+        country:
+          nullable: true
+          type: string
+        currency:
+          nullable: true
+          type: string
+        description:
+          nullable: true
+          type: string
+        dividend_yield:
+          nullable: true
+          type: number
+        ebitda:
+          nullable: true
+          type: number
+        eps:
+          nullable: true
+          type: number
+        exchange:
+          nullable: true
+          type: string
+        industry:
+          nullable: true
+          type: string
+        market_cap:
+          nullable: true
+          type: number
+        name:
+          example: Apple Inc
+          type: string
+        pe_ratio:
+          nullable: true
+          type: number
+        peg_ratio:
+          nullable: true
+          type: number
+        sector:
+          nullable: true
+          type: string
+        shares_outstanding:
+          nullable: true
+          type: number
+        ticker:
+          example: AAPL
+          type: string
+        week_52_high:
+          nullable: true
+          type: number
+        week_52_low:
+          nullable: true
+          type: number
+      title: Company Profile
+      type: object
+    Company Profile Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/Company Profile'
+      title: Company Profile Response
+      type: object
     Configration IDs:
       description: A list of alert ids to filter by.
       example:
@@ -918,213 +1004,249 @@ components:
       example: '31243.04'
       title: Dir Vega Flow
       type: string
+    Dividend Event:
+      properties:
+        amount:
+          nullable: true
+          type: number
+        declaration_date:
+          format: date
+          nullable: true
+          type: string
+        ex_date:
+          format: date
+          nullable: true
+          type: string
+        payment_date:
+          format: date
+          nullable: true
+          type: string
+        record_date:
+          format: date
+          nullable: true
+          type: string
+      title: Dividend Event
+      type: object
+    Dividends Response:
+      properties:
+        data:
+          properties:
+            dividends:
+              items:
+                $ref: '#/components/schemas/Dividend Event'
+              type: array
+            ticker:
+              type: string
+          type: object
+      title: Dividends Response
+      type: object
     Drug Name:
       description: Drug name to filter FDA calendar entries (partial match supported)
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAalgugezqjxmbczeeuanwwkuajkcpkbarvzqzhgiagcsvuiiizo:
+    DynLimitAabnuodsoimpecssgbakmdywfeoxyqjidlemlyhzmkfmrtreiov:
       default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
+      description: Boolean flag whether a transaction is from the floor.
       example: true
-      title: DynLimitAalgugezqjxmbczeeuanwwkuajkcpkbarvzqzhgiagcsvuiiizo
+      title: DynLimitAabnuodsoimpecssgbakmdywfeoxyqjidlemlyhzmkfmrtreiov
       type: boolean
-    DynLimitAarofabydfeioijgnilkpibkqzvcvahxdastczmfqlczztebamp:
+    DynLimitAblhjtjcrokaxumdmrcrczfmabbrkqyftblonvgbhcdpnsdbsqp:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAblhjtjcrokaxumdmrcrczfmabbrkqyftblonvgbhcdpnsdbsqp
+      type: boolean
+    DynLimitAbvcjtgaevqistnvwfszoknpzhijfwvgcbvapzbxsszcsikplpk:
+      description: The max total float.
+      example: 100000000
+      title: DynLimitAbvcjtgaevqistnvwfszoknpzhijfwvgcbvapzbxsszcsikplpk
+      type: integer
+    DynLimitAbvwpbbhxpisgzyegutsyqtcmgjnleoxqlnyhpnmmlgurjwxrwl:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
       example: 100
       minimum: 0
-      title: DynLimitAarofabydfeioijgnilkpibkqzvcvahxdastczmfqlczztebamp
+      title: DynLimitAbvwpbbhxpisgzyegutsyqtcmgjnleoxqlnyhpnmmlgurjwxrwl
       type: integer
-    DynLimitAayvejfabbcvikkthaygiccbfrufrplvmgtdxqzjbkyqsxdeivk:
-      description: The min si_float_with_synth_long_pct_of_total_shares.
-      example: 0.05
-      title: DynLimitAayvejfabbcvikkthaygiccbfrufrplvmgtdxqzjbkyqsxdeivk
-      type: integer
-    DynLimitAcrbptanrpmbsowcidplgyttowrxrhilaitcrkgnbvajzshfbvg:
-      description: The min short shares available.
-      example: 0
-      title: DynLimitAcrbptanrpmbsowcidplgyttowrxrhilaitcrkgnbvajzshfbvg
-      type: integer
-    DynLimitAdcvhrrslfsyqeajirgtoiztkaglvelljmcncfmqhlvhfoutlxm:
-      description: The max fee rate.
-      example: 0.45
-      title: DynLimitAdcvhrrslfsyqeajirgtoiztkaglvelljmcncfmqhlvhfoutlxm
-      type: integer
-    DynLimitAdqvwigoqqzgewlfuiaofzqcvymcilehxtbtatrqxtacuaciycu:
-      description: 'The maximum premium on that alert. Min: 0.'
+    DynLimitAdsquscamyycysitlsexzhkhkwvtteiwqlituhtcatwsfwpsfag:
+      description: 'The minimum premium on that alert. Min: 0.'
       example: 12500.5
       minimum: 0
-      title: DynLimitAdqvwigoqqzgewlfuiaofzqcvymcilehxtbtatrqxtacuaciycu
+      title: DynLimitAdsquscamyycysitlsexzhkhkwvtteiwqlituhtcatwsfwpsfag
       type: integer
-    DynLimitAeavlozrdcdotgxunqiejlemjdotpymhlrfmlsezjfyecbjqrtq:
-      default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
-      example: true
-      title: DynLimitAeavlozrdcdotgxunqiejlemjdotpymhlrfmlsezjfyecbjqrtq
-      type: boolean
-    DynLimitAedwvwiorvoagrecyvgrnnzqxclhramewtkspvfedyczordmdro:
-      description: 'The maximum size on that alert. Min: 0.'
+    DynLimitAecbpvyqdljbtuxpnuzblxptpqvblwpptztktzgxyktcvmctuwk:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAedwvwiorvoagrecyvgrnnzqxclhramewtkspvfedyczordmdro
+      title: DynLimitAecbpvyqdljbtuxpnuzblxptpqvblwpptztktzgxyktcvmctuwk
       type: integer
-    DynLimitAfceiexucvcqiwrrnotgyulwnsxhcpxhuhbtxowyzbqyrxyeplq:
-      description: The min total float.
-      example: 10000000
-      title: DynLimitAfceiexucvcqiwrrnotgyulwnsxhcpxhuhbtxowyzbqyrxyeplq
-      type: integer
-    DynLimitAfpmihrwgncajorhlqvkagcwanckynudjmnqgvfbiiijjzucfur:
-      default: true
-      description: Boolean flag whether a transaction is from the floor.
-      example: true
-      title: DynLimitAfpmihrwgncajorhlqvkagcwanckynudjmnqgvfbiiijjzucfur
-      type: boolean
-    DynLimitAhfstomjfonlkqluotttpauwyrkeeytrptthekzbukfljpssvwx:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAhfstomjfonlkqluotttpauwyrkeeytrptthekzbukfljpssvwx
-      type: boolean
-    DynLimitAidbclelyvzrpxohbvecdaxehdjsugzbhvhaabpwallohchmbre:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAeliovubsjzkaoybnhgnnocbkjqywtcoxycxmgrsdyvbynpdavp:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
       example: 125
       minimum: 0
-      title: DynLimitAidbclelyvzrpxohbvecdaxehdjsugzbhvhaabpwallohchmbre
+      title: DynLimitAeliovubsjzkaoybnhgnnocbkjqywtcoxycxmgrsdyvbynpdavp
       type: integer
-    DynLimitAihalyitilqjytbtvebficzdzvnpwynmyfenpupjvdrogzgwllz:
-      description: The max total float.
-      example: 100000000
-      title: DynLimitAihalyitilqjytbtvebficzdzvnpwynmyfenpupjvdrogzgwllz
+    DynLimitAfhltcwlzmearzpdpqnpckposdtmullaxnhghxithfjgpbjmwdp:
+      description: The min short shares available.
+      example: 0
+      title: DynLimitAfhltcwlzmearzpdpqnpckposdtmullaxnhghxithfjgpbjmwdp
       type: integer
-    DynLimitAjpusgwtnjhzdmgbawpzmrkmeepifbnfiveelycrejcthjrbkrq:
-      description: The min rebate rate.
-      example: 0.11
-      title: DynLimitAjpusgwtnjhzdmgbawpzmrkmeepifbnfiveelycrejcthjrbkrq
-      type: integer
-    DynLimitAjqnoploeqcunmzhutxmpmpztlwrpaeeanvwmlqwkzfhsdydvtl:
+    DynLimitAfqfkljqqzpzootegxiedyognemnilmkxprgcaawjpgozmpaujw:
       default: true
       description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAjqnoploeqcunmzhutxmpmpztlwrpaeeanvwmlqwkzfhsdydvtl
+      title: DynLimitAfqfkljqqzpzootegxiedyognemnilmkxprgcaawjpgozmpaujw
       type: boolean
-    DynLimitAkqtzrsmwcpagonymshzsygkzyxoyybpjfwcpzxsorigojylrkb:
-      description: The max short shares available.
-      example: 10000
-      title: DynLimitAkqtzrsmwcpagonymshzsygkzyxoyybpjfwcpzxsorigojylrkb
-      type: integer
-    DynLimitAlepwyzxagomsimdouaastqxcnstbwnbnvqtiulhkxwcsooemij:
+    DynLimitAgaexrsbcxbxygmvnyujnbmykssusohjwgupvkdrhlrspbacpaq:
       description: The max days to cover.
       example: 5.3
-      title: DynLimitAlepwyzxagomsimdouaastqxcnstbwnbnvqtiulhkxwcsooemij
+      title: DynLimitAgaexrsbcxbxygmvnyujnbmykssusohjwgupvkdrhlrspbacpaq
       type: integer
-    DynLimitAlgkqdxbcmizgjnlpycqksvqqcowdnvporbzgfwhylfzjawzhfq:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAlgkqdxbcmizgjnlpycqksvqqcowdnvporbzgfwhylfzjawzhfq
-      type: boolean
-    DynLimitAlijdhfueydjxnbqysgiebdvcnutfxpzivvfkyrbedvvjtntrjk:
-      default: true
-      description: Boolean flag whether a transaction is a call.
-      example: true
-      title: DynLimitAlijdhfueydjxnbqysgiebdvcnutfxpzivvfkyrbedvvjtntrjk
-      type: boolean
-    DynLimitAmboylrwarfcjcygeogneryvbpkhojviqwtztexccmiqdvqzbae:
-      description: The max si_float_with_synth_long_pct_of_total_shares.
-      example: 0.05
-      title: DynLimitAmboylrwarfcjcygeogneryvbpkhojviqwtztexccmiqdvqzbae
+    DynLimitAgsnsskhozhxlykfimoinlhkwmtacmsdffjdtkvjsuhcimstjvg:
+      description: The min rebate rate.
+      example: 0.11
+      title: DynLimitAgsnsskhozhxlykfimoinlhkwmtacmsdffjdtkvjsuhcimstjvg
       type: integer
-    DynLimitAmhjzqsbireishmkyjvlahecuudnlazrkwsmhbwkhhxikaljcdt:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAmhjzqsbireishmkyjvlahecuudnlazrkwsmhbwkhhxikaljcdt
-      type: boolean
-    DynLimitAmpujboaoczxnnowrbscrthtjomplxrtrgjoyqzscdqjtptpksz:
+    DynLimitAhufzurdrynaaddqawovwommihcxjeejtbaxuskjgbpkyqpaxuj:
       default: 100
       description: 'The limit of results. Default: 100. Max: 500. Min: 0.'
       example: 125
       maximum: 500
       minimum: 0
-      title: DynLimitAmpujboaoczxnnowrbscrthtjomplxrtrgjoyqzscdqjtptpksz
+      title: DynLimitAhufzurdrynaaddqawovwommihcxjeejtbaxuskjgbpkyqpaxuj
       type: integer
+    DynLimitAicgamntfibsysobyhoebjlxdtobbtoslatmquxjjmfrkvztbhe:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAicgamntfibsysobyhoebjlxdtobbtoslatmquxjjmfrkvztbhe
+      type: boolean
+    DynLimitAivlfpeiouknzytebzxhbnzibqvfvrxfkgcwylxqdxyfunoarhw:
+      description: The min total float.
+      example: 10000000
+      title: DynLimitAivlfpeiouknzytebzxhbnzibqvfvrxfkgcwylxqdxyfunoarhw
+      type: integer
+    DynLimitAjbbsourqfyojphhuyieqhwstdoyymcabytitahposvxjxmqgfi:
+      description: The min short interest float ratio.
+      example: 0.1
+      title: DynLimitAjbbsourqfyojphhuyieqhwstdoyymcabytitahposvxjxmqgfi
+      type: integer
+    DynLimitAjhdijqchrhyxdxeplrnecymszrvfluifilfpbqepushkkhmjwl:
+      default: true
+      description: Boolean flag whether a transaction is a put.
+      example: true
+      title: DynLimitAjhdijqchrhyxdxeplrnecymszrvfluifilfpbqepushkkhmjwl
+      type: boolean
+    DynLimitAjowlhfnwinvbrfxykcichqxpmpyuornyupzwcmldwajxvxgmvq:
+      description: The max short shares available.
+      example: 10000
+      title: DynLimitAjowlhfnwinvbrfxykcichqxpmpyuornyupzwcmldwajxvxgmvq
+      type: integer
+    DynLimitAksymfoajrzowcdelakqtwijgebfkhkfgkqnkeemhyivphknmbe:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAksymfoajrzowcdelakqtwijgebfkhkfgkqnkeemhyivphknmbe
+      type: integer
+    DynLimitAlmamuorlwdkutsptvurrqdknfonamcdrvgucgyqkguegfkemig:
+      description: The min short interest.
+      example: 5000
+      title: DynLimitAlmamuorlwdkutsptvurrqdknfonamcdrvgucgyqkguegfkemig
+      type: integer
+    DynLimitAmbezjsednwcelyvfxuqsbafykhdpffgbxtgsojkvfmlqylkkzl:
+      default: true
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+      example: true
+      title: DynLimitAmbezjsednwcelyvfxuqsbafykhdpffgbxtgsojkvfmlqylkkzl
+      type: boolean
     DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs:
       default: true
       description: Boolean flag whether to return only intraday alerts.
       example: true
       title: DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs
       type: boolean
-    DynLimitAnjioxxjewysssmaegvyypfduhoevqropbuwpukbimehyvgpjlc:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAnjioxxjewysssmaegvyypfduhoevqropbuwpukbimehyvgpjlc
-      type: integer
-    DynLimitAoarjdlisfjtbelrtgydkqqoqrvqpmrzduxwxhorgxegqxuwcww:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAoarjdlisfjtbelrtgydkqqoqrvqpmrzduxwxhorgxegqxuwcww
-      type: integer
-    DynLimitAoycwhaoosblioenjfwiagdmobyeoyqitnxoailjnhgdmpjsmif:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAoycwhaoosblioenjfwiagdmobyeoyqitnxoailjnhgdmpjsmif
-      type: integer
-    DynLimitApzsrsjezvimeleqtvvsswyioteltmnnplbtpkghrmwxkcuqqpp:
+    DynLimitAnwryvlomslevodzrlsfailjwvdfcrritjqhhsjprpjjkpsgugo:
       description: The min fee rate.
       example: 0.01
-      title: DynLimitApzsrsjezvimeleqtvvsswyioteltmnnplbtpkghrmwxkcuqqpp
+      title: DynLimitAnwryvlomslevodzrlsfailjwvdfcrritjqhhsjprpjjkpsgugo
       type: integer
-    DynLimitAtcazbghflmpjybccdbevokdfbkrmrhwdmwjoiyovpdrairjmin:
-      description: The max short interest float ratio.
-      example: 0.05
-      title: DynLimitAtcazbghflmpjybccdbevokdfbkrmrhwdmwjoiyovpdrairjmin
-      type: integer
-    DynLimitAuufjiawhvkifiregvlgkfwvgkxxqhlkfidkflgovcwjjjhjwwj:
-      description: The min short interest.
-      example: 5000
-      title: DynLimitAuufjiawhvkifiregvlgkfwvgkxxqhlkfidkflgovcwjjjhjwwj
-      type: integer
-    DynLimitAuxdufwicgqzcxjapdkadkfceaovucpibqagxnkmhulamosobmj:
-      description: The min days to cover.
-      example: 1.1
-      title: DynLimitAuxdufwicgqzcxjapdkadkfceaovucpibqagxnkmhulamosobmj
-      type: integer
-    DynLimitAwtyjxwxnjrhwscaknxphndqisegsdynhlkmkbsnibqmuyazhnw:
-      description: The max short interest.
-      example: 100000
-      title: DynLimitAwtyjxwxnjrhwscaknxphndqisegsdynhlkmkbsnibqmuyazhnw
-      type: integer
-    DynLimitAwznxjufitluukczepuusevwndbmkhbisarzhshvfflsuxsmoyy:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAopwsakyohqiwnnobrfbteshxykqypazfijdrydmlmtxhmkkhfj:
+      description: 'The maximum size on that alert. Min: 0.'
       example: 125
       minimum: 0
-      title: DynLimitAwznxjufitluukczepuusevwndbmkhbisarzhshvfflsuxsmoyy
+      title: DynLimitAopwsakyohqiwnnobrfbteshxykqypazfijdrydmlmtxhmkkhfj
       type: integer
-    DynLimitAybketscrdqfpglqhakyinbyzjimntuwxyjanyaiydtvlagbtlb:
+    DynLimitAowlnfykrzqqdlcqsuzcayfevhxpanricaggjfbkittfonrelec:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAybketscrdqfpglqhakyinbyzjimntuwxyjanyaiydtvlagbtlb
+      title: DynLimitAowlnfykrzqqdlcqsuzcayfevhxpanricaggjfbkittfonrelec
       type: boolean
-    DynLimitAzelecqqnmropwiascpapmlnmzicfdkuwnprgdsmlbjnjetatwu:
-      description: The min short interest float ratio.
-      example: 0.1
-      title: DynLimitAzelecqqnmropwiascpapmlnmzicfdkuwnprgdsmlbjnjetatwu
+    DynLimitApzyyqusovzssqmktbonctljgtabkughsfiqibnwuuaistxatqv:
+      description: The max si_float_with_synth_long_pct_of_total_shares.
+      example: 0.05
+      title: DynLimitApzyyqusovzssqmktbonctljgtabkughsfiqibnwuuaistxatqv
       type: integer
-    DynLimitAznkbkvdqcnbltsawrilcdtbyjtdppspoyfakwlgrdbavahqlnc:
-      description: The max rebate rate.
-      example: 5.34
-      title: DynLimitAznkbkvdqcnbltsawrilcdtbyjtdppspoyfakwlgrdbavahqlnc
+    DynLimitAqczbojpzpxxmzrfkhgtpsrxubjxccggdlasdfrffizavakwtqz:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAqczbojpzpxxmzrfkhgtpsrxubjxccggdlasdfrffizavakwtqz
       type: integer
-    DynLimitAzxpasrhnvfzbxvwbxqxgxtmajnmelylvcjyxodpmkzxjkhytqr:
+    DynLimitAqsxaxrsviyrnvqblkqipmbfyujfmuatvielivorhfnlhpksxxc:
+      description: The max fee rate.
+      example: 0.45
+      title: DynLimitAqsxaxrsviyrnvqblkqipmbfyujfmuatvielivorhfnlhpksxxc
+      type: integer
+    DynLimitArqvnawbzepakcvxwyeixxaggfjzxrcvpwfjwnowgnjyzlnmevh:
+      description: The max short interest.
+      example: 100000
+      title: DynLimitArqvnawbzepakcvxwyeixxaggfjzxrcvpwfjwnowgnjyzlnmevh
+      type: integer
+    DynLimitAsdyztqshbtewyonllqpxihqdkgiqjawsprixmkgasvgtefjfhf:
+      description: The max short interest float ratio.
+      example: 0.05
+      title: DynLimitAsdyztqshbtewyonllqpxihqdkgiqjawsprixmkgasvgtefjfhf
+      type: integer
+    DynLimitAuiflaxxopngzsmqogshaxqdbfjygbvgbwagodkgdizzpefirgs:
       description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAzxpasrhnvfzbxvwbxqxgxtmajnmelylvcjyxodpmkzxjkhytqr
+      title: DynLimitAuiflaxxopngzsmqogshaxqdbfjygbvgbwagodkgdizzpefirgs
+      type: integer
+    DynLimitAujomgcnfarjbicijkfuzcsckofiyquezmuikfiprxfbxthmdfm:
+      description: The min days to cover.
+      example: 1.1
+      title: DynLimitAujomgcnfarjbicijkfuzcsckofiyquezmuikfiprxfbxthmdfm
+      type: integer
+    DynLimitAunqojtkjcdzsswoksuqwipkmksbzqxpxqgntjmogqaxqhistyk:
+      description: The min si_float_with_synth_long_pct_of_total_shares.
+      example: 0.05
+      title: DynLimitAunqojtkjcdzsswoksuqwipkmksbzqxpxqgntjmogqaxqhistyk
+      type: integer
+    DynLimitAuuvlywvniahnearvbbpigshpkqhkvkgfgejmteresyyzkmubfs:
+      default: true
+      description: Boolean flag whether a transaction is a intermarket sweep.
+      example: true
+      title: DynLimitAuuvlywvniahnearvbbpigshpkqhkvkgfgejmteresyyzkmubfs
+      type: boolean
+    DynLimitAvpzcsxjruyfvzawcexewgeddubdevhyugswtnukaheosivqvre:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAvpzcsxjruyfvzawcexewgeddubdevhyugswtnukaheosivqvre
+      type: integer
+    DynLimitAwvsxzpzztfohhrsshzglifuamqbfgvuvavmdfthziyhhbhyxps:
+      default: true
+      description: Boolean flag whether a transaction is a call.
+      example: true
+      title: DynLimitAwvsxzpzztfohhrsshzglifuamqbfgvuvavmdfthziyhhbhyxps
+      type: boolean
+    DynLimitAykandsowrjliwxrfqicquqppcgjopteuubsjfvffbgemcirqli:
+      description: The max rebate rate.
+      example: 5.34
+      title: DynLimitAykandsowrjliwxrfqicquqppcgjopteuubsjfvffbgemcirqli
       type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -1231,6 +1353,54 @@ components:
         symbol:
           $ref: '#/components/schemas/Ticker Symbol'
       title: Earnings
+      type: object
+    Earnings Estimate:
+      properties:
+        date:
+          format: date
+          nullable: true
+          type: string
+        eps_estimate_analyst_count:
+          nullable: true
+          type: number
+        eps_estimate_average:
+          nullable: true
+          type: number
+        eps_estimate_high:
+          nullable: true
+          type: number
+        eps_estimate_low:
+          nullable: true
+          type: number
+        horizon:
+          nullable: true
+          type: string
+        revenue_estimate_analyst_count:
+          nullable: true
+          type: number
+        revenue_estimate_average:
+          nullable: true
+          type: number
+        revenue_estimate_high:
+          nullable: true
+          type: number
+        revenue_estimate_low:
+          nullable: true
+          type: number
+      title: Earnings Estimate
+      type: object
+    Earnings Estimates Response:
+      properties:
+        data:
+          properties:
+            estimates:
+              items:
+                $ref: '#/components/schemas/Earnings Estimate'
+              type: array
+            ticker:
+              type: string
+          type: object
+      title: Earnings Estimates Response
       type: object
     Economic Event:
       description: The event/reason. Can be a fed speaker or an economic report/indicator
@@ -1842,6 +2012,63 @@ components:
       pattern: ^\d{4}-(Q[1-4]|H[1-2]|MID|LATE|\d{2}-\d{2})$
       title: FDA Target Date
       type: string
+    FX Rate Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/FX Spot Rate'
+      title: FX Rate Response
+      type: object
+    FX Spot Rate:
+      properties:
+        ask:
+          nullable: true
+          type: number
+        bid:
+          nullable: true
+          type: number
+        from:
+          nullable: true
+          type: string
+        last_refreshed:
+          nullable: true
+          type: string
+        rate:
+          nullable: true
+          type: number
+        time_zone:
+          nullable: true
+          type: string
+        to:
+          nullable: true
+          type: string
+      title: FX Spot Rate
+      type: object
+    FX/Crypto Series:
+      properties:
+        bars:
+          items:
+            $ref: '#/components/schemas/OHLC Bar'
+          type: array
+        from:
+          nullable: true
+          type: string
+        interval:
+          nullable: true
+          type: string
+        market:
+          nullable: true
+          type: string
+        symbol:
+          nullable: true
+          type: string
+        time_zone:
+          nullable: true
+          type: string
+        to:
+          nullable: true
+          type: string
+      title: FX/Crypto Series
+      type: object
     Failures to Deliver:
       description: |
         Failures to deliver data for a specific ticker.
@@ -3366,6 +3593,17 @@ components:
           $ref: '#/components/schemas/Stock Week 52 low'
       title: Holdings
       type: object
+    IPO Calendar Response:
+      properties:
+        data:
+          properties:
+            ipos:
+              items:
+                $ref: '#/components/schemas/Upcoming IPO'
+              type: array
+          type: object
+      title: IPO Calendar Response
+      type: object
     IV Rank:
       description: |
         The IV rank data for a ticker over a time period.
@@ -4376,6 +4614,49 @@ components:
       example: name
       title: Latest Institutional Filings Order By
       type: string
+    Listing:
+      properties:
+        asset_type:
+          nullable: true
+          type: string
+        delisting_date:
+          format: date
+          nullable: true
+          type: string
+        exchange:
+          nullable: true
+          type: string
+        ipo_date:
+          format: date
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+        status:
+          nullable: true
+          type: string
+        ticker:
+          nullable: true
+          type: string
+      title: Listing
+      type: object
+    Listings Response:
+      properties:
+        data:
+          properties:
+            date:
+              nullable: true
+              type: string
+            listings:
+              items:
+                $ref: '#/components/schemas/Listing'
+              type: array
+            status:
+              type: string
+          type: object
+      title: Listings Response
+      type: object
     Lit Trade:
       description: A lit exchange trade.
       example:
@@ -4470,6 +4751,29 @@ components:
       example: '0.3421'
       title: Long Straddle 1 Week
       type: string
+    Macro Series:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Series Point'
+          type: array
+        interval:
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+        unit:
+          nullable: true
+          type: string
+      title: Macro Series
+      type: object
+    Macro Series Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/Macro Series'
+      title: Macro Series Response
+      type: object
     Major News Only:
       default: false
       description: When set to true, only returns major/significant news.
@@ -4907,6 +5211,46 @@ components:
       example: all
       title: Moneyness
       type: string
+    Mover:
+      properties:
+        change:
+          nullable: true
+          type: number
+        change_percent:
+          nullable: true
+          type: number
+        price:
+          nullable: true
+          type: number
+        ticker:
+          type: string
+        volume:
+          nullable: true
+          type: number
+      title: Mover
+      type: object
+    Movers Response:
+      properties:
+        data:
+          properties:
+            last_updated:
+              nullable: true
+              type: string
+            most_active:
+              items:
+                $ref: '#/components/schemas/Mover'
+              type: array
+            top_gainers:
+              items:
+                $ref: '#/components/schemas/Mover'
+              type: array
+            top_losers:
+              items:
+                $ref: '#/components/schemas/Mover'
+              type: array
+          type: object
+      title: Movers Response
+      type: object
     NBBO Ask:
       description: The National Best Bid and Offer (NBBO) ask price.
       example: '0.03'
@@ -5130,6 +5474,28 @@ components:
       example: flow_alerts
       title: Notification Type
       type: string
+    OHLC Bar:
+      properties:
+        close:
+          nullable: true
+          type: number
+        high:
+          nullable: true
+          type: number
+        low:
+          nullable: true
+          type: number
+        open:
+          nullable: true
+          type: number
+        timestamp:
+          nullable: true
+          type: string
+        volume:
+          nullable: true
+          type: number
+      title: OHLC Bar
+      type: object
     OHLC End Date:
       description: |
         A trading date in the format of YYYY-MM-DD.
@@ -7606,6 +7972,23 @@ components:
           $ref: '#/components/schemas/Insider Trades Transaction Type'
       title: Senate Stock
       type: object
+    Series Point:
+      properties:
+        date:
+          format: date
+          nullable: true
+          type: string
+        value:
+          nullable: true
+          type: number
+      title: Series Point
+      type: object
+    Series Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/FX/Crypto Series'
+      title: Series Response
+      type: object
     Share Value:
       description: The rounded total share value in the institution's portfolio.
       example: '2394292.0'
@@ -8008,6 +8391,19 @@ components:
       example: company
       title: Source
       type: string
+    Splits Response:
+      properties:
+        data:
+          properties:
+            splits:
+              items:
+                $ref: '#/components/schemas/Stock Split Event'
+              type: array
+            ticker:
+              type: string
+          type: object
+      title: Splits Response
+      type: object
     Spot Call Charm Ask Side Exposure:
       description: The call charm exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
       example: '102382359.5786'
@@ -8643,6 +9039,17 @@ components:
       example: Apple Inc. is an American multinational technology company headquartered in Cupertino, California. Apple is the worlds largest technology company by ...
       title: Stock Short Description
       type: string
+    Stock Split Event:
+      properties:
+        effective_date:
+          format: date
+          nullable: true
+          type: string
+        split_factor:
+          nullable: true
+          type: number
+      title: Stock Split Event
+      type: object
     Stock Ticker:
       description: The stock ticker.
       example: AAPL
@@ -9103,6 +9510,37 @@ components:
       example: 1188
       title: Transactions
       type: integer
+    Transcript Response:
+      properties:
+        data:
+          properties:
+            quarter:
+              type: string
+            statements:
+              items:
+                $ref: '#/components/schemas/Transcript Statement'
+              type: array
+            ticker:
+              type: string
+          type: object
+      title: Transcript Response
+      type: object
+    Transcript Statement:
+      properties:
+        content:
+          nullable: true
+          type: string
+        sentiment:
+          nullable: true
+          type: number
+        speaker:
+          nullable: true
+          type: string
+        title:
+          nullable: true
+          type: string
+      title: Transcript Statement
+      type: object
     Underlying Price:
       description: The price of the underlying asset.
       example: '128.16'
@@ -9279,6 +9717,32 @@ components:
           example: overview
           type: string
       title: Unusual Trades Stats
+      type: object
+    Upcoming IPO:
+      properties:
+        currency:
+          nullable: true
+          type: string
+        exchange:
+          nullable: true
+          type: string
+        ipo_date:
+          format: date
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+        price_range_high:
+          nullable: true
+          type: number
+        price_range_low:
+          nullable: true
+          type: number
+        ticker:
+          nullable: true
+          type: string
+      title: Upcoming IPO
       type: object
     Upstream Condition Detail:
       description: The upstream condition detail/trade code of the option trade.
@@ -9570,6 +10034,12 @@ info:
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com](mailto:oskar@unusualwhales.com).
     
     ## Changelog
+    
+    # 2026.04.29
+    - Added MCP tool `get_short_volume_ratio_by_exchange` for [`/shorts/:ticker/volumes-by-exchange`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_volume_by_exchange) data.
+    - Added MCP tool `get_short_volume_ratio_by_ticker` for [`/shorts/:ticker/volume-and-ratio`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_volume_and_ratio) data.
+    - Added MCP tool `get_short_screener` for [`/short_screener`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_screener)
+    - Added MCP tool `get_short_data_by_ticker` for [`/shorts/:ticker/data`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_data)
     
     # 2026.04.14
     - Enhanced MCP [`/api/mcp`](https://api.unusualwhales.com/docs) `tools/call` validation to reject unsupported arguments, missing required arguments, and invalid enum values before tool execution.
@@ -9922,6 +10392,476 @@ paths:
       summary: Alert configurations
       tags:
         - alerts
+  /api/analytics/sliding:
+    get:
+      callbacks: {}
+      description: Sliding window statistical analytics across one or more tickers.
+      operationId: PublicApi.IntelController.analytics_sliding
+      parameters:
+        - description: ''
+          in: query
+          name: symbols
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: range
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: range_end
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: interval
+          required: false
+          schema:
+            default: DAILY
+            type: string
+        - description: ''
+          in: query
+          name: ohlc
+          required: false
+          schema:
+            default: close
+            type: string
+        - description: ''
+          in: query
+          name: window_size
+          required: false
+          schema:
+            default: 20
+            minimum: 1
+            type: integer
+        - description: ''
+          in: query
+          name: calculations
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Analytics Response'
+          description: Analytics Sliding
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Sliding-Window Analytics
+      tags:
+        - intel
+  /api/analytics/window:
+    get:
+      callbacks: {}
+      description: Statistical analytics over a fixed window across one or more tickers. Returns mean, stddev, correlation, etc.
+      operationId: PublicApi.IntelController.analytics_window
+      parameters:
+        - description: Comma-separated tickers.
+          in: query
+          name: symbols
+          required: true
+          schema:
+            example: AAPL,IBM,MSFT
+            type: string
+        - description: Either an ISO date for the start of the window (pair with the optional range_end) or a relative shorthand like '2month' or 'full'.
+          in: query
+          name: range
+          required: true
+          schema:
+            example: 2month
+            type: string
+        - description: Optional end date when using ISO range_start.
+          in: query
+          name: range_end
+          required: false
+          schema:
+            example: 2024-08-31
+            type: string
+        - description: ''
+          in: query
+          name: interval
+          required: false
+          schema:
+            default: DAILY
+            enum:
+              - 1min
+              - 5min
+              - 15min
+              - 30min
+              - 60min
+              - DAILY
+              - WEEKLY
+              - MONTHLY
+            type: string
+        - description: ''
+          in: query
+          name: ohlc
+          required: false
+          schema:
+            default: close
+            enum:
+              - open
+              - high
+              - low
+              - close
+            type: string
+        - description: 'Comma-separated. Supported: MIN, MAX, MEAN, MEDIAN, CUMULATIVE_RETURN, VARIANCE, STDDEV, MAX_DRAWDOWN, HISTOGRAM, AUTOCORRELATION, COVARIANCE, CORRELATION.'
+          in: query
+          name: calculations
+          required: true
+          schema:
+            example: MEAN,STDDEV,CORRELATION
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Analytics Response'
+          description: Analytics Window
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Fixed-Window Analytics
+      tags:
+        - intel
+  /api/calendar/ipo:
+    get:
+      callbacks: {}
+      description: Upcoming IPOs in the next 3 months.
+      operationId: PublicApi.IntelController.ipo_calendar
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IPO Calendar Response'
+          description: IPO Calendar
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: IPO Calendar
+      tags:
+        - intel
+  /api/commodities/{name}:
+    get:
+      callbacks: {}
+      description: |
+        Returns a long-running price series for a commodity.
+        
+        Available names: wti, brent, natural-gas, copper, aluminum, wheat, corn, cotton, sugar, coffee, all-commodities.
+      operationId: PublicApi.CommoditiesController.show
+      parameters:
+        - description: ''
+          in: path
+          name: name
+          required: true
+          schema:
+            enum:
+              - wti
+              - brent
+              - natural-gas
+              - copper
+              - aluminum
+              - wheat
+              - corn
+              - cotton
+              - sugar
+              - coffee
+              - all-commodities
+            type: string
+        - description: Series cadence. Defaults to monthly.
+          in: query
+          name: interval
+          required: false
+          schema:
+            default: monthly
+            enum:
+              - daily
+              - weekly
+              - monthly
+              - quarterly
+              - annual
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Macro Series Response'
+          description: Commodity Series
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Commodity Series
+      tags:
+        - commodities
+  /api/companies/listings:
+    get:
+      callbacks: {}
+      description: All US-traded securities, optionally filtered to delisted as of a given date.
+      operationId: PublicApi.IntelController.listings
+      parameters:
+        - description: ''
+          in: query
+          name: status
+          required: false
+          schema:
+            default: active
+            enum:
+              - active
+              - delisted
+            type: string
+        - description: Only used when status=delisted. ISO date.
+          in: query
+          name: date
+          required: false
+          schema:
+            format: date
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listings Response'
+          description: Listings
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Active or Delisted Securities
+      tags:
+        - intel
+  /api/companies/{ticker}/dividends:
+    get:
+      callbacks: {}
+      description: Historical dividend events for a ticker (ex-date, declaration, record, payment, amount).
+      operationId: PublicApi.CompaniesController.dividends
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dividends Response'
+          description: Dividends
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Company Dividends
+      tags:
+        - companies
+  /api/companies/{ticker}/earnings-estimates:
+    get:
+      callbacks: {}
+      description: Analyst-driven forward earnings estimates by quarter/year.
+      operationId: PublicApi.CompaniesController.earnings_estimates
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Earnings Estimates Response'
+          description: Earnings Estimates
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Forward Earnings Estimates
+      tags:
+        - companies
+  /api/companies/{ticker}/profile:
+    get:
+      callbacks: {}
+      description: Returns a normalized company profile (sector, industry, description, market cap, P/E, dividend yield, etc.).
+      operationId: PublicApi.CompaniesController.profile
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company Profile Response'
+          description: Company Profile
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Company Profile
+      tags:
+        - companies
+  /api/companies/{ticker}/splits:
+    get:
+      callbacks: {}
+      description: Historical stock split events for a ticker.
+      operationId: PublicApi.CompaniesController.splits
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Splits Response'
+          description: Splits
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Company Stock Splits
+      tags:
+        - companies
+  /api/companies/{ticker}/transcripts/{quarter}:
+    get:
+      callbacks: {}
+      description: Full earnings-call transcript for a ticker and quarter (e.g. 2024Q1). Returns speakers, sentiment, and statements.
+      operationId: PublicApi.CompaniesController.transcript
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            type: string
+        - description: Year and quarter, e.g. "2024Q1".
+          in: path
+          name: quarter
+          required: true
+          schema:
+            pattern: ^[0-9]{4}Q[1-4]$
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transcript Response'
+          description: Transcript
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Earnings Call Transcript
+      tags:
+        - companies
   /api/congress/congress-trader:
     get:
       callbacks: {}
@@ -10634,6 +11574,112 @@ paths:
       summary: Ticker Darkpool Trades
       tags:
         - darkpool
+  /api/digital-currencies/history:
+    get:
+      callbacks: {}
+      description: Daily, weekly, or monthly OHLC bars for a digital asset.
+      operationId: PublicApi.DigitalCurrenciesController.history
+      parameters:
+        - description: ''
+          in: query
+          name: symbol
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: market
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: interval
+          required: false
+          schema:
+            default: daily
+            enum:
+              - daily
+              - weekly
+              - monthly
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Series Response'
+          description: Digital Currency History
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Digital Currency Historical Series
+      tags:
+        - digital_currencies
+  /api/digital-currencies/intraday:
+    get:
+      callbacks: {}
+      description: Intraday OHLC bars for a digital asset against a fiat market.
+      operationId: PublicApi.DigitalCurrenciesController.intraday
+      parameters:
+        - description: ''
+          in: query
+          name: symbol
+          required: true
+          schema:
+            example: BTC
+            type: string
+        - description: ''
+          in: query
+          name: market
+          required: true
+          schema:
+            example: USD
+            type: string
+        - description: ''
+          in: query
+          name: interval
+          required: false
+          schema:
+            default: 5min
+            enum:
+              - 1min
+              - 5min
+              - 15min
+              - 30min
+              - 60min
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Series Response'
+          description: Digital Currency Intraday
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Digital Currency Intraday Series
+      tags:
+        - digital_currencies
   /api/earnings/afterhours:
     get:
       callbacks: {}
@@ -10769,6 +11815,83 @@ paths:
       summary: Historical Ticker Earnings
       tags:
         - earnings
+  /api/economy/{indicator}:
+    get:
+      callbacks: {}
+      description: |
+        Returns a long-running US economic indicator series.
+        
+        Indicators: gdp, gdp-per-capita, treasury-yield, fed-funds, cpi, inflation, retail-sales, durables, unemployment, payrolls.
+        
+        The optional `interval` and `maturity` parameters apply only to indicators that support them
+        (e.g. `treasury-yield` accepts a maturity like `10year`).
+      operationId: PublicApi.EconomyController.show
+      parameters:
+        - description: ''
+          in: path
+          name: indicator
+          required: true
+          schema:
+            enum:
+              - gdp
+              - gdp-per-capita
+              - treasury-yield
+              - fed-funds
+              - cpi
+              - inflation
+              - retail-sales
+              - durables
+              - unemployment
+              - payrolls
+            type: string
+        - description: ''
+          in: query
+          name: interval
+          required: false
+          schema:
+            enum:
+              - daily
+              - weekly
+              - monthly
+              - quarterly
+              - annual
+              - semiannual
+            type: string
+        - description: Only for treasury-yield.
+          in: query
+          name: maturity
+          required: false
+          schema:
+            enum:
+              - 3month
+              - 2year
+              - 5year
+              - 7year
+              - 10year
+              - 30year
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Macro Series Response'
+          description: Economic Series
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Economic Indicator
+      tags:
+        - economy
   /api/etfs/{ticker}/exposure:
     get:
       callbacks: {}
@@ -10921,6 +12044,152 @@ paths:
       summary: Sector & Country weights
       tags:
         - etfs
+  /api/forex/history:
+    get:
+      callbacks: {}
+      description: Daily, weekly, or monthly OHLC bars for a currency pair.
+      operationId: PublicApi.ForexController.history
+      parameters:
+        - description: ''
+          in: query
+          name: from
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: to
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: interval
+          required: false
+          schema:
+            default: daily
+            enum:
+              - daily
+              - weekly
+              - monthly
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Series Response'
+          description: FX History
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: FX Historical Series
+      tags:
+        - forex
+  /api/forex/intraday:
+    get:
+      callbacks: {}
+      description: Intraday OHLC bars for a currency pair.
+      operationId: PublicApi.ForexController.intraday
+      parameters:
+        - description: ''
+          in: query
+          name: from
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: to
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: interval
+          required: false
+          schema:
+            default: 5min
+            enum:
+              - 1min
+              - 5min
+              - 15min
+              - 30min
+              - 60min
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Series Response'
+          description: FX Intraday
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: FX Intraday Series
+      tags:
+        - forex
+  /api/forex/rate:
+    get:
+      callbacks: {}
+      description: Realtime spot exchange rate between two currencies.
+      operationId: PublicApi.ForexController.rate
+      parameters:
+        - description: From currency code (ISO 4217).
+          in: query
+          name: from
+          required: true
+          schema:
+            example: USD
+            type: string
+        - description: To currency code (ISO 4217).
+          in: query
+          name: to
+          required: true
+          schema:
+            example: EUR
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FX Rate Response'
+          description: FX Spot Rate
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: FX Spot Rate
+      tags:
+        - forex
   /api/group-flow/{flow_group}/greek-flow:
     get:
       callbacks: {}
@@ -12294,6 +13563,34 @@ paths:
       summary: Market Tide
       tags:
         - market
+  /api/market/movers:
+    get:
+      callbacks: {}
+      description: Top gainers, top losers, and most actively traded US tickers for the latest session.
+      operationId: PublicApi.IntelController.movers
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movers Response'
+          description: Movers
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Top Movers
+      tags:
+        - intel
   /api/market/oi-change:
     get:
       callbacks: {}
@@ -12950,91 +14247,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAoycwhaoosblioenjfwiagdmobyeoyqitnxoailjnhgdmpjsmif'
+            $ref: '#/components/schemas/DynLimitAdsquscamyycysitlsexzhkhkwvtteiwqlituhtcatwsfwpsfag'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdqvwigoqqzgewlfuiaofzqcvymcilehxtbtatrqxtacuaciycu'
+            $ref: '#/components/schemas/DynLimitAqczbojpzpxxmzrfkhgtpsrxubjxccggdlasdfrffizavakwtqz'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAoarjdlisfjtbelrtgydkqqoqrvqpmrzduxwxhorgxegqxuwcww'
+            $ref: '#/components/schemas/DynLimitAeliovubsjzkaoybnhgnnocbkjqywtcoxycxmgrsdyvbynpdavp'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAedwvwiorvoagrecyvgrnnzqxclhramewtkspvfedyczordmdro'
+            $ref: '#/components/schemas/DynLimitAopwsakyohqiwnnobrfbteshxykqypazfijdrydmlmtxhmkkhfj'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAnjioxxjewysssmaegvyypfduhoevqropbuwpukbimehyvgpjlc'
+            $ref: '#/components/schemas/DynLimitAksymfoajrzowcdelakqtwijgebfkhkfgkqnkeemhyivphknmbe'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwznxjufitluukczepuusevwndbmkhbisarzhshvfflsuxsmoyy'
+            $ref: '#/components/schemas/DynLimitAecbpvyqdljbtuxpnuzblxptpqvblwpptztktzgxyktcvmctuwk'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAidbclelyvzrpxohbvecdaxehdjsugzbhvhaabpwallohchmbre'
+            $ref: '#/components/schemas/DynLimitAvpzcsxjruyfvzawcexewgeddubdevhyugswtnukaheosivqvre'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzxpasrhnvfzbxvwbxqxgxtmajnmelylvcjyxodpmkzxjkhytqr'
+            $ref: '#/components/schemas/DynLimitAuiflaxxopngzsmqogshaxqdbfjygbvgbwagodkgdizzpefirgs'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAeavlozrdcdotgxunqiejlemjdotpymhlrfmlsezjfyecbjqrtq'
+            $ref: '#/components/schemas/DynLimitAmbezjsednwcelyvfxuqsbafykhdpffgbxtgsojkvfmlqylkkzl'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfpmihrwgncajorhlqvkagcwanckynudjmnqgvfbiiijjzucfur'
+            $ref: '#/components/schemas/DynLimitAabnuodsoimpecssgbakmdywfeoxyqjidlemlyhzmkfmrtreiov'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAalgugezqjxmbczeeuanwwkuajkcpkbarvzqzhgiagcsvuiiizo'
+            $ref: '#/components/schemas/DynLimitAuuvlywvniahnearvbbpigshpkqhkvkgfgejmteresyyzkmubfs'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlijdhfueydjxnbqysgiebdvcnutfxpzivvfkyrbedvvjtntrjk'
+            $ref: '#/components/schemas/DynLimitAwvsxzpzztfohhrsshzglifuamqbfgvuvavmdfthziyhhbhyxps'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhfstomjfonlkqluotttpauwyrkeeytrptthekzbukfljpssvwx'
+            $ref: '#/components/schemas/DynLimitAjhdijqchrhyxdxeplrnecymszrvfluifilfpbqepushkkhmjwl'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjqnoploeqcunmzhutxmpmpztlwrpaeeanvwmlqwkzfhsdydvtl'
+            $ref: '#/components/schemas/DynLimitAfqfkljqqzpzootegxiedyognemnilmkxprgcaawjpgozmpaujw'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAybketscrdqfpglqhakyinbyzjimntuwxyjanyaiydtvlagbtlb'
+            $ref: '#/components/schemas/DynLimitAowlnfykrzqqdlcqsuzcayfevhxpanricaggjfbkittfonrelec'
         - description: ''
           in: query
           name: rule_name[]
@@ -15664,73 +16961,73 @@ paths:
           name: limit
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmpujboaoczxnnowrbscrthtjomplxrtrgjoyqzscdqjtptpksz'
+            $ref: '#/components/schemas/DynLimitAhufzurdrynaaddqawovwommihcxjeejtbaxuskjgbpkyqpaxuj'
         - description: ''
           in: query
           name: offset
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAarofabydfeioijgnilkpibkqzvcvahxdastczmfqlczztebamp'
+            $ref: '#/components/schemas/DynLimitAbvwpbbhxpisgzyegutsyqtcmgjnleoxqlnyhpnmmlgurjwxrwl'
         - description: ''
           in: query
           name: min_short_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAuufjiawhvkifiregvlgkfwvgkxxqhlkfidkflgovcwjjjhjwwj'
+            $ref: '#/components/schemas/DynLimitAlmamuorlwdkutsptvurrqdknfonamcdrvgucgyqkguegfkemig'
         - description: ''
           in: query
           name: max_short_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwtyjxwxnjrhwscaknxphndqisegsdynhlkmkbsnibqmuyazhnw'
+            $ref: '#/components/schemas/DynLimitArqvnawbzepakcvxwyeixxaggfjzxrcvpwfjwnowgnjyzlnmevh'
         - description: ''
           in: query
           name: min_days_to_cover
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAuxdufwicgqzcxjapdkadkfceaovucpibqagxnkmhulamosobmj'
+            $ref: '#/components/schemas/DynLimitAujomgcnfarjbicijkfuzcsckofiyquezmuikfiprxfbxthmdfm'
         - description: ''
           in: query
           name: max_days_to_cover
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlepwyzxagomsimdouaastqxcnstbwnbnvqtiulhkxwcsooemij'
+            $ref: '#/components/schemas/DynLimitAgaexrsbcxbxygmvnyujnbmykssusohjwgupvkdrhlrspbacpaq'
         - description: ''
           in: query
           name: min_si_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzelecqqnmropwiascpapmlnmzicfdkuwnprgdsmlbjnjetatwu'
+            $ref: '#/components/schemas/DynLimitAjbbsourqfyojphhuyieqhwstdoyymcabytitahposvxjxmqgfi'
         - description: ''
           in: query
           name: max_si_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtcazbghflmpjybccdbevokdfbkrmrhwdmwjoiyovpdrairjmin'
+            $ref: '#/components/schemas/DynLimitAsdyztqshbtewyonllqpxihqdkgiqjawsprixmkgasvgtefjfhf'
         - description: ''
           in: query
           name: min_si_float_with_synth_long_pct_of_total_shares
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAayvejfabbcvikkthaygiccbfrufrplvmgtdxqzjbkyqsxdeivk'
+            $ref: '#/components/schemas/DynLimitAunqojtkjcdzsswoksuqwipkmksbzqxpxqgntjmogqaxqhistyk'
         - description: ''
           in: query
           name: max_si_float_with_synth_long_pct_of_total_shares
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmboylrwarfcjcygeogneryvbpkhojviqwtztexccmiqdvqzbae'
+            $ref: '#/components/schemas/DynLimitApzyyqusovzssqmktbonctljgtabkughsfiqibnwuuaistxatqv'
         - description: ''
           in: query
           name: min_total_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfceiexucvcqiwrrnotgyulwnsxhcpxhuhbtxowyzbqyrxyeplq'
+            $ref: '#/components/schemas/DynLimitAivlfpeiouknzytebzxhbnzibqvfvrxfkgcwylxqdxyfunoarhw'
         - description: ''
           in: query
           name: max_total_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAihalyitilqjytbtvebficzdzvnpwynmyfenpupjvdrogzgwllz'
+            $ref: '#/components/schemas/DynLimitAbvcjtgaevqistnvwfszoknpzhijfwvgcbvapzbxsszcsikplpk'
         - description: ''
           in: query
           name: order_by
@@ -15760,37 +17057,37 @@ paths:
           name: min_fee_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApzsrsjezvimeleqtvvsswyioteltmnnplbtpkghrmwxkcuqqpp'
+            $ref: '#/components/schemas/DynLimitAnwryvlomslevodzrlsfailjwvdfcrritjqhhsjprpjjkpsgugo'
         - description: ''
           in: query
           name: max_fee_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdcvhrrslfsyqeajirgtoiztkaglvelljmcncfmqhlvhfoutlxm'
+            $ref: '#/components/schemas/DynLimitAqsxaxrsviyrnvqblkqipmbfyujfmuatvielivorhfnlhpksxxc'
         - description: ''
           in: query
           name: min_rebate_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjpusgwtnjhzdmgbawpzmrkmeepifbnfiveelycrejcthjrbkrq'
+            $ref: '#/components/schemas/DynLimitAgsnsskhozhxlykfimoinlhkwmtacmsdffjdtkvjsuhcimstjvg'
         - description: ''
           in: query
           name: max_rebate_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAznkbkvdqcnbltsawrilcdtbyjtdppspoyfakwlgrdbavahqlnc'
+            $ref: '#/components/schemas/DynLimitAykandsowrjliwxrfqicquqppcgjopteuubsjfvffbgemcirqli'
         - description: ''
           in: query
           name: min_short_shares_available
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcrbptanrpmbsowcidplgyttowrxrhilaitcrkgnbvajzshfbvg'
+            $ref: '#/components/schemas/DynLimitAfhltcwlzmearzpdpqnpckposdtmullaxnhghxithfjgpbjmwdp'
         - description: ''
           in: query
           name: max_short_shares_available
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAkqtzrsmwcpagonymshzsygkzyxoyybpjfwcpzxsorigojylrkb'
+            $ref: '#/components/schemas/DynLimitAjowlhfnwinvbrfxykcichqxpmpyuornyupzwcmldwajxvxgmvq'
       responses:
         '200':
           content:
@@ -17122,13 +18419,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlgkqdxbcmizgjnlpycqksvqqcowdnvporbzgfwhylfzjawzhfq'
+            $ref: '#/components/schemas/DynLimitAblhjtjcrokaxumdmrcrczfmabbrkqyftblonvgbhcdpnsdbsqp'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmhjzqsbireishmkyjvlahecuudnlazrkwsmhbwkhhxikaljcdt'
+            $ref: '#/components/schemas/DynLimitAicgamntfibsysobyhoebjlxdtobbtoslatmquxjjmfrkvztbhe'
       responses:
         '200':
           content:
