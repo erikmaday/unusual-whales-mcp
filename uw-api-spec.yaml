@@ -848,7 +848,7 @@ components:
       example:
         data:
           - canceled: false
-            executed_at: 2023-02-16T00:59:44Z
+            executed_at: 2025-05-02T13:42:12Z
             ext_hour_sold_codes: extended_hours_trade
             market_center: L
             nbbo_ask: '19'
@@ -863,6 +863,7 @@ components:
             tracking_id: 71984388012245
             trade_code:
             trade_settlement: regular_settlement
+            trf_executed_at: 2025-05-02T13:42:11Z
             volume: 9946819
           - canceled: false
             executed_at: 2023-02-16T00:59:44Z
@@ -880,6 +881,7 @@ components:
             tracking_id: 71984384768588
             trade_code:
             trade_settlement: regular_settlement
+            trf_executed_at:
             volume: 9940419
       properties:
         canceled:
@@ -914,6 +916,8 @@ components:
           $ref: '#/components/schemas/Single Trade Trade Code'
         trade_settlement:
           $ref: '#/components/schemas/Single Trade Settlement'
+        trf_executed_at:
+          $ref: '#/components/schemas/Single Trade TRF Execution Time'
         volume:
           $ref: '#/components/schemas/Stock Day Stock Volume'
       title: Darkpool Trade
@@ -1045,208 +1049,208 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAabnuodsoimpecssgbakmdywfeoxyqjidlemlyhzmkfmrtreiov:
-      default: true
-      description: Boolean flag whether a transaction is from the floor.
-      example: true
-      title: DynLimitAabnuodsoimpecssgbakmdywfeoxyqjidlemlyhzmkfmrtreiov
-      type: boolean
-    DynLimitAblhjtjcrokaxumdmrcrczfmabbrkqyftblonvgbhcdpnsdbsqp:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAblhjtjcrokaxumdmrcrczfmabbrkqyftblonvgbhcdpnsdbsqp
-      type: boolean
-    DynLimitAbvcjtgaevqistnvwfszoknpzhijfwvgcbvapzbxsszcsikplpk:
-      description: The max total float.
-      example: 100000000
-      title: DynLimitAbvcjtgaevqistnvwfszoknpzhijfwvgcbvapzbxsszcsikplpk
-      type: integer
-    DynLimitAbvwpbbhxpisgzyegutsyqtcmgjnleoxqlnyhpnmmlgurjwxrwl:
+    DynLimitAabfweamswubwzwylkhebiyspgtoyzfxlxpnmzzanspwricoppe:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
       example: 100
       minimum: 0
-      title: DynLimitAbvwpbbhxpisgzyegutsyqtcmgjnleoxqlnyhpnmmlgurjwxrwl
+      title: DynLimitAabfweamswubwzwylkhebiyspgtoyzfxlxpnmzzanspwricoppe
       type: integer
-    DynLimitAdsquscamyycysitlsexzhkhkwvtteiwqlituhtcatwsfwpsfag:
-      description: 'The minimum premium on that alert. Min: 0.'
+    DynLimitAaqylafnumzqlmdxrkarzbonwawqdtiaiazkmntwxjkuicjutpn:
+      description: 'The maximum premium on that alert. Min: 0.'
       example: 12500.5
       minimum: 0
-      title: DynLimitAdsquscamyycysitlsexzhkhkwvtteiwqlituhtcatwsfwpsfag
+      title: DynLimitAaqylafnumzqlmdxrkarzbonwawqdtiaiazkmntwxjkuicjutpn
       type: integer
-    DynLimitAecbpvyqdljbtuxpnuzblxptpqvblwpptztktzgxyktcvmctuwk:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAecbpvyqdljbtuxpnuzblxptpqvblwpptztktzgxyktcvmctuwk
-      type: integer
-    DynLimitAeliovubsjzkaoybnhgnnocbkjqywtcoxycxmgrsdyvbynpdavp:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAeliovubsjzkaoybnhgnnocbkjqywtcoxycxmgrsdyvbynpdavp
-      type: integer
-    DynLimitAfhltcwlzmearzpdpqnpckposdtmullaxnhghxithfjgpbjmwdp:
-      description: The min short shares available.
-      example: 0
-      title: DynLimitAfhltcwlzmearzpdpqnpckposdtmullaxnhghxithfjgpbjmwdp
-      type: integer
-    DynLimitAfqfkljqqzpzootegxiedyognemnilmkxprgcaawjpgozmpaujw:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAfqfkljqqzpzootegxiedyognemnilmkxprgcaawjpgozmpaujw
-      type: boolean
-    DynLimitAgaexrsbcxbxygmvnyujnbmykssusohjwgupvkdrhlrspbacpaq:
-      description: The max days to cover.
-      example: 5.3
-      title: DynLimitAgaexrsbcxbxygmvnyujnbmykssusohjwgupvkdrhlrspbacpaq
-      type: integer
-    DynLimitAgsnsskhozhxlykfimoinlhkwmtacmsdffjdtkvjsuhcimstjvg:
-      description: The min rebate rate.
-      example: 0.11
-      title: DynLimitAgsnsskhozhxlykfimoinlhkwmtacmsdffjdtkvjsuhcimstjvg
-      type: integer
-    DynLimitAhufzurdrynaaddqawovwommihcxjeejtbaxuskjgbpkyqpaxuj:
-      default: 100
-      description: 'The limit of results. Default: 100. Max: 500. Min: 0.'
-      example: 125
-      maximum: 500
-      minimum: 0
-      title: DynLimitAhufzurdrynaaddqawovwommihcxjeejtbaxuskjgbpkyqpaxuj
-      type: integer
-    DynLimitAicgamntfibsysobyhoebjlxdtobbtoslatmquxjjmfrkvztbhe:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAicgamntfibsysobyhoebjlxdtobbtoslatmquxjjmfrkvztbhe
-      type: boolean
-    DynLimitAivlfpeiouknzytebzxhbnzibqvfvrxfkgcwylxqdxyfunoarhw:
-      description: The min total float.
-      example: 10000000
-      title: DynLimitAivlfpeiouknzytebzxhbnzibqvfvrxfkgcwylxqdxyfunoarhw
-      type: integer
-    DynLimitAjbbsourqfyojphhuyieqhwstdoyymcabytitahposvxjxmqgfi:
-      description: The min short interest float ratio.
-      example: 0.1
-      title: DynLimitAjbbsourqfyojphhuyieqhwstdoyymcabytitahposvxjxmqgfi
-      type: integer
-    DynLimitAjhdijqchrhyxdxeplrnecymszrvfluifilfpbqepushkkhmjwl:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAjhdijqchrhyxdxeplrnecymszrvfluifilfpbqepushkkhmjwl
-      type: boolean
-    DynLimitAjowlhfnwinvbrfxykcichqxpmpyuornyupzwcmldwajxvxgmvq:
-      description: The max short shares available.
-      example: 10000
-      title: DynLimitAjowlhfnwinvbrfxykcichqxpmpyuornyupzwcmldwajxvxgmvq
-      type: integer
-    DynLimitAksymfoajrzowcdelakqtwijgebfkhkfgkqnkeemhyivphknmbe:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAksymfoajrzowcdelakqtwijgebfkhkfgkqnkeemhyivphknmbe
-      type: integer
-    DynLimitAlmamuorlwdkutsptvurrqdknfonamcdrvgucgyqkguegfkemig:
-      description: The min short interest.
-      example: 5000
-      title: DynLimitAlmamuorlwdkutsptvurrqdknfonamcdrvgucgyqkguegfkemig
-      type: integer
-    DynLimitAmbezjsednwcelyvfxuqsbafykhdpffgbxtgsojkvfmlqylkkzl:
+    DynLimitAcgjaotxsapnaqwxhmmdidlbmlhfnvocfqumvzyxovviscthoky:
       default: true
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
-      title: DynLimitAmbezjsednwcelyvfxuqsbafykhdpffgbxtgsojkvfmlqylkkzl
+      title: DynLimitAcgjaotxsapnaqwxhmmdidlbmlhfnvocfqumvzyxovviscthoky
       type: boolean
+    DynLimitAdlybwyeigyyqwmcxhozqiojcaghqfnvfphzfctpuxjdigwbbuu:
+      description: The min si_float_with_synth_long_pct_of_total_shares.
+      example: 0.05
+      title: DynLimitAdlybwyeigyyqwmcxhozqiojcaghqfnvfphzfctpuxjdigwbbuu
+      type: integer
+    DynLimitAebgafhvclteqwkpjyxkhedvxgfdwvnnpitiwrqjlqjmcgsrlgg:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAebgafhvclteqwkpjyxkhedvxgfdwvnnpitiwrqjlqjmcgsrlgg
+      type: integer
+    DynLimitAfbstdhjtpceexmhoctpcrfbsoyyuqdtxhngprgojgeurqncfti:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAfbstdhjtpceexmhoctpcrfbsoyyuqdtxhngprgojgeurqncfti
+      type: integer
+    DynLimitAfgbfkljrumhlikkpdmbkitokixmqklqoclzqqfwxgzsiwnxdsn:
+      description: The max si_float_with_synth_long_pct_of_total_shares.
+      example: 0.05
+      title: DynLimitAfgbfkljrumhlikkpdmbkitokixmqklqoclzqqfwxgzsiwnxdsn
+      type: integer
+    DynLimitAfqtoivbsvfcvsfckgvmwekguqxrqpvmtpfrtbvcggssyptesci:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAfqtoivbsvfcvsfckgvmwekguqxrqpvmtpfrtbvcggssyptesci
+      type: integer
+    DynLimitAgkylkrpzajthpplboybrfocyfkpuqjiicctaotdstplppaqorw:
+      description: The max short shares available.
+      example: 10000
+      title: DynLimitAgkylkrpzajthpplboybrfocyfkpuqjiicctaotdstplppaqorw
+      type: integer
+    DynLimitAgpfdvvjggbrnosquzpcjyzkhzsccejoxvlqxtstjittdsjjevg:
+      description: The min rebate rate.
+      example: 0.11
+      title: DynLimitAgpfdvvjggbrnosquzpcjyzkhzsccejoxvlqxtstjittdsjjevg
+      type: integer
+    DynLimitAgrsxpmshvwrhqpeyatzmbaoracarkvpulfrxtsetwrcqknpvsx:
+      description: The min short interest.
+      example: 5000
+      title: DynLimitAgrsxpmshvwrhqpeyatzmbaoracarkvpulfrxtsetwrcqknpvsx
+      type: integer
+    DynLimitAgzgccmyhifcbepodqqultogdlqrrdcbtjbsisjikgrzpcatmkl:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAgzgccmyhifcbepodqqultogdlqrrdcbtjbsisjikgrzpcatmkl
+      type: boolean
+    DynLimitAhckctttyauxfdtnixspyqfsxlueiwfxfllxthiubaibwckdjgi:
+      default: true
+      description: Boolean flag whether a transaction is a call.
+      example: true
+      title: DynLimitAhckctttyauxfdtnixspyqfsxlueiwfxfllxthiubaibwckdjgi
+      type: boolean
+    DynLimitAhigebuahfmevgiwuoxcjgdnmnesfcdfvbembfrivrkqatzpwcs:
+      description: 'The maximum size on that alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAhigebuahfmevgiwuoxcjgdnmnesfcdfvbembfrivrkqatzpwcs
+      type: integer
+    DynLimitAhnvfkrozmttyxyurudxtvpqmwqeksbkdokkdidbcrvdhozqxve:
+      description: The max days to cover.
+      example: 5.3
+      title: DynLimitAhnvfkrozmttyxyurudxtvpqmwqeksbkdokkdidbcrvdhozqxve
+      type: integer
+    DynLimitAhraabjhawvjcidicpetuqlukqfpvvcohvgiffgmbfmirxbukau:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAhraabjhawvjcidicpetuqlukqfpvvcohvgiffgmbfmirxbukau
+      type: boolean
+    DynLimitAicynfcessqutlhskfleksxulsbzhkqxjkiadbswmutybwjoght:
+      description: The min total float.
+      example: 10000000
+      title: DynLimitAicynfcessqutlhskfleksxulsbzhkqxjkiadbswmutybwjoght
+      type: integer
+    DynLimitAijmaognzilxicsualjypchvidffuivffuarekukrlorzuphzfk:
+      description: The max total float.
+      example: 100000000
+      title: DynLimitAijmaognzilxicsualjypchvidffuivffuarekukrlorzuphzfk
+      type: integer
+    DynLimitAkltgsorsfpqmldgdfwpptqqbkxklaraeykjmslzrxbdmbvgqot:
+      default: true
+      description: Boolean flag whether a transaction is from the floor.
+      example: true
+      title: DynLimitAkltgsorsfpqmldgdfwpptqqbkxklaraeykjmslzrxbdmbvgqot
+      type: boolean
+    DynLimitAkwhqgpqqipzyeugtslfdiemewwjyvbnxupiaexmurpfykttlzl:
+      description: The min short shares available.
+      example: 0
+      title: DynLimitAkwhqgpqqipzyeugtslfdiemewwjyvbnxupiaexmurpfykttlzl
+      type: integer
+    DynLimitAkyavzlxovacuwpnxllodloqeysvuaqfmxhkwkbovvjvspexdhv:
+      description: The max short interest float ratio.
+      example: 0.05
+      title: DynLimitAkyavzlxovacuwpnxllodloqeysvuaqfmxhkwkbovvjvspexdhv
+      type: integer
+    DynLimitAlbzjjmplcfakxrufzeyjklgxdwveuwpwpvvqimoqzpucoxfqpb:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAlbzjjmplcfakxrufzeyjklgxdwveuwpwpvvqimoqzpucoxfqpb
+      type: integer
     DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs:
       default: true
       description: Boolean flag whether to return only intraday alerts.
       example: true
       title: DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs
       type: boolean
-    DynLimitAnwryvlomslevodzrlsfailjwvdfcrritjqhhsjprpjjkpsgugo:
-      description: The min fee rate.
-      example: 0.01
-      title: DynLimitAnwryvlomslevodzrlsfailjwvdfcrritjqhhsjprpjjkpsgugo
-      type: integer
-    DynLimitAopwsakyohqiwnnobrfbteshxykqypazfijdrydmlmtxhmkkhfj:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAopwsakyohqiwnnobrfbteshxykqypazfijdrydmlmtxhmkkhfj
-      type: integer
-    DynLimitAowlnfykrzqqdlcqsuzcayfevhxpanricaggjfbkittfonrelec:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAowlnfykrzqqdlcqsuzcayfevhxpanricaggjfbkittfonrelec
-      type: boolean
-    DynLimitApzyyqusovzssqmktbonctljgtabkughsfiqibnwuuaistxatqv:
-      description: The max si_float_with_synth_long_pct_of_total_shares.
-      example: 0.05
-      title: DynLimitApzyyqusovzssqmktbonctljgtabkughsfiqibnwuuaistxatqv
-      type: integer
-    DynLimitAqczbojpzpxxmzrfkhgtpsrxubjxccggdlasdfrffizavakwtqz:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAqczbojpzpxxmzrfkhgtpsrxubjxccggdlasdfrffizavakwtqz
-      type: integer
-    DynLimitAqsxaxrsviyrnvqblkqipmbfyujfmuatvielivorhfnlhpksxxc:
-      description: The max fee rate.
-      example: 0.45
-      title: DynLimitAqsxaxrsviyrnvqblkqipmbfyujfmuatvielivorhfnlhpksxxc
-      type: integer
-    DynLimitArqvnawbzepakcvxwyeixxaggfjzxrcvpwfjwnowgnjyzlnmevh:
-      description: The max short interest.
-      example: 100000
-      title: DynLimitArqvnawbzepakcvxwyeixxaggfjzxrcvpwfjwnowgnjyzlnmevh
-      type: integer
-    DynLimitAsdyztqshbtewyonllqpxihqdkgiqjawsprixmkgasvgtefjfhf:
-      description: The max short interest float ratio.
-      example: 0.05
-      title: DynLimitAsdyztqshbtewyonllqpxihqdkgiqjawsprixmkgasvgtefjfhf
-      type: integer
-    DynLimitAuiflaxxopngzsmqogshaxqdbfjygbvgbwagodkgdizzpefirgs:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAuiflaxxopngzsmqogshaxqdbfjygbvgbwagodkgdizzpefirgs
-      type: integer
-    DynLimitAujomgcnfarjbicijkfuzcsckofiyquezmuikfiprxfbxthmdfm:
-      description: The min days to cover.
-      example: 1.1
-      title: DynLimitAujomgcnfarjbicijkfuzcsckofiyquezmuikfiprxfbxthmdfm
-      type: integer
-    DynLimitAunqojtkjcdzsswoksuqwipkmksbzqxpxqgntjmogqaxqhistyk:
-      description: The min si_float_with_synth_long_pct_of_total_shares.
-      example: 0.05
-      title: DynLimitAunqojtkjcdzsswoksuqwipkmksbzqxpxqgntjmogqaxqhistyk
-      type: integer
-    DynLimitAuuvlywvniahnearvbbpigshpkqhkvkgfgejmteresyyzkmubfs:
+    DynLimitAophpgpxacgfqokevztzkfrnsamsvvbxebvjssfozbiuvkdpztq:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
       example: true
-      title: DynLimitAuuvlywvniahnearvbbpigshpkqhkvkgfgejmteresyyzkmubfs
+      title: DynLimitAophpgpxacgfqokevztzkfrnsamsvvbxebvjssfozbiuvkdpztq
       type: boolean
-    DynLimitAvpzcsxjruyfvzawcexewgeddubdevhyugswtnukaheosivqvre:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAotnnadaxxjuyhxzctcgwkluycclqsvnqtfwggnldmiwwmtrdep:
+      description: The min fee rate.
+      example: 0.01
+      title: DynLimitAotnnadaxxjuyhxzctcgwkluycclqsvnqtfwggnldmiwwmtrdep
+      type: integer
+    DynLimitAqsplauuobmfsbipieoferkrvofbzvzunpghaazujmjfmidtjvr:
+      description: The min short interest float ratio.
+      example: 0.1
+      title: DynLimitAqsplauuobmfsbipieoferkrvofbzvzunpghaazujmjfmidtjvr
+      type: integer
+    DynLimitAsphyaifdzjnmglaxmwgtxqzxciptjuxbxcsyljzutculqotpuf:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAvpzcsxjruyfvzawcexewgeddubdevhyugswtnukaheosivqvre
+      title: DynLimitAsphyaifdzjnmglaxmwgtxqzxciptjuxbxcsyljzutculqotpuf
       type: integer
-    DynLimitAwvsxzpzztfohhrsshzglifuamqbfgvuvavmdfthziyhhbhyxps:
+    DynLimitAtcboqsjlbepnrafgrkzpiplvysyummgghafxzrkrqccutkouej:
+      description: The max short interest.
+      example: 100000
+      title: DynLimitAtcboqsjlbepnrafgrkzpiplvysyummgghafxzrkrqccutkouej
+      type: integer
+    DynLimitAtixvvqhzcsztkgcuthjebqohmrxfgqrtsnmirqcpblatdfdrkk:
       default: true
-      description: Boolean flag whether a transaction is a call.
+      description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAwvsxzpzztfohhrsshzglifuamqbfgvuvavmdfthziyhhbhyxps
+      title: DynLimitAtixvvqhzcsztkgcuthjebqohmrxfgqrtsnmirqcpblatdfdrkk
       type: boolean
-    DynLimitAykandsowrjliwxrfqicquqppcgjopteuubsjfvffbgemcirqli:
+    DynLimitAvgysqvtnsnzmhhjuxuofhroevdivryntisucxvcgkpdvlsizml:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAvgysqvtnsnzmhhjuxuofhroevdivryntisucxvcgkpdvlsizml
+      type: integer
+    DynLimitAxemuvasqteaaeaujwomhiefknnlujllaivdxxvxjyukkvlblvf:
       description: The max rebate rate.
       example: 5.34
-      title: DynLimitAykandsowrjliwxrfqicquqppcgjopteuubsjfvffbgemcirqli
+      title: DynLimitAxemuvasqteaaeaujwomhiefknnlujllaivdxxvxjyukkvlblvf
+      type: integer
+    DynLimitAxzqeudnfggnhqmgtmchpzjmfwljhkwedoxvoqurmbwbyijerpd:
+      description: The min days to cover.
+      example: 1.1
+      title: DynLimitAxzqeudnfggnhqmgtmchpzjmfwljhkwedoxvoqurmbwbyijerpd
+      type: integer
+    DynLimitAyusxiznuvnvxkocwuuruswmudrhiwzynfuqqijdjcvilsvrxcj:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAyusxiznuvnvxkocwuuruswmudrhiwzynfuqqijdjcvilsvrxcj
+      type: boolean
+    DynLimitAyutgvyxzksahgqcuuivtuhgyiztquuiysrdkxnsfnbkuxozyyp:
+      default: 100
+      description: 'The limit of results. Default: 100. Max: 500. Min: 0.'
+      example: 125
+      maximum: 500
+      minimum: 0
+      title: DynLimitAyutgvyxzksahgqcuuivtuhgyiztquuiysrdkxnsfnbkuxozyyp
+      type: integer
+    DynLimitAzsvwuudaqzlzthuxaybhxuxpdrgdmdsytvqqbnoxavqspdwzch:
+      default: true
+      description: Boolean flag whether a transaction is a put.
+      example: true
+      title: DynLimitAzsvwuudaqzlzthuxaybhxuxpdrgdmdsytvqqbnoxavqspdwzch
+      type: boolean
+    DynLimitAzvwqurqpzivmzwazxzrxfocbqnyuvtdgefktyyxlzptvvzieuz:
+      description: The max fee rate.
+      example: 0.45
+      title: DynLimitAzvwqurqpzivmzwazxzrxfocbqnyuvtdgefktyyxlzptvvzieuz
       type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -8281,6 +8285,12 @@ components:
       example: 6400
       title: Single Trade Size
       type: integer
+    Single Trade TRF Execution Time:
+      description: The actual timestamp when a TRF (Trade Reporting Facility) trade was executed, as opposed to `executed_at` which reflects when the trade hit the public tape. Only available for trades from 2025-05-01 onwards; `null` for any trade before that date.
+      example: 2025-05-02T13:42:11Z
+      nullable: true
+      title: Single Trade TRF Execution Time
+      type: string
     Single Trade Tracking ID:
       description: The tracking ID of the trade.
       example: 71984388012245
@@ -8786,8 +8796,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
-      example: '13.52369891956068210400'
+      description: The 30 day implied volatility from 1 month ago.
+      example: '0.2136848270893097'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -10035,6 +10045,57 @@ info:
     
     ## Changelog
     
+    # 2026.04.30
+    Added a new advanced-tier endpoint group. All routes below require API Advanced, Enterprise Startup, Enterprise Startup + Kafka, or Enterprise tier.
+    
+    ### Company fundamentals
+    - Added [`/companies/:ticker/profile`](https://api.unusualwhales.com/docs/operations/PublicApi.CompaniesController.profile) for sector, industry, market cap, P/E, EPS, dividend yield, analyst targets, 52-week range, moving averages, and the full analyst rating breakdown.
+    - Added [`/companies/:ticker/dividends`](https://api.unusualwhales.com/docs/operations/PublicApi.CompaniesController.dividends) for historical dividend events.
+    - Added [`/companies/:ticker/splits`](https://api.unusualwhales.com/docs/operations/PublicApi.CompaniesController.splits) for historical stock-split events.
+    - Added [`/companies/:ticker/earnings-estimates`](https://api.unusualwhales.com/docs/operations/PublicApi.CompaniesController.earnings_estimates) for forward analyst earnings and revenue estimates by quarter and year.
+    - Added [`/companies/:ticker/transcripts/:quarter`](https://api.unusualwhales.com/docs/operations/PublicApi.CompaniesController.transcript) for earnings-call transcripts with speakers, statements, and per-statement sentiment.
+    - Added [`/companies/listings`](https://api.unusualwhales.com/docs/operations/PublicApi.IntelController.listings) for the master list of US-traded securities (active or delisted).
+    
+    ### Macro
+    - Added [`/commodities/:name`](https://api.unusualwhales.com/docs/operations/PublicApi.CommoditiesController.show) for long-running price series across WTI, Brent, natural gas, copper, aluminum, wheat, corn, cotton, sugar, coffee, and the global commodities index.
+    - Added [`/economy/:indicator`](https://api.unusualwhales.com/docs/operations/PublicApi.EconomyController.show) for US economic indicator series (GDP, GDP per capita, treasury yield, fed funds rate, CPI, inflation, retail sales, durables, unemployment, payrolls).
+    
+    ### Forex
+    - Added [`/forex/rate`](https://api.unusualwhales.com/docs/operations/PublicApi.ForexController.rate) for live FX spot rates with bid and ask.
+    - Added [`/forex/intraday`](https://api.unusualwhales.com/docs/operations/PublicApi.ForexController.intraday) for 1min through 60min FX OHLC bars.
+    - Added [`/forex/history`](https://api.unusualwhales.com/docs/operations/PublicApi.ForexController.history) for daily, weekly, and monthly FX OHLC bars.
+    
+    ### Digital currencies
+    - Added [`/digital-currencies/intraday`](https://api.unusualwhales.com/docs/operations/PublicApi.DigitalCurrenciesController.intraday) for intraday OHLC bars priced against a fiat market.
+    - Added [`/digital-currencies/history`](https://api.unusualwhales.com/docs/operations/PublicApi.DigitalCurrenciesController.history) for daily, weekly, and monthly OHLC bars.
+    
+    ### Market intel and analytics
+    - Added [`/market/movers`](https://api.unusualwhales.com/docs/operations/PublicApi.IntelController.movers) for pre-ranked top gainers, top losers, and most actively traded US tickers.
+    - Added [`/calendar/ipo`](https://api.unusualwhales.com/docs/operations/PublicApi.IntelController.ipo_calendar) for upcoming IPOs over the next 3 months.
+    - Added [`/analytics/window`](https://api.unusualwhales.com/docs/operations/PublicApi.IntelController.analytics_window) for fixed-window statistical analytics across baskets of tickers (mean, stddev, correlation, drawdown, autocorrelation, covariance, and more).
+    - Added [`/analytics/sliding`](https://api.unusualwhales.com/docs/operations/PublicApi.IntelController.analytics_sliding) for sliding-window statistical analytics.
+    
+    ### Congressional unusual trades (scope `unusual-trades`)
+    - Added [`/congress/unusual-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.UnusualTradesController.recent) for unusual congressional trades filtered by reason tag (committee_conflict, first_person_to_trade, low_marketcap, unusual_industry, unusually_large_trade, fec_donation_conflict).
+    - Added [`/congress/unusual-trades/by-tickers`](https://api.unusualwhales.com/docs/operations/PublicApi.UnusualTradesController.by_tickers) with ticker, transaction type, date range, and politician filters.
+    - Added [`/congress/unusual-trades/chart-data`](https://api.unusualwhales.com/docs/operations/PublicApi.UnusualTradesController.chart_data) returning trade points with SPY benchmark closes.
+    - Added [`/congress/unusual-trades/stats`](https://api.unusualwhales.com/docs/operations/PublicApi.UnusualTradesController.stats) for aggregate overview statistics.
+    
+    ### Private markets (scope `private-markets`)
+    - Added [`/private-markets/companies`](https://api.unusualwhales.com/docs/operations/PublicApi.PrivateMarketsController.companies) for the full Nasdaq Private Markets company list with sector and name filters.
+    - Added [`/private-markets/companies/:npm_ticker`](https://api.unusualwhales.com/docs/operations/PublicApi.PrivateMarketsController.company_profile) for the company profile with latest price, total funding, and investor count.
+    - Added [`/private-markets/companies/:npm_ticker/funding`](https://api.unusualwhales.com/docs/operations/PublicApi.PrivateMarketsController.funding) for funding round history.
+    - Added [`/private-markets/companies/:npm_ticker/investors`](https://api.unusualwhales.com/docs/operations/PublicApi.PrivateMarketsController.investors) for disclosed investors.
+    - Added [`/private-markets/companies/:npm_ticker/management`](https://api.unusualwhales.com/docs/operations/PublicApi.PrivateMarketsController.management) for disclosed leadership.
+    - Added [`/private-markets/companies/:npm_ticker/pricing`](https://api.unusualwhales.com/docs/operations/PublicApi.PrivateMarketsController.pricing) for historical implied per-share pricing.
+    - Added [`/private-markets/investors`](https://api.unusualwhales.com/docs/operations/PublicApi.PrivateMarketsController.top_investors) for top investors ranked by distinct company count.
+    - Added [`/private-markets/investors/:name`](https://api.unusualwhales.com/docs/operations/PublicApi.PrivateMarketsController.investor_profile) for an investor's portfolio.
+    - Added [`/private-markets/search`](https://api.unusualwhales.com/docs/operations/PublicApi.PrivateMarketsController.search) for substring search across companies and investors.
+    
+    ### MCP
+    - Added 5 premium MCP catalogs covering the new endpoints: `uw_companies_extras`, `uw_macro`, `uw_forex`, `uw_digital_currencies`, `uw_intel`. Plus `uw_unusual_trades` and `uw_private_markets` for the scope-gated catalogs above.
+    - Premium MCP catalogs and individual premium commands (`uw_stock.ownership`, `uw_flow.full_tape`, `uw_politicians`) are now hidden by default. Operators opt in via `UW_ENABLE_PREMIUM_TOOLS=true` (all on) or `UW_PREMIUM_TOOLS=uw_companies_extras,uw_macro,...` (per-tool allowlist supporting `<catalog_id>` or `<catalog_id>.<command>` form).
+    
     # 2026.04.29
     - Added MCP tool `get_short_volume_ratio_by_exchange` for [`/shorts/:ticker/volumes-by-exchange`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_volume_by_exchange) data.
     - Added MCP tool `get_short_volume_ratio_by_ticker` for [`/shorts/:ticker/volume-and-ratio`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_volume_and_ratio) data.
@@ -10395,7 +10456,7 @@ paths:
   /api/analytics/sliding:
     get:
       callbacks: {}
-      description: Sliding window statistical analytics across one or more tickers.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Sliding window statistical analytics across one or more tickers.'
       operationId: PublicApi.IntelController.analytics_sliding
       parameters:
         - description: ''
@@ -10469,7 +10530,7 @@ paths:
   /api/analytics/window:
     get:
       callbacks: {}
-      description: Statistical analytics over a fixed window across one or more tickers. Returns mean, stddev, correlation, etc.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Statistical analytics over a fixed window across one or more tickers. Returns mean, stddev, correlation, etc.'
       operationId: PublicApi.IntelController.analytics_window
       parameters:
         - description: Comma-separated tickers.
@@ -10553,7 +10614,7 @@ paths:
   /api/calendar/ipo:
     get:
       callbacks: {}
-      description: Upcoming IPOs in the next 3 months.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Upcoming IPOs in the next 3 months.'
       operationId: PublicApi.IntelController.ipo_calendar
       parameters: []
       responses:
@@ -10582,6 +10643,8 @@ paths:
     get:
       callbacks: {}
       description: |
+        **Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).**
+        
         Returns a long-running price series for a commodity.
         
         Available names: wti, brent, natural-gas, copper, aluminum, wheat, corn, cotton, sugar, coffee, all-commodities.
@@ -10643,7 +10706,7 @@ paths:
   /api/companies/listings:
     get:
       callbacks: {}
-      description: All US-traded securities, optionally filtered to delisted as of a given date.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** All US-traded securities, optionally filtered to delisted as of a given date.'
       operationId: PublicApi.IntelController.listings
       parameters:
         - description: ''
@@ -10688,7 +10751,7 @@ paths:
   /api/companies/{ticker}/dividends:
     get:
       callbacks: {}
-      description: Historical dividend events for a ticker (ex-date, declaration, record, payment, amount).
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Historical dividend events for a ticker (ex-date, declaration, record, payment, amount).'
       operationId: PublicApi.CompaniesController.dividends
       parameters:
         - description: ''
@@ -10722,7 +10785,7 @@ paths:
   /api/companies/{ticker}/earnings-estimates:
     get:
       callbacks: {}
-      description: Analyst-driven forward earnings estimates by quarter/year.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Analyst-driven forward earnings estimates by quarter/year.'
       operationId: PublicApi.CompaniesController.earnings_estimates
       parameters:
         - description: ''
@@ -10756,7 +10819,7 @@ paths:
   /api/companies/{ticker}/profile:
     get:
       callbacks: {}
-      description: Returns a normalized company profile (sector, industry, description, market cap, P/E, dividend yield, etc.).
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Returns a normalized company profile (sector, industry, description, market cap, P/E, dividend yield, etc.).'
       operationId: PublicApi.CompaniesController.profile
       parameters:
         - description: ''
@@ -10790,7 +10853,7 @@ paths:
   /api/companies/{ticker}/splits:
     get:
       callbacks: {}
-      description: Historical stock split events for a ticker.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Historical stock split events for a ticker.'
       operationId: PublicApi.CompaniesController.splits
       parameters:
         - description: ''
@@ -10824,7 +10887,7 @@ paths:
   /api/companies/{ticker}/transcripts/{quarter}:
     get:
       callbacks: {}
-      description: Full earnings-call transcript for a ticker and quarter (e.g. 2024Q1). Returns speakers, sentiment, and statements.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Full earnings-call transcript for a ticker and quarter (e.g. 2024Q1). Returns speakers, sentiment, and statements.'
       operationId: PublicApi.CompaniesController.transcript
       parameters:
         - description: ''
@@ -11577,7 +11640,7 @@ paths:
   /api/digital-currencies/history:
     get:
       callbacks: {}
-      description: Daily, weekly, or monthly OHLC bars for a digital asset.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Daily, weekly, or monthly OHLC bars for a digital asset.'
       operationId: PublicApi.DigitalCurrenciesController.history
       parameters:
         - description: ''
@@ -11628,7 +11691,7 @@ paths:
   /api/digital-currencies/intraday:
     get:
       callbacks: {}
-      description: Intraday OHLC bars for a digital asset against a fiat market.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Intraday OHLC bars for a digital asset against a fiat market.'
       operationId: PublicApi.DigitalCurrenciesController.intraday
       parameters:
         - description: ''
@@ -11819,6 +11882,8 @@ paths:
     get:
       callbacks: {}
       description: |
+        **Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).**
+        
         Returns a long-running US economic indicator series.
         
         Indicators: gdp, gdp-per-capita, treasury-yield, fed-funds, cpi, inflation, retail-sales, durables, unemployment, payrolls.
@@ -12047,7 +12112,7 @@ paths:
   /api/forex/history:
     get:
       callbacks: {}
-      description: Daily, weekly, or monthly OHLC bars for a currency pair.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Daily, weekly, or monthly OHLC bars for a currency pair.'
       operationId: PublicApi.ForexController.history
       parameters:
         - description: ''
@@ -12098,7 +12163,7 @@ paths:
   /api/forex/intraday:
     get:
       callbacks: {}
-      description: Intraday OHLC bars for a currency pair.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Intraday OHLC bars for a currency pair.'
       operationId: PublicApi.ForexController.intraday
       parameters:
         - description: ''
@@ -12151,7 +12216,7 @@ paths:
   /api/forex/rate:
     get:
       callbacks: {}
-      description: Realtime spot exchange rate between two currencies.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Realtime spot exchange rate between two currencies.'
       operationId: PublicApi.ForexController.rate
       parameters:
         - description: From currency code (ISO 4217).
@@ -13566,7 +13631,7 @@ paths:
   /api/market/movers:
     get:
       callbacks: {}
-      description: Top gainers, top losers, and most actively traded US tickers for the latest session.
+      description: '**Requires Advanced+ tier (Advanced, Enterprise, or Enterprise + Kafka).** Top gainers, top losers, and most actively traded US tickers for the latest session.'
       operationId: PublicApi.IntelController.movers
       parameters: []
       responses:
@@ -14247,91 +14312,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdsquscamyycysitlsexzhkhkwvtteiwqlituhtcatwsfwpsfag'
+            $ref: '#/components/schemas/DynLimitAvgysqvtnsnzmhhjuxuofhroevdivryntisucxvcgkpdvlsizml'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqczbojpzpxxmzrfkhgtpsrxubjxccggdlasdfrffizavakwtqz'
+            $ref: '#/components/schemas/DynLimitAaqylafnumzqlmdxrkarzbonwawqdtiaiazkmntwxjkuicjutpn'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAeliovubsjzkaoybnhgnnocbkjqywtcoxycxmgrsdyvbynpdavp'
+            $ref: '#/components/schemas/DynLimitAlbzjjmplcfakxrufzeyjklgxdwveuwpwpvvqimoqzpucoxfqpb'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAopwsakyohqiwnnobrfbteshxykqypazfijdrydmlmtxhmkkhfj'
+            $ref: '#/components/schemas/DynLimitAhigebuahfmevgiwuoxcjgdnmnesfcdfvbembfrivrkqatzpwcs'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAksymfoajrzowcdelakqtwijgebfkhkfgkqnkeemhyivphknmbe'
+            $ref: '#/components/schemas/DynLimitAfqtoivbsvfcvsfckgvmwekguqxrqpvmtpfrtbvcggssyptesci'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAecbpvyqdljbtuxpnuzblxptpqvblwpptztktzgxyktcvmctuwk'
+            $ref: '#/components/schemas/DynLimitAsphyaifdzjnmglaxmwgtxqzxciptjuxbxcsyljzutculqotpuf'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAvpzcsxjruyfvzawcexewgeddubdevhyugswtnukaheosivqvre'
+            $ref: '#/components/schemas/DynLimitAebgafhvclteqwkpjyxkhedvxgfdwvnnpitiwrqjlqjmcgsrlgg'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAuiflaxxopngzsmqogshaxqdbfjygbvgbwagodkgdizzpefirgs'
+            $ref: '#/components/schemas/DynLimitAfbstdhjtpceexmhoctpcrfbsoyyuqdtxhngprgojgeurqncfti'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmbezjsednwcelyvfxuqsbafykhdpffgbxtgsojkvfmlqylkkzl'
+            $ref: '#/components/schemas/DynLimitAcgjaotxsapnaqwxhmmdidlbmlhfnvocfqumvzyxovviscthoky'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAabnuodsoimpecssgbakmdywfeoxyqjidlemlyhzmkfmrtreiov'
+            $ref: '#/components/schemas/DynLimitAkltgsorsfpqmldgdfwpptqqbkxklaraeykjmslzrxbdmbvgqot'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAuuvlywvniahnearvbbpigshpkqhkvkgfgejmteresyyzkmubfs'
+            $ref: '#/components/schemas/DynLimitAophpgpxacgfqokevztzkfrnsamsvvbxebvjssfozbiuvkdpztq'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwvsxzpzztfohhrsshzglifuamqbfgvuvavmdfthziyhhbhyxps'
+            $ref: '#/components/schemas/DynLimitAhckctttyauxfdtnixspyqfsxlueiwfxfllxthiubaibwckdjgi'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjhdijqchrhyxdxeplrnecymszrvfluifilfpbqepushkkhmjwl'
+            $ref: '#/components/schemas/DynLimitAzsvwuudaqzlzthuxaybhxuxpdrgdmdsytvqqbnoxavqspdwzch'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfqfkljqqzpzootegxiedyognemnilmkxprgcaawjpgozmpaujw'
+            $ref: '#/components/schemas/DynLimitAgzgccmyhifcbepodqqultogdlqrrdcbtjbsisjikgrzpcatmkl'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAowlnfykrzqqdlcqsuzcayfevhxpanricaggjfbkittfonrelec'
+            $ref: '#/components/schemas/DynLimitAhraabjhawvjcidicpetuqlukqfpvvcohvgiffgmbfmirxbukau'
         - description: ''
           in: query
           name: rule_name[]
@@ -16961,73 +17026,73 @@ paths:
           name: limit
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhufzurdrynaaddqawovwommihcxjeejtbaxuskjgbpkyqpaxuj'
+            $ref: '#/components/schemas/DynLimitAyutgvyxzksahgqcuuivtuhgyiztquuiysrdkxnsfnbkuxozyyp'
         - description: ''
           in: query
           name: offset
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbvwpbbhxpisgzyegutsyqtcmgjnleoxqlnyhpnmmlgurjwxrwl'
+            $ref: '#/components/schemas/DynLimitAabfweamswubwzwylkhebiyspgtoyzfxlxpnmzzanspwricoppe'
         - description: ''
           in: query
           name: min_short_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlmamuorlwdkutsptvurrqdknfonamcdrvgucgyqkguegfkemig'
+            $ref: '#/components/schemas/DynLimitAgrsxpmshvwrhqpeyatzmbaoracarkvpulfrxtsetwrcqknpvsx'
         - description: ''
           in: query
           name: max_short_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitArqvnawbzepakcvxwyeixxaggfjzxrcvpwfjwnowgnjyzlnmevh'
+            $ref: '#/components/schemas/DynLimitAtcboqsjlbepnrafgrkzpiplvysyummgghafxzrkrqccutkouej'
         - description: ''
           in: query
           name: min_days_to_cover
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAujomgcnfarjbicijkfuzcsckofiyquezmuikfiprxfbxthmdfm'
+            $ref: '#/components/schemas/DynLimitAxzqeudnfggnhqmgtmchpzjmfwljhkwedoxvoqurmbwbyijerpd'
         - description: ''
           in: query
           name: max_days_to_cover
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgaexrsbcxbxygmvnyujnbmykssusohjwgupvkdrhlrspbacpaq'
+            $ref: '#/components/schemas/DynLimitAhnvfkrozmttyxyurudxtvpqmwqeksbkdokkdidbcrvdhozqxve'
         - description: ''
           in: query
           name: min_si_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjbbsourqfyojphhuyieqhwstdoyymcabytitahposvxjxmqgfi'
+            $ref: '#/components/schemas/DynLimitAqsplauuobmfsbipieoferkrvofbzvzunpghaazujmjfmidtjvr'
         - description: ''
           in: query
           name: max_si_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsdyztqshbtewyonllqpxihqdkgiqjawsprixmkgasvgtefjfhf'
+            $ref: '#/components/schemas/DynLimitAkyavzlxovacuwpnxllodloqeysvuaqfmxhkwkbovvjvspexdhv'
         - description: ''
           in: query
           name: min_si_float_with_synth_long_pct_of_total_shares
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAunqojtkjcdzsswoksuqwipkmksbzqxpxqgntjmogqaxqhistyk'
+            $ref: '#/components/schemas/DynLimitAdlybwyeigyyqwmcxhozqiojcaghqfnvfphzfctpuxjdigwbbuu'
         - description: ''
           in: query
           name: max_si_float_with_synth_long_pct_of_total_shares
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApzyyqusovzssqmktbonctljgtabkughsfiqibnwuuaistxatqv'
+            $ref: '#/components/schemas/DynLimitAfgbfkljrumhlikkpdmbkitokixmqklqoclzqqfwxgzsiwnxdsn'
         - description: ''
           in: query
           name: min_total_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAivlfpeiouknzytebzxhbnzibqvfvrxfkgcwylxqdxyfunoarhw'
+            $ref: '#/components/schemas/DynLimitAicynfcessqutlhskfleksxulsbzhkqxjkiadbswmutybwjoght'
         - description: ''
           in: query
           name: max_total_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbvcjtgaevqistnvwfszoknpzhijfwvgcbvapzbxsszcsikplpk'
+            $ref: '#/components/schemas/DynLimitAijmaognzilxicsualjypchvidffuivffuarekukrlorzuphzfk'
         - description: ''
           in: query
           name: order_by
@@ -17057,37 +17122,37 @@ paths:
           name: min_fee_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAnwryvlomslevodzrlsfailjwvdfcrritjqhhsjprpjjkpsgugo'
+            $ref: '#/components/schemas/DynLimitAotnnadaxxjuyhxzctcgwkluycclqsvnqtfwggnldmiwwmtrdep'
         - description: ''
           in: query
           name: max_fee_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqsxaxrsviyrnvqblkqipmbfyujfmuatvielivorhfnlhpksxxc'
+            $ref: '#/components/schemas/DynLimitAzvwqurqpzivmzwazxzrxfocbqnyuvtdgefktyyxlzptvvzieuz'
         - description: ''
           in: query
           name: min_rebate_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgsnsskhozhxlykfimoinlhkwmtacmsdffjdtkvjsuhcimstjvg'
+            $ref: '#/components/schemas/DynLimitAgpfdvvjggbrnosquzpcjyzkhzsccejoxvlqxtstjittdsjjevg'
         - description: ''
           in: query
           name: max_rebate_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAykandsowrjliwxrfqicquqppcgjopteuubsjfvffbgemcirqli'
+            $ref: '#/components/schemas/DynLimitAxemuvasqteaaeaujwomhiefknnlujllaivdxxvxjyukkvlblvf'
         - description: ''
           in: query
           name: min_short_shares_available
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfhltcwlzmearzpdpqnpckposdtmullaxnhghxithfjgpbjmwdp'
+            $ref: '#/components/schemas/DynLimitAkwhqgpqqipzyeugtslfdiemewwjyvbnxupiaexmurpfykttlzl'
         - description: ''
           in: query
           name: max_short_shares_available
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjowlhfnwinvbrfxykcichqxpmpyuornyupzwcmldwajxvxgmvq'
+            $ref: '#/components/schemas/DynLimitAgkylkrpzajthpplboybrfocyfkpuqjiicctaotdstplppaqorw'
       responses:
         '200':
           content:
@@ -18419,13 +18484,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAblhjtjcrokaxumdmrcrczfmabbrkqyftblonvgbhcdpnsdbsqp'
+            $ref: '#/components/schemas/DynLimitAyusxiznuvnvxkocwuuruswmudrhiwzynfuqqijdjcvilsvrxcj'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAicgamntfibsysobyhoebjlxdtobbtoslatmquxjjmfrkvztbhe'
+            $ref: '#/components/schemas/DynLimitAtixvvqhzcsztkgcuthjebqohmrxfgqrtsnmirqcpblatdfdrkk'
       responses:
         '200':
           content:
