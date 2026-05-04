@@ -1055,12 +1055,6 @@ components:
       example: true
       title: DynLimitAagvuewnsxievgqdubfonzvnmlwbneohotqtvhoqnticbpryqdm
       type: boolean
-    DynLimitAbtstalqkokmwuhcbsykqtfipkdbluytaosigyhprwprngoqopx:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAbtstalqkokmwuhcbsykqtfipkdbluytaosigyhprwprngoqopx
-      type: boolean
     DynLimitAbwynbitudthpcumptnnjammsefopyglqdgmutsdtaoinzwswxw:
       description: The min rebate rate.
       example: 0.11
@@ -1167,6 +1161,12 @@ components:
       example: 10000
       title: DynLimitAlvkiubqjtkhfpwwijdewafvraavoinxktrngtodumgvxuzulgt
       type: integer
+    DynLimitAmuijjaaavefpbshmwkbzjlrvvlxflhomzerbmdqkjbhkzyjacd:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAmuijjaaavefpbshmwkbzjlrvvlxflhomzerbmdqkjbhkzyjacd
+      type: boolean
     DynLimitAnicxiirhbcuvkmrhunypzxbfbgpkzzhoevdaotzqpwvbhkjibs:
       default: true
       description: Boolean flag whether to return only intraday alerts.
@@ -1217,12 +1217,6 @@ components:
       example: true
       title: DynLimitAtgehzaaxbgjjoryzbdlctmxzejuyotqkabocxcybljlcwxwhnh
       type: boolean
-    DynLimitAuccfqvqfsfxgddyadolfbdzbkpfgicuiwksbsgfppdthfgldnd:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAuccfqvqfsfxgddyadolfbdzbkpfgicuiwksbsgfppdthfgldnd
-      type: boolean
     DynLimitAudpasmizeavqwheseajhjsgkwjdyczbozikhiuvettrhmgkoly:
       description: 'The maximum size on that alert. Min: 0.'
       example: 125
@@ -1252,6 +1246,12 @@ components:
       example: 0.05
       title: DynLimitAzljvqcdslqjyvrvudxzppoxljiutjcvoyeuhpgjducwtmjjypw
       type: integer
+    DynLimitAzqynxaddfwtpqobqlkbrlakevkgeeklsgmdbaxrrtmkpiqqeic:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAzqynxaddfwtpqobqlkbrlakevkgeeklsgmdbaxrrtmkpiqqeic
+      type: boolean
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
       example: '21.60'
@@ -18484,13 +18484,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAuccfqvqfsfxgddyadolfbdzbkpfgicuiwksbsgfppdthfgldnd'
+            $ref: '#/components/schemas/DynLimitAmuijjaaavefpbshmwkbzjlrvvlxflhomzerbmdqkjbhkzyjacd'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbtstalqkokmwuhcbsykqtfipkdbluytaosigyhprwprngoqopx'
+            $ref: '#/components/schemas/DynLimitAzqynxaddfwtpqobqlkbrlakevkgeeklsgmdbaxrrtmkpiqqeic'
       responses:
         '200':
           content:
