@@ -1055,12 +1055,6 @@ components:
       minimum: 0
       title: DynLimitAapeeusyzbeetoglkdsseaebiceobezxwpdxpfyylqetqujljbb
       type: integer
-    DynLimitAbkxzazdszyaaspkbbokiryzrudoslgjrdubmuapqkplnagfxyu:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAbkxzazdszyaaspkbbokiryzrudoslgjrdubmuapqkplnagfxyu
-      type: boolean
     DynLimitAbqqkbedgvoasvsmpyudiaaunoznllcmnuitkfhtranirvxfmki:
       description: The max days to cover.
       example: 5.3
@@ -1125,12 +1119,6 @@ components:
       example: true
       title: DynLimitAhmhkioqdsxicrxgcjbgcdllpgtncfasirbzcfmbyyoimjaqfma
       type: boolean
-    DynLimitAhynniiiavuxckmsgoiarkdjuaffainwsubahdfllhtycwryvbw:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAhynniiiavuxckmsgoiarkdjuaffainwsubahdfllhtycwryvbw
-      type: boolean
     DynLimitAigorssvhmuooqystjtxkerdzhcbdddwcrugrhuotbzqdfojufc:
       description: The max fee rate.
       example: 0.45
@@ -1142,6 +1130,12 @@ components:
       minimum: 0
       title: DynLimitAixgvpcxwqnmcrccvwwecgswvsryduromcnwcywlxecvbgjntin
       type: integer
+    DynLimitAjusbjfcuphzymciwjgadfqpxbldknijqwpvjdwzitgxznemmbr:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAjusbjfcuphzymciwjgadfqpxbldknijqwpvjdwzitgxznemmbr
+      type: boolean
     DynLimitAlsbooqgigqtczncruadmgtqrnybibpyziofhbvwzknihlhcnei:
       description: 'The minimum premium on that alert. Min: 0.'
       example: 12500.5
@@ -1159,6 +1153,12 @@ components:
       description: Boolean flag whether a transaction is a put.
       example: true
       title: DynLimitAlxdxboqxwzjcfijsyntgwnlsqxkbiltqmqkqgvvyirvpwzadwk
+      type: boolean
+    DynLimitAmeopaujwrgcwlohytrltxtkfiaotlupvhbxwxpiqvgzdqdinmv:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAmeopaujwrgcwlohytrltxtkfiaotlupvhbxwxpiqvgzdqdinmv
       type: boolean
     DynLimitAmwdmerqpmbruyggnczrjnlvdbpprichyqbvapocdznuctaytqr:
       default: true
@@ -18855,13 +18855,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbkxzazdszyaaspkbbokiryzrudoslgjrdubmuapqkplnagfxyu'
+            $ref: '#/components/schemas/DynLimitAmeopaujwrgcwlohytrltxtkfiaotlupvhbxwxpiqvgzdqdinmv'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhynniiiavuxckmsgoiarkdjuaffainwsubahdfllhtycwryvbw'
+            $ref: '#/components/schemas/DynLimitAjusbjfcuphzymciwjgadfqpxbldknijqwpvjdwzitgxznemmbr'
       responses:
         '200':
           content:
