@@ -1107,12 +1107,6 @@ components:
       minimum: 0
       title: DynLimitAjslcfjwmzqnixlgfvvdkifdlgqhfkxgireqymebpsyixpwdpvv
       type: integer
-    DynLimitAjzllysjhmcqcbfthfjqbbkmwpbjdqfesmxdrjhicsgybdyrogf:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAjzllysjhmcqcbfthfjqbbkmwpbjdqfesmxdrjhicsgybdyrogf
-      type: boolean
     DynLimitAlcjivuswczzwikyjricxmejxyvhbedvxakvumuhujuzxtbjhfo:
       default: true
       description: Boolean flag whether a transaction is a put.
@@ -1147,6 +1141,12 @@ components:
       example: 0.05
       title: DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet
       type: integer
+    DynLimitAobuenhccnijhjhcmtbmcviyoeytdxbvhirydowieklarnephuq:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAobuenhccnijhjhcmtbmcviyoeytdxbvhirydowieklarnephuq
+      type: boolean
     DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk:
       description: The max rebate rate.
       example: 5.34
@@ -1167,12 +1167,6 @@ components:
       example: 0.05
       title: DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv
       type: integer
-    DynLimitAsrlrrjabthdvirhydqltqwsbfixpsobwxvcledmzmikqkzercr:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAsrlrrjabthdvirhydqltqwsbfixpsobwxvcledmzmikqkzercr
-      type: boolean
     DynLimitAsuvukubxmjmpsmoktypcueoirsravkeqdpjlrdiogduveenbar:
       default: true
       description: Boolean flag whether a transaction is a call.
@@ -1222,6 +1216,12 @@ components:
       example: 10000000
       title: DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink
       type: integer
+    DynLimitAygcgckbedyxojexyktfqhsgduxbqrbjhhfaevjadtybzoromvy:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAygcgckbedyxojexyktfqhsgduxbqrbjhhfaevjadtybzoromvy
+      type: boolean
     DynLimitAylmtwxwoqfxhdakghbmzjseqwlgfcfgvmikqtftabfzifowkaf:
       description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
       example: 125
@@ -18855,13 +18855,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsrlrrjabthdvirhydqltqwsbfixpsobwxvcledmzmikqkzercr'
+            $ref: '#/components/schemas/DynLimitAobuenhccnijhjhcmtbmcviyoeytdxbvhirydowieklarnephuq'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjzllysjhmcqcbfthfjqbbkmwpbjdqfesmxdrjhicsgybdyrogf'
+            $ref: '#/components/schemas/DynLimitAygcgckbedyxojexyktfqhsgduxbqrbjhhfaevjadtybzoromvy'
       responses:
         '200':
           content:
