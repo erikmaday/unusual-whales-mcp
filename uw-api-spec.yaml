@@ -1141,11 +1141,11 @@ components:
       example: 0.05
       title: DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet
       type: integer
-    DynLimitAobuenhccnijhjhcmtbmcviyoeytdxbvhirydowieklarnephuq:
+    DynLimitAookuqkufdjeupeljvdwkgeeectjedufixilyczoirtnauzkqpl:
       default: true
-      description: Boolean flag whether a transaction is ask side.
+      description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAobuenhccnijhjhcmtbmcviyoeytdxbvhirydowieklarnephuq
+      title: DynLimitAookuqkufdjeupeljvdwkgeeectjedufixilyczoirtnauzkqpl
       type: boolean
     DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk:
       description: The max rebate rate.
@@ -1162,6 +1162,12 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
+    DynLimitAqbdewqjykncgbqvtqypcinmfohwxgmtzhvdgduwetrohzvstoi:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAqbdewqjykncgbqvtqypcinmfohwxgmtzhvdgduwetrohzvstoi
+      type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -1216,12 +1222,6 @@ components:
       example: 10000000
       title: DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink
       type: integer
-    DynLimitAygcgckbedyxojexyktfqhsgduxbqrbjhhfaevjadtybzoromvy:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAygcgckbedyxojexyktfqhsgduxbqrbjhhfaevjadtybzoromvy
-      type: boolean
     DynLimitAylmtwxwoqfxhdakghbmzjseqwlgfcfgvmikqtftabfzifowkaf:
       description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
       example: 125
@@ -18855,13 +18855,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAobuenhccnijhjhcmtbmcviyoeytdxbvhirydowieklarnephuq'
+            $ref: '#/components/schemas/DynLimitAqbdewqjykncgbqvtqypcinmfohwxgmtzhvdgduwetrohzvstoi'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAygcgckbedyxojexyktfqhsgduxbqrbjhhfaevjadtybzoromvy'
+            $ref: '#/components/schemas/DynLimitAookuqkufdjeupeljvdwkgeeectjedufixilyczoirtnauzkqpl'
       responses:
         '200':
           content:
