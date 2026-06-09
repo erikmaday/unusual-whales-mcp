@@ -1107,17 +1107,23 @@ components:
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
-    DynLimitAizfxiantifnlexxxpsntoykvnlvuuktbdjvcrqmvyhgflhruzu:
+    DynLimitAizqbrprnwfhrutcuvkhuwgnpjcjfuqqudbhogqcjwybryvjoqc:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAizfxiantifnlexxxpsntoykvnlvuuktbdjvcrqmvyhgflhruzu
+      title: DynLimitAizqbrprnwfhrutcuvkhuwgnpjcjfuqqudbhogqcjwybryvjoqc
       type: boolean
     DynLimitAktfphfhbsfydcqnwrhqjioaiyzgokofckyzboztwbdxczyahvs:
       default: true
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
       title: DynLimitAktfphfhbsfydcqnwrhqjioaiyzgokofckyzboztwbdxczyahvs
+      type: boolean
+    DynLimitAlkzflayliweuioabbgzrpklicwdresrieckcatwafzhrapxtcw:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAlkzflayliweuioabbgzrpklicwdresrieckcatwafzhrapxtcw
       type: boolean
     DynLimitAmcbrtughbmgyxqkykmetqllaumrhghyzuudwlcqcqmqbhrpwyj:
       default: true
@@ -1219,12 +1225,6 @@ components:
       example: 5000
       title: DynLimitAwvnhnanzzxgxlnzynfeguzfrgjiiyczvdojvmbhcwxcajcrnid
       type: integer
-    DynLimitAxboavczkpucjdasfxawsflgrscemqxegtdzoxbhhecavgvemcp:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAxboavczkpucjdasfxawsflgrscemqxegtdzoxbhhecavgvemcp
-      type: boolean
     DynLimitAxjheprcsljmvplbcjldheerzymjvlsybquzhatrknvmtdlzowe:
       description: The max total float.
       example: 100000000
@@ -19059,13 +19059,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAxboavczkpucjdasfxawsflgrscemqxegtdzoxbhhecavgvemcp'
+            $ref: '#/components/schemas/DynLimitAlkzflayliweuioabbgzrpklicwdresrieckcatwafzhrapxtcw'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAizfxiantifnlexxxpsntoykvnlvuuktbdjvcrqmvyhgflhruzu'
+            $ref: '#/components/schemas/DynLimitAizqbrprnwfhrutcuvkhuwgnpjcjfuqqudbhogqcjwybryvjoqc'
       responses:
         '200':
           content:
