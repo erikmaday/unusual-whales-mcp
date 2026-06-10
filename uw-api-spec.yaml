@@ -1066,6 +1066,12 @@ components:
       example: true
       title: DynLimitAczlloiwawnqscapqsgsujadaxrxqfvhimgitjucsvmcomymucg
       type: boolean
+    DynLimitAdqyncplwingzuejfkebywpebntbxjfyliachrvzfvmozzndpfi:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAdqyncplwingzuejfkebywpebntbxjfyliachrvzfvmozzndpfi
+      type: boolean
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
       example: 0.45
@@ -1107,23 +1113,17 @@ components:
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
-    DynLimitAizqbrprnwfhrutcuvkhuwgnpjcjfuqqudbhogqcjwybryvjoqc:
+    DynLimitAjufswelfziosomxecvmfyurgbjbkmvgbfejquvfhulwqqdzkqu:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAizqbrprnwfhrutcuvkhuwgnpjcjfuqqudbhogqcjwybryvjoqc
+      title: DynLimitAjufswelfziosomxecvmfyurgbjbkmvgbfejquvfhulwqqdzkqu
       type: boolean
     DynLimitAktfphfhbsfydcqnwrhqjioaiyzgokofckyzboztwbdxczyahvs:
       default: true
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
       title: DynLimitAktfphfhbsfydcqnwrhqjioaiyzgokofckyzboztwbdxczyahvs
-      type: boolean
-    DynLimitAlkzflayliweuioabbgzrpklicwdresrieckcatwafzhrapxtcw:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAlkzflayliweuioabbgzrpklicwdresrieckcatwafzhrapxtcw
       type: boolean
     DynLimitAmcbrtughbmgyxqkykmetqllaumrhghyzuudwlcqcqmqbhrpwyj:
       default: true
@@ -19059,13 +19059,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlkzflayliweuioabbgzrpklicwdresrieckcatwafzhrapxtcw'
+            $ref: '#/components/schemas/DynLimitAdqyncplwingzuejfkebywpebntbxjfyliachrvzfvmozzndpfi'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAizqbrprnwfhrutcuvkhuwgnpjcjfuqqudbhogqcjwybryvjoqc'
+            $ref: '#/components/schemas/DynLimitAjufswelfziosomxecvmfyurgbjbkmvgbfejquvfhulwqqdzkqu'
       responses:
         '200':
           content:
