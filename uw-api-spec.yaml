@@ -1054,11 +1054,11 @@ components:
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAbmkkvhmktfsvzzsdjeyazgznrmebjvfzhjwrwpblykjpwlkwzp:
+    DynLimitAbpjhvganezlcjcjzhyllfaufxvispeyhizwecrxkfjmsbgdtzp:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAbmkkvhmktfsvzzsdjeyazgznrmebjvfzhjwrwpblykjpwlkwzp
+      title: DynLimitAbpjhvganezlcjcjzhyllfaufxvispeyhizwecrxkfjmsbgdtzp
       type: boolean
     DynLimitAcwxdnxdbnhodvdztcgbwvnnamvlnfubgxprhxlicnyohermbeh:
       default: true
@@ -1108,6 +1108,12 @@ components:
       example: 10000
       title: DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf
       type: integer
+    DynLimitAhmwywewzqodinuvmpvvqnozrutrtkeeugypcmjuezbxqvwrbaw:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAhmwywewzqodinuvmpvvqnozrutrtkeeugypcmjuezbxqvwrbaw
+      type: boolean
     DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -1118,12 +1124,6 @@ components:
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
       title: DynLimitAktfphfhbsfydcqnwrhqjioaiyzgokofckyzboztwbdxczyahvs
-      type: boolean
-    DynLimitAlagzhevtogkuoobbiyfqdhnlimfmetjzwkwkxpjihwdvljvosg:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAlagzhevtogkuoobbiyfqdhnlimfmetjzwkwkxpjihwdvljvosg
       type: boolean
     DynLimitAmcbrtughbmgyxqkykmetqllaumrhghyzuudwlcqcqmqbhrpwyj:
       default: true
@@ -2728,6 +2728,39 @@ components:
       example: '2394292.0'
       title: Fund Value
       type: string
+    GEX Levels:
+      description: |
+        Key gamma-exposure price levels derived from per-strike gamma. Each value is a strike price as a
+        decimal string, or null when unavailable for the date.
+      example:
+        data:
+          call_wall: '600'
+          gamma_flip: '560'
+          gamma_magnet: '575'
+          put_wall: '550'
+      properties:
+        call_wall:
+          description: Strike with the largest call gamma exposure (resistance above spot).
+          example: '600'
+          nullable: true
+          type: string
+        gamma_flip:
+          description: Strike where cumulative net gamma crosses zero (the zero-gamma level).
+          example: '560'
+          nullable: true
+          type: string
+        gamma_magnet:
+          description: Strike with the largest-magnitude net gamma (the strongest pin).
+          example: '575'
+          nullable: true
+          type: string
+        put_wall:
+          description: Strike with the largest-magnitude put gamma exposure (support below spot).
+          example: '550'
+          nullable: true
+          type: string
+      title: GEX Levels
+      type: object
     GEX Per One Percent Move Directionalized Volume:
       description: |
         The gamma 1% move based on directionalized volume
@@ -8884,8 +8917,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
-      example: '13.52369891956068210400'
+      description: The 30 day implied volatility from 1 month ago.
+      example: '0.2136848270893097'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -9983,6 +10016,14 @@ components:
       example: '0.3140468475903719'
       title: Vega
       type: string
+    Volatility Result:
+      additionalProperties: true
+      description: |
+        Volatility analytics payload. The exact shape depends on the endpoint:
+        `variance-risk-premium`, `anomaly/top` and `character/top` return arrays of daily/ticker rows;
+        `anomaly`, `character` and `vix-term-structure` return `{ latest, history }` objects.
+      title: Volatility Result
+      type: object
     Volatility Statistics:
       description: |
         Comprehensive volatility statistics for a ticker on a specific date, including
@@ -19059,13 +19100,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlagzhevtogkuoobbiyfqdhnlimfmetjzwkwkxpjihwdvljvosg'
+            $ref: '#/components/schemas/DynLimitAhmwywewzqodinuvmpvvqnozrutrtkeeugypcmjuezbxqvwrbaw'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbmkkvhmktfsvzzsdjeyazgznrmebjvfzhjwrwpblykjpwlkwzp'
+            $ref: '#/components/schemas/DynLimitAbpjhvganezlcjcjzhyllfaufxvispeyhizwecrxkfjmsbgdtzp'
       responses:
         '200':
           content:
@@ -19264,6 +19305,55 @@ paths:
       summary: Fundamental Breakdown
       tags:
         - stock
+  /api/stock/{ticker}/gex-levels:
+    get:
+      callbacks: {}
+      description: |
+        The key gamma-exposure (GEX) price levels for a ticker on a given market date, derived from
+        per-strike gamma exposure:
+        
+        - `call_wall` — strike with the largest call gamma exposure (resistance above spot)
+        - `put_wall` — strike with the largest-magnitude put gamma exposure (support below spot)
+        - `gamma_magnet` — strike with the largest-magnitude net gamma (the strongest pin)
+        - `gamma_flip` — strike where cumulative net gamma crosses zero (the zero-gamma level)
+        
+        Any field may be `null` when there is no data for the date (or, for `gamma_flip`, no zero-crossing).
+      operationId: PublicApi.TickerController.gex_levels
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GEX Levels'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: GEX Levels
+      tags:
+        - Gex/Greeks
   /api/stock/{ticker}/greek-exposure:
     get:
       callbacks: {}
@@ -20982,6 +21072,90 @@ paths:
       summary: Technical Indicator
       tags:
         - stock
+  /api/stock/{ticker}/volatility/anomaly:
+    get:
+      callbacks: {}
+      description: |
+        The volatility anomaly score (and recent history) for a ticker — a composite signal flagging
+        unusually rich/cheap volatility. Requires the `volatility` API add-on.
+      operationId: PublicApi.VolatilityController.anomaly
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volatility Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Volatility Anomaly Score
+      tags:
+        - volatility
+  /api/stock/{ticker}/volatility/character:
+    get:
+      callbacks: {}
+      description: |
+        The volatility character (Hurst exponent / mean-reversion half-life / entropy) and history for a
+        ticker. Requires the `volatility` API add-on.
+      operationId: PublicApi.VolatilityController.character
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volatility Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Volatility Character
+      tags:
+        - volatility
   /api/stock/{ticker}/volatility/realized:
     get:
       callbacks: {}
@@ -21117,6 +21291,186 @@ paths:
       summary: Implied Volatility Term Structure
       tags:
         - stock
+  /api/stock/{ticker}/volatility/variance-risk-premium:
+    get:
+      callbacks: {}
+      description: |
+        The variance risk premium (implied vs realized variance) history for a ticker. Requires the
+        `volatility` API add-on.
+      operationId: PublicApi.VolatilityController.variance_risk_premium
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volatility Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Variance Risk Premium
+      tags:
+        - volatility
+  /api/volatility/anomaly/top:
+    get:
+      callbacks: {}
+      description: |
+        Screener of the top volatility anomalies on a date, by `direction` (`short_vol` or `long_vol`).
+        Supports the same filters as the website screener. Requires the `volatility` API add-on.
+      operationId: PublicApi.VolatilityController.anomaly_top
+      parameters:
+        - description: '`short_vol` or `long_vol`.'
+          example: short_vol
+          in: query
+          name: direction
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+        - description: Max rows (default 50, max 200).
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volatility Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Top Volatility Anomalies
+      tags:
+        - volatility
+  /api/volatility/character/top:
+    get:
+      callbacks: {}
+      description: |
+        Screener of tickers by volatility character (mean-reverting / persistent / moderate) on a date.
+        Requires the `volatility` API add-on.
+      operationId: PublicApi.VolatilityController.character_top
+      parameters:
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+        - description: Max rows (default 50, max 200).
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+        - description: '`half_life` (default), `hurst`, or `neg_entropy`.'
+          in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+        - description: '`asc` (default) or `desc`.'
+          in: query
+          name: dir
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volatility Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Top Volatility Character
+      tags:
+        - volatility
+  /api/volatility/vix-term-structure:
+    get:
+      callbacks: {}
+      description: |
+        The latest VIX futures term structure plus history. Requires the `volatility` API add-on.
+      operationId: PublicApi.VolatilityController.vix_term_structure
+      parameters:
+        - description: Days of history (default 90, max 365).
+          in: query
+          name: history_days
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volatility Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: VIX Term Structure
+      tags:
+        - volatility
 security:
   - authorization: []
 servers:
