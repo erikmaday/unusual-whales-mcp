@@ -1054,12 +1054,6 @@ components:
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAboijhplwgjtryrepraditsfaeplophxknslnnqinolbaiknilq:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAboijhplwgjtryrepraditsfaeplophxknslnnqinolbaiknilq
-      type: boolean
     DynLimitAcwxdnxdbnhodvdztcgbwvnnamvlnfubgxprhxlicnyohermbeh:
       default: true
       description: Boolean flag whether to return only intraday alerts.
@@ -1108,6 +1102,12 @@ components:
       example: 10000
       title: DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf
       type: integer
+    DynLimitAiperiunorahoevgayclyucltjkzbspwahbxftvzkuvjeaabuxm:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAiperiunorahoevgayclyucltjkzbspwahbxftvzkuvjeaabuxm
+      type: boolean
     DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -1180,6 +1180,12 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
+    DynLimitArnvapzvtgpwvacvjqvvzgviqtlbrgqwrjztueswpysqgcodgva:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitArnvapzvtgpwvacvjqvvzgviqtlbrgqwrjztueswpysqgcodgva
+      type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -1202,12 +1208,6 @@ components:
       description: Boolean flag whether a transaction is a call.
       example: true
       title: DynLimitAsxivuxbqozycerdxaabbtxemoezetcmxotlfjodnejamejaivb
-      type: boolean
-    DynLimitAvalbgtxksgbrkjnltpmdtpxzcpkmobhyvusczyerjotvwlensc:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAvalbgtxksgbrkjnltpmdtpxzcpkmobhyvusczyerjotvwlensc
       type: boolean
     DynLimitAvhfpzyouqooimhebkoxfcqwncheocdzqnvfslpeygynpkxfdct:
       description: 'The maximum size on that alert. Min: 0.'
@@ -19100,13 +19100,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAboijhplwgjtryrepraditsfaeplophxknslnnqinolbaiknilq'
+            $ref: '#/components/schemas/DynLimitAiperiunorahoevgayclyucltjkzbspwahbxftvzkuvjeaabuxm'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAvalbgtxksgbrkjnltpmdtpxzcpkmobhyvusczyerjotvwlensc'
+            $ref: '#/components/schemas/DynLimitArnvapzvtgpwvacvjqvvzgviqtlbrgqwrjztueswpysqgcodgva'
       responses:
         '200':
           content:
