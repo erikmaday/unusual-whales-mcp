@@ -1107,6 +1107,12 @@ components:
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
+    DynLimitAjqvfixnfjppgobkhkgfkeimyxonpwrvflhaqcixkhcpugttkde:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAjqvfixnfjppgobkhkgfkeimyxonpwrvflhaqcixkhcpugttkde
+      type: boolean
     DynLimitAktfphfhbsfydcqnwrhqjioaiyzgokofckyzboztwbdxczyahvs:
       default: true
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
@@ -1131,12 +1137,6 @@ components:
       example: 0.1
       title: DynLimitAmiwzvcvlafbptywihmivtogxztamfplnstoilspyiqonfmgxis
       type: integer
-    DynLimitAmvfawwxbbotaronqzytpwajqmsyhxbsefyszxvrxymrpiacwgx:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAmvfawwxbbotaronqzytpwajqmsyhxbsefyszxvrxymrpiacwgx
-      type: boolean
     DynLimitAmwzwesccebobwpdcmzrbipodcbhrmgjfiwqrhryldhbfxemsxp:
       description: 'The maximum premium on that alert. Min: 0.'
       example: 12500.5
@@ -1180,6 +1180,12 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
+    DynLimitAqbdzgcdpgcvsipeekrtgyfofrrqanaluvwnwcxjtdogoegixkn:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAqbdzgcdpgcvsipeekrtgyfofrrqanaluvwnwcxjtdogoegixkn
+      type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -1202,12 +1208,6 @@ components:
       description: Boolean flag whether a transaction is a call.
       example: true
       title: DynLimitAsxivuxbqozycerdxaabbtxemoezetcmxotlfjodnejamejaivb
-      type: boolean
-    DynLimitAtdiqfxjbxlxnjjcsnlbcucqakvpwymkyfcreuitdzupovmqoar:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAtdiqfxjbxlxnjjcsnlbcucqakvpwymkyfcreuitdzupovmqoar
       type: boolean
     DynLimitAvhfpzyouqooimhebkoxfcqwncheocdzqnvfslpeygynpkxfdct:
       description: 'The maximum size on that alert. Min: 0.'
@@ -19100,13 +19100,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmvfawwxbbotaronqzytpwajqmsyhxbsefyszxvrxymrpiacwgx'
+            $ref: '#/components/schemas/DynLimitAqbdzgcdpgcvsipeekrtgyfofrrqanaluvwnwcxjtdogoegixkn'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtdiqfxjbxlxnjjcsnlbcucqakvpwymkyfcreuitdzupovmqoar'
+            $ref: '#/components/schemas/DynLimitAjqvfixnfjppgobkhkgfkeimyxonpwrvflhaqcixkhcpugttkde'
       responses:
         '200':
           content:
