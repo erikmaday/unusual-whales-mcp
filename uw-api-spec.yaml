@@ -1077,6 +1077,12 @@ components:
       minimum: 0
       title: DynLimitAdugyrxesuisgpqxbjkujqyibzojtvulbylcczcevgxyeespknx
       type: integer
+    DynLimitAdwqqomqqzwsbyaubildsawumljsoqscydsnfwsuiulkioeqssj:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAdwqqomqqzwsbyaubildsawumljsoqscydsnfwsuiulkioeqssj
+      type: boolean
     DynLimitAfakxaijeusocwcyxxbueqdcqagtmenzvufdfzgomirqaxbnznv:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1091,6 +1097,12 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
+    DynLimitAftlvcqonzlwnrszpjhrnrbazdyhayystipmcnjllnwmsbrdrif:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAftlvcqonzlwnrszpjhrnrbazdyhayystipmcnjllnwmsbrdrif
+      type: boolean
     DynLimitAgjqgowbjetufmemcvufzqzvvuwpqagdvojixyqprtonhbveajf:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
@@ -1107,12 +1119,6 @@ components:
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
-    DynLimitAjqvfixnfjppgobkhkgfkeimyxonpwrvflhaqcixkhcpugttkde:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAjqvfixnfjppgobkhkgfkeimyxonpwrvflhaqcixkhcpugttkde
-      type: boolean
     DynLimitAktfphfhbsfydcqnwrhqjioaiyzgokofckyzboztwbdxczyahvs:
       default: true
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
@@ -1180,12 +1186,6 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
-    DynLimitAqbdzgcdpgcvsipeekrtgyfofrrqanaluvwnwcxjtdogoegixkn:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAqbdzgcdpgcvsipeekrtgyfofrrqanaluvwnwcxjtdogoegixkn
-      type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -8917,8 +8917,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -19100,13 +19100,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqbdzgcdpgcvsipeekrtgyfofrrqanaluvwnwcxjtdogoegixkn'
+            $ref: '#/components/schemas/DynLimitAftlvcqonzlwnrszpjhrnrbazdyhayystipmcnjllnwmsbrdrif'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjqvfixnfjppgobkhkgfkeimyxonpwrvflhaqcixkhcpugttkde'
+            $ref: '#/components/schemas/DynLimitAdwqqomqqzwsbyaubildsawumljsoqscydsnfwsuiulkioeqssj'
       responses:
         '200':
           content:
