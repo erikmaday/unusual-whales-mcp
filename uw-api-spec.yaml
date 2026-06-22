@@ -1054,6 +1054,12 @@ components:
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
+    DynLimitAcrmamaqfqwjumsnbbpjthpnqhrhaelddgepstecyelkfoucptt:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAcrmamaqfqwjumsnbbpjthpnqhrhaelddgepstecyelkfoucptt
+      type: boolean
     DynLimitAcwxdnxdbnhodvdztcgbwvnnamvlnfubgxprhxlicnyohermbeh:
       default: true
       description: Boolean flag whether to return only intraday alerts.
@@ -1077,12 +1083,6 @@ components:
       minimum: 0
       title: DynLimitAdugyrxesuisgpqxbjkujqyibzojtvulbylcczcevgxyeespknx
       type: integer
-    DynLimitAdwqqomqqzwsbyaubildsawumljsoqscydsnfwsuiulkioeqssj:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAdwqqomqqzwsbyaubildsawumljsoqscydsnfwsuiulkioeqssj
-      type: boolean
     DynLimitAfakxaijeusocwcyxxbueqdcqagtmenzvufdfzgomirqaxbnznv:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1097,12 +1097,6 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
-    DynLimitAftlvcqonzlwnrszpjhrnrbazdyhayystipmcnjllnwmsbrdrif:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAftlvcqonzlwnrszpjhrnrbazdyhayystipmcnjllnwmsbrdrif
-      type: boolean
     DynLimitAgjqgowbjetufmemcvufzqzvvuwpqagdvojixyqprtonhbveajf:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
@@ -1251,6 +1245,12 @@ components:
       description: Boolean flag whether a transaction is ask side.
       example: true
       title: DynLimitAzduyarpgqhprikglnhnjcxiidenyyovpokkicfvfgemwvpyxme
+      type: boolean
+    DynLimitAzkezybuusmqdipppgpzlhqnvlwkrwymicofmcsankwobaimqij:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAzkezybuusmqdipppgpzlhqnvlwkrwymicofmcsankwobaimqij
       type: boolean
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -19100,13 +19100,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAftlvcqonzlwnrszpjhrnrbazdyhayystipmcnjllnwmsbrdrif'
+            $ref: '#/components/schemas/DynLimitAcrmamaqfqwjumsnbbpjthpnqhrhaelddgepstecyelkfoucptt'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdwqqomqqzwsbyaubildsawumljsoqscydsnfwsuiulkioeqssj'
+            $ref: '#/components/schemas/DynLimitAzkezybuusmqdipppgpzlhqnvlwkrwymicofmcsankwobaimqij'
       responses:
         '200':
           content:
@@ -20587,7 +20587,9 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returns the institutions, insider trades and politicians with the most shares
+        Returns the institutions, insider trades and politicians with the most shares.
+        
+        This is an enterprise only endpoint. Contact dev@unusualwhales.com for details about accessing this data.
       operationId: PublicApi.TickerController.ownership
       parameters:
         - description: ''
