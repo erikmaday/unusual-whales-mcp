@@ -1049,17 +1049,17 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
+    DynLimitAabpebpzxsrqneqmiclkqarlffxdjhkbhoqswrecfxpgvmpbgmv:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAabpebpzxsrqneqmiclkqarlffxdjhkbhoqswrecfxpgvmpbgmv
+      type: boolean
     DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq:
       description: The max short interest.
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAcrmamaqfqwjumsnbbpjthpnqhrhaelddgepstecyelkfoucptt:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAcrmamaqfqwjumsnbbpjthpnqhrhaelddgepstecyelkfoucptt
-      type: boolean
     DynLimitAcwxdnxdbnhodvdztcgbwvnnamvlnfubgxprhxlicnyohermbeh:
       default: true
       description: Boolean flag whether to return only intraday alerts.
@@ -1185,6 +1185,12 @@ components:
       example: 0.05
       title: DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv
       type: integer
+    DynLimitArtplnznnnwhsuhzmrjgerzhbaarjfoyxzwweljlpqzvxbicihy:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitArtplnznnnwhsuhzmrjgerzhbaarjfoyxzwweljlpqzvxbicihy
+      type: boolean
     DynLimitArulawolannklfmrlsjlltqjloyztgsbqufizasxbdcsfwbylmw:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1245,12 +1251,6 @@ components:
       description: Boolean flag whether a transaction is ask side.
       example: true
       title: DynLimitAzduyarpgqhprikglnhnjcxiidenyyovpokkicfvfgemwvpyxme
-      type: boolean
-    DynLimitAzkezybuusmqdipppgpzlhqnvlwkrwymicofmcsankwobaimqij:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAzkezybuusmqdipppgpzlhqnvlwkrwymicofmcsankwobaimqij
       type: boolean
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -8917,8 +8917,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
-      example: '13.52369891956068210400'
+      description: The 30 day implied volatility from 1 month ago.
+      example: '0.2136848270893097'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -19100,13 +19100,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcrmamaqfqwjumsnbbpjthpnqhrhaelddgepstecyelkfoucptt'
+            $ref: '#/components/schemas/DynLimitAabpebpzxsrqneqmiclkqarlffxdjhkbhoqswrecfxpgvmpbgmv'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzkezybuusmqdipppgpzlhqnvlwkrwymicofmcsankwobaimqij'
+            $ref: '#/components/schemas/DynLimitArtplnznnnwhsuhzmrjgerzhbaarjfoyxzwweljlpqzvxbicihy'
       responses:
         '200':
           content:
