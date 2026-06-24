@@ -922,6 +922,18 @@ components:
           $ref: '#/components/schemas/Stock Day Stock Volume'
       title: Darkpool Trade
       type: object
+    Darkpool order by field:
+      default: executed_at
+      description: The field to order the darkpool trades by. Defaults to executed_at.
+      enum:
+        - executed_at
+        - trf_executed_at
+        - premium
+        - size
+        - volume
+      example: premium
+      title: Darkpool order by field
+      type: string
     Debt Holding Units:
       description: The number of debt units in the institution's portfolio.
       example: '2394292.0'
@@ -1049,12 +1061,6 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAabpebpzxsrqneqmiclkqarlffxdjhkbhoqswrecfxpgvmpbgmv:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAabpebpzxsrqneqmiclkqarlffxdjhkbhoqswrecfxpgvmpbgmv
-      type: boolean
     DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq:
       description: The max short interest.
       example: 100000
@@ -1153,6 +1159,12 @@ components:
       example: 0.05
       title: DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet
       type: integer
+    DynLimitAnrhijgetdaplvoedsmoweghdgkpxzxwxambskznqfnrtubsadw:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAnrhijgetdaplvoedsmoweghdgkpxzxwxambskznqfnrtubsadw
+      type: boolean
     DynLimitAnzqdrthhdykdxtdrsvwjioiyrsmyesihzlaqvtollzucipusxr:
       description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
       example: 125
@@ -1180,17 +1192,17 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
+    DynLimitAqxvpxipsgzspsrdmoedovloweftszwfipblzlmvdcngsbdseef:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAqxvpxipsgzspsrdmoedovloweftszwfipblzlmvdcngsbdseef
+      type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv
       type: integer
-    DynLimitArtplnznnnwhsuhzmrjgerzhbaarjfoyxzwweljlpqzvxbicihy:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitArtplnznnnwhsuhzmrjgerzhbaarjfoyxzwweljlpqzvxbicihy
-      type: boolean
     DynLimitArulawolannklfmrlsjlltqjloyztgsbqufizasxbdcsfwbylmw:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -8917,8 +8929,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -11646,6 +11658,18 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/StockTradesMaxVol'
+        - description: ''
+          in: query
+          name: order
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderDirection'
+        - description: ''
+          in: query
+          name: order_by
+          required: false
+          schema:
+            $ref: '#/components/schemas/Darkpool order by field'
       responses:
         '200':
           content:
@@ -11744,6 +11768,18 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+        - description: ''
+          in: query
+          name: order
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderDirection'
+        - description: ''
+          in: query
+          name: order_by
+          required: false
+          schema:
+            $ref: '#/components/schemas/Darkpool order by field'
       responses:
         '200':
           content:
@@ -19100,13 +19136,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAabpebpzxsrqneqmiclkqarlffxdjhkbhoqswrecfxpgvmpbgmv'
+            $ref: '#/components/schemas/DynLimitAnrhijgetdaplvoedsmoweghdgkpxzxwxambskznqfnrtubsadw'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitArtplnznnnwhsuhzmrjgerzhbaarjfoyxzwweljlpqzvxbicihy'
+            $ref: '#/components/schemas/DynLimitAqxvpxipsgzspsrdmoedovloweftszwfipblzlmvdcngsbdseef'
       responses:
         '200':
           content:
@@ -21079,7 +21115,7 @@ paths:
       callbacks: {}
       description: |
         The volatility anomaly score (and recent history) for a ticker — a composite signal flagging
-        unusually rich/cheap volatility. Requires the `volatility` API add-on.
+        unusually rich/cheap volatility.
       operationId: PublicApi.VolatilityController.anomaly
       parameters:
         - description: ''
@@ -21121,7 +21157,7 @@ paths:
       callbacks: {}
       description: |
         The volatility character (Hurst exponent / mean-reversion half-life / entropy) and history for a
-        ticker. Requires the `volatility` API add-on.
+        ticker.
       operationId: PublicApi.VolatilityController.character
       parameters:
         - description: ''
@@ -21297,8 +21333,7 @@ paths:
     get:
       callbacks: {}
       description: |
-        The variance risk premium (implied vs realized variance) history for a ticker. Requires the
-        `volatility` API add-on.
+        The variance risk premium (implied vs realized variance) history for a ticker.
       operationId: PublicApi.VolatilityController.variance_risk_premium
       parameters:
         - description: ''
@@ -21340,7 +21375,7 @@ paths:
       callbacks: {}
       description: |
         Screener of the top volatility anomalies on a date, by `direction` (`short_vol` or `long_vol`).
-        Supports the same filters as the website screener. Requires the `volatility` API add-on.
+        Supports the same filters as the website screener.
       operationId: PublicApi.VolatilityController.anomaly_top
       parameters:
         - description: '`short_vol` or `long_vol`.'
@@ -21389,7 +21424,6 @@ paths:
       callbacks: {}
       description: |
         Screener of tickers by volatility character (mean-reverting / persistent / moderate) on a date.
-        Requires the `volatility` API add-on.
       operationId: PublicApi.VolatilityController.character_top
       parameters:
         - description: ''
