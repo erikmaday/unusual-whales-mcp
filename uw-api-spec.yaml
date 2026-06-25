@@ -1089,6 +1089,12 @@ components:
       minimum: 0
       title: DynLimitAdugyrxesuisgpqxbjkujqyibzojtvulbylcczcevgxyeespknx
       type: integer
+    DynLimitAdymnmbwxgilxubjxnzbifohctqydrhdqlrxzwsfmfnxolraapc:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAdymnmbwxgilxubjxnzbifohctqydrhdqlrxzwsfmfnxolraapc
+      type: boolean
     DynLimitAfakxaijeusocwcyxxbueqdcqagtmenzvufdfzgomirqaxbnznv:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1159,12 +1165,6 @@ components:
       example: 0.05
       title: DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet
       type: integer
-    DynLimitAnrhijgetdaplvoedsmoweghdgkpxzxwxambskznqfnrtubsadw:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAnrhijgetdaplvoedsmoweghdgkpxzxwxambskznqfnrtubsadw
-      type: boolean
     DynLimitAnzqdrthhdykdxtdrsvwjioiyrsmyesihzlaqvtollzucipusxr:
       description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
       example: 125
@@ -1192,11 +1192,11 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
-    DynLimitAqxvpxipsgzspsrdmoedovloweftszwfipblzlmvdcngsbdseef:
+    DynLimitAqujciodohbfltxwmkcmptzqjaskhxtbdfmbensziuztpjcvifj:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAqxvpxipsgzspsrdmoedovloweftszwfipblzlmvdcngsbdseef
+      title: DynLimitAqujciodohbfltxwmkcmptzqjaskhxtbdfmbensziuztpjcvifj
       type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
@@ -11494,9 +11494,7 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returns whale transactions across blockchains with optional filtering by blockchain and token.
-        Supported blockchains: ethereum, bitcoin, solana, polygon, arbitrum, avalanche, binance_smart_chain,
-        cardano, dogecoin, fantom, optimism, polkadot, ripple, tron
+        Returns recent whale transactions.
       operationId: PublicApi.CryptoController.whale_transactions
       parameters:
         - description: ''
@@ -11505,18 +11503,6 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Default 500 Max 500 Min 1'
-        - description: ''
-          in: query
-          name: blockchain
-          required: false
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: token_symbol
-          required: false
-          schema:
-            type: string
       responses: {}
       summary: Crypto Whale Transactions
       tags:
@@ -19136,13 +19122,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAnrhijgetdaplvoedsmoweghdgkpxzxwxambskznqfnrtubsadw'
+            $ref: '#/components/schemas/DynLimitAdymnmbwxgilxubjxnzbifohctqydrhdqlrxzwsfmfnxolraapc'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqxvpxipsgzspsrdmoedovloweftszwfipblzlmvdcngsbdseef'
+            $ref: '#/components/schemas/DynLimitAqujciodohbfltxwmkcmptzqjaskhxtbdfmbensziuztpjcvifj'
       responses:
         '200':
           content:
