@@ -1089,12 +1089,6 @@ components:
       minimum: 0
       title: DynLimitAdugyrxesuisgpqxbjkujqyibzojtvulbylcczcevgxyeespknx
       type: integer
-    DynLimitAdymnmbwxgilxubjxnzbifohctqydrhdqlrxzwsfmfnxolraapc:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAdymnmbwxgilxubjxnzbifohctqydrhdqlrxzwsfmfnxolraapc
-      type: boolean
     DynLimitAfakxaijeusocwcyxxbueqdcqagtmenzvufdfzgomirqaxbnznv:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1130,6 +1124,12 @@ components:
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
       title: DynLimitAktfphfhbsfydcqnwrhqjioaiyzgokofckyzboztwbdxczyahvs
+      type: boolean
+    DynLimitAlsbmpsgpxgjofzrwuzjpfpxnglumstzanrousylxzeadgsuhhs:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAlsbmpsgpxgjofzrwuzjpfpxnglumstzanrousylxzeadgsuhhs
       type: boolean
     DynLimitAmcbrtughbmgyxqkykmetqllaumrhghyzuudwlcqcqmqbhrpwyj:
       default: true
@@ -1192,11 +1192,11 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
-    DynLimitAqujciodohbfltxwmkcmptzqjaskhxtbdfmbensziuztpjcvifj:
+    DynLimitAqjfugfjedwwijfxmmgqrfinzgjmkgkkqqaciaggutwyvohwith:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAqujciodohbfltxwmkcmptzqjaskhxtbdfmbensziuztpjcvifj
+      title: DynLimitAqjfugfjedwwijfxmmgqrfinzgjmkgkkqqaciaggutwyvohwith
       type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
@@ -19122,13 +19122,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdymnmbwxgilxubjxnzbifohctqydrhdqlrxzwsfmfnxolraapc'
+            $ref: '#/components/schemas/DynLimitAlsbmpsgpxgjofzrwuzjpfpxnglumstzanrousylxzeadgsuhhs'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqujciodohbfltxwmkcmptzqjaskhxtbdfmbensziuztpjcvifj'
+            $ref: '#/components/schemas/DynLimitAqjfugfjedwwijfxmmgqrfinzgjmkgkkqqaciaggutwyvohwith'
       responses:
         '200':
           content:
