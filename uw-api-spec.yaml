@@ -1078,6 +1078,12 @@ components:
       example: true
       title: DynLimitAczlloiwawnqscapqsgsujadaxrxqfvhimgitjucsvmcomymucg
       type: boolean
+    DynLimitAdigiqmkakybwiklpztouebixzfkyhotsakurndhiguefmjjyzo:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAdigiqmkakybwiklpztouebixzfkyhotsakurndhiguefmjjyzo
+      type: boolean
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
       example: 0.45
@@ -1125,11 +1131,11 @@ components:
       example: true
       title: DynLimitAktfphfhbsfydcqnwrhqjioaiyzgokofckyzboztwbdxczyahvs
       type: boolean
-    DynLimitAlsbmpsgpxgjofzrwuzjpfpxnglumstzanrousylxzeadgsuhhs:
+    DynLimitAlyzzqxhosqjlnpehhgmubatqtllmfzufdgofxwyrxvqiljeevy:
       default: true
-      description: Boolean flag whether a transaction is ask side.
+      description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAlsbmpsgpxgjofzrwuzjpfpxnglumstzanrousylxzeadgsuhhs
+      title: DynLimitAlyzzqxhosqjlnpehhgmubatqtllmfzufdgofxwyrxvqiljeevy
       type: boolean
     DynLimitAmcbrtughbmgyxqkykmetqllaumrhghyzuudwlcqcqmqbhrpwyj:
       default: true
@@ -1192,12 +1198,6 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
-    DynLimitAqjfugfjedwwijfxmmgqrfinzgjmkgkkqqaciaggutwyvohwith:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAqjfugfjedwwijfxmmgqrfinzgjmkgkkqqaciaggutwyvohwith
-      type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -19122,13 +19122,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlsbmpsgpxgjofzrwuzjpfpxnglumstzanrousylxzeadgsuhhs'
+            $ref: '#/components/schemas/DynLimitAdigiqmkakybwiklpztouebixzfkyhotsakurndhiguefmjjyzo'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqjfugfjedwwijfxmmgqrfinzgjmkgkkqqaciaggutwyvohwith'
+            $ref: '#/components/schemas/DynLimitAlyzzqxhosqjlnpehhgmubatqtllmfzufdgofxwyrxvqiljeevy'
       responses:
         '200':
           content:
