@@ -1089,6 +1089,12 @@ components:
       minimum: 0
       title: DynLimitAdugyrxesuisgpqxbjkujqyibzojtvulbylcczcevgxyeespknx
       type: integer
+    DynLimitAeqvhstkjllqygaawwyuuuxmkgwmvofsfthxiawfdnueaacnzvg:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAeqvhstkjllqygaawwyuuuxmkgwmvofsfthxiawfdnueaacnzvg
+      type: boolean
     DynLimitAfakxaijeusocwcyxxbueqdcqagtmenzvufdfzgomirqaxbnznv:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1143,12 +1149,6 @@ components:
       example: 0.1
       title: DynLimitAmiwzvcvlafbptywihmivtogxztamfplnstoilspyiqonfmgxis
       type: integer
-    DynLimitAmpjzniiejfshyvkyeehavrouxnujlgcntaqmaablkrwtkjpklv:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAmpjzniiejfshyvkyeehavrouxnujlgcntaqmaablkrwtkjpklv
-      type: boolean
     DynLimitAmwzwesccebobwpdcmzrbipodcbhrmgjfiwqrhryldhbfxemsxp:
       description: 'The maximum premium on that alert. Min: 0.'
       example: 12500.5
@@ -1192,6 +1192,12 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
+    DynLimitArckkjudbssikhifeiasxnsyvjsubotlpubpmzjxoksyjjqsgrh:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitArckkjudbssikhifeiasxnsyvjsubotlpubpmzjxoksyjjqsgrh
+      type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -1214,12 +1220,6 @@ components:
       description: Boolean flag whether a transaction is a call.
       example: true
       title: DynLimitAsxivuxbqozycerdxaabbtxemoezetcmxotlfjodnejamejaivb
-      type: boolean
-    DynLimitAtcpgegjmbbbadotppekmomehgxrcpayxlnkviouscjksmpptqr:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAtcpgegjmbbbadotppekmomehgxrcpayxlnkviouscjksmpptqr
       type: boolean
     DynLimitAvhfpzyouqooimhebkoxfcqwncheocdzqnvfslpeygynpkxfdct:
       description: 'The maximum size on that alert. Min: 0.'
@@ -5336,6 +5336,10 @@ components:
       example: VANGUARD GROUP INC
       title: Name
       type: string
+    Nasdaq Options Pulse Result:
+      additionalProperties: true
+      title: Nasdaq Options Pulse Result
+      type: object
     Net Flow Data Point:
       description: A single data point in the net flow time series
       properties:
@@ -8929,8 +8933,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -15003,6 +15007,147 @@ paths:
       summary: Optionable Tickers
       tags:
         - option-trade
+  /api/options-pulse/sectors:
+    get:
+      callbacks: {}
+      description: Latest Nasdaq Options Pulse sentiment for each sector and industry on a date.
+      operationId: PublicApi.NasdaqPulseController.sectors
+      parameters:
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Nasdaq Options Pulse Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Options Pulse by Sector/Industry
+      tags:
+        - options-pulse
+  /api/options-pulse/top:
+    get:
+      callbacks: {}
+      description: |
+        Cross-symbol scanner: the latest intraday sentiment per ticker on a date, ranked by sentiment.
+        `direction` `bullish` ranks highest sentiment first, `bearish` lowest first. Filterable by
+        `ticker` (prefix), `min_score`/`max_score`, and `min_txn` (minimum opening-buy transactions).
+      operationId: PublicApi.NasdaqPulseController.top
+      parameters:
+        - description: '`bullish` (default) or `bearish`.'
+          in: query
+          name: direction
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+        - description: Restrict to tickers with this prefix.
+          in: query
+          name: ticker
+          required: false
+          schema:
+            type: string
+        - description: Minimum sentiment score.
+          in: query
+          name: min_score
+          required: false
+          schema:
+            type: number
+        - description: Maximum sentiment score.
+          in: query
+          name: max_score
+          required: false
+          schema:
+            type: number
+        - description: Minimum total opening-buy transactions (put + call).
+          in: query
+          name: min_txn
+          required: false
+          schema:
+            type: integer
+        - description: Max rows (default 50, max 500).
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Nasdaq Options Pulse Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Options Pulse Scanner
+      tags:
+        - options-pulse
+  /api/options-pulse/total:
+    get:
+      callbacks: {}
+      description: 'The market-wide Nasdaq Options Pulse gauge: latest snapshot + intraday series for a date.'
+      operationId: PublicApi.NasdaqPulseController.total
+      parameters:
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Nasdaq Options Pulse Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Market-wide Options Pulse
+      tags:
+        - options-pulse
   /api/politician-portfolios/disclosures:
     get:
       callbacks: {}
@@ -17733,17 +17878,20 @@ paths:
         | flow-alerts                 | Receive live flow alerts (all of them unfiltered). This data can be used to build views like [https://unusualwhales.com/option-flow-alerts](https://unusualwhales.com/option-flow-alerts). |
         | price:TICKER                | Receive live price updates for the given ticker.                                                                      |
         | news                        | Receive live headline news (Truth Social posts + aggregator news).                                                    |
-        | lit_trades                  | Receive live lit (exchange-based) trades throughout the trading session.                                               |
-        | off_lit_trades              | Receive live off-lit (dark pool) trades throughout the trading session.                                                |
+        | lit_trades                  | Receive live lit (exchange-based) trades throughout the trading session.                                              |
+        | off_lit_trades              | Receive live off-lit (dark pool) trades throughout the trading session.                                               |
+        | gex                         | Receive live gex updates for every ticker at once.                                                                    |
         | gex:TICKER                  | Receive live gex update for the given ticker.                                                                         |
+        | gex_strike                  | Receive live gex strike updates for every strike of every ticker.                                                     |
         | gex_strike:TICKER           | Receive live gex strike updates for every strike of the given ticker.                                                 |
+        | gex_strike_expiry           | Receive live gex strike updates for every strike & expiry of every ticker.                                            |
         | gex_strike_expiry:TICKER    | Receive live gex strike updates for every strike & expiry of the given ticker.                                        |
         | market_tide                 | Receive live updates of both the market tide and the otm market tide.                                                 |
         | net_flow:TICKER             | Receive live net call/put premium and volume aggregates for the specified ticker to build a net prem view.            |
-        | interval_flow               | Receive per interval option flow statistics for a ticker (sweeps, floors, multilegs, Greek flows, IV, net prem). Use this to build alert systems to spot spikes in tickers     |
-        | contract_screener           | Receive live option contract snapshots (Greeks, side volumes, OI growth indicators). This your entry point to build a screener on top of option contracts.                              |
+        | interval_flow               | Receive per interval option flow statistics for a ticker (sweeps, floors, multilegs, Greek flows, IV, net prem). Use this to build alert systems to spot spikes in tickers   |
+        | contract_screener           | Receive live option contract snapshots (Greeks, side volumes, OI growth indicators). This your entry point to build a screener on top of option contracts.                   |
         | trading_halts               | Receive live trading state changes (halts, resumes, LULD pauses) for individual tickers.                              |
-        | custom_alerts               | Receive notifications matching the alert configurations on your own Unusual Whales account.                            |
+        | custom_alerts               | Receive notifications matching the alert configurations on your own Unusual Whales account.                           |
         
         The `option_trades` channel will stream all 6,000,000 option trades in real-time, `option_trades:<TICKER>` will stream
         all option trades for the given ticker in real-time.
@@ -19122,13 +19270,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtcpgegjmbbbadotppekmomehgxrcpayxlnkviouscjksmpptqr'
+            $ref: '#/components/schemas/DynLimitArckkjudbssikhifeiasxnsyvjsubotlpubpmzjxoksyjjqsgrh'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmpjzniiejfshyvkyeehavrouxnujlgcntaqmaablkrwtkjpklv'
+            $ref: '#/components/schemas/DynLimitAeqvhstkjllqygaawwyuuuxmkgwmvofsfthxiawfdnueaacnzvg'
       responses:
         '200':
           content:
@@ -20554,6 +20702,50 @@ paths:
       summary: Volume & OI per Expiry
       tags:
         - stock
+  /api/stock/{ticker}/options-pulse:
+    get:
+      callbacks: {}
+      description: |
+        The Nasdaq Options Pulse sentiment for a single ticker: the latest intraday snapshot plus the
+        full intraday series (`hr_min` buckets) for the trade date. `sntm_score` is the running daily
+        sentiment, `intvl_sntm_score` the per-bucket sentiment, and `put_txn`/`call_txn` the opening-buy
+        transaction counts.
+      operationId: PublicApi.NasdaqPulseController.ticker
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Nasdaq Options Pulse Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Options Pulse for a ticker
+      tags:
+        - options-pulse
   /api/stock/{ticker}/options-volume:
     get:
       callbacks: {}
