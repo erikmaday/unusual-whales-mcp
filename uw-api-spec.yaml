@@ -1066,6 +1066,12 @@ components:
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
+    DynLimitAaiaytkuzblxqjohzedawwndbwnyrqtezfvvgqovhueuloyvedl:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAaiaytkuzblxqjohzedawwndbwnyrqtezfvvgqovhueuloyvedl
+      type: boolean
     DynLimitAarbzdjetahawvmwldxotajmquljblcvohbpdzpxjbvakktygbq:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
@@ -1077,6 +1083,12 @@ components:
       description: Boolean flag whether to return only intraday alerts.
       example: true
       title: DynLimitAcwxdnxdbnhodvdztcgbwvnnamvlnfubgxprhxlicnyohermbeh
+      type: boolean
+    DynLimitAdfheokzcjewoavadcqooeqoyiirxalnesjyvzlwtlwfacoucrg:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAdfheokzcjewoavadcqooeqoyiirxalnesjyvzlwtlwfacoucrg
       type: boolean
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
@@ -1096,12 +1108,6 @@ components:
       description: Boolean flag whether a transaction is bid side.
       example: true
       title: DynLimitAfwvisxvvhdzadkeibjrhjqxmymvjpvaxkwnljyjjzxldtdgxbg
-      type: boolean
-    DynLimitAfydjzdmpvoaiihreaoowcbfiqnkmxqypcfwrnelkjxqbrtussv:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAfydjzdmpvoaiihreaoowcbfiqnkmxqypcfwrnelkjxqbrtussv
       type: boolean
     DynLimitAgqssiapvkiessdnmgbhzlqqmewhcdksbdvpczmbfjcayhqnfit:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
@@ -1154,12 +1160,6 @@ components:
       example: 1.1
       title: DynLimitAmxmdyrsybvtrzmcmrakrncwtrghafdvtxplwnvfxotlemwclyu
       type: integer
-    DynLimitAmxtbeycqqjtlasuqnbbzhwekhvdvjzxsogpxeujeopissniypd:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAmxtbeycqqjtlasuqnbbzhwekhvdvjzxsogpxeujeopissniypd
-      type: boolean
     DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet:
       description: The max short interest float ratio.
       example: 0.05
@@ -8933,8 +8933,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -19268,13 +19268,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmxtbeycqqjtlasuqnbbzhwekhvdvjzxsogpxeujeopissniypd'
+            $ref: '#/components/schemas/DynLimitAaiaytkuzblxqjohzedawwndbwnyrqtezfvvgqovhueuloyvedl'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfydjzdmpvoaiihreaoowcbfiqnkmxqypcfwrnelkjxqbrtussv'
+            $ref: '#/components/schemas/DynLimitAdfheokzcjewoavadcqooeqoyiirxalnesjyvzlwtlwfacoucrg'
       responses:
         '200':
           content:
