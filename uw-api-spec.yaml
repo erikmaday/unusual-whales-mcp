@@ -968,6 +968,14 @@ components:
       minimum: 1
       title: Default 20 Max 100 Min 1
       type: integer
+    Default 200 Max 200 Min 1:
+      default: 200
+      description: 'How many items to return. Default: 200. Max: 200. Min: 1.'
+      example: 50
+      maximum: 200
+      minimum: 1
+      title: Default 200 Max 200 Min 1
+      type: integer
     Default 50 Max 100 Min 1:
       default: 50
       description: 'How many items to return. Default: 50. Max: 100. Min: 1.'
@@ -1066,12 +1074,6 @@ components:
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAaiaytkuzblxqjohzedawwndbwnyrqtezfvvgqovhueuloyvedl:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAaiaytkuzblxqjohzedawwndbwnyrqtezfvvgqovhueuloyvedl
-      type: boolean
     DynLimitAarbzdjetahawvmwldxotajmquljblcvohbpdzpxjbvakktygbq:
       default: true
       description: Boolean flag whether a transaction is a intermarket sweep.
@@ -1083,12 +1085,6 @@ components:
       description: Boolean flag whether to return only intraday alerts.
       example: true
       title: DynLimitAcwxdnxdbnhodvdztcgbwvnnamvlnfubgxprhxlicnyohermbeh
-      type: boolean
-    DynLimitAdfheokzcjewoavadcqooeqoyiirxalnesjyvzlwtlwfacoucrg:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAdfheokzcjewoavadcqooeqoyiirxalnesjyvzlwtlwfacoucrg
       type: boolean
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
@@ -1209,6 +1205,12 @@ components:
       minimum: 0
       title: DynLimitAtmkbgsdvxomkqhejrdyadwgmvdhszzrcmgcxziizxvxziejeba
       type: integer
+    DynLimitAtzshqiwjgrtlawsonjagzkpudkzxsgdcjsvvwjyudckncewaae:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAtzshqiwjgrtlawsonjagzkpudkzxsgdcjsvvwjyudckncewaae
+      type: boolean
     DynLimitAuamgsdegbvnxjjboreusulyrwhohjfrtlrnuvukvoeaeekeigc:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1221,6 +1223,12 @@ components:
       minimum: 0
       title: DynLimitAudogfuvvaxvmyokibofennzkoujufnzbebbxpwaddrhihagrik
       type: integer
+    DynLimitAvsawkeqglqvslozedbaxwmxulioezlfxexdvayduzqrlqkqbze:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAvsawkeqglqvslozedbaxwmxulioezlfxexdvayduzqrlqkqbze
+      type: boolean
     DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj:
       description: The min short shares available.
       example: 0
@@ -6713,6 +6721,13 @@ components:
       example: 2024-01-18
       title: Optional Market Date
       type: string
+    Optional POTUS Schedule Date:
+      description: |
+        A date in the format of YYYY-MM-DD.
+        This is optional and by default returns the most recent scheduled date.
+      example: 2026-07-09
+      title: Optional POTUS Schedule Date
+      type: string
     Optional Ticker:
       description: Optional ticker symbol to filter results
       example: IOVA
@@ -6819,6 +6834,87 @@ components:
       description: The absolute amount of ticker shares owned by the institution, insider trader or politician.
       title: Ownership Units
       type: integer
+    POTUS Post:
+      description: A short-form social media post from the President.
+      example:
+        data:
+          - post: Best fireworks show, EVER! President DJT
+            timestamp: 1783561144000
+          - post: Tariffs are working. America First!
+            timestamp: 1783550000000
+      properties:
+        post:
+          description: The full text of the post.
+          example: Best fireworks show, EVER! President DJT
+          type: string
+        timestamp:
+          description: The post's publish time as a Unix epoch timestamp in milliseconds (UTC).
+          example: 1783561144000
+          type: integer
+      required:
+        - timestamp
+        - post
+      title: POTUS Post
+      type: object
+    POTUS Post Search Term:
+      description: Optional search term to filter posts by their text content.
+      example: Walmart
+      title: POTUS Post Search Term
+      type: string
+    POTUS Schedule Entry:
+      description: An entry from the President's public schedule.
+      example:
+        data:
+          - coverage: Closed Press
+            date: 2026-07-09
+            details: The President participates in a Policy Meeting
+            location: Oval Office
+            time: 2026-07-09T21:00:00Z
+            type: President Schedule
+            url:
+            video_url:
+      properties:
+        coverage:
+          description: The press coverage designation for the event.
+          example: Closed Press
+          nullable: true
+          type: string
+        date:
+          description: The calendar date of the entry in YYYY-MM-DD format.
+          example: 2026-07-09
+          type: string
+        details:
+          description: A human-readable description of the event.
+          example: The President participates in a Policy Meeting
+          nullable: true
+          type: string
+        location:
+          description: Where the event takes place.
+          example: Oval Office
+          nullable: true
+          type: string
+        time:
+          description: The start time of the entry as an ISO 8601 UTC timestamp.
+          example: 2026-07-09T21:00:00Z
+          nullable: true
+          type: string
+        type:
+          description: The kind of schedule entry.
+          example: President Schedule
+          type: string
+        url:
+          description: An optional link associated with the event.
+          nullable: true
+          type: string
+        video_url:
+          description: An optional video link associated with the event.
+          nullable: true
+          type: string
+      required:
+        - type
+        - date
+      title: POTUS Schedule Entry
+      type: object
     Page:
       description: Page number (use with limit). Starts on page 0.
       example: 1
@@ -15407,6 +15503,106 @@ paths:
       summary: Politician Portfolios
       tags:
         - politician_portfolios
+  /api/potus/posts:
+    get:
+      callbacks: {}
+      description: |
+        Returns the President's short-form social media posts (currently Truth Social), newest first.
+        
+        Use `search_term` to filter posts by text content. Supports pagination via `limit` and `page`
+        (page is 0-indexed).
+      operationId: PublicApi.PotusController.posts
+      parameters:
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 200 Max 200 Min 1'
+        - description: ''
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
+        - description: ''
+          in: query
+          name: search_term
+          required: false
+          schema:
+            $ref: '#/components/schemas/POTUS Post Search Term'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/POTUS Post'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: President's Posts
+      tags:
+        - potus
+  /api/potus/schedule:
+    get:
+      callbacks: {}
+      description: |
+        Returns the President's public schedule for a given date, newest first by start time.
+        
+        If no `date` is provided, returns entries for the most recent scheduled date.
+        Supports pagination via `limit` and `page` (page is 0-indexed).
+      operationId: PublicApi.PotusController.schedule
+      parameters:
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional POTUS Schedule Date'
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 200 Max 200 Min 1'
+        - description: ''
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/POTUS Schedule Entry'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: President's Schedule
+      tags:
+        - potus
   /api/predictions/insiders:
     get:
       callbacks: {}
@@ -19268,13 +19464,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAaiaytkuzblxqjohzedawwndbwnyrqtezfvvgqovhueuloyvedl'
+            $ref: '#/components/schemas/DynLimitAvsawkeqglqvslozedbaxwmxulioezlfxexdvayduzqrlqkqbze'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdfheokzcjewoavadcqooeqoyiirxalnesjyvzlwtlwfacoucrg'
+            $ref: '#/components/schemas/DynLimitAtzshqiwjgrtlawsonjagzkpudkzxsgdcjsvvwjyudckncewaae'
       responses:
         '200':
           content:
