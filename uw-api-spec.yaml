@@ -1069,29 +1069,11 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAadbjnuovrbmjdikggomjlaompfimvtpijmnkkdowsypgdraodl:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAadbjnuovrbmjdikggomjlaompfimvtpijmnkkdowsypgdraodl
-      type: integer
     DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq:
       description: The max short interest.
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAajqvxjgljqcdkqsjrxuvxoemljxposogebxfpbszmrzrqzwezw:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAajqvxjgljqcdkqsjrxuvxoemljxposogebxfpbszmrzrqzwezw
-      type: boolean
-    DynLimitAamfbfkemllrlnuggqceufjtcevpyokppgfhambzrlzdnqwglmz:
-      default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
-      example: true
-      title: DynLimitAamfbfkemllrlnuggqceufjtcevpyokppgfhambzrlzdnqwglmz
-      type: boolean
     DynLimitAcwxdnxdbnhodvdztcgbwvnnamvlnfubgxprhxlicnyohermbeh:
       default: true
       description: Boolean flag whether to return only intraday alerts.
@@ -1103,11 +1085,11 @@ components:
       example: 0.45
       title: DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn
       type: integer
-    DynLimitAenwxptnobwgtmlmzcyanycazactflwekwjxoaiihsptzwprpgn:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+    DynLimitAekoihumnrvvpungyldsysfyntrzxwudxttechrmxucgsuupfoh:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAenwxptnobwgtmlmzcyanycazactflwekwjxoaiihsptzwprpgn
+      title: DynLimitAekoihumnrvvpungyldsysfyntrzxwudxttechrmxucgsuupfoh
       type: integer
     DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa:
       default: 100
@@ -1117,28 +1099,40 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
+    DynLimitAfebmvxxbouagksdqpekqgcbsnemdqenozyfyhtkmoeiaimbslg:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAfebmvxxbouagksdqpekqgcbsnemdqenozyfyhtkmoeiaimbslg
+      type: boolean
+    DynLimitAgnbrpxymetpyvsimnyoxttewjpuujhvvjencxyzbkqoqysujyl:
+      default: true
+      description: Boolean flag whether a transaction is a intermarket sweep.
+      example: true
+      title: DynLimitAgnbrpxymetpyvsimnyoxttewjpuujhvvjencxyzbkqoqysujyl
+      type: boolean
     DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf:
       description: The max short shares available.
       example: 10000
       title: DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf
       type: integer
-    DynLimitAinpuubkqygltrsyatwjfapjtcyscjztjfmxkqgfrxtvyipdlht:
+    DynLimitAilqlvfnnpqdzrlcgnhckhheefpxfytebxihgerftcshyihxjae:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAinpuubkqygltrsyatwjfapjtcyscjztjfmxkqgfrxtvyipdlht
+      title: DynLimitAilqlvfnnpqdzrlcgnhckhheefpxfytebxihgerftcshyihxjae
       type: integer
+    DynLimitAipxxnmfxsrsmqujajknozehgwbnlfrqvbpwcbqqfneowgapkjs:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAipxxnmfxsrsmqujajknozehgwbnlfrqvbpwcbqqfneowgapkjs
+      type: boolean
     DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
-    DynLimitAjvhwjiwtarcelrwhrcklbrfqchrnyfyolnoxebrxxzjsaownid:
-      default: true
-      description: Boolean flag whether a transaction is a call.
-      example: true
-      title: DynLimitAjvhwjiwtarcelrwhrcklbrfqchrnyfyolnoxebrxxzjsaownid
-      type: boolean
     DynLimitAmgvwdedprykkkwubboqoucydelwfunvmsgjwjjjzoktwvuggur:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
@@ -1151,12 +1145,6 @@ components:
       example: 0.1
       title: DynLimitAmiwzvcvlafbptywihmivtogxztamfplnstoilspyiqonfmgxis
       type: integer
-    DynLimitAmizyezijfmibyvdtjzvhhlxqnqwqfstdjntruaclvjquvucsql:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAmizyezijfmibyvdtjzvhhlxqnqwqfstdjntruaclvjquvucsql
-      type: boolean
     DynLimitAmxmdyrsybvtrzmcmrakrncwtrghafdvtxplwnvfxotlemwclyu:
       description: The min days to cover.
       example: 1.1
@@ -1166,6 +1154,12 @@ components:
       description: The max short interest float ratio.
       example: 0.05
       title: DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet
+      type: integer
+    DynLimitAnsgpsieawbfsiydkflinwewdjmpbodvewramwywdzlyjedtdbq:
+      description: 'The maximum size on that alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAnsgpsieawbfsiydkflinwewdjmpbodvewramwywdzlyjedtdbq
       type: integer
     DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk:
       description: The max rebate rate.
@@ -1177,63 +1171,63 @@ components:
       example: 0.11
       title: DynLimitApdnwejavjdeghjpywbfjnbuehgzwmislusryzphyunaxnoiglr
       type: integer
-    DynLimitApfnyzjyrhpgsqonygqfbfvxkmchfnrzxaznxumboatxblfeakc:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitApfnyzjyrhpgsqonygqfbfvxkmchfnrzxaznxumboatxblfeakc
-      type: integer
     DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa:
       description: The min fee rate.
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
-    DynLimitApoongifbblcsbteoutewcxfvnhntxrhwnowvwaigsgmtipdrpd:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
+    DynLimitApqxtzpnhisihjwciszjoixokbidkvrriwqyapxuploecissgxh:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
       minimum: 0
-      title: DynLimitApoongifbblcsbteoutewcxfvnhntxrhwnowvwaigsgmtipdrpd
+      title: DynLimitApqxtzpnhisihjwciszjoixokbidkvrriwqyapxuploecissgxh
       type: integer
-    DynLimitAqltxksworaehjbkgnakmbxecjwyuxuwisogvxxkajhyojafzrd:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAqltxksworaehjbkgnakmbxecjwyuxuwisogvxxkajhyojafzrd
-      type: integer
-    DynLimitAqvdgwhutwsdeudukrqebqayqgpkkhlkkmwsicpubnwfocikszh:
+    DynLimitArbkmngszcmyzyzwrnuekqlxhfdvojqtquorptwynkkpujsrvlt:
       default: true
       description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
-      title: DynLimitAqvdgwhutwsdeudukrqebqayqgpkkhlkkmwsicpubnwfocikszh
+      title: DynLimitArbkmngszcmyzyzwrnuekqlxhfdvojqtquorptwynkkpujsrvlt
       type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv
       type: integer
-    DynLimitArvsqeralumvceipbjkvuyvowcvhsjplclagcrbrtrwznqgphwy:
+    DynLimitAsjejocyzrkipqsuftanaimnrnkmwvdtcmeelzstuvsjiyuuzql:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAsjejocyzrkipqsuftanaimnrnkmwvdtcmeelzstuvsjiyuuzql
+      type: integer
+    DynLimitAsmplowoguwxmkmqqjnnhtvcxennhfcolmgoqgjqukzghxtajim:
       default: true
       description: Boolean flag whether a transaction is a put.
       example: true
-      title: DynLimitArvsqeralumvceipbjkvuyvowcvhsjplclagcrbrtrwznqgphwy
+      title: DynLimitAsmplowoguwxmkmqqjnnhtvcxennhfcolmgoqgjqukzghxtajim
       type: boolean
-    DynLimitAtqtdjtrispaxocwryfjxsvralywbvsrzvdufeiveoatinwgutk:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAtqtdjtrispaxocwryfjxsvralywbvsrzvdufeiveoatinwgutk
-      type: integer
-    DynLimitAulpealznokobsvapodqwtwrvqcdnzkuhoxzvhkdlohzlzpymss:
+    DynLimitAtaczwtadofjlmsdkxkpfqjomcvhjdrhpeicacahewnmqaugfcw:
       default: true
       description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAulpealznokobsvapodqwtwrvqcdnzkuhoxzvhkdlohzlzpymss
+      title: DynLimitAtaczwtadofjlmsdkxkpfqjomcvhjdrhpeicacahewnmqaugfcw
       type: boolean
-    DynLimitAvxrbpkapgdtbsouwplsyeffqgfrqmnfyedyeblnthaihklocqi:
+    DynLimitAuaserpsvmmcawtwxtzfejwuqqjoispcptmptzotzthguxkdhxc:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAuaserpsvmmcawtwxtzfejwuqqjoispcptmptzotzthguxkdhxc
+      type: integer
+    DynLimitAuqxrnrchgcarkrtazkvqeprgykhqlqkhpvgvvpcuszfxjlnchx:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAvxrbpkapgdtbsouwplsyeffqgfrqmnfyedyeblnthaihklocqi
+      title: DynLimitAuqxrnrchgcarkrtazkvqeprgykhqlqkhpvgvvpcuszfxjlnchx
+      type: boolean
+    DynLimitAusyodegdjdcjceaxidyarsvzimxxkwfixpxjtbyemgruczfcbc:
+      default: true
+      description: Boolean flag whether a transaction is a call.
+      example: true
+      title: DynLimitAusyodegdjdcjceaxidyarsvzimxxkwfixpxjtbyemgruczfcbc
       type: boolean
     DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj:
       description: The min short shares available.
@@ -1245,11 +1239,11 @@ components:
       example: 5000
       title: DynLimitAwvnhnanzzxgxlnzynfeguzfrgjiiyczvdojvmbhcwxcajcrnid
       type: integer
-    DynLimitAwyudoydsytdziucjdpevdncxvcoqzvqkznymyjjphiujflytav:
+    DynLimitAxcfurogflkiwsaexkwgbhhbtnwpmalkfknxsxecfnkvpkeukyh:
       default: true
       description: Boolean flag whether a transaction is from the floor.
       example: true
-      title: DynLimitAwyudoydsytdziucjdpevdncxvcoqzvqkznymyjjphiujflytav
+      title: DynLimitAxcfurogflkiwsaexkwgbhhbtnwpmalkfknxsxecfnkvpkeukyh
       type: boolean
     DynLimitAxjheprcsljmvplbcjldheerzymjvlsybquzhatrknvmtdlzowe:
       description: The max total float.
@@ -1266,11 +1260,17 @@ components:
       example: 10000000
       title: DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink
       type: integer
-    DynLimitAyocwsvibhpvnsflrojpetixwixgcpvxjgybuagtorjzljbifda:
+    DynLimitAyufkovmmfriyicfpankfaipbjnxssdbyfnbvenfxfhfkiivchu:
       description: 'The maximum premium on that alert. Min: 0.'
       example: 12500.5
       minimum: 0
-      title: DynLimitAyocwsvibhpvnsflrojpetixwixgcpvxjgybuagtorjzljbifda
+      title: DynLimitAyufkovmmfriyicfpankfaipbjnxssdbyfnbvenfxfhfkiivchu
+      type: integer
+    DynLimitAzjulgdripxocjpzegxsuddhtzgfdgkdyfvstpizvyumkrjbgoy:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAzjulgdripxocjpzegxsuddhtzgfdgkdyfvstpizvyumkrjbgoy
       type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -5328,6 +5328,211 @@ components:
               type: array
           type: object
       title: Movers Response
+      type: object
+    Multi-Leg Leg:
+      description: A single leg of a multi-leg strategy, aggregated by option contract. Greeks and prices are size-weighted averages; decimals are returned as strings.
+      properties:
+        delta:
+          description: Size-weighted delta.
+          nullable: true
+          type: string
+        expiry:
+          description: Expiration date (YYYY-MM-DD).
+          type: string
+        nbbo_ask:
+          description: Size-weighted NBBO ask.
+          nullable: true
+          type: string
+        nbbo_bid:
+          description: Size-weighted NBBO bid.
+          nullable: true
+          type: string
+        open_interest:
+          description: Contract open interest.
+          nullable: true
+          type: integer
+        option_symbol:
+          description: OCC option symbol.
+          example: AAPL260918C00250000
+          type: string
+        option_symbol_id:
+          description: Internal option symbol id.
+          type: integer
+        premium:
+          description: Total premium for this leg.
+          nullable: true
+          type: string
+        price:
+          description: Size-weighted fill price.
+          nullable: true
+          type: string
+        side:
+          description: 'Dominant aggressor side for this leg: bid or ask.'
+          type: string
+        size:
+          description: Total contracts for this leg.
+          type: integer
+        strike:
+          description: Strike price.
+          type: string
+        theta:
+          description: Size-weighted theta.
+          nullable: true
+          type: string
+        type:
+          description: call or put.
+          type: string
+        volume:
+          description: Contract day volume.
+          nullable: true
+          type: integer
+      title: Multi-Leg Leg
+      type: object
+    Multi-Leg Legs Response:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Multi-Leg Leg'
+          type: array
+      title: Multi-Leg Legs Response
+      type: object
+    Multi-Leg Trade:
+      description: A detected multi-leg option strategy (spread, condor, butterfly, calendar, diagonal, etc.) aggregated from its individual legs. Decimal quantities are returned as strings.
+      properties:
+        all_opening_legs:
+          description: Every leg is opening (not closing).
+          type: boolean
+        all_otm:
+          description: Every leg is out-of-the-money.
+          type: boolean
+        bid_ask_spread:
+          description: Aggregate bid/ask spread.
+          nullable: true
+          type: string
+        breakevens:
+          description: Breakeven price(s) at expiry.
+          items:
+            type: string
+          type: array
+        code:
+          description: Internal classification code.
+          nullable: true
+          type: string
+        diff_expirations:
+          description: Legs span more than one expiry.
+          type: boolean
+        diff_strikes:
+          description: Legs span more than one strike.
+          type: boolean
+        diff_types:
+          description: Legs mix calls and puts.
+          type: boolean
+        direction:
+          description: Strategy direction, e.g. long/short.
+          nullable: true
+          type: string
+        executed_at:
+          description: UTC timestamp of the strategy execution.
+          example: 2026-07-17T14:31:02Z
+          type: string
+        id:
+          description: Unique strategy id (UUID).
+          example: 0197f...c3
+          type: string
+        ivs:
+          description: Implied volatility per leg.
+          items:
+            type: string
+          type: array
+        leg_count:
+          description: Number of distinct legs.
+          type: integer
+        max_dte:
+          description: Maximum days-to-expiry across legs.
+          nullable: true
+          type: integer
+        max_loss:
+          description: Max theoretical loss (null if unbounded).
+          nullable: true
+          type: string
+        max_profit:
+          description: Max theoretical profit (null if unbounded).
+          nullable: true
+          type: string
+        max_strike:
+          description: Highest leg strike.
+          nullable: true
+          type: string
+        min_dte:
+          description: Minimum days-to-expiry across legs.
+          nullable: true
+          type: integer
+        min_strike:
+          description: Lowest leg strike.
+          nullable: true
+          type: string
+        net_delta:
+          description: Net delta across legs.
+          nullable: true
+          type: string
+        net_premium:
+          description: Net premium (debit/credit).
+          nullable: true
+          type: string
+        net_price:
+          description: Net price of the strategy.
+          nullable: true
+          type: string
+        net_side:
+          description: 'Net aggressor side: bid or ask.'
+          nullable: true
+          type: string
+        net_theta:
+          description: Net theta across legs.
+          nullable: true
+          type: string
+        size:
+          description: Total contracts across all legs.
+          type: integer
+        strategy:
+          description: Detected strategy name, e.g. vertical, iron_condor, calendar.
+          example: vertical
+          nullable: true
+          type: string
+        strikes:
+          description: All leg strikes.
+          items:
+            type: string
+          type: array
+        ticker:
+          description: Underlying ticker.
+          example: AAPL
+          type: string
+        total_premium:
+          description: Gross premium across legs.
+          nullable: true
+          type: string
+        txns:
+          description: Number of underlying transactions.
+          type: integer
+        underlying_price:
+          description: Underlying price at execution.
+          nullable: true
+          type: string
+        uniq_exchanges:
+          description: Distinct exchanges the legs printed on.
+          items:
+            type: string
+          type: array
+      title: Multi-Leg Trade
+      type: object
+    Multi-Leg Trades Response:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Multi-Leg Trade'
+          type: array
+      title: Multi-Leg Trades Response
       type: object
     NBBO Ask:
       description: The National Best Bid and Offer (NBBO) ask price.
@@ -14774,91 +14979,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAadbjnuovrbmjdikggomjlaompfimvtpijmnkkdowsypgdraodl'
+            $ref: '#/components/schemas/DynLimitApqxtzpnhisihjwciszjoixokbidkvrriwqyapxuploecissgxh'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAyocwsvibhpvnsflrojpetixwixgcpvxjgybuagtorjzljbifda'
+            $ref: '#/components/schemas/DynLimitAyufkovmmfriyicfpankfaipbjnxssdbyfnbvenfxfhfkiivchu'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAenwxptnobwgtmlmzcyanycazactflwekwjxoaiihsptzwprpgn'
+            $ref: '#/components/schemas/DynLimitAzjulgdripxocjpzegxsuddhtzgfdgkdyfvstpizvyumkrjbgoy'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApoongifbblcsbteoutewcxfvnhntxrhwnowvwaigsgmtipdrpd'
+            $ref: '#/components/schemas/DynLimitAnsgpsieawbfsiydkflinwewdjmpbodvewramwywdzlyjedtdbq'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAinpuubkqygltrsyatwjfapjtcyscjztjfmxkqgfrxtvyipdlht'
+            $ref: '#/components/schemas/DynLimitAilqlvfnnpqdzrlcgnhckhheefpxfytebxihgerftcshyihxjae'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtqtdjtrispaxocwryfjxsvralywbvsrzvdufeiveoatinwgutk'
+            $ref: '#/components/schemas/DynLimitAuaserpsvmmcawtwxtzfejwuqqjoispcptmptzotzthguxkdhxc'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqltxksworaehjbkgnakmbxecjwyuxuwisogvxxkajhyojafzrd'
+            $ref: '#/components/schemas/DynLimitAsjejocyzrkipqsuftanaimnrnkmwvdtcmeelzstuvsjiyuuzql'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApfnyzjyrhpgsqonygqfbfvxkmchfnrzxaznxumboatxblfeakc'
+            $ref: '#/components/schemas/DynLimitAekoihumnrvvpungyldsysfyntrzxwudxttechrmxucgsuupfoh'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqvdgwhutwsdeudukrqebqayqgpkkhlkkmwsicpubnwfocikszh'
+            $ref: '#/components/schemas/DynLimitArbkmngszcmyzyzwrnuekqlxhfdvojqtquorptwynkkpujsrvlt'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwyudoydsytdziucjdpevdncxvcoqzvqkznymyjjphiujflytav'
+            $ref: '#/components/schemas/DynLimitAxcfurogflkiwsaexkwgbhhbtnwpmalkfknxsxecfnkvpkeukyh'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAamfbfkemllrlnuggqceufjtcevpyokppgfhambzrlzdnqwglmz'
+            $ref: '#/components/schemas/DynLimitAgnbrpxymetpyvsimnyoxttewjpuujhvvjencxyzbkqoqysujyl'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjvhwjiwtarcelrwhrcklbrfqchrnyfyolnoxebrxxzjsaownid'
+            $ref: '#/components/schemas/DynLimitAusyodegdjdcjceaxidyarsvzimxxkwfixpxjtbyemgruczfcbc'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitArvsqeralumvceipbjkvuyvowcvhsjplclagcrbrtrwznqgphwy'
+            $ref: '#/components/schemas/DynLimitAsmplowoguwxmkmqqjnnhtvcxennhfcolmgoqgjqukzghxtajim'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAulpealznokobsvapodqwtwrvqcdnzkuhoxzvhkdlohzlzpymss'
+            $ref: '#/components/schemas/DynLimitAipxxnmfxsrsmqujajknozehgwbnlfrqvbpwcbqqfneowgapkjs'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAajqvxjgljqcdkqsjrxuvxoemljxposogebxfpbszmrzrqzwezw'
+            $ref: '#/components/schemas/DynLimitAuqxrnrchgcarkrtazkvqeprgykhqlqkhpvgvvpcuszfxjlnchx'
         - description: ''
           in: query
           name: rule_name[]
@@ -15175,6 +15380,233 @@ paths:
       summary: Full Tape
       tags:
         - option-trade
+  /api/option-trades/multi-leg:
+    get:
+      callbacks: {}
+      description: |
+        **Requires the Advanced API tier or higher (Advanced, Enterprise, or Enterprise + Kafka).**
+        
+        A live feed of detected multi-leg option strategies — vertical spreads, iron condors, butterflies,
+        calendars, diagonals and more — reconstructed from their individual legs, newest first. Each row summarizes
+        the strategy (net premium, net greeks, strikes, DTE range, breakevens, max profit/loss) across all legs.
+        Use the per-strategy `id` with the `legs` endpoint to fetch the individual contracts.
+        
+        Decimal values are returned as strings. Defaults to the current trading day when no time bounds are given.
+      operationId: PublicApi.MultiLegController.index
+      parameters:
+        - description: Rows per page (default 50, max 500).
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+        - description: Rows to skip for pagination (max 500).
+          in: query
+          name: offset
+          required: false
+          schema:
+            type: integer
+        - description: Restrict to a single underlying ticker.
+          in: query
+          name: ticker_symbol
+          required: false
+          schema:
+            type: string
+        - description: Only strategies executed at/after this UTC timestamp (ISO-8601). Defaults to last market open.
+          in: query
+          name: newer_than
+          required: false
+          schema:
+            type: string
+        - description: Only strategies executed at/before this UTC timestamp (ISO-8601).
+          in: query
+          name: older_than
+          required: false
+          schema:
+            type: string
+        - description: Filter by detected strategy name(s). Repeatable array param (e.g. `strategy[]=iron_condor&strategy[]=call_vertical_spread`).
+          in: query
+          name: strategy
+          required: false
+          schema:
+            items:
+              enum:
+                - call_butterfly_spread
+                - call_calendar
+                - call_condor
+                - call_diagonal_spread_bearish
+                - call_diagonal_spread_bullish
+                - call_ratio_spread
+                - call_vertical_spread
+                - iron_butterfly
+                - iron_condor
+                - jade_lizard
+                - other
+                - put_butterfly_spread
+                - put_calendar
+                - put_condor
+                - put_diagonal_spread_bearish
+                - put_diagonal_spread_bullish
+                - put_frontspread
+                - put_vertical_spread
+                - risk_reversal
+                - straddle
+                - strangle
+                - synthetic
+              type: string
+            type: array
+        - description: Exclude strategies classified as `other` (unrecognized structures).
+          in: query
+          name: exclude_other
+          required: false
+          schema:
+            type: boolean
+        - description: Filter by direction (long/short). Repeatable array param.
+          in: query
+          name: direction
+          required: false
+          schema:
+            items:
+              type: string
+            type: array
+        - description: Filter by net aggressor side (bid/ask). Repeatable array param.
+          in: query
+          name: net_side
+          required: false
+          schema:
+            items:
+              type: string
+            type: array
+        - description: Minimum total contracts across legs.
+          in: query
+          name: min_size
+          required: false
+          schema:
+            type: integer
+        - description: Maximum total contracts across legs.
+          in: query
+          name: max_size
+          required: false
+          schema:
+            type: integer
+        - description: Minimum net premium (supports abs()).
+          in: query
+          name: min_premium
+          required: false
+          schema:
+            type: string
+        - description: Maximum net premium (supports abs()).
+          in: query
+          name: max_premium
+          required: false
+          schema:
+            type: string
+        - description: Minimum days-to-expiry.
+          in: query
+          name: min_dte
+          required: false
+          schema:
+            type: integer
+        - description: Maximum days-to-expiry.
+          in: query
+          name: max_dte
+          required: false
+          schema:
+            type: integer
+        - description: Minimum number of legs.
+          in: query
+          name: min_leg_count
+          required: false
+          schema:
+            type: integer
+        - description: Maximum number of legs.
+          in: query
+          name: max_leg_count
+          required: false
+          schema:
+            type: integer
+        - description: Only strategies where every leg is out-of-the-money.
+          in: query
+          name: all_otm
+          required: false
+          schema:
+            type: boolean
+        - description: Filter by underlying issue type(s), e.g. Common Stock, ETF. Repeatable array param.
+          in: query
+          name: issue_types
+          required: false
+          schema:
+            items:
+              type: string
+            type: array
+        - description: Filter by underlying sector(s). Repeatable array param.
+          in: query
+          name: sectors
+          required: false
+          schema:
+            items:
+              type: string
+            type: array
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Multi-Leg Trades Response'
+          description: Multi-Leg Trades
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Multi-Leg Option Trades
+      tags:
+        - option_trades
+  /api/option-trades/multi-leg/{id}/legs:
+    get:
+      callbacks: {}
+      description: |
+        **Requires the Advanced API tier or higher (Advanced, Enterprise, or Enterprise + Kafka).**
+        
+        Returns the individual option legs that make up a single multi-leg strategy, aggregated by contract with
+        size-weighted greeks and prices. Pass the strategy `id` returned by the Multi-Leg Option Trades feed.
+      operationId: PublicApi.MultiLegController.legs
+      parameters:
+        - description: The multi-leg strategy id (UUID) from the trades feed.
+          in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Multi-Leg Legs Response'
+          description: Multi-Leg Legs
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Multi-Leg Trade Legs
+      tags:
+        - option_trades
   /api/option-trades/optionable-tickers:
     get:
       callbacks: {}
@@ -19585,13 +20017,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmizyezijfmibyvdtjzvhhlxqnqwqfstdjntruaclvjquvucsql'
+            $ref: '#/components/schemas/DynLimitAtaczwtadofjlmsdkxkpfqjomcvhjdrhpeicacahewnmqaugfcw'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAvxrbpkapgdtbsouwplsyeffqgfrqmnfyedyeblnthaihklocqi'
+            $ref: '#/components/schemas/DynLimitAfebmvxxbouagksdqpekqgcbsnemdqenozyfyhtkmoeiaimbslg'
       responses:
         '200':
           content:
