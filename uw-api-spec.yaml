@@ -62,6 +62,11 @@ components:
           $ref: '#/components/schemas/The alert id'
       title: Alert
       type: object
+    Alert DSL grammar:
+      additionalProperties: true
+      description: 'Machine readable description of the alert DSL: available targets, syntax, fields, functions, operators, scopes and example expressions.'
+      title: Alert DSL grammar
+      type: object
     Alert Rule Name:
       description: The name of the alert rule.
       example: RepeatedHits
@@ -82,7 +87,6 @@ components:
               symbols: all
             created_at: 2024-11-19T18:19:14Z
             id: ebe24953-a0bf-4b4d-98be-14f721a1199a
-            mobile_only: false
             name: 'Chain OI Chg: TGT241122C00177500'
             noti_type: chain_oi_change
             status: active
@@ -92,7 +96,6 @@ components:
               symbols: all
             created_at: 2024-08-09T23:23:13Z
             id: 4457d60e-e7e5-4950-82e6-0ea010586f25
-            mobile_only: false
             name: Berkshire
             noti_type: sec_filings
             status: active
@@ -110,6 +113,390 @@ components:
         status:
           $ref: '#/components/schemas/The status of the alert'
       title: Alert config
+      type: object
+    Alert filters:
+      description: The available filters per alert type for creating alert configurations
+      example:
+        access:
+          flow_alerts: true
+          option_trade: true
+          politician_trades: false
+        data:
+          option_trade:
+            - accepted_values:
+                - all
+                - watchlist_only
+                - list
+              filter: symbols
+            - accepted_values: list
+              filter: option_contracts
+            - accepted_values: bool
+              description: Filter for options expiring on OpEx (monthly expiration) Friday
+              filter: opex_only
+            - accepted_values: bool
+              description: Filter for options expiring on a quarterly OpEx (3rd Friday of Mar/Jun/Sep/Dec)
+              filter: is_quarterly
+            - accepted_values:
+                - jan
+                - feb
+                - mar
+                - apr
+                - may
+                - jun
+                - jul
+                - aug
+                - sep
+                - oct
+                - nov
+                - dec
+              description: Filter for monthly opex expiries in any of these months
+              filter: expiry_months
+            - accepted_values: bool
+              filter: is_multi_leg
+            - accepted_values: bool
+              filter: is_otm
+            - accepted_values: bool
+              description: Trade size exceeds total open interest
+              filter: size_greater_oi
+            - accepted_values: bool
+              description: Daily volume exceeds total open interest
+              filter: volume_greater_oi
+            - accepted_values: bool
+              description: Filter for opening transactions only (new positions)
+              filter: opening
+            - accepted_values: bool
+              description: Exclude deep in-the-money contracts
+              filter: exclude_deep_itm
+            - accepted_values: bool
+              description: Include aggregated/block trades
+              filter: add_agg_trades
+            - accepted_values:
+                - ask_side
+                - bid_side
+                - mid_side
+                - no_side
+                - china
+                - volatility
+                - dividend
+                - index
+                - arbitrage
+              filter: excluded_tags
+            - accepted_values:
+                - ask_side
+                - bid_side
+                - mid_side
+                - no_side
+                - china
+                - volatility
+                - dividend
+                - index
+                - arbitrage
+              filter: tags
+            - accepted_values:
+                - Common Stock
+                - ETF
+                - ADR
+                - Index
+              filter: issue_types
+            - accepted_values: list
+              filter: industries
+            - accepted_values:
+                - Basic Materials
+                - Communication Services
+                - Consumer Cyclical
+                - Consumer Defensive
+                - Energy
+                - Financial Services
+                - Healthcare
+                - Industrials
+                - Real Estate
+                - Technology
+                - Utilities
+              filter: sectors
+            - accepted_values:
+                - GMNI
+                - XCBO
+                - BATO
+                - XBXO
+                - MPRL
+                - C2OX
+                - AMXO
+                - MCRY
+                - ARCO
+                - EDGO
+                - XISX
+                - XNDQ
+                - XMIO
+                - XPHO
+                - XBOX
+                - EMLD
+                - MXOP
+                - SPHR
+              filter: exchanges
+            - accepted_values:
+                - Canc
+                - Oseq
+                - Cncl
+                - Late
+                - Cnco
+                - Open
+                - Cnol
+                - Opnl
+                - Auto
+                - Reop
+                - Isoi
+                - Slan
+                - Slai
+                - Slcn
+                - Slci
+                - Slft
+                - Mlet
+                - Mlat
+                - Mlct
+                - Mlft
+                - Mesl
+                - Tlat
+                - Masl
+                - Mfsl
+                - Tlet
+                - Tlct
+                - Tlft
+                - Tesl
+                - Tasl
+                - Tfsl
+                - Cbmo
+                - Mctp
+                - Exht
+              filter: trade_codes
+            - accepted_values: list
+              filter: expiry_dates
+            - accepted_values:
+                - micro
+                - small
+                - mid
+                - large
+                - big
+              filter: marketcap_size
+            - accepted_values:
+                - opening
+                - closing
+                - reopening
+                - cross_trade
+                - extended_hours
+                - intermarket_sweep
+                - trade_through_exempt
+                - odd_lot
+                - official_price_report
+                - futures_floor
+                - summary
+                - printable
+                - normal
+              filter: report_flags
+            - accepted_values: decimal
+              description: Volume to open interest ratio (>1.0 = volume exceeds OI)
+              filter: min_volume_oi_ratio
+            - accepted_values: decimal
+              description: Volume to open interest ratio (>1.0 = volume exceeds OI)
+              filter: max_volume_oi_ratio
+            - accepted_values:
+                - call
+                - put
+              filter: type
+            - accepted_values:
+                - am
+                - pm
+                - asian
+                - cliquet
+              filter: settlement
+            - accepted_values:
+                arith_ops:
+                  - add
+                  - sub
+                  - mul
+                  - div
+                cmp_ops:
+                  - gt
+                  - gte
+                  - lt
+                  - lte
+                  - eq
+                  - neq
+                fields:
+                  - spot
+                  - strike
+                  - bid
+                  - ask
+                  - ewma_bid
+                  - ewma_ask
+                  - premium
+                  - price
+                  - size
+                  - volume
+                  - open_int
+                  - dte
+                  - delta
+                  - gamma
+                  - vega
+                  - theta
+                  - rho
+                  - theo
+                  - iv
+                  - marketcap
+                  - diff
+                  - spread
+                  - bid_perc
+                  - ask_perc
+                  - bull_perc
+                  - bear_perc
+                  - earnings_dte
+                  - days_between_expiry_and_earnings
+                  - vol_oi_ratio
+              description: Cross field comparison
+              filter: compare
+            - accepted_values: decimal
+              filter: min_underlying_price
+            - accepted_values: decimal
+              filter: max_underlying_price
+            - accepted_values: decimal
+              filter: min_strike
+            - accepted_values: decimal
+              filter: max_strike
+            - accepted_values: decimal
+              filter: min_premium
+            - accepted_values: decimal
+              filter: max_premium
+            - accepted_values: decimal
+              filter: min_price
+            - accepted_values: decimal
+              filter: max_price
+            - accepted_values: integer
+              filter: min_size
+            - accepted_values: integer
+              filter: max_size
+            - accepted_values: integer
+              filter: min_volume
+            - accepted_values: integer
+              filter: max_volume
+            - accepted_values: integer
+              filter: min_open_interest
+            - accepted_values: integer
+              filter: max_open_interest
+            - accepted_values: integer
+              filter: min_dte
+            - accepted_values: integer
+              filter: max_dte
+            - accepted_values: decimal_abs
+              filter: min_delta
+            - accepted_values: decimal_abs
+              filter: max_delta
+            - accepted_values: decimal_abs
+              filter: min_gamma
+            - accepted_values: decimal_abs
+              filter: max_gamma
+            - accepted_values: decimal_abs
+              filter: min_theta
+            - accepted_values: decimal_abs
+              filter: max_theta
+            - accepted_values: decimal_abs
+              description: 'Implied volatility of the contract (decimal: 0.5 = 50%)'
+              filter: min_iv
+            - accepted_values: decimal_abs
+              description: 'Implied volatility of the contract (decimal: 0.5 = 50%)'
+              filter: max_iv
+            - accepted_values: decimal
+              filter: min_marketcap
+            - accepted_values: decimal
+              filter: max_marketcap
+            - accepted_values: decimal_abs
+              description: 'Stock price percentage change (decimal: 0.1 = 10%)'
+              filter: min_diff
+            - accepted_values: decimal_abs
+              description: 'Stock price percentage change (decimal: 0.1 = 10%)'
+              filter: max_diff
+            - accepted_values: decimal
+              description: Bid-ask spread percentage
+              filter: min_spread
+            - accepted_values: decimal
+              description: Bid-ask spread percentage
+              filter: max_spread
+            - accepted_values: decimal_abs
+              description: Percentage of volume traded at the bid price
+              filter: min_bid_perc
+            - accepted_values: decimal_abs
+              description: Percentage of volume traded at the bid price
+              filter: max_bid_perc
+            - accepted_values: decimal_abs
+              description: Percentage of volume traded at the ask price
+              filter: min_ask_perc
+            - accepted_values: decimal_abs
+              description: Percentage of volume traded at the ask price
+              filter: max_ask_perc
+            - accepted_values: decimal_abs
+              description: Percentage of bullish flow (calls at ask + puts at bid)
+              filter: min_bull_perc
+            - accepted_values: decimal_abs
+              description: Percentage of bullish flow (calls at ask + puts at bid)
+              filter: max_bull_perc
+            - accepted_values: decimal_abs
+              description: Percentage of bearish flow (calls at bid + puts at ask)
+              filter: min_bear_perc
+            - accepted_values: decimal_abs
+              description: Percentage of bearish flow (calls at bid + puts at ask)
+              filter: max_bear_perc
+            - accepted_values: integer
+              description: Days until next earnings report
+              filter: min_earnings_dte
+            - accepted_values: integer
+              description: Days until next earnings report
+              filter: max_earnings_dte
+            - accepted_values: integer
+              description: Minimum (contract_expiry - next_earnings_date) in calendar days — signed
+              filter: min_days_between_expiry_and_earnings
+            - accepted_values: integer
+              description: Maximum (contract_expiry - next_earnings_date) in calendar days — signed
+              filter: max_days_between_expiry_and_earnings
+            - accepted_values: decimal_abs
+              description: Bull/bear skew ratio
+              filter: min_skew
+            - accepted_values: decimal_abs
+              description: Bull/bear skew ratio
+              filter: max_skew
+        filter_descriptions:
+          option_trade:
+            - opening: Filter for opening transactions only (new positions)
+            - min_iv: 'Implied volatility of the contract (decimal: 0.5 = 50%)'
+        noti_type_descriptions:
+          option_trade: Get notified about any new option trades that hit the flow
+        rate_limits:
+          flow_alerts: '500'
+          option_trade: '5000'
+      properties:
+        access:
+          description: Per alert type whether your account can create alerts of that type.
+          type: object
+        data:
+          description: |
+            Per alert type (`noti_type`) the list of filter fields that can be used in the `config` object, each with its accepted values.
+            
+            `accepted_values` is either an array of allowed literal values, an object describing a nested structure, or one of these type tokens:
+            - `bool`: true or false
+            - `integer`: a whole number
+            - `decimal`: a decimal number
+            - `decimal_abs`: a decimal number that can optionally be wrapped as `abs(x)` or `|x|` to match on absolute value, e.g. `"min_delta": "abs(0.3)"` matches both delta 0.4 and delta -0.4
+            - `string`: a string
+            - `list`: an array of values such as symbols, option contracts or dates
+            - `object`: a nested object, see the filter's description
+          type: object
+        filter_descriptions:
+          description: Per alert type a description of each filter field.
+          type: object
+        noti_type_descriptions:
+          description: A description of each alert type.
+          type: object
+        rate_limits:
+          description: Per alert type the maximum amount of alerts that trigger per day.
+          type: object
+      title: Alert filters
       type: object
     An Institution's Holdings:
       description: The holdings for an institution.
@@ -775,6 +1162,94 @@ components:
       example: UNITED STATES
       title: Country Name
       type: string
+    Create alert config request:
+      description: |
+        Creates a new alert configuration, or updates an existing one when `id` is given.
+        
+        The alert filters can be given in one of two ways, but never both:
+        - `config`: a structured filter object for the given `noti_type`. Fetch the available filter fields per alert type from `GET /api/alerts/filters`.
+        - `input`: a DSL expression such as `add @energy where calls and volume > 100`. Fetch the DSL grammar from `GET /api/alerts/query/grammar`. The `noti_type` field is required for DSL expressions.
+      example:
+        input: add @energy where calls and volume > 100
+        name: Energy call sweeps
+        noti_type: flow_alerts
+      oneOf:
+        - required:
+            - name
+            - noti_type
+            - config
+        - required:
+            - name
+            - noti_type
+            - input
+      properties:
+        config:
+          $ref: '#/components/schemas/The configuration of an alert.'
+        id:
+          description: When given, updates the existing alert configuration with this id instead of creating a new one.
+          format: uuid
+          type: string
+        input:
+          description: A DSL expression describing the alert filters. Use instead of `config` for complex filter expressions. See the DSL grammar endpoint for the syntax.
+          example: where calls and volume > 100 and premium > 10000
+          type: string
+        name:
+          $ref: '#/components/schemas/The name of the alert'
+        noti_type:
+          $ref: '#/components/schemas/The type of the alert'
+        status:
+          $ref: '#/components/schemas/The status of the alert'
+      title: Create alert config request
+      type: object
+    Created alert config:
+      description: The created or updated alert configuration
+      example:
+        data:
+          config:
+            expression:
+              op: and
+              terms:
+                - sectors:
+                    - Energy
+                - op: and
+                  terms:
+                    - is_call: true
+                    - compare:
+                        lhs:
+                          field: volume
+                        op: gt
+                        rhs:
+                          literal: '100'
+            symbols: all
+          created_at: 2025-07-01T14:00:00Z
+          dsl: '@Energy where calls and volume > 100'
+          id: ebe24953-a0bf-4b4d-98be-14f721a1199a
+          name: Energy call sweeps
+          noti_type: flow_alerts
+          status: active
+      properties:
+        data:
+          properties:
+            config:
+              $ref: '#/components/schemas/The configuration of an alert.'
+            created_at:
+              $ref: '#/components/schemas/The creation timestamp'
+            dsl:
+              description: The canonical DSL representation when the configuration was created or updated using `input`.
+              type: string
+            id:
+              $ref: '#/components/schemas/The alert id'
+            name:
+              $ref: '#/components/schemas/The name of the alert'
+            noti_type:
+              $ref: '#/components/schemas/The type of the alert'
+            status:
+              $ref: '#/components/schemas/The status of the alert'
+          type: object
+      required:
+        - data
+      title: Created alert config
+      type: object
     Crypto Holding:
       description: A cryptocurrency holding in a portfolio
       properties:
@@ -1074,29 +1549,29 @@ components:
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAcwxdnxdbnhodvdztcgbwvnnamvlnfubgxprhxlicnyohermbeh:
+    DynLimitAamhojijllarheyuotfamcpxxnrevhhavtgobhcxdglxwzdjulz:
       default: true
-      description: Boolean flag whether to return only intraday alerts.
+      description: Boolean flag whether a transaction is a intermarket sweep.
       example: true
-      title: DynLimitAcwxdnxdbnhodvdztcgbwvnnamvlnfubgxprhxlicnyohermbeh
+      title: DynLimitAamhojijllarheyuotfamcpxxnrevhhavtgobhcxdglxwzdjulz
       type: boolean
-    DynLimitAddyfpsjwrxdutahcbdbubghvuvuhsmtlrklagafashnoxujwdi:
+    DynLimitAcqhsjkplpkjlswnaoomckjfnmfogtxkdgqpvgcujeikqkpcncj:
       default: true
-      description: Boolean flag whether a transaction is a put.
+      description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAddyfpsjwrxdutahcbdbubghvuvuhsmtlrklagafashnoxujwdi
-      type: boolean
-    DynLimitAdqsrudoewxryguhggjckyjbjroshkeboezxhucqhpdqyrvccpi:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAdqsrudoewxryguhggjckyjbjroshkeboezxhucqhpdqyrvccpi
+      title: DynLimitAcqhsjkplpkjlswnaoomckjfnmfogtxkdgqpvgcujeikqkpcncj
       type: boolean
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
       example: 0.45
       title: DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn
       type: integer
+    DynLimitAexetveumkweumdxvcvsrlhpuvkwqeurlyspbaqgywryllomixs:
+      default: true
+      description: Boolean flag whether a transaction is from the floor.
+      example: true
+      title: DynLimitAexetveumkweumdxvcvsrlhpuvkwqeurlyspbaqgywryllomixs
+      type: boolean
     DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa:
       default: 100
       description: 'The limit of results. Default: 100. Max: 500. Min: 0.'
@@ -1105,58 +1580,46 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
-    DynLimitAficcsruvsogkhpfowhqjarutzcapenlvvrajwjicibmdbmppbi:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAficcsruvsogkhpfowhqjarutzcapenlvvrajwjicibmdbmppbi
-      type: integer
-    DynLimitAfnscsuxnrdqhecgbamukrhpbwwdabxbtxoshpjitocpovvwnlz:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAfnscsuxnrdqhecgbamukrhpbwwdabxbtxoshpjitocpovvwnlz
-      type: integer
-    DynLimitAgrapevbzockkugwsygxrniwrtkxqlaqfasuktbesjgaynchgig:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAgrapevbzockkugwsygxrniwrtkxqlaqfasuktbesjgaynchgig
-      type: integer
+    DynLimitAggnwpbjdswimrsfwrgfbhtgazvdawnwktlppyuqvpetamfzzez:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAggnwpbjdswimrsfwrgfbhtgazvdawnwktlppyuqvpetamfzzez
+      type: boolean
     DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf:
       description: The max short shares available.
       example: 10000
       title: DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf
       type: integer
+    DynLimitAgtxjsemfbgkqffptmpcjdtkaicctyibfcrqxwxypelzidakbxx:
+      default: true
+      description: Boolean flag whether a transaction is a call.
+      example: true
+      title: DynLimitAgtxjsemfbgkqffptmpcjdtkaicctyibfcrqxwxypelzidakbxx
+      type: boolean
     DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
-    DynLimitAkjhcjxlyofqpgilfhppnagrykeymmgbjbpnobkxakjrwqakqrx:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAkjhcjxlyofqpgilfhppnagrykeymmgbjbpnobkxakjrwqakqrx
-      type: boolean
-    DynLimitAldnkcepooaoolotbxtpxoljlqjfbebzpfxtvpsecmxjpomvsyn:
-      default: true
-      description: Boolean flag whether a transaction is a call.
-      example: true
-      title: DynLimitAldnkcepooaoolotbxtpxoljlqjfbebzpfxtvpsecmxjpomvsyn
-      type: boolean
-    DynLimitAlgmeuixxyyvvqkawwdomunugjnwwazsvwcjdgvabcoyszbntdh:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAlgmeuixxyyvvqkawwdomunugjnwwazsvwcjdgvabcoyszbntdh
-      type: boolean
-    DynLimitAlyiwbkaaifpysejbjmfqvifgfbhwvsdoyckrzxaqimdwnhllxa:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
+    DynLimitAjiacohogfzyctxfgmvptzvztkgeirrjmurdvgqqlakmppxstkv:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
       minimum: 0
-      title: DynLimitAlyiwbkaaifpysejbjmfqvifgfbhwvsdoyckrzxaqimdwnhllxa
+      title: DynLimitAjiacohogfzyctxfgmvptzvztkgeirrjmurdvgqqlakmppxstkv
       type: integer
+    DynLimitAjsqxdcuadkpdchddztqgnudxighvwcwgitbwowbdfuebnyelil:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAjsqxdcuadkpdchddztqgnudxighvwcwgitbwowbdfuebnyelil
+      type: integer
+    DynLimitAkclsijhrxxpulpkebkhtrfdszrjhmkhfamesjbouquldnqpbif:
+      default: true
+      description: Boolean flag whether a transaction is a put.
+      example: true
+      title: DynLimitAkclsijhrxxpulpkebkhtrfdszrjhmkhfamesjbouquldnqpbif
+      type: boolean
     DynLimitAmgvwdedprykkkwubboqoucydelwfunvmsgjwjjjzoktwvuggur:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
@@ -1189,46 +1652,58 @@ components:
       example: 0.11
       title: DynLimitApdnwejavjdeghjpywbfjnbuehgzwmislusryzphyunaxnoiglr
       type: integer
+    DynLimitAphaxwbphsaguqgczxctjjgsktbgarnlxblfyjrnfediovsrkjj:
+      default: true
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+      example: true
+      title: DynLimitAphaxwbphsaguqgczxctjjgsktbgarnlxblfyjrnfediovsrkjj
+      type: boolean
+    DynLimitApjfognrsidvllevwpnznjdhbdcqywfgxsyqsvwessfxagkwmys:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitApjfognrsidvllevwpnznjdhbdcqywfgxsyqsvwessfxagkwmys
+      type: integer
     DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa:
       description: The min fee rate.
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
+      type: integer
+    DynLimitAqchejnvufznnggafdmwdioecsufzzkcccolvbptoyoxfdbymhk:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAqchejnvufznnggafdmwdioecsufzzkcccolvbptoyoxfdbymhk
+      type: integer
+    DynLimitArntobqxdooxeaoniuwijokfxlnucgodpxaeqirfctptutfaami:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitArntobqxdooxeaoniuwijokfxlnucgodpxaeqirfctptutfaami
       type: integer
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv
       type: integer
-    DynLimitArxwnovuyxzyiqwrtbbqibcxdxgtqykjpwyrktrjdsdryqxdhxh:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+    DynLimitArqsjqhmnxasqdbwlhxpggrbxbzrywrqimvqctrexlomhtnfepj:
+      default: true
+      description: Boolean flag whether to return only intraday alerts.
+      example: true
+      title: DynLimitArqsjqhmnxasqdbwlhxpggrbxbzrywrqimvqctrexlomhtnfepj
+      type: boolean
+    DynLimitAsaurvsoadbrwsajzqimqqgcknfhefgqjrsqpibywejyxdjvuri:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAsaurvsoadbrwsajzqimqqgcknfhefgqjrsqpibywejyxdjvuri
+      type: integer
+    DynLimitAsxzbqsfufcefcksbbuypkjyuhibhgubgbrsukttdhqkpcwhvon:
+      description: 'The maximum size on that alert. Min: 0.'
       example: 125
       minimum: 0
-      title: DynLimitArxwnovuyxzyiqwrtbbqibcxdxgtqykjpwyrktrjdsdryqxdhxh
+      title: DynLimitAsxzbqsfufcefcksbbuypkjyuhibhgubgbrsukttdhqkpcwhvon
       type: integer
-    DynLimitAskfytcpnvdlymrxmfiqdrbtltmpazefkeyinbqxwrschngtvas:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAskfytcpnvdlymrxmfiqdrbtltmpazefkeyinbqxwrschngtvas
-      type: boolean
-    DynLimitAubmkihbsreorbkcgvctehftbagtbxqagpldwgxpqntbhtnnwqm:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAubmkihbsreorbkcgvctehftbagtbxqagpldwgxpqntbhtnnwqm
-      type: integer
-    DynLimitAulgctpzrucvcarnznqxmkepozcyebfbuhtrfcodzwnamtpqshq:
-      default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
-      example: true
-      title: DynLimitAulgctpzrucvcarnznqxmkepozcyebfbuhtrfcodzwnamtpqshq
-      type: boolean
-    DynLimitAustbdftgwusubqjncwqkupnyxejgpaqgmljfjfwbuvakbnmypy:
-      default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
-      example: true
-      title: DynLimitAustbdftgwusubqjncwqkupnyxejgpaqgmljfjfwbuvakbnmypy
-      type: boolean
     DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj:
       description: The min short shares available.
       example: 0
@@ -1239,39 +1714,39 @@ components:
       example: 5000
       title: DynLimitAwvnhnanzzxgxlnzynfeguzfrgjiiyczvdojvmbhcwxcajcrnid
       type: integer
+    DynLimitAxivixdamlnmuxpwgqcpgjdqzspbvedajvnjflicpltztulnagh:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAxivixdamlnmuxpwgqcpgjdqzspbvedajvnjflicpltztulnagh
+      type: boolean
     DynLimitAxjheprcsljmvplbcjldheerzymjvlsybquzhatrknvmtdlzowe:
       description: The max total float.
       example: 100000000
       title: DynLimitAxjheprcsljmvplbcjldheerzymjvlsybquzhatrknvmtdlzowe
-      type: integer
-    DynLimitAxkeateacgceltcrwqwazcskqjfxhrohryqqenzguwkielsrjto:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAxkeateacgceltcrwqwazcskqjfxhrohryqqenzguwkielsrjto
       type: integer
     DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri:
       description: The max days to cover.
       example: 5.3
       title: DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri
       type: integer
-    DynLimitAydvaasbswdwygswcgsugwwnlhwthkwduospfusbwlwoarzsoyu:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAydvaasbswdwygswcgsugwwnlhwthkwduospfusbwlwoarzsoyu
-      type: integer
     DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink:
       description: The min total float.
       example: 10000000
       title: DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink
       type: integer
-    DynLimitAyorvspsqixshtnlothvtucukhnvdcyqfbblpwzoqpbogmxabqu:
+    DynLimitAytahgfhtopkychykboeiviidmiknfhktkywkvzkfngoqpymlyh:
       default: true
-      description: Boolean flag whether a transaction is from the floor.
+      description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAyorvspsqixshtnlothvtucukhnvdcyqfbblpwzoqpbogmxabqu
+      title: DynLimitAytahgfhtopkychykboeiviidmiknfhktkywkvzkfngoqpymlyh
       type: boolean
+    DynLimitAzmpvpgxxstrgjfacfjyfxwxgfspqwjbgtrgdtsmwruazbgdred:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAzmpvpgxxstrgjfacfjyfxwxgfspqwjbgtrgdtsmwruazbgdred
+      type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
       example: '21.60'
@@ -9343,8 +9818,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -10898,7 +11373,7 @@ paths:
           name: intraday_only
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcwxdnxdbnhodvdztcgbwvnnamvlnfubgxprhxlicnyohermbeh'
+            $ref: '#/components/schemas/DynLimitArqsjqhmnxasqdbwlhxpggrbxbzrywrqimvqctrexlomhtnfepj'
         - description: ''
           in: query
           name: config_ids[]
@@ -11006,6 +11481,174 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Alert configurations
+      tags:
+        - alerts
+    post:
+      callbacks: {}
+      description: |
+        Creates a new alert configuration, or updates an existing one when `id` is given.
+        
+        The alert filters can be given in one of two ways, but never both:
+        - `config`: a structured filter object for the given `noti_type`, the same configuration as returned by the alert configurations endpoint.
+        - `input`: a Query language expression. Use the Query language for complex filter expressions.
+        
+        Before creating an alert fetch the available filters:
+        - `GET /api/alerts/filters` lists per alert type (`noti_type`) the filter fields that can be used in `config`, their accepted values, and whether your account can create alerts of that type.
+        - `GET /api/alerts/query/grammar` returns the Query language syntax. `GET /api/alerts/query/grammar?target=option_trade` the full field reference for one target.
+        
+        Example with a structured `config`:
+        ```json
+        {
+          "name": "FED news",
+          "noti_type": "news",
+          "config": {"symbols": "all", "contains": ["FED"]}
+        }
+        ```
+        
+        Example with a Query language `input`:
+        ```json
+        {
+          "name": "Energy sector calls",
+          "noti_type": "flow_alerts",
+          "input": "add @energy where calls and volume > 100 and (dte > 10 or (dte = 0 and ticker = 'XOM'))"
+        }
+        ```
+        
+        The created alerts are delivered like the alerts created on [https://unusualwhales.com/custom-alerts](https://unusualwhales.com/custom-alerts)
+        and their triggers can be fetched from the alerts endpoint or streamed over the `custom_alerts` websocket channel.
+        
+        The alerts and usage of the websocket are the easiest way to setup and get notified on anything that matches your filter configs.
+        The query language is a powerful tool to create complex configurations in a SQL like language.
+      operationId: PublicApi.AlertsController.create_config
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create alert config request'
+        description: Alert configuration
+        required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Created alert config'
+          description: The created or updated alert configuration
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid alert configuration
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: User or alert configuration not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Internal Server Error
+      summary: Create alert configuration
+      tags:
+        - alerts
+  /api/alerts/filters:
+    get:
+      callbacks: {}
+      description: |
+        Returns the available filters for creating alert configurations:
+        - `data`: per alert type (`noti_type`) the filter fields that can be used in the `config` object, each with its accepted values
+        - `access`: per alert type whether your account can create alerts of that type
+        - `noti_type_descriptions`: a description of each alert type
+        - `filter_descriptions`: per alert type a description of each filter field
+        - `rate_limits`: per alert type the maximum amount of alerts that trigger per day
+        
+        Use this endpoint to determine which alert types the account can access and to build a structured `config` object.
+        Submit the resulting `noti_type` and `config` to `POST /api/alerts/configuration` to create an alert.
+        
+        For more complex filters, fetch the Query language syntax and fields from `GET /api/alerts/query/grammar`,
+        then submit the Query expression to `POST /api/alerts/configuration` using `input` instead of `config`.
+        The `config` and `input` fields are mutually exclusive.
+      operationId: PublicApi.AlertsController.filters
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert filters'
+          description: The alert filters
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Alert filters
+      tags:
+        - alerts
+  /api/alerts/query/grammar:
+    get:
+      callbacks: {}
+      description: |
+        Returns the grammar of the alert Query language: available targets, syntax, fields, functions, operators,
+        scopes and example expressions.
+        
+        Without a `target` parameter an overview over all targets is returned. Pass a `target` to get
+        the full field reference for that alert type. Use the Query language to create complex alert configurations
+        via the create alert configuration endpoint. You can compare fields `strike > spot`, add complex math operations
+        `ln(strike / spot) / (iv * sqrt(dte / 365)) > 2` and write configs similar as to one writes SQL.
+        
+        If you are an Ai/Agent you should use this endpoint to fetch the grammar and then post them to `/api/alerts/configuration`.
+        See the documentation at the https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config for more info on the format and how to post
+        an alert config.
+      operationId: PublicApi.AlertsController.dsl_grammar
+      parameters:
+        - description: ''
+          in: query
+          name: target
+          required: false
+          schema:
+            description: The alert target to return the detailed grammar for.
+            enum:
+              - flow_alert
+              - option_trade
+              - option_contract
+              - ticker_interval_flow
+              - news
+              - trading_state
+              - multi_leg_trade
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert DSL grammar'
+          description: The Query language grammar
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Query grammar
       tags:
         - alerts
   /api/analytics/sliding:
@@ -14979,91 +15622,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgrapevbzockkugwsygxrniwrtkxqlaqfasuktbesjgaynchgig'
+            $ref: '#/components/schemas/DynLimitAsaurvsoadbrwsajzqimqqgcknfhefgqjrsqpibywejyxdjvuri'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlyiwbkaaifpysejbjmfqvifgfbhwvsdoyckrzxaqimdwnhllxa'
+            $ref: '#/components/schemas/DynLimitAqchejnvufznnggafdmwdioecsufzzkcccolvbptoyoxfdbymhk'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfnscsuxnrdqhecgbamukrhpbwwdabxbtxoshpjitocpovvwnlz'
+            $ref: '#/components/schemas/DynLimitAjsqxdcuadkpdchddztqgnudxighvwcwgitbwowbdfuebnyelil'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAydvaasbswdwygswcgsugwwnlhwthkwduospfusbwlwoarzsoyu'
+            $ref: '#/components/schemas/DynLimitAsxzbqsfufcefcksbbuypkjyuhibhgubgbrsukttdhqkpcwhvon'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAficcsruvsogkhpfowhqjarutzcapenlvvrajwjicibmdbmppbi'
+            $ref: '#/components/schemas/DynLimitApjfognrsidvllevwpnznjdhbdcqywfgxsyqsvwessfxagkwmys'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAubmkihbsreorbkcgvctehftbagtbxqagpldwgxpqntbhtnnwqm'
+            $ref: '#/components/schemas/DynLimitAzmpvpgxxstrgjfacfjyfxwxgfspqwjbgtrgdtsmwruazbgdred'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitArxwnovuyxzyiqwrtbbqibcxdxgtqykjpwyrktrjdsdryqxdhxh'
+            $ref: '#/components/schemas/DynLimitArntobqxdooxeaoniuwijokfxlnucgodpxaeqirfctptutfaami'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAxkeateacgceltcrwqwazcskqjfxhrohryqqenzguwkielsrjto'
+            $ref: '#/components/schemas/DynLimitAjiacohogfzyctxfgmvptzvztkgeirrjmurdvgqqlakmppxstkv'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAustbdftgwusubqjncwqkupnyxejgpaqgmljfjfwbuvakbnmypy'
+            $ref: '#/components/schemas/DynLimitAphaxwbphsaguqgczxctjjgsktbgarnlxblfyjrnfediovsrkjj'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAyorvspsqixshtnlothvtucukhnvdcyqfbblpwzoqpbogmxabqu'
+            $ref: '#/components/schemas/DynLimitAexetveumkweumdxvcvsrlhpuvkwqeurlyspbaqgywryllomixs'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAulgctpzrucvcarnznqxmkepozcyebfbuhtrfcodzwnamtpqshq'
+            $ref: '#/components/schemas/DynLimitAamhojijllarheyuotfamcpxxnrevhhavtgobhcxdglxwzdjulz'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAldnkcepooaoolotbxtpxoljlqjfbebzpfxtvpsecmxjpomvsyn'
+            $ref: '#/components/schemas/DynLimitAgtxjsemfbgkqffptmpcjdtkaicctyibfcrqxwxypelzidakbxx'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAddyfpsjwrxdutahcbdbubghvuvuhsmtlrklagafashnoxujwdi'
+            $ref: '#/components/schemas/DynLimitAkclsijhrxxpulpkebkhtrfdszrjhmkhfamesjbouquldnqpbif'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAkjhcjxlyofqpgilfhppnagrykeymmgbjbpnobkxakjrwqakqrx'
+            $ref: '#/components/schemas/DynLimitAytahgfhtopkychykboeiviidmiknfhktkywkvzkfngoqpymlyh'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlgmeuixxyyvvqkawwdomunugjnwwazsvwcjdgvabcoyszbntdh'
+            $ref: '#/components/schemas/DynLimitAcqhsjkplpkjlswnaoomckjfnmfogtxkdgqpvgcujeikqkpcncj'
         - description: ''
           in: query
           name: rule_name[]
@@ -20017,13 +20660,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdqsrudoewxryguhggjckyjbjroshkeboezxhucqhpdqyrvccpi'
+            $ref: '#/components/schemas/DynLimitAxivixdamlnmuxpwgqcpgjdqzspbvedajvnjflicpltztulnagh'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAskfytcpnvdlymrxmfiqdrbtltmpazefkeyinbqxwrschngtvas'
+            $ref: '#/components/schemas/DynLimitAggnwpbjdswimrsfwrgfbhtgazvdawnwktlppyuqvpetamfzzez'
       responses:
         '200':
           content:
