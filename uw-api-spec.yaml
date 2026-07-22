@@ -1555,6 +1555,12 @@ components:
       example: true
       title: DynLimitAamhojijllarheyuotfamcpxxnrevhhavtgobhcxdglxwzdjulz
       type: boolean
+    DynLimitAbojcthegearuymnahcfrwxzxtlwilzvhdhfmethhcltrmfzhih:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAbojcthegearuymnahcfrwxzxtlwilzvhdhfmethhcltrmfzhih
+      type: boolean
     DynLimitAcqhsjkplpkjlswnaoomckjfnmfogtxkdgqpvgcujeikqkpcncj:
       default: true
       description: Boolean flag whether a transaction is bid side.
@@ -1636,6 +1642,12 @@ components:
       example: 0.05
       title: DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet
       type: integer
+    DynLimitAngggelhcldnusodxsmivsunrvshdsoiugqedoqhichtprdddqg:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAngggelhcldnusodxsmivsunrvshdsoiugqedoqhichtprdddqg
+      type: boolean
     DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk:
       description: The max rebate rate.
       example: 5.34
@@ -1669,12 +1681,6 @@ components:
       minimum: 0
       title: DynLimitAqchejnvufznnggafdmwdioecsufzzkcccolvbptoyoxfdbymhk
       type: integer
-    DynLimitAraeacutpivoimwyjbcrnwoysnwejgxtqpiohniyydmzmskuugi:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAraeacutpivoimwyjbcrnwoysnwejgxtqpiohniyydmzmskuugi
-      type: boolean
     DynLimitArntobqxdooxeaoniuwijokfxlnucgodpxaeqirfctptutfaami:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1709,12 +1715,6 @@ components:
       example: 0
       title: DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj
       type: integer
-    DynLimitAwuauvraizxwdjkmqhylhuxpgwkyealscoegwxtdcbustmlvuxa:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAwuauvraizxwdjkmqhylhuxpgwkyealscoegwxtdcbustmlvuxa
-      type: boolean
     DynLimitAwvnhnanzzxgxlnzynfeguzfrgjiiyczvdojvmbhcwxcajcrnid:
       description: The min short interest.
       example: 5000
@@ -20660,13 +20660,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAraeacutpivoimwyjbcrnwoysnwejgxtqpiohniyydmzmskuugi'
+            $ref: '#/components/schemas/DynLimitAngggelhcldnusodxsmivsunrvshdsoiugqedoqhichtprdddqg'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwuauvraizxwdjkmqhylhuxpgwkyealscoegwxtdcbustmlvuxa'
+            $ref: '#/components/schemas/DynLimitAbojcthegearuymnahcfrwxzxtlwilzvhdhfmethhcltrmfzhih'
       responses:
         '200':
           content:
