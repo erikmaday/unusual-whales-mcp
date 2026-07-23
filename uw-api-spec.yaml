@@ -1555,12 +1555,6 @@ components:
       example: true
       title: DynLimitAamhojijllarheyuotfamcpxxnrevhhavtgobhcxdglxwzdjulz
       type: boolean
-    DynLimitAbojcthegearuymnahcfrwxzxtlwilzvhdhfmethhcltrmfzhih:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAbojcthegearuymnahcfrwxzxtlwilzvhdhfmethhcltrmfzhih
-      type: boolean
     DynLimitAcqhsjkplpkjlswnaoomckjfnmfogtxkdgqpvgcujeikqkpcncj:
       default: true
       description: Boolean flag whether a transaction is bid side.
@@ -1586,6 +1580,12 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
+    DynLimitAforcwwyquotfegnjdfsbxpmsmwfuegxhopuylahgvbevqepkds:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAforcwwyquotfegnjdfsbxpmsmwfuegxhopuylahgvbevqepkds
+      type: boolean
     DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf:
       description: The max short shares available.
       example: 10000
@@ -1620,6 +1620,12 @@ components:
       example: true
       title: DynLimitAkclsijhrxxpulpkebkhtrfdszrjhmkhfamesjbouquldnqpbif
       type: boolean
+    DynLimitAkfdrsftgpkxcvuguoiykjqnawgsrbnzlragvlopjoqwepcdecx:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAkfdrsftgpkxcvuguoiykjqnawgsrbnzlragvlopjoqwepcdecx
+      type: boolean
     DynLimitAmgvwdedprykkkwubboqoucydelwfunvmsgjwjjjzoktwvuggur:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
@@ -1642,12 +1648,6 @@ components:
       example: 0.05
       title: DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet
       type: integer
-    DynLimitAngggelhcldnusodxsmivsunrvshdsoiugqedoqhichtprdddqg:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAngggelhcldnusodxsmivsunrvshdsoiugqedoqhichtprdddqg
-      type: boolean
     DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk:
       description: The max rebate rate.
       example: 5.34
@@ -20660,13 +20660,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAngggelhcldnusodxsmivsunrvshdsoiugqedoqhichtprdddqg'
+            $ref: '#/components/schemas/DynLimitAforcwwyquotfegnjdfsbxpmsmwfuegxhopuylahgvbevqepkds'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbojcthegearuymnahcfrwxzxtlwilzvhdhfmethhcltrmfzhih'
+            $ref: '#/components/schemas/DynLimitAkfdrsftgpkxcvuguoiykjqnawgsrbnzlragvlopjoqwepcdecx'
       responses:
         '200':
           content:
