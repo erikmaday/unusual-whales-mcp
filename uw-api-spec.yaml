@@ -1561,17 +1561,17 @@ components:
       example: true
       title: DynLimitAcqhsjkplpkjlswnaoomckjfnmfogtxkdgqpvgcujeikqkpcncj
       type: boolean
+    DynLimitAdpobtstthwpqlurxmrrylzbynfgkrxepclrvatiitqvuhrwfcb:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAdpobtstthwpqlurxmrrylzbynfgkrxepclrvatiitqvuhrwfcb
+      type: boolean
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
       example: 0.45
       title: DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn
       type: integer
-    DynLimitAehyvameiyngfvvjpychdnvqskhdtkwdvkbmdoctlhzrtaijmrm:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAehyvameiyngfvvjpychdnvqskhdtkwdvkbmdoctlhzrtaijmrm
-      type: boolean
     DynLimitAexetveumkweumdxvcvsrlhpuvkwqeurlyspbaqgywryllomixs:
       default: true
       description: Boolean flag whether a transaction is from the floor.
@@ -1729,12 +1729,6 @@ components:
       example: 10000000
       title: DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink
       type: integer
-    DynLimitAynjpwviznizzhiohljhieqfbqpapasvkrhejbpdqbyanmugwlc:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAynjpwviznizzhiohljhieqfbqpapasvkrhejbpdqbyanmugwlc
-      type: boolean
     DynLimitAytahgfhtopkychykboeiviidmiknfhktkywkvzkfngoqpymlyh:
       default: true
       description: Boolean flag whether a transaction is ask side.
@@ -1747,6 +1741,12 @@ components:
       minimum: 0
       title: DynLimitAzmpvpgxxstrgjfacfjyfxwxgfspqwjbgtrgdtsmwruazbgdred
       type: integer
+    DynLimitAzztewwuysxzzhlrdwnymohyneebsxdwelyvzbojtraxzspqdor:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAzztewwuysxzzhlrdwnymohyneebsxdwelyvzbojtraxzspqdor
+      type: boolean
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
       example: '21.60'
@@ -9818,8 +9818,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -20660,13 +20660,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAynjpwviznizzhiohljhieqfbqpapasvkrhejbpdqbyanmugwlc'
+            $ref: '#/components/schemas/DynLimitAzztewwuysxzzhlrdwnymohyneebsxdwelyvzbojtraxzspqdor'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAehyvameiyngfvvjpychdnvqskhdtkwdvkbmdoctlhzrtaijmrm'
+            $ref: '#/components/schemas/DynLimitAdpobtstthwpqlurxmrrylzbynfgkrxepclrvatiitqvuhrwfcb'
       responses:
         '200':
           content:
