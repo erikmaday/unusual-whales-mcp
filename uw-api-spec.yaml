@@ -1561,12 +1561,6 @@ components:
       example: true
       title: DynLimitAcqhsjkplpkjlswnaoomckjfnmfogtxkdgqpvgcujeikqkpcncj
       type: boolean
-    DynLimitAdpobtstthwpqlurxmrrylzbynfgkrxepclrvatiitqvuhrwfcb:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAdpobtstthwpqlurxmrrylzbynfgkrxepclrvatiitqvuhrwfcb
-      type: boolean
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
       example: 0.45
@@ -1675,6 +1669,12 @@ components:
       minimum: 0
       title: DynLimitAqchejnvufznnggafdmwdioecsufzzkcccolvbptoyoxfdbymhk
       type: integer
+    DynLimitAqgggfdtfzedvnpemqmllgfikjvfxxqasmybaziydvwdkmvvrwp:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAqgggfdtfzedvnpemqmllgfikjvfxxqasmybaziydvwdkmvvrwp
+      type: boolean
     DynLimitArntobqxdooxeaoniuwijokfxlnucgodpxaeqirfctptutfaami:
       description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
@@ -1704,6 +1704,12 @@ components:
       minimum: 0
       title: DynLimitAsxzbqsfufcefcksbbuypkjyuhibhgubgbrsukttdhqkpcwhvon
       type: integer
+    DynLimitAvpjpjhibtvohzasynugqmxtixvsqmuuipnwvtnwuzngiwyixpe:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAvpjpjhibtvohzasynugqmxtixvsqmuuipnwvtnwuzngiwyixpe
+      type: boolean
     DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj:
       description: The min short shares available.
       example: 0
@@ -1741,12 +1747,6 @@ components:
       minimum: 0
       title: DynLimitAzmpvpgxxstrgjfacfjyfxwxgfspqwjbgtrgdtsmwruazbgdred
       type: integer
-    DynLimitAzztewwuysxzzhlrdwnymohyneebsxdwelyvzbojtraxzspqdor:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAzztewwuysxzzhlrdwnymohyneebsxdwelyvzbojtraxzspqdor
-      type: boolean
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
       example: '21.60'
@@ -16035,6 +16035,8 @@ paths:
         Use the per-strategy `id` with the `legs` endpoint to fetch the individual contracts.
         
         Decimal values are returned as strings. Defaults to the current trading day when no time bounds are given.
+        Queries are limited to a 24-hour range. If both bounds span more than 24 hours, `newer_than` is clamped
+        to 24 hours before `older_than`.
       operationId: PublicApi.MultiLegController.index
       parameters:
         - description: Rows per page (default 50, max 500).
@@ -16055,13 +16057,13 @@ paths:
           required: false
           schema:
             type: string
-        - description: Only strategies executed at/after this UTC timestamp (ISO-8601). Defaults to last market open.
+        - description: Only strategies executed at/after this UTC timestamp (ISO-8601). Defaults to last market open. The query range is limited to 24 hours.
           in: query
           name: newer_than
           required: false
           schema:
             type: string
-        - description: Only strategies executed at/before this UTC timestamp (ISO-8601).
+        - description: Only strategies executed at/before this UTC timestamp (ISO-8601). The query range is limited to 24 hours.
           in: query
           name: older_than
           required: false
@@ -20660,13 +20662,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzztewwuysxzzhlrdwnymohyneebsxdwelyvzbojtraxzspqdor'
+            $ref: '#/components/schemas/DynLimitAvpjpjhibtvohzasynugqmxtixvsqmuuipnwvtnwuzngiwyixpe'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdpobtstthwpqlurxmrrylzbynfgkrxepclrvatiitqvuhrwfcb'
+            $ref: '#/components/schemas/DynLimitAqgggfdtfzedvnpemqmllgfikjvfxxqasmybaziydvwdkmvvrwp'
       responses:
         '200':
           content:
