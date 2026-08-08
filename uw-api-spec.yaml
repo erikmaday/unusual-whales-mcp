@@ -2113,18 +2113,12 @@ components:
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAawncrnhilejnkmuzllmlfuystpewgueyzyzrvxsrjncxjszijh:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAarpowtzlvtzisfibfvsspgxylfgxuafqcenwckvomttnocnbwy:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAawncrnhilejnkmuzllmlfuystpewgueyzyzrvxsrjncxjszijh
+      title: DynLimitAarpowtzlvtzisfibfvsspgxylfgxuafqcenwckvomttnocnbwy
       type: integer
-    DynLimitAcqnwbnenubcwsekmgkwlhfarflwimntsbaaxsadiiuwvoseyfm:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAcqnwbnenubcwsekmgkwlhfarflwimntsbaaxsadiiuwvoseyfm
-      type: boolean
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
       example: 0.45
@@ -2138,76 +2132,46 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
-    DynLimitAfruncdwxevldqrifnnkdmqrzqnsqbznttbnfhritpovevvpbtm:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
+    DynLimitAfrmoluxhzxnyhccbzzhahytnwqqgwpriiryfcjglvdyjfwtwkv:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
       minimum: 0
-      title: DynLimitAfruncdwxevldqrifnnkdmqrzqnsqbznttbnfhritpovevvpbtm
+      title: DynLimitAfrmoluxhzxnyhccbzzhahytnwqqgwpriiryfcjglvdyjfwtwkv
       type: integer
-    DynLimitAfsnknpklxxwpthhapqptodrbjhlprctpbpesmiwjfsxqycmzqq:
+    DynLimitAftikjmudbargwusqtlklsfgfvtwjfzgeyctdkgtllwxapblnpx:
       default: true
-      description: Boolean flag whether a transaction is bid side.
+      description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAfsnknpklxxwpthhapqptodrbjhlprctpbpesmiwjfsxqycmzqq
-      type: boolean
-    DynLimitAgailcreofpafqimwrlignmpviwemjoiqbbjwasrvergbifjnru:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAgailcreofpafqimwrlignmpviwemjoiqbbjwasrvergbifjnru
+      title: DynLimitAftikjmudbargwusqtlklsfgfvtwjfzgeyctdkgtllwxapblnpx
       type: boolean
     DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf:
       description: The max short shares available.
       example: 10000
       title: DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf
       type: integer
-    DynLimitAhlonscpohnktnxwicnxtcafwssamfehxeqhukutnzwngtpzwjx:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAhlonscpohnktnxwicnxtcafwssamfehxeqhukutnzwngtpzwjx
-      type: boolean
-    DynLimitAhvmahgsguroccmzwwrqypumudankqiluspzxogjpvloybwtjxo:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAhvmahgsguroccmzwwrqypumudankqiluspzxogjpvloybwtjxo
-      type: integer
-    DynLimitAieflniiuqfczhmmtcbeyqnhrqlqwzkmzjbzihepgwctmzwtklq:
-      default: true
-      description: Boolean flag whether a transaction is from the floor.
-      example: true
-      title: DynLimitAieflniiuqfczhmmtcbeyqnhrqlqwzkmzjbzihepgwctmzwtklq
-      type: boolean
-    DynLimitAioomckevtlgjhlxartwydambadrvidudhgzzklbeuounomyydr:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAioomckevtlgjhlxartwydambadrvidudhgzzklbeuounomyydr
-      type: integer
     DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
-    DynLimitAkadtihlxfdeskkvtxexxclguuepqqcwtmpzujpowstbslveaxf:
+    DynLimitAizuljidqyspsdiucehvrpmwiiighmvcyauzgswdhiktqpvueif:
       default: true
-      description: Boolean flag whether a transaction is bid side.
+      description: Boolean flag whether a transaction is a put.
       example: true
-      title: DynLimitAkadtihlxfdeskkvtxexxclguuepqqcwtmpzujpowstbslveaxf
+      title: DynLimitAizuljidqyspsdiucehvrpmwiiighmvcyauzgswdhiktqpvueif
       type: boolean
-    DynLimitAlmkewsxpdtgsmwqjbpnrzujwbuypejgfgruhpgbmheuhfpudss:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAlmkewsxpdtgsmwqjbpnrzujwbuypejgfgruhpgbmheuhfpudss
-      type: integer
-    DynLimitAlqtfbccesindshbappypvjjfnjvymsiyopcvbcfvfgkbaqgxve:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAlqtfbccesindshbappypvjjfnjvymsiyopcvbcfvfgkbaqgxve
-      type: integer
+    DynLimitAkolybvyhzbfuscrmejmzztlitxevomsuzowgerzaevydugnbuv:
+      default: true
+      description: Boolean flag whether a transaction is a call.
+      example: true
+      title: DynLimitAkolybvyhzbfuscrmejmzztlitxevomsuzowgerzaevydugnbuv
+      type: boolean
+    DynLimitAljwlzqrqvyncxfgldwlprgxswdvamirvdwrbrripxxjphhclbb:
+      default: true
+      description: Boolean flag whether a transaction is a intermarket sweep.
+      example: true
+      title: DynLimitAljwlzqrqvyncxfgldwlprgxswdvamirvdwrbrripxxjphhclbb
+      type: boolean
     DynLimitAmgvwdedprykkkwubboqoucydelwfunvmsgjwjjjzoktwvuggur:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
@@ -2240,16 +2204,46 @@ components:
       example: 0.11
       title: DynLimitApdnwejavjdeghjpywbfjnbuehgzwmislusryzphyunaxnoiglr
       type: integer
+    DynLimitApkmmvakhzeymuuuanuwpdvvpqyoiybrdbzkreinfpzxcpivmfw:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitApkmmvakhzeymuuuanuwpdvvpqyoiybrdbzkreinfpzxcpivmfw
+      type: integer
     DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa:
       description: The min fee rate.
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
-    DynLimitAqzdxnjjnugukwuigpytrgyfprsxcznowvdtbcwrhbuegmwkcst:
+    DynLimitAplmsbqiishpfcyllwskqlrjufkxredyldkakcjolkkydqzyknh:
       default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+      description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAqzdxnjjnugukwuigpytrgyfprsxcznowvdtbcwrhbuegmwkcst
+      title: DynLimitAplmsbqiishpfcyllwskqlrjufkxredyldkakcjolkkydqzyknh
+      type: boolean
+    DynLimitApmnypntdwsagkwrmrrnbdkpffglybkpweeszqbmrzmfjmtjocz:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitApmnypntdwsagkwrmrrnbdkpffglybkpweeszqbmrzmfjmtjocz
+      type: boolean
+    DynLimitArccejprpldtyxplejiosodlmykwjumekmrftbkhrqyieeaqlbw:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitArccejprpldtyxplejiosodlmykwjumekmrftbkhrqyieeaqlbw
+      type: integer
+    DynLimitArfrokrfvpxmiqzqxrtoyorpovyviculiqjhrhxrvzvrhxitbtj:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitArfrokrfvpxmiqzqxrtoyorpovyviculiqjhrhxrvzvrhxitbtj
+      type: integer
+    DynLimitArjduspmgqvzkqpxhgfeqasconahpojfzczgzogucvyopyjwphm:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitArjduspmgqvzkqpxhgfeqasconahpojfzczgzogucvyopyjwphm
       type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
@@ -2262,34 +2256,28 @@ components:
       example: true
       title: DynLimitArqsjqhmnxasqdbwlhxpggrbxbzrywrqimvqctrexlomhtnfepj
       type: boolean
-    DynLimitAskflanvuordngmwujwztjrofhdbtpcisajgpskxmyoqiqezpkr:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAskflanvuordngmwujwztjrofhdbtpcisajgpskxmyoqiqezpkr
-      type: integer
-    DynLimitAuzigecidozckwlcjgnykmzelpkpyijqjgzbpcmbgpsczmgsiyo:
+    DynLimitArxnbtudumjqrbtgczcxypnasbzrvcrorhobeidxvbcezyrbiaa:
       default: true
-      description: Boolean flag whether a transaction is a call.
+      description: Boolean flag whether a transaction is from the floor.
       example: true
-      title: DynLimitAuzigecidozckwlcjgnykmzelpkpyijqjgzbpcmbgpsczmgsiyo
+      title: DynLimitArxnbtudumjqrbtgczcxypnasbzrvcrorhobeidxvbcezyrbiaa
       type: boolean
-    DynLimitAvmmsrbpmpvbnyldrxtngddphegqdxhrcmjlmaugvfbzqlfvnwe:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAvmmsrbpmpvbnyldrxtngddphegqdxhrcmjlmaugvfbzqlfvnwe
-      type: integer
-    DynLimitAwhigkdvhjkjqlmmuvtazkpobajvukekzpatolwjwjosvfxtgid:
+    DynLimitAtyanwdvwxcohobapaqlnkhhhxgggxovuceyeoizpunebbtwdgn:
       default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
-      title: DynLimitAwhigkdvhjkjqlmmuvtazkpobajvukekzpatolwjwjosvfxtgid
+      title: DynLimitAtyanwdvwxcohobapaqlnkhhhxgggxovuceyeoizpunebbtwdgn
       type: boolean
     DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj:
       description: The min short shares available.
       example: 0
       title: DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj
+      type: integer
+    DynLimitAwjfozqnxeyuahjcnpdzaodsbckhyvjuzspajlzkdnqteyouqqr:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAwjfozqnxeyuahjcnpdzaodsbckhyvjuzspajlzkdnqteyouqqr
       type: integer
     DynLimitAwvnhnanzzxgxlnzynfeguzfrgjiiyczvdojvmbhcwxcajcrnid:
       description: The min short interest.
@@ -2310,6 +2298,18 @@ components:
       description: The min total float.
       example: 10000000
       title: DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink
+      type: integer
+    DynLimitAyivdxjzvegasmncpbdizunttgkhfmlpbwafacgubujfkesiite:
+      description: 'The maximum size on that alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAyivdxjzvegasmncpbdizunttgkhfmlpbwafacgubujfkesiite
+      type: integer
+    DynLimitAzesfoblpnyubaohgtubqaxvfxmcrdysqklnhqcalaxdmanzdjh:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAzesfoblpnyubaohgtubqaxvfxmcrdysqklnhqcalaxdmanzdjh
       type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -4111,6 +4111,182 @@ components:
         data:
           $ref: '#/components/schemas/Fundamental Breakdown'
       title: Fundamental Breakdown Response
+      type: object
+    Futures Candles:
+      description: OHLCV candles for a contract over the requested interval and range.
+      properties:
+        data:
+          items:
+            additionalProperties: true
+            properties:
+              c:
+                description: Close
+                type: string
+              date:
+                description: Trading date
+                format: date
+                type: string
+              end:
+                format: date-time
+                type: string
+              h:
+                description: High
+                type: string
+              l:
+                description: Low
+                type: string
+              o:
+                description: Open
+                type: string
+              start:
+                format: date-time
+                type: string
+              v:
+                description: Volume
+                type: integer
+            type: object
+          type: array
+      title: Futures Candles
+      type: object
+    Futures Contracts:
+      description: Active CME futures contracts with recent trading activity, most active first.
+      properties:
+        data:
+          items:
+            additionalProperties: true
+            properties:
+              high:
+                nullable: true
+                type: string
+              is_spread:
+                description: True for calendar/inter-commodity spread contracts.
+                type: boolean
+              last_trade:
+                format: date-time
+                nullable: true
+                type: string
+              low:
+                nullable: true
+                type: string
+              name:
+                description: Dated contract symbol, e.g. ESU6.
+                example: ESU6
+                type: string
+              product:
+                description: CME product code, e.g. ES.
+                example: ES
+                type: string
+              security_id:
+                nullable: true
+                type: string
+              trades:
+                type: integer
+              volume:
+                nullable: true
+                type: integer
+            type: object
+          type: array
+      title: Futures Contracts
+      type: object
+    Futures Flow:
+      description: Newest-first trade prints across all contracts, with the contract and product on each row.
+      properties:
+        data:
+          items:
+            additionalProperties: true
+            properties:
+              crossed:
+                type: boolean
+              executed_at:
+                format: date-time
+                type: string
+              nbbo_ask:
+                nullable: true
+                type: string
+              nbbo_bid:
+                nullable: true
+                type: string
+              price:
+                type: string
+              product:
+                example: ES
+                type: string
+              side:
+                enum:
+                  - buy
+                  - sell
+                  - none
+                type: string
+              size:
+                type: integer
+              sym:
+                example: ESU6
+                type: string
+              trade_id:
+                nullable: true
+                type: integer
+            type: object
+          type: array
+      title: Futures Flow
+      type: object
+    Futures Stats:
+      description: 'Latest session statistics for a contract: official settlement, open interest and session volume.'
+      properties:
+        data:
+          additionalProperties: true
+          properties:
+            open_interest:
+              nullable: true
+              type: integer
+            session_volume:
+              nullable: true
+              type: integer
+            settlement:
+              description: Official settlement price (day-change reference).
+              nullable: true
+              type: string
+            settlement_date:
+              format: date
+              nullable: true
+              type: string
+          type: object
+      title: Futures Stats
+      type: object
+    Futures Trades:
+      description: Newest-first trade prints (time & sales) for a contract.
+      properties:
+        data:
+          items:
+            additionalProperties: true
+            properties:
+              crossed:
+                description: NBBO bid above ask (locked/crossed).
+                type: boolean
+              executed_at:
+                format: date-time
+                type: string
+              nbbo_ask:
+                nullable: true
+                type: string
+              nbbo_bid:
+                nullable: true
+                type: string
+              price:
+                type: string
+              side:
+                enum:
+                  - buy
+                  - sell
+                  - none
+                type: string
+              size:
+                type: integer
+              trade_id:
+                nullable: true
+                type: integer
+            type: object
+          type: array
+      title: Futures Trades
       type: object
     GEX Levels:
       description: |
@@ -7565,7 +7741,7 @@ components:
       title: Open Interest per Strike
       type: object
     Option Chains response:
-      description: All option chains for a given ticker.
+      description: All option chains for a given ticker. By default `data` is an array of option-symbol strings. Pass `greeks=true` to instead get an enriched object per contract with strike, expiry, type, NBBO (nbbo_bid/nbbo_ask), implied_volatility, open_interest, volume, delta, gamma, theta, vega, rho and last_tape_time.
       example:
         data:
           - AAPL230908C00175000
@@ -8578,10 +8754,13 @@ components:
           - ask_volume: 56916
             avg_price: '0.77927817593516586531'
             bid_volume: 68967
+            delta: '-0.187'
             floor_volume: 1815
+            gamma: '0.021'
             high_price: '5.75'
             implied_volatility: '0.542805337797143'
             last_price: '0.01'
+            last_tape_time: 2024-02-01T20:59:58Z
             low_price: '0.01'
             mid_volume: 6393
             multi_leg_volume: 9871
@@ -8591,9 +8770,12 @@ components:
             open_interest: 22868
             option_symbol: AAPL240202P00185000
             prev_oi: 20217
+            rho: '-0.015'
             stock_multi_leg_volume: 13
             sweep_volume: 12893
+            theta: '-0.043'
             total_premium: '10307980.00'
+            vega: '0.089'
             volume: 132276
           - ask_volume: 54820
             avg_price: '0.19195350495251190385'
@@ -8624,14 +8806,29 @@ components:
           $ref: '#/components/schemas/Option Contract Bid Volume'
         cross_volume:
           $ref: '#/components/schemas/Option Contract Cross Volume'
+        delta:
+          description: 'First-order greek: delta.'
+          example: '0.42'
+          nullable: true
+          type: string
         floor_volume:
           $ref: '#/components/schemas/Option Contract Floor Volume'
+        gamma:
+          description: 'First-order greek: gamma.'
+          example: '0.031'
+          nullable: true
+          type: string
         high_price:
           $ref: '#/components/schemas/Option Contract High'
         implied_volatility:
           $ref: '#/components/schemas/Option Contract Last Transaction IV'
         last_price:
           $ref: '#/components/schemas/Option Contract Close'
+        last_tape_time:
+          description: As-of timestamp anchoring row freshness — the contract's last trade (tape) time. Approximate for NBBO freshness (it is trade time, not a dedicated quote timestamp).
+          format: date-time
+          nullable: true
+          type: string
         low_price:
           $ref: '#/components/schemas/Option Contract Low'
         mid_volume:
@@ -8650,12 +8847,27 @@ components:
           $ref: '#/components/schemas/Option Contract Symbol'
         prev_oi:
           $ref: '#/components/schemas/Option Contract Previous Open Interest'
+        rho:
+          description: 'First-order greek: rho.'
+          example: '0.027'
+          nullable: true
+          type: string
         stock_multi_leg_volume:
           $ref: '#/components/schemas/Option Contract Stock Multi Leg Volume'
         sweep_volume:
           $ref: '#/components/schemas/Option Contract Sweep Volume'
+        theta:
+          description: 'First-order greek: theta.'
+          example: '-0.058'
+          nullable: true
+          type: string
         total_premium:
           $ref: '#/components/schemas/Option Contract Premium'
+        vega:
+          description: 'First-order greek: vega.'
+          example: '0.112'
+          nullable: true
+          type: string
         volume:
           $ref: '#/components/schemas/Option Contract Volume'
       title: Option contracts
@@ -15911,6 +16123,272 @@ paths:
       summary: FX Spot Rate
       tags:
         - forex
+  /api/futures/contracts:
+    get:
+      callbacks: {}
+      description: |
+        Active CME futures contracts with trading activity over the last `days` (default 3, max 30),
+        most active first. Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+      operationId: PublicApi.FuturesController.contracts
+      parameters:
+        - description: Lookback window in days (default 3, max 30).
+          in: query
+          name: days
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Futures Contracts'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Futures Contracts
+      tags:
+        - Futures
+  /api/futures/flow:
+    get:
+      callbacks: {}
+      description: |
+        Newest-first trade prints across ALL contracts. Optional server-side filters narrow the feed.
+        Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+      operationId: PublicApi.FuturesController.flow
+      parameters:
+        - description: Max rows (default 100, max 500).
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+        - description: 'Cursor: return trades executed before this ISO8601 timestamp.'
+          in: query
+          name: older_than
+          required: false
+          schema:
+            type: string
+        - description: 'Cursor: return trades executed after this ISO8601 timestamp.'
+          in: query
+          name: newer_than
+          required: false
+          schema:
+            type: string
+        - description: Comma-separated CME product codes to include, e.g. ES,NQ.
+          in: query
+          name: products
+          required: false
+          schema:
+            type: string
+        - description: 'Filter by aggressor side: buy or sell.'
+          in: query
+          name: side
+          required: false
+          schema:
+            type: string
+        - description: Minimum trade size (contracts).
+          in: query
+          name: min_size
+          required: false
+          schema:
+            type: number
+        - description: Maximum trade size (contracts).
+          in: query
+          name: max_size
+          required: false
+          schema:
+            type: number
+        - description: Minimum trade price.
+          in: query
+          name: min_price
+          required: false
+          schema:
+            type: number
+        - description: Maximum trade price.
+          in: query
+          name: max_price
+          required: false
+          schema:
+            type: number
+        - description: Set to false to exclude calendar/spread contracts.
+          in: query
+          name: include_spreads
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Futures Flow'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Futures Flow
+      tags:
+        - Futures
+  /api/futures/{contract}/candles:
+    get:
+      callbacks: {}
+      description: |
+        OHLCV candles for a contract. Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+      operationId: PublicApi.FuturesController.candles
+      parameters:
+        - description: Dated CME contract symbol, e.g. ESU6.
+          example: ESU6
+          in: path
+          name: contract
+          required: true
+          schema:
+            type: string
+        - description: 'Candle interval: 1m (default), 5m, or 1d.'
+          in: query
+          name: interval
+          required: false
+          schema:
+            type: string
+        - description: 'History range: 1d (default), 5d, 1w, 1m, 3m, 1y.'
+          in: query
+          name: range
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Futures Candles'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Futures Candles (OHLCV)
+      tags:
+        - Futures
+  /api/futures/{contract}/stats:
+    get:
+      callbacks: {}
+      description: |
+        Latest session statistics for a contract: official settlement (day-change reference),
+        settlement date, open interest and session volume. Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+      operationId: PublicApi.FuturesController.stats
+      parameters:
+        - description: Dated CME contract symbol, e.g. ESU6.
+          example: ESU6
+          in: path
+          name: contract
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Futures Stats'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Futures Session Stats
+      tags:
+        - Futures
+  /api/futures/{contract}/trades:
+    get:
+      callbacks: {}
+      description: |
+        Newest-first trade prints for a contract, cursor-paginated via `older_than`/`newer_than`.
+        Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+      operationId: PublicApi.FuturesController.trades
+      parameters:
+        - description: Dated CME contract symbol, e.g. ESU6.
+          example: ESU6
+          in: path
+          name: contract
+          required: true
+          schema:
+            type: string
+        - description: Max rows (default 100, max 500).
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+        - description: 'Cursor: return trades executed before this ISO8601 timestamp.'
+          in: query
+          name: older_than
+          required: false
+          schema:
+            type: string
+        - description: 'Cursor: return trades executed after this ISO8601 timestamp.'
+          in: query
+          name: newer_than
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Futures Trades'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Futures Trades (Time & Sales)
+      tags:
+        - Futures
   /api/group-flow/{flow_group}/greek-flow:
     get:
       callbacks: {}
@@ -18749,91 +19227,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfruncdwxevldqrifnnkdmqrzqnsqbznttbnfhritpovevvpbtm'
+            $ref: '#/components/schemas/DynLimitAzesfoblpnyubaohgtubqaxvfxmcrdysqklnhqcalaxdmanzdjh'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAioomckevtlgjhlxartwydambadrvidudhgzzklbeuounomyydr'
+            $ref: '#/components/schemas/DynLimitAwjfozqnxeyuahjcnpdzaodsbckhyvjuzspajlzkdnqteyouqqr'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlmkewsxpdtgsmwqjbpnrzujwbuypejgfgruhpgbmheuhfpudss'
+            $ref: '#/components/schemas/DynLimitAfrmoluxhzxnyhccbzzhahytnwqqgwpriiryfcjglvdyjfwtwkv'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhvmahgsguroccmzwwrqypumudankqiluspzxogjpvloybwtjxo'
+            $ref: '#/components/schemas/DynLimitAyivdxjzvegasmncpbdizunttgkhfmlpbwafacgubujfkesiite'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAawncrnhilejnkmuzllmlfuystpewgueyzyzrvxsrjncxjszijh'
+            $ref: '#/components/schemas/DynLimitArfrokrfvpxmiqzqxrtoyorpovyviculiqjhrhxrvzvrhxitbtj'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAvmmsrbpmpvbnyldrxtngddphegqdxhrcmjlmaugvfbzqlfvnwe'
+            $ref: '#/components/schemas/DynLimitApkmmvakhzeymuuuanuwpdvvpqyoiybrdbzkreinfpzxcpivmfw'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAskflanvuordngmwujwztjrofhdbtpcisajgpskxmyoqiqezpkr'
+            $ref: '#/components/schemas/DynLimitArccejprpldtyxplejiosodlmykwjumekmrftbkhrqyieeaqlbw'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlqtfbccesindshbappypvjjfnjvymsiyopcvbcfvfgkbaqgxve'
+            $ref: '#/components/schemas/DynLimitAarpowtzlvtzisfibfvsspgxylfgxuafqcenwckvomttnocnbwy'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqzdxnjjnugukwuigpytrgyfprsxcznowvdtbcwrhbuegmwkcst'
+            $ref: '#/components/schemas/DynLimitAtyanwdvwxcohobapaqlnkhhhxgggxovuceyeoizpunebbtwdgn'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAieflniiuqfczhmmtcbeyqnhrqlqwzkmzjbzihepgwctmzwtklq'
+            $ref: '#/components/schemas/DynLimitArxnbtudumjqrbtgczcxypnasbzrvcrorhobeidxvbcezyrbiaa'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwhigkdvhjkjqlmmuvtazkpobajvukekzpatolwjwjosvfxtgid'
+            $ref: '#/components/schemas/DynLimitAljwlzqrqvyncxfgldwlprgxswdvamirvdwrbrripxxjphhclbb'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAuzigecidozckwlcjgnykmzelpkpyijqjgzbpcmbgpsczmgsiyo'
+            $ref: '#/components/schemas/DynLimitAkolybvyhzbfuscrmejmzztlitxevomsuzowgerzaevydugnbuv'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgailcreofpafqimwrlignmpviwemjoiqbbjwasrvergbifjnru'
+            $ref: '#/components/schemas/DynLimitAizuljidqyspsdiucehvrpmwiiighmvcyauzgswdhiktqpvueif'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcqnwbnenubcwsekmgkwlhfarflwimntsbaaxsadiiuwvoseyfm'
+            $ref: '#/components/schemas/DynLimitAplmsbqiishpfcyllwskqlrjufkxredyldkakcjolkkydqzyknh'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAkadtihlxfdeskkvtxexxclguuepqqcwtmpzujpowstbslveaxf'
+            $ref: '#/components/schemas/DynLimitArjduspmgqvzkqpxhgfeqasconahpojfzczgzogucvyopyjwphm'
         - description: ''
           in: query
           name: rule_name[]
@@ -24120,13 +24598,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhlonscpohnktnxwicnxtcafwssamfehxeqhukutnzwngtpzwjx'
+            $ref: '#/components/schemas/DynLimitAftikjmudbargwusqtlklsfgfvtwjfzgeyctdkgtllwxapblnpx'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfsnknpklxxwpthhapqptodrbjhlprctpbpesmiwjfsxqycmzqq'
+            $ref: '#/components/schemas/DynLimitApmnypntdwsagkwrmrrnbdkpffglybkpweeszqbmrzmfjmtjocz'
       responses:
         '200':
           content:
@@ -25371,6 +25849,15 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Optional Market Date'
+        - description: When true, return an enriched row per contract (strike, expiry, type, NBBO, IV, OI, volume, delta, gamma, theta, vega, rho, last_tape_time) instead of the default array of option-symbol strings.
+          examples:
+            - true
+            - false
+          in: query
+          name: greeks
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           content:
@@ -25463,6 +25950,18 @@ paths:
           required: false
           schema:
             type: boolean
+        - description: Minimum days to expiration (expiry at least this many days from today).
+          in: query
+          name: min_dte
+          required: false
+          schema:
+            type: integer
+        - description: Maximum days to expiration (expiry at most this many days from today).
+          in: query
+          name: max_dte
+          required: false
+          schema:
+            type: integer
         - description: Options symbols to filter by
           in: query
           name: option_symbol[]
