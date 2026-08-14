@@ -2054,6 +2054,47 @@ components:
       example: '0.610546281537814'
       title: Delta
       type: string
+    Derived Stock Quote Values:
+      properties:
+        midpoint:
+          description: Arithmetic mean of the best bid and ask prices.
+          example: '775.655'
+          type: string
+        quote_age_ms:
+          description: Milliseconds since the latest quote update when this response was generated.
+          example: 89
+          format: int64
+          type: integer
+        size_imbalance:
+          description: Top of book size imbalance. Positive values indicate more displayed bid size.
+          example: 0.5238095238095238
+          format: double
+          maximum: 1
+          minimum: -1
+          nullable: true
+          type: number
+        size_weighted_midpoint:
+          description: Midpoint adjusted toward the side opposite the greater displayed size.
+          example: 775.657619047619
+          format: double
+          nullable: true
+          type: number
+        spread:
+          description: Best ask price minus best bid price.
+          example: '0.010'
+          type: string
+        spread_bps:
+          description: Quoted spread relative to the midpoint, expressed in basis points.
+          example: 0.12892329708428238
+          format: double
+          nullable: true
+          type: number
+      required:
+        - midpoint
+        - spread
+        - quote_age_ms
+      title: Derived Stock Quote Values
+      type: object
     Description:
       description: The institution's description.
       example: Florida-based hedge fund founded in 1977 by Paul Singer. Elliott and Singer himself are famous activists known for acquiring board seats and influencing management, but Elliott has many active arms and runs multiple strategies concurrently like distressed debt, convertible arbitrage, equity long/short, and more.
@@ -2110,40 +2151,52 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAafwjnqrsycpqifsmvnwiqreuwjqntkoprirjxcvmudifycgajs:
-      default: true
-      description: Boolean flag whether a transaction is a call.
-      example: true
-      title: DynLimitAafwjnqrsycpqifsmvnwiqreuwjqntkoprirjxcvmudifycgajs
-      type: boolean
+    DynLimitAafukrzbcjogoefnlxpauhmiswvllknrqcqzagkluxgpakylvql:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAafukrzbcjogoefnlxpauhmiswvllknrqcqzagkluxgpakylvql
+      type: integer
     DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq:
       description: The max short interest.
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAbusyiglfnanwbtmxuechvfzjnyfptmvsnzkwpsigdzhnaqjkso:
+    DynLimitAatkxthstzarlfjzpzalecwgylbovfhqnfmkfidkkpfmypxlfzo:
       default: true
-      description: Boolean flag whether a transaction is ask side.
+      description: Boolean flag whether a transaction is a call.
       example: true
-      title: DynLimitAbusyiglfnanwbtmxuechvfzjnyfptmvsnzkwpsigdzhnaqjkso
+      title: DynLimitAatkxthstzarlfjzpzalecwgylbovfhqnfmkfidkkpfmypxlfzo
       type: boolean
-    DynLimitAdjoofphfsrfnqmylepkbzlfwzntfjlgtssyuggfnlgayicplaa:
+    DynLimitAcmbhitajfrohyatzbvwwgpbyicnkkzsnubbordspdveoptjpae:
       default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+      description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAdjoofphfsrfnqmylepkbzlfwzntfjlgtssyuggfnlgayicplaa
+      title: DynLimitAcmbhitajfrohyatzbvwwgpbyicnkkzsnubbordspdveoptjpae
       type: boolean
+    DynLimitAcmulkgfshlpcrcdkclaghyzenqwrwasokiamgtfkbxrrcpgizo:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAcmulkgfshlpcrcdkclaghyzenqwrwasokiamgtfkbxrrcpgizo
+      type: integer
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
       example: 0.45
       title: DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn
       type: integer
-    DynLimitAduysvubzvdsolwjdxzdrvbngtcdnraowjhsdykcxsuavewqvvx:
+    DynLimitAehiaoxcwcliyjphvxanqjjxidfzzirqoccfrqlrwsjzllykvfz:
       default: true
-      description: Boolean flag whether a transaction is from the floor.
+      description: Boolean flag whether a transaction is a put.
       example: true
-      title: DynLimitAduysvubzvdsolwjdxzdrvbngtcdnraowjhsdykcxsuavewqvvx
+      title: DynLimitAehiaoxcwcliyjphvxanqjjxidfzzirqoccfrqlrwsjzllykvfz
       type: boolean
+    DynLimitAejgpjcqpprksacaybwnrilhlbvojrdqfunzpiiphuqikmsmpwb:
+      description: 'The maximum size on that alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAejgpjcqpprksacaybwnrilhlbvojrdqfunzpiiphuqikmsmpwb
+      type: integer
     DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa:
       default: 100
       description: 'The limit of results. Default: 100. Max: 500. Min: 0.'
@@ -2152,40 +2205,34 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
+    DynLimitAfuxtdmijhbexgtfcxmgiutgyljgxcydluwsgsbphtmicpotxle:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAfuxtdmijhbexgtfcxmgiutgyljgxcydluwsgsbphtmicpotxle
+      type: integer
     DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf:
       description: The max short shares available.
       example: 10000
       title: DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf
-      type: integer
-    DynLimitAiglevzaqppehefhfwdgqxilybqdhvfqituoukyymdblldacenv:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAiglevzaqppehefhfwdgqxilybqdhvfqituoukyymdblldacenv
       type: integer
     DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
-    DynLimitAiuqxwhiemsurnxmqixckppfwmsfzexmpoielzkpjximkodydyf:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
+    DynLimitAkfzxeuktooqlcsvfwhoryfyieygpyldpgpparvuddyefeoqwlt:
+      default: true
+      description: Boolean flag whether a transaction is a intermarket sweep.
+      example: true
+      title: DynLimitAkfzxeuktooqlcsvfwhoryfyieygpyldpgpparvuddyefeoqwlt
+      type: boolean
+    DynLimitAmbisydnydkdcfahvtmyjjmxgpodushmgkwbuwyfcshlhqumfpn:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
       minimum: 0
-      title: DynLimitAiuqxwhiemsurnxmqixckppfwmsfzexmpoielzkpjximkodydyf
+      title: DynLimitAmbisydnydkdcfahvtmyjjmxgpodushmgkwbuwyfcshlhqumfpn
       type: integer
-    DynLimitAjhvgsesebtydmiudnwjgizhrlyjkxiadfbygytfeuomcncwcra:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAjhvgsesebtydmiudnwjgizhrlyjkxiadfbygytfeuomcncwcra
-      type: boolean
-    DynLimitAkmyvzzfdmwzjyuvbyomqxfpuhnkezpjoueffrxkeqyfrdwaltk:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAkmyvzzfdmwzjyuvbyomqxfpuhnkezpjoueffrxkeqyfrdwaltk
-      type: boolean
     DynLimitAmgvwdedprykkkwubboqoucydelwfunvmsgjwjjjzoktwvuggur:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
@@ -2208,12 +2255,6 @@ components:
       example: 0.05
       title: DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet
       type: integer
-    DynLimitAomrmofhhyytkrwgvhduwwmujrwlyaoyxgmyurfjmretainwtvl:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAomrmofhhyytkrwgvhduwwmujrwlyaoyxgmyurfjmretainwtvl
-      type: boolean
     DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk:
       description: The max rebate rate.
       example: 5.34
@@ -2229,12 +2270,24 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
-    DynLimitArdpujxehiozeiuzdohyteqeowjnqazruuinokenwhvtkitzweh:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
+    DynLimitApsisstmoksxsvcmbbyazohsazkbalnstmqscojtlxilntapfzx:
+      default: true
+      description: Boolean flag whether a transaction is from the floor.
+      example: true
+      title: DynLimitApsisstmoksxsvcmbbyazohsazkbalnstmqscojtlxilntapfzx
+      type: boolean
+    DynLimitArenhjuqzevumhmeqkpxguwzgngveovmnaftjhlafdekeieolwh:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
       minimum: 0
-      title: DynLimitArdpujxehiozeiuzdohyteqeowjnqazruuinokenwhvtkitzweh
+      title: DynLimitArenhjuqzevumhmeqkpxguwzgngveovmnaftjhlafdekeieolwh
       type: integer
+    DynLimitArmzglqxtzsjgustwyfijpenbnbadyfzyyloprlbhvyzuwvosxp:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitArmzglqxtzsjgustwyfijpenbnbadyfzyyloprlbhvyzuwvosxp
+      type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -2246,18 +2299,30 @@ components:
       example: true
       title: DynLimitArqsjqhmnxasqdbwlhxpggrbxbzrywrqimvqctrexlomhtnfepj
       type: boolean
-    DynLimitAsxfifntjddqkfufhyjovwrdchfhxhykqtyatcmrylmvavsemcx:
+    DynLimitAsmlodlhtaoxacfzkebyboskiuzfguracnjuxyxfdpsebnjpyvd:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAsmlodlhtaoxacfzkebyboskiuzfguracnjuxyxfdpsebnjpyvd
+      type: integer
+    DynLimitAvgvdurxibsitjwhlevdtbnuctfxklbzdmkjszfyygktgwdarty:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAvgvdurxibsitjwhlevdtbnuctfxklbzdmkjszfyygktgwdarty
+      type: integer
+    DynLimitAvowtyosmlvynkjuwucmlimmqetavywayiyhwdloqpyswdfbmmc:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAsxfifntjddqkfufhyjovwrdchfhxhykqtyatcmrylmvavsemcx
+      title: DynLimitAvowtyosmlvynkjuwucmlimmqetavywayiyhwdloqpyswdfbmmc
       type: boolean
-    DynLimitAwgvapjnyvtmtcxburghuklisadiqvgmrbheehgpnumurffvvnd:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAwgvapjnyvtmtcxburghuklisadiqvgmrbheehgpnumurffvvnd
-      type: integer
+    DynLimitAvrcfudktnyasirqsasdlkwqcxsxousedvcnvxbibxsvuojxjad:
+      default: true
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+      example: true
+      title: DynLimitAvrcfudktnyasirqsasdlkwqcxsxousedvcnvxbibxsvuojxjad
+      type: boolean
     DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj:
       description: The min short shares available.
       example: 0
@@ -2273,45 +2338,21 @@ components:
       example: 100000000
       title: DynLimitAxjheprcsljmvplbcjldheerzymjvlsybquzhatrknvmtdlzowe
       type: integer
+    DynLimitAxkjascndmgwkrnxqpntesetkvlxosezzigxcmmomuqzaiuxudw:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAxkjascndmgwkrnxqpntesetkvlxosezzigxcmmomuqzaiuxudw
+      type: boolean
     DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri:
       description: The max days to cover.
       example: 5.3
       title: DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri
       type: integer
-    DynLimitAxunsddookfuwjpccevsncnaoelihlbafogqdihxgjmlznnmvrn:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAxunsddookfuwjpccevsncnaoelihlbafogqdihxgjmlznnmvrn
-      type: integer
-    DynLimitAyakqcyjmjimnzrvxnhrirsuopbaigkacpewwdageghgbilbuqq:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAyakqcyjmjimnzrvxnhrirsuopbaigkacpewwdageghgbilbuqq
-      type: integer
     DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink:
       description: The min total float.
       example: 10000000
       title: DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink
-      type: integer
-    DynLimitAyhqtmffmeyihvjdfjbzamprhymgkloufrbxthhthgaqeoskvor:
-      default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
-      example: true
-      title: DynLimitAyhqtmffmeyihvjdfjbzamprhymgkloufrbxthhthgaqeoskvor
-      type: boolean
-    DynLimitAywuzotyapwvzolpauqihpwdncfkncsndaevltcbvcxqxnifrtk:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAywuzotyapwvzolpauqihpwdncfkncsndaevltcbvcxqxnifrtk
-      type: integer
-    DynLimitAzraubenstfyflxooardngriiiubkazwlhkstdzomohgzuicfrs:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAzraubenstfyflxooardngriiiubkazwlhkstdzomohgzuicfrs
       type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -6377,6 +6418,28 @@ components:
       example: name
       title: Latest Institutional Filings Order By
       type: string
+    Latest Stock Trade:
+      properties:
+        price:
+          description: Last eligible trade price in US dollars.
+          example: '775.645'
+          type: string
+        time:
+          description: Trade execution time as a Unix timestamp in milliseconds.
+          example: 1786636349747
+          format: int64
+          type: integer
+        vol:
+          description: Consolidated trading volume reported with the trade.
+          example: 13548986
+          format: int64
+          type: integer
+      required:
+        - price
+        - time
+        - vol
+      title: Latest Stock Trade
+      type: object
     Listing:
       properties:
         asset_type:
@@ -7309,6 +7372,27 @@ components:
     Nasdaq Options Pulse Result:
       additionalProperties: true
       title: Nasdaq Options Pulse Result
+      type: object
+    National Best Bid and Ask:
+      properties:
+        ask:
+          allOf:
+            - $ref: '#/components/schemas/Stock Quote Level'
+          description: National best ask.
+        bid:
+          allOf:
+            - $ref: '#/components/schemas/Stock Quote Level'
+          description: National best bid.
+        time:
+          description: Quote source time as a Unix timestamp in milliseconds.
+          example: 1786636351248
+          format: int64
+          type: integer
+      required:
+        - ask
+        - bid
+        - time
+      title: National Best Bid and Ask
       type: object
     Net Flow Data Point:
       description: A single data point in the net flow time series
@@ -12376,6 +12460,187 @@ components:
       example: '120.12'
       title: Stock Price Level
       type: string
+    Stock Quote:
+      properties:
+        last_trade:
+          description: Latest price forming trade, or null when unavailable.
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/Latest Stock Trade'
+            - type: 'null'
+        market_time:
+          $ref: '#/components/schemas/Stock Quote Market Time'
+        quote:
+          description: Latest national best bid and ask, or null when unavailable.
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/National Best Bid and Ask'
+            - type: 'null'
+        quote_statistics:
+          $ref: '#/components/schemas/Stock Quote Statistics'
+        quote_values:
+          description: Values derived from the latest quote, or null when no quote is available.
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/Derived Stock Quote Values'
+            - type: 'null'
+      required:
+        - market_time
+        - quote_statistics
+      title: Stock Quote
+      type: object
+    Stock Quote Error Response:
+      properties:
+        error:
+          properties:
+            code:
+              example: stock_quote_not_found
+              type: string
+            message:
+              example: Stock quote not found
+              type: string
+          required:
+            - code
+            - message
+          type: object
+      required:
+        - error
+      title: Stock Quote Error Response
+      type: object
+    Stock Quote Level:
+      properties:
+        price:
+          description: Price in US dollars.
+          example: '775.660'
+          type: string
+        size:
+          description: Number of shares available at this price.
+          example: 240
+          format: int64
+          type: integer
+      required:
+        - price
+        - size
+      title: Stock Quote Level
+      type: object
+    Stock Quote Market Time:
+      description: Current US equity market session.
+      enum:
+        - regular
+        - premarket
+        - postmarket
+      example: regular
+      title: Stock Quote Market Time
+      type: string
+    Stock Quote Response:
+      example:
+        data:
+          last_trade:
+            price: '775.645'
+            time: 1786636349747
+            vol: 13548986
+          market_time: regular
+          quote:
+            ask:
+              price: '775.660'
+              size: 240
+            bid:
+              price: '775.650'
+              size: 80
+            time: 1786636351248
+          quote_statistics:
+            postmarket:
+              midpoint_changes: 0
+              quote_changes: 0
+              size_only_changes: 0
+              spread_tightened: 0
+              spread_unchanged: 0
+              spread_widened: 0
+            premarket:
+              midpoint_changes: 12540
+              quote_changes: 105322
+              size_only_changes: 92782
+              spread_tightened: 6440
+              spread_unchanged: 92782
+              spread_widened: 6100
+            regular:
+              midpoint_changes: 145814
+              quote_changes: 1255891
+              size_only_changes: 1110077
+              spread_tightened: 74875
+              spread_unchanged: 1110077
+              spread_widened: 70939
+          quote_values:
+            midpoint: '775.655'
+            quote_age_ms: 89
+            size_imbalance: 0.5238095238095238
+            size_weighted_midpoint: 775.657619047619
+            spread: '0.010'
+            spread_bps: 0.12892329708428238
+      properties:
+        data:
+          $ref: '#/components/schemas/Stock Quote'
+      required:
+        - data
+      title: Stock Quote Response
+      type: object
+    Stock Quote Session Statistics:
+      description: Quote change and spread direction counters accumulated during one market session.
+      properties:
+        midpoint_changes:
+          description: Quote changes where the arithmetic midpoint changed.
+          example: 145814
+          format: int64
+          type: integer
+        quote_changes:
+          description: Updates where at least one bid or ask price or size changed.
+          example: 1255891
+          format: int64
+          type: integer
+        size_only_changes:
+          description: Quote changes where size changed but bid and ask prices did not.
+          example: 1110077
+          format: int64
+          type: integer
+        spread_tightened:
+          description: Quote changes where the ask minus bid spread decreased.
+          example: 74875
+          format: int64
+          type: integer
+        spread_unchanged:
+          description: Quote changes where the ask minus bid spread did not change.
+          example: 1110077
+          format: int64
+          type: integer
+        spread_widened:
+          description: Quote changes where the ask minus bid spread increased.
+          example: 70939
+          format: int64
+          type: integer
+      required:
+        - midpoint_changes
+        - quote_changes
+        - size_only_changes
+        - spread_tightened
+        - spread_unchanged
+        - spread_widened
+      title: Stock Quote Session Statistics
+      type: object
+    Stock Quote Statistics:
+      description: Quote change statistics grouped by US equity market session.
+      properties:
+        postmarket:
+          $ref: '#/components/schemas/Stock Quote Session Statistics'
+        premarket:
+          $ref: '#/components/schemas/Stock Quote Session Statistics'
+        regular:
+          $ref: '#/components/schemas/Stock Quote Session Statistics'
+      required:
+        - premarket
+        - regular
+        - postmarket
+      title: Stock Quote Statistics
+      type: object
     Stock Relative Volume:
       description: The relative volume of the stock. The volume traded today divided by the average volume over the last 30 days.
       title: Stock Relative Volume
@@ -15646,6 +15911,8 @@ paths:
       callbacks: {}
       description: |
         Returns the afterhours earnings for a given date.
+        
+        If you are looking to scan for extreme IV term steepness before earnings use https://unusualwhales.com/skills/uw-earnings-vol-scan-skill.md
       operationId: PublicApi.EarningsController.afterhours
       parameters:
         - description: ''
@@ -15693,6 +15960,8 @@ paths:
       callbacks: {}
       description: |
         Returns the premarket earnings for a given date.
+        
+        If you are looking to scan for extreme IV term steepness before earnings use https://unusualwhales.com/skills/uw-earnings-vol-scan-skill.md
       operationId: PublicApi.EarningsController.premarket
       parameters:
         - description: ''
@@ -15746,6 +16015,8 @@ paths:
         
         Furthermore, data about how a long and short straddle would have performed 
         in the past are included as well.
+        
+        If you are looking to scan for extreme IV term steepness before earnings use https://unusualwhales.com/skills/uw-earnings-vol-scan-skill.md
       operationId: PublicApi.EarningsController.ticker
       parameters:
         - description: ''
@@ -16879,6 +17150,8 @@ paths:
         To ensure you get the expected result, it is recommended to use the company CIK (e.g. 0000102909 for VANGUARD GROUP INC) as the name parameter.
         
         You can use endpoint "api/institutions" with a partial name like "VANGUARD" to get all matching institutions with their CIKs.
+        
+        If you are looking to build a database of insitutional positions use https://unusualwhales.com/skills/institutional.md
       operationId: PublicApi.InstitutionController.activity_v2
       parameters:
         - description: ''
@@ -16961,6 +17234,8 @@ paths:
         To ensure you get the expected result, it is recommended to use the company CIK (e.g. 0000102909 for VANGUARD GROUP INC) as the name parameter.
         
         You can use endpoint "api/institutions" with a partial name like "VANGUARD" to get all matching institutions with their CIKs.
+        
+        If you are looking to build a database of insitutional positions use https://unusualwhales.com/skills/institutional.md
       operationId: PublicApi.InstitutionController.holdings
       parameters:
         - description: ''
@@ -17055,6 +17330,8 @@ paths:
         To ensure you get the expected result, it is recommended to use the company CIK (e.g. 0000102909 for VANGUARD GROUP INC) as the name parameter.
         
         You can use endpoint "api/institutions" with a partial name like "VANGUARD" to get all matching institutions with their CIKs.
+        
+        If you are looking to build a database of insitutional positions use https://unusualwhales.com/skills/institutional.md
       operationId: PublicApi.InstitutionController.sectors
       parameters:
         - description: ''
@@ -17108,6 +17385,8 @@ paths:
       callbacks: {}
       description: |
         The institutional ownership of a given ticker.
+        
+        If you are looking to build a database of insitutional positions use https://unusualwhales.com/skills/institutional.md
       operationId: PublicApi.InstitutionController.ownership
       parameters:
         - description: ''
@@ -17191,6 +17470,8 @@ paths:
       callbacks: {}
       description: |
         Returns a list of institutions.
+        
+        If you are looking to build a database of insitutional positions use https://unusualwhales.com/skills/institutional.md
       operationId: PublicApi.InstitutionController.list
       parameters:
         - description: ''
@@ -17280,6 +17561,8 @@ paths:
       callbacks: {}
       description: |
         The latest institutional filings.
+        
+        If you are looking to build a database of insitutional positions use https://unusualwhales.com/skills/institutional.md
       operationId: PublicApi.InstitutionController.latest_filings
       parameters:
         - description: ''
@@ -18227,6 +18510,109 @@ paths:
       summary: News Headlines
       tags:
         - news
+  /api/option-activity/unusual:
+    get:
+      callbacks: {}
+      description: |
+        Returns option contracts flagged as unusual — the API equivalent of the [live options flow](https://unusualwhales.com/live-options-flow) "unusual" view.
+        
+        This is the [Hottest Chains](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.contract_screener) screener with the `unusual` preset applied by default: the contract-expressible subset of the live-options-flow criteria — volume > OI, out-of-the-money, DTE ≤ 60, ask-side ≥ 50%, premium ≥ $10k, issue types ADR/Common Stock/ETF.
+        
+        Every Hottest Chains filter is accepted here and overrides the preset (e.g. `?min_premium=25000&max_dte=30`); pass `unusual=false` to return the full screen. For the complete list of filters and the response shape see the [Hottest Chains endpoint](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.contract_screener).
+        
+        For real time streaming of the same data, subscribe to the `contract_screener` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.contract_screener](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.contract_screener).
+        
+        NOTE: Contracts with a volume of less than 200 are not being returned
+      operationId: PublicApi.ScreenerController.unusual_activity
+      parameters:
+        - description: ''
+          in: query
+          name: ticker_symbol
+          required: false
+          schema:
+            $ref: '#/components/schemas/Ticker'
+        - description: ''
+          in: query
+          name: sectors[]
+          required: false
+          schema:
+            $ref: '#/components/schemas/Sectors'
+        - description: Whether to apply the unusual preset (volume>OI, OTM, DTE≤60, ask-side≥50%, premium≥$10k). Defaults to true for this endpoint; pass false to return the full screen.
+          example: 'true'
+          in: query
+          name: unusual
+          required: false
+          schema:
+            type: boolean
+        - description: The minimum total premium on the contract.
+          example: '25000'
+          in: query
+          name: min_premium
+          required: false
+          schema:
+            type: integer
+        - description: The maximum days to expiry.
+          example: '30'
+          in: query
+          name: max_dte
+          required: false
+          schema:
+            type: integer
+        - description: ''
+          in: query
+          name: issue_types[]
+          required: false
+          schema:
+            $ref: '#/components/schemas/Issue types'
+        - description: The field to order the results by.
+          example: premium
+          in: query
+          name: order
+          required: false
+          schema:
+            type: string
+        - description: Whether to sort ascending or descending. Defaults to descending.
+          example: desc
+          in: query
+          name: order_direction
+          required: false
+          schema:
+            type: string
+        - description: How many items to return. Defaults to 100. Max 200.
+          example: '100'
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Option Contract Screener response.'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Unusual Options Activity
+      tags:
+        - screener
   /api/option-contract/{id}/flow:
     get:
       callbacks: {}
@@ -19259,91 +19645,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAxunsddookfuwjpccevsncnaoelihlbafogqdihxgjmlznnmvrn'
+            $ref: '#/components/schemas/DynLimitArenhjuqzevumhmeqkpxguwzgngveovmnaftjhlafdekeieolwh'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAiuqxwhiemsurnxmqixckppfwmsfzexmpoielzkpjximkodydyf'
+            $ref: '#/components/schemas/DynLimitAfuxtdmijhbexgtfcxmgiutgyljgxcydluwsgsbphtmicpotxle'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAwgvapjnyvtmtcxburghuklisadiqvgmrbheehgpnumurffvvnd'
+            $ref: '#/components/schemas/DynLimitAmbisydnydkdcfahvtmyjjmxgpodushmgkwbuwyfcshlhqumfpn'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAyakqcyjmjimnzrvxnhrirsuopbaigkacpewwdageghgbilbuqq'
+            $ref: '#/components/schemas/DynLimitAejgpjcqpprksacaybwnrilhlbvojrdqfunzpiiphuqikmsmpwb'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAiglevzaqppehefhfwdgqxilybqdhvfqituoukyymdblldacenv'
+            $ref: '#/components/schemas/DynLimitAsmlodlhtaoxacfzkebyboskiuzfguracnjuxyxfdpsebnjpyvd'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzraubenstfyflxooardngriiiubkazwlhkstdzomohgzuicfrs'
+            $ref: '#/components/schemas/DynLimitAafukrzbcjogoefnlxpauhmiswvllknrqcqzagkluxgpakylvql'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitArdpujxehiozeiuzdohyteqeowjnqazruuinokenwhvtkitzweh'
+            $ref: '#/components/schemas/DynLimitAvgvdurxibsitjwhlevdtbnuctfxklbzdmkjszfyygktgwdarty'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAywuzotyapwvzolpauqihpwdncfkncsndaevltcbvcxqxnifrtk'
+            $ref: '#/components/schemas/DynLimitAcmulkgfshlpcrcdkclaghyzenqwrwasokiamgtfkbxrrcpgizo'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdjoofphfsrfnqmylepkbzlfwzntfjlgtssyuggfnlgayicplaa'
+            $ref: '#/components/schemas/DynLimitAvrcfudktnyasirqsasdlkwqcxsxousedvcnvxbibxsvuojxjad'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAduysvubzvdsolwjdxzdrvbngtcdnraowjhsdykcxsuavewqvvx'
+            $ref: '#/components/schemas/DynLimitApsisstmoksxsvcmbbyazohsazkbalnstmqscojtlxilntapfzx'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAyhqtmffmeyihvjdfjbzamprhymgkloufrbxthhthgaqeoskvor'
+            $ref: '#/components/schemas/DynLimitAkfzxeuktooqlcsvfwhoryfyieygpyldpgpparvuddyefeoqwlt'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAafwjnqrsycpqifsmvnwiqreuwjqntkoprirjxcvmudifycgajs'
+            $ref: '#/components/schemas/DynLimitAatkxthstzarlfjzpzalecwgylbovfhqnfmkfidkkpfmypxlfzo'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjhvgsesebtydmiudnwjgizhrlyjkxiadfbygytfeuomcncwcra'
+            $ref: '#/components/schemas/DynLimitAehiaoxcwcliyjphvxanqjjxidfzzirqoccfrqlrwsjzllykvfz'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAkmyvzzfdmwzjyuvbyomqxfpuhnkezpjoueffrxkeqyfrdwaltk'
+            $ref: '#/components/schemas/DynLimitAxkjascndmgwkrnxqpntesetkvlxosezzigxcmmomuqzaiuxudw'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAomrmofhhyytkrwgvhduwwmujrwlyaoyxgmyurfjmretainwtvl'
+            $ref: '#/components/schemas/DynLimitAvowtyosmlvynkjuwucmlimmqetavywayiyhwdloqpyswdfbmmc'
         - description: ''
           in: query
           name: rule_name[]
@@ -19641,6 +20027,8 @@ paths:
         To filter option transactions for the current trading day use the [Option Trades endpoint](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index).
         
         How far back you can download is determined by your plan's historical lookback window with data available since 2022-01-01.
+        
+        If you are looking to build a data lake with the full tape use this skill with your agent: https://unusualwhales.com/skills/uw-options-data-lake-skill.md
         
         You can download the data as a zip file using wget. For example, to download data for Fri Jul 25th, 2025, if your API key is "abc123":
         ```
@@ -24644,13 +25032,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbusyiglfnanwbtmxuechvfzjnyfptmvsnzkwpsigdzhnaqjkso'
+            $ref: '#/components/schemas/DynLimitArmzglqxtzsjgustwyfijpenbnbadyfzyyloprlbhvyzuwvosxp'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsxfifntjddqkfufhyjovwrdchfhxhykqtyatcmrylmvavsemcx'
+            $ref: '#/components/schemas/DynLimitAcmbhitajfrohyatzbvwwgpbyicnkkzsnubbordspdveoptjpae'
       responses:
         '200':
           content:
@@ -26361,6 +26749,52 @@ paths:
       summary: Ownership
       tags:
         - stock
+  /api/stock/{ticker}/quote:
+    get:
+      callbacks: {}
+      description: Returns the latest trade, national best bid and ask, derived quote values, and quote change statistics for each market session.
+      operationId: PublicApi.StockQuoteController.show
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock Quote Response'
+          description: Latest Stock Quote
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock Quote Error Response'
+          description: Ticker is unknown
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+        '502':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock Quote Error Response'
+          description: Stock quote service unavailable
+      summary: Stock Quote
+      tags:
+        - stock
   /api/stock/{ticker}/spot-exposures:
     get:
       callbacks: {}
@@ -26658,6 +27092,9 @@ paths:
         Returns the last stock state for the given ticker.
         
         This is the easiest way to retreive the open, close, high, low and volume of the last trading day.
+        
+        For the latest trade and national best bid and ask use `/api/stock/{ticker}/quote`. It also returns the quote age,
+        midpoint, spread, spread in basis points, top of book size imbalance and size-weighted midpoint.
       operationId: PublicApi.TickerController.last_stock_state
       parameters:
         - description: ''
