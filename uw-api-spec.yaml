@@ -2151,45 +2151,27 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAaavxivfbgshdltjpumrsnphvamlokrzhbvrlsuslbhdcrptord:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAaavxivfbgshdltjpumrsnphvamlokrzhbvrlsuslbhdcrptord
-      type: boolean
     DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq:
       description: The max short interest.
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAbolfzqgeqfbrmkxlmdgleeoaojjkrfxkilkxkqvotlkmhauhyw:
-      default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
-      example: true
-      title: DynLimitAbolfzqgeqfbrmkxlmdgleeoaojjkrfxkilkxkqvotlkmhauhyw
-      type: boolean
-    DynLimitAcgklefhdngcawtrgykdbvjehftmgwxsjnlqeygkhfahacltmww:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAcgklefhdngcawtrgykdbvjehftmgwxsjnlqeygkhfahacltmww
-      type: integer
-    DynLimitAcmpufaknwwlialjpmywglwubrhwitierqswpwktcyaugepyatl:
-      default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
-      example: true
-      title: DynLimitAcmpufaknwwlialjpmywglwubrhwitierqswpwktcyaugepyatl
-      type: boolean
-    DynLimitAcxtwhgphplswsejcnxubzchmiabbzlywwnzpvrhofvrftfreii:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAcxtwhgphplswsejcnxubzchmiabbzlywwnzpvrhofvrftfreii
-      type: boolean
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
       example: 0.45
       title: DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn
+      type: integer
+    DynLimitAdydulkanlrzjhmjpbqwncmqfnrnsdbncssdnpmejqixpkkuukf:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAdydulkanlrzjhmjpbqwncmqfnrnsdbncssdnpmejqixpkkuukf
+      type: integer
+    DynLimitAeopfkhsivmbtjsmeotuaqryedmpxcpputwedrzcvuffvmzaavr:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAeopfkhsivmbtjsmeotuaqryedmpxcpputwedrzcvuffvmzaavr
       type: integer
     DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa:
       default: 100
@@ -2199,46 +2181,28 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
-    DynLimitAgcifzcktvezrnirossjechpzfuxxlugbbkoaitbrnxudkyukhp:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAgcifzcktvezrnirossjechpzfuxxlugbbkoaitbrnxudkyukhp
-      type: integer
     DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf:
       description: The max short shares available.
       example: 10000
       title: DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf
       type: integer
-    DynLimitAhlfvkncsxbztcmszqkocgsmtzizjlvseruqyjpshaabzldaryg:
+    DynLimitAhetcevwzmoscwurocynrnqomdkxvrmreqakdbdtzekwgmtazmc:
       default: true
-      description: Boolean flag whether a transaction is ask side.
+      description: Boolean flag whether a transaction is a put.
       example: true
-      title: DynLimitAhlfvkncsxbztcmszqkocgsmtzizjlvseruqyjpshaabzldaryg
+      title: DynLimitAhetcevwzmoscwurocynrnqomdkxvrmreqakdbdtzekwgmtazmc
       type: boolean
     DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
-    DynLimitAiuuyqecvhproqwabanlvhoyezzqmxsgnrpxltxnhmrqodweghv:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAiuuyqecvhproqwabanlvhoyezzqmxsgnrpxltxnhmrqodweghv
-      type: integer
-    DynLimitAjdhlvsglfvtedjqfbqlqeexlxskvchyitepfmfywzbymwghyoj:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAjdhlvsglfvtedjqfbqlqeexlxskvchyitepfmfywzbymwghyoj
-      type: integer
-    DynLimitAmdxrmvhtkzkkizvbavtadwyvvalbkohpgluqakhjdsjiuncztk:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAmdxrmvhtkzkkizvbavtadwyvvalbkohpgluqakhjdsjiuncztk
-      type: integer
+    DynLimitAjjyxaqsoluhlilixhlrjdazkxnklzkhextsnwqzkgsgrxqcqge:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAjjyxaqsoluhlilixhlrjdazkxnklzkhextsnwqzkgsgrxqcqge
+      type: boolean
     DynLimitAmgvwdedprykkkwubboqoucydelwfunvmsgjwjjjzoktwvuggur:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
@@ -2251,26 +2215,38 @@ components:
       example: 0.1
       title: DynLimitAmiwzvcvlafbptywihmivtogxztamfplnstoilspyiqonfmgxis
       type: integer
-    DynLimitAmxlibzlyfojacplgosgrqcghnqrbqyqslrunizmhmupefrnuds:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAmxlibzlyfojacplgosgrqcghnqrbqyqslrunizmhmupefrnuds
-      type: integer
     DynLimitAmxmdyrsybvtrzmcmrakrncwtrghafdvtxplwnvfxotlemwclyu:
       description: The min days to cover.
       example: 1.1
       title: DynLimitAmxmdyrsybvtrzmcmrakrncwtrghafdvtxplwnvfxotlemwclyu
+      type: integer
+    DynLimitAnazqmjijesuypwusgirtqqxudevqdkmjgylcslnudfcpwywbob:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAnazqmjijesuypwusgirtqqxudevqdkmjgylcslnudfcpwywbob
       type: integer
     DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet:
       description: The max short interest float ratio.
       example: 0.05
       title: DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet
       type: integer
+    DynLimitAnfyyhmesyzdeztjflrpmagsxjzogbxzrntrucejxfkvqrojept:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAnfyyhmesyzdeztjflrpmagsxjzogbxzrntrucejxfkvqrojept
+      type: boolean
     DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk:
       description: The max rebate rate.
       example: 5.34
       title: DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk
+      type: integer
+    DynLimitApcgvpfmpwdvlemslegrzqjamffdmqabkejdrqjdnzpeiufoago:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitApcgvpfmpwdvlemslegrzqjamffdmqabkejdrqjdnzpeiufoago
       type: integer
     DynLimitApdnwejavjdeghjpywbfjnbuehgzwmislusryzphyunaxnoiglr:
       description: The min rebate rate.
@@ -2282,6 +2258,12 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
+    DynLimitApvzdzxxtukfobnmhyizhvxuqyeymvtrbvtjkwyhhegwnviuhdu:
+      default: true
+      description: Boolean flag whether a transaction is from the floor.
+      example: true
+      title: DynLimitApvzdzxxtukfobnmhyizhvxuqyeymvtrbvtjkwyhhegwnviuhdu
+      type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -2293,23 +2275,53 @@ components:
       example: true
       title: DynLimitArqsjqhmnxasqdbwlhxpggrbxbzrywrqimvqctrexlomhtnfepj
       type: boolean
-    DynLimitAtcwyiksigdmwrfdjherlqxtckmekhyyzvaqbbfsqtfbyiwziwe:
+    DynLimitArqtvwblugengecvawxwkmkegusmemhlrrusrolpusustgyetmg:
+      default: true
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+      example: true
+      title: DynLimitArqtvwblugengecvawxwkmkegusmemhlrrusrolpusustgyetmg
+      type: boolean
+    DynLimitAsbnbbyivjqauwwofhdedqwnhwefwpumciyhbeevigawsycxxkk:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAsbnbbyivjqauwwofhdedqwnhwefwpumciyhbeevigawsycxxkk
+      type: boolean
+    DynLimitAsnuppqjjgyxbozjinzdhobocisbatudhzsztlprcsuimogwqbm:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAsnuppqjjgyxbozjinzdhobocisbatudhzsztlprcsuimogwqbm
+      type: integer
+    DynLimitAusbgrldwinltffjnhjbxgwibunctihianlmjucqoorqomfffco:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAusbgrldwinltffjnhjbxgwibunctihianlmjucqoorqomfffco
+      type: integer
+    DynLimitAuyckctifwsjzwoffanvcoujdbvcfmhjexrwqioueoxsgggpsvy:
+      default: true
+      description: Boolean flag whether a transaction is a intermarket sweep.
+      example: true
+      title: DynLimitAuyckctifwsjzwoffanvcoujdbvcfmhjexrwqioueoxsgggpsvy
+      type: boolean
+    DynLimitAvpuefflwhxhgklyunsnqhxxkizljswflmigerykemsqyqxoeeq:
       default: true
       description: Boolean flag whether a transaction is a call.
       example: true
-      title: DynLimitAtcwyiksigdmwrfdjherlqxtckmekhyyzvaqbbfsqtfbyiwziwe
+      title: DynLimitAvpuefflwhxhgklyunsnqhxxkizljswflmigerykemsqyqxoeeq
       type: boolean
-    DynLimitAtwjbdxugcycuvjstehgwghgjcelltcqtquwprgdmnjqdattrab:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAtwjbdxugcycuvjstehgwghgjcelltcqtquwprgdmnjqdattrab
-      type: integer
     DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj:
       description: The min short shares available.
       example: 0
       title: DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj
       type: integer
+    DynLimitAwtswycjufxhfhasqryhszqlaedxsaqbhjrkjvhzfsvwaritxqv:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAwtswycjufxhfhasqryhszqlaedxsaqbhjrkjvhzfsvwaritxqv
+      type: boolean
     DynLimitAwvnhnanzzxgxlnzynfeguzfrgjiiyczvdojvmbhcwxcajcrnid:
       description: The min short interest.
       example: 5000
@@ -2320,40 +2332,28 @@ components:
       example: 100000000
       title: DynLimitAxjheprcsljmvplbcjldheerzymjvlsybquzhatrknvmtdlzowe
       type: integer
+    DynLimitAxpidgjtzwzojuucwgxmfyybgtwccbsmdgofywvcmzsqreynnom:
+      description: 'The maximum size on that alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAxpidgjtzwzojuucwgxmfyybgtwccbsmdgofywvcmzsqreynnom
+      type: integer
     DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri:
       description: The max days to cover.
       example: 5.3
       title: DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri
-      type: integer
-    DynLimitAxpxejgrmwtezwxzvgtvgekluejeiikldtucpdmvcoulwwzixhp:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAxpxejgrmwtezwxzvgtvgekluejeiikldtucpdmvcoulwwzixhp
       type: integer
     DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink:
       description: The min total float.
       example: 10000000
       title: DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink
       type: integer
-    DynLimitAyfngiverusypvknmesccsslcsjfdypkcsewyyrkundkkfwoedz:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAyfngiverusypvknmesccsslcsjfdypkcsewyyrkundkkfwoedz
-      type: boolean
-    DynLimitAzqdupekfdkcoxwbwipbugzvcttdlbeotylwhfqyvzxpxmanrxo:
-      default: true
-      description: Boolean flag whether a transaction is from the floor.
-      example: true
-      title: DynLimitAzqdupekfdkcoxwbwipbugzvcttdlbeotylwhfqyvzxpxmanrxo
-      type: boolean
-    DynLimitAzxgmyoqtbqopdjqvenvgorplowcxdyzqrqsdfcybzptxjwvvxy:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAzxgmyoqtbqopdjqvenvgorplowcxdyzqrqsdfcybzptxjwvvxy
-      type: boolean
+    DynLimitAygvpvspnblrknwtzyvipbkzbxgduyvyseqhjvvjvckyvcffjcy:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAygvpvspnblrknwtzyvipbkzbxgduyvyseqhjvvjvckyvcffjcy
+      type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
       example: '21.60'
@@ -12359,8 +12359,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -13920,6 +13920,10 @@ info:
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com](mailto:oskar@unusualwhales.com).
     
     ## Changelog
+    
+    # 2026.08.21
+    - Added new websocket channels [`interpolated_iv` and `interpolated_iv:TICKER`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.interpolated_iv). The channels stream interpolated implied volatility and expected moves at fixed horizons (1-365 trading days), the live counterpart of [`/stock/:ticker/interpolated-iv`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.interpolated_iv).
+    - Added new websocket channels [`iv_term_structure` and `iv_term_structure:TICKER`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.iv_term_structure). The channels stream ATM implied volatility and expected moves per real option expiry — the raw entries behind `interpolated_iv` — the live counterpart of [`/stock/:ticker/volatility/term-structure`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.implied_volatility_term_structure).
     
     # 2026.04.30
     Added a new advanced-tier endpoint group. All routes below require API Advanced, Enterprise Startup, Enterprise Startup + Kafka, or Enterprise tier.
@@ -19645,91 +19649,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgcifzcktvezrnirossjechpzfuxxlugbbkoaitbrnxudkyukhp'
+            $ref: '#/components/schemas/DynLimitApcgvpfmpwdvlemslegrzqjamffdmqabkejdrqjdnzpeiufoago'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAxpxejgrmwtezwxzvgtvgekluejeiikldtucpdmvcoulwwzixhp'
+            $ref: '#/components/schemas/DynLimitAdydulkanlrzjhmjpbqwncmqfnrnsdbncssdnpmejqixpkkuukf'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjdhlvsglfvtedjqfbqlqeexlxskvchyitepfmfywzbymwghyoj'
+            $ref: '#/components/schemas/DynLimitAusbgrldwinltffjnhjbxgwibunctihianlmjucqoorqomfffco'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmxlibzlyfojacplgosgrqcghnqrbqyqslrunizmhmupefrnuds'
+            $ref: '#/components/schemas/DynLimitAxpidgjtzwzojuucwgxmfyybgtwccbsmdgofywvcmzsqreynnom'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAiuuyqecvhproqwabanlvhoyezzqmxsgnrpxltxnhmrqodweghv'
+            $ref: '#/components/schemas/DynLimitAsnuppqjjgyxbozjinzdhobocisbatudhzsztlprcsuimogwqbm'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtwjbdxugcycuvjstehgwghgjcelltcqtquwprgdmnjqdattrab'
+            $ref: '#/components/schemas/DynLimitAnazqmjijesuypwusgirtqqxudevqdkmjgylcslnudfcpwywbob'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcgklefhdngcawtrgykdbvjehftmgwxsjnlqeygkhfahacltmww'
+            $ref: '#/components/schemas/DynLimitAygvpvspnblrknwtzyvipbkzbxgduyvyseqhjvvjvckyvcffjcy'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmdxrmvhtkzkkizvbavtadwyvvalbkohpgluqakhjdsjiuncztk'
+            $ref: '#/components/schemas/DynLimitAeopfkhsivmbtjsmeotuaqryedmpxcpputwedrzcvuffvmzaavr'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcmpufaknwwlialjpmywglwubrhwitierqswpwktcyaugepyatl'
+            $ref: '#/components/schemas/DynLimitArqtvwblugengecvawxwkmkegusmemhlrrusrolpusustgyetmg'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzqdupekfdkcoxwbwipbugzvcttdlbeotylwhfqyvzxpxmanrxo'
+            $ref: '#/components/schemas/DynLimitApvzdzxxtukfobnmhyizhvxuqyeymvtrbvtjkwyhhegwnviuhdu'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbolfzqgeqfbrmkxlmdgleeoaojjkrfxkilkxkqvotlkmhauhyw'
+            $ref: '#/components/schemas/DynLimitAuyckctifwsjzwoffanvcoujdbvcfmhjexrwqioueoxsgggpsvy'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtcwyiksigdmwrfdjherlqxtckmekhyyzvaqbbfsqtfbyiwziwe'
+            $ref: '#/components/schemas/DynLimitAvpuefflwhxhgklyunsnqhxxkizljswflmigerykemsqyqxoeeq'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcxtwhgphplswsejcnxubzchmiabbzlywwnzpvrhofvrftfreii'
+            $ref: '#/components/schemas/DynLimitAhetcevwzmoscwurocynrnqomdkxvrmreqakdbdtzekwgmtazmc'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAyfngiverusypvknmesccsslcsjfdypkcsewyyrkundkkfwoedz'
+            $ref: '#/components/schemas/DynLimitAnfyyhmesyzdeztjflrpmagsxjzogbxzrntrucejxfkvqrojept'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzxgmyoqtbqopdjqvenvgorplowcxdyzqrqsdfcybzptxjwvvxy'
+            $ref: '#/components/schemas/DynLimitAjjyxaqsoluhlilixhlrjdazkxnklzkhextsnwqzkgsgrxqcqge'
         - description: ''
           in: query
           name: rule_name[]
@@ -23510,6 +23514,10 @@ paths:
         | custom_alerts               | Receive notifications matching the alert configurations on your own Unusual Whales account.                           |
         | futures_trades              | Receive live CME futures trade prints across all contracts. Available on the Advanced API tier, or with the `futures` add-on — email oskar@unusualwhales.com for access. |
         | futures:TICKER              | Similar to `futures_trades` but only for the specified dated contract, e.g. `futures:ESU6`. Available on the Advanced API tier, or with the `futures` add-on. |
+        | interpolated_iv             | Receive live interpolated IV and expected move updates at fixed horizons (1-365 days) for every ticker at once.       |
+        | interpolated_iv:TICKER      | Receive live interpolated IV and expected move updates at fixed horizons for the given ticker.                        |
+        | iv_term_structure           | Receive live ATM IV and expected move updates per real option expiry for every ticker at once.                        |
+        | iv_term_structure:TICKER    | Receive live ATM IV and expected move updates per real option expiry for the given ticker.                            |
         
         The `option_trades` channel will stream all 6,000,000 option trades in real-time, `option_trades:<TICKER>` will stream
         all option trades for the given ticker in real-time.
@@ -24048,6 +24056,67 @@ paths:
       summary: GEX
       tags:
         - websocket
+  /api/socket/interpolated_iv:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for websocket channels `interpolated_iv` and `interpolated_iv:<TICKER>`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream, for example `interpolated_iv:AAPL` for live interpolated IV updates for AAPL.
+        Omit the ticker suffix (`interpolated_iv`) to receive the updates for every ticker.
+        
+        This is the live counterpart of the [`/stock/:ticker/interpolated-iv`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.interpolated_iv) endpoint.
+        A ticker updates at most every ~5 seconds, with one message per horizon (1, 5, 7, 14, 30, 60, 90, 180, 365 trading days).
+        If a horizon lines up with a real option expiry the values are taken from that expiry (`is_exact: true`); otherwise they are
+        interpolated between the two surrounding expiries in total variance space (`is_exact: false`).
+        
+        Payload format:
+        
+        ```
+        [
+          "interpolated_iv:AAPL",
+          {
+            "ticker": "AAPL",
+            "date": "2026-08-20",
+            "days": 30,
+            "volatility": 0.299,
+            "implied_move": 12.345,
+            "implied_move_perc": 0.058,
+            "is_exact": false
+          }
+        ]
+        ```
+        
+        ### Field reference
+        
+        | Field               | Type    | Description |
+        |---------------------|---------|-------------|
+        | `ticker`            | string  | Ticker of the underlying. |
+        | `date`              | string  | The trading date in `YYYY-MM-DD` format. |
+        | `days`              | integer | The horizon in trading days this entry is interpolated to. One of 1, 5, 7, 14, 30, 60, 90, 180, 365. |
+        | `volatility`        | number  | The interpolated implied volatility at this horizon, as a decimal (e.g. `0.299` = 29.9%). |
+        | `implied_move`      | number  | The expected absolute move of the underlying in dollars by this horizon. |
+        | `implied_move_perc` | number  | The expected move as a fraction of the underlying price by this horizon. |
+        | `is_exact`          | boolean | True if an actual option expiry matched this horizon exactly, false if the values were interpolated. |
+      operationId: PublicApi.SocketController.interpolated_iv
+      parameters: []
+      responses: {}
+      summary: Interpolated IV
+      tags:
+        - websocket
   /api/socket/interval_flow:
     get:
       callbacks: {}
@@ -24157,6 +24226,65 @@ paths:
       parameters: []
       responses: {}
       summary: Ticker Interval flow
+      tags:
+        - websocket
+  /api/socket/iv_term_structure:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for websocket channels `iv_term_structure` and `iv_term_structure:<TICKER>`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream, for example `iv_term_structure:AAPL` for live term-structure updates for AAPL.
+        Omit the ticker suffix (`iv_term_structure`) to receive the updates for every ticker.
+        
+        Each message carries the ATM implied volatility and expected move for one real option expiry, the raw
+        per-expiry entries that the `interpolated_iv` channels interpolate onto fixed horizons. This is the live
+        counterpart of the [`/stock/:ticker/volatility/term-structure`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.implied_volatility_term_structure) endpoint.
+        A ticker updates at most every ~5 seconds, with one message per expiry whose values changed.
+        
+        Payload format:
+        
+        ```
+        [
+          "iv_term_structure:AAPL",
+          {
+            "ticker": "AAPL",
+            "date": "2026-08-20",
+            "expiry": "2026-09-18",
+            "volatility": 0.299,
+            "implied_move": 12.345,
+            "implied_move_perc": 0.058
+          }
+        ]
+        ```
+        
+        ### Field reference
+        
+        | Field               | Type   | Description |
+        |---------------------|--------|-------------|
+        | `ticker`            | string | Ticker of the underlying. |
+        | `date`              | string | The trading date in `YYYY-MM-DD` format. |
+        | `expiry`            | string | The option expiry this entry belongs to, in `YYYY-MM-DD` format. |
+        | `volatility`        | number | The ATM implied volatility for this expiry, as a decimal (e.g. `0.299` = 29.9%). Average of the ATM call and put IVs. |
+        | `implied_move`      | number | The expected absolute move of the underlying in dollars by this expiry. |
+        | `implied_move_perc` | number | The expected move as a fraction of the underlying price by this expiry. |
+      operationId: PublicApi.SocketController.iv_term_structure
+      parameters: []
+      responses: {}
+      summary: IV term structure
       tags:
         - websocket
   /api/socket/lit_trades:
@@ -25072,13 +25200,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhlfvkncsxbztcmszqkocgsmtzizjlvseruqyjpshaabzldaryg'
+            $ref: '#/components/schemas/DynLimitAwtswycjufxhfhasqryhszqlaedxsaqbhjrkjvhzfsvwaritxqv'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAaavxivfbgshdltjpumrsnphvamlokrzhbvrlsuslbhdcrptord'
+            $ref: '#/components/schemas/DynLimitAsbnbbyivjqauwwofhdedqwnhwefwpumciyhbeevigawsycxxkk'
       responses:
         '200':
           content:
