@@ -1287,6 +1287,10 @@ components:
       nullable: true
       title: Company Market Cap
       type: string
+    Company Politics Result:
+      additionalProperties: true
+      title: Company Politics Result
+      type: object
     Company Profile:
       properties:
         analyst_target_price:
@@ -2156,17 +2160,35 @@ components:
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAapjkymfqjvkahncvwkkhtbmbssygrvnnxcssrrydmgszxhtuve:
+    DynLimitAaqdnxazmdnzeuzqlzdmivkbrzizrmrbyfinszccnyysdpqdxbm:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAapjkymfqjvkahncvwkkhtbmbssygrvnnxcssrrydmgszxhtuve
+      title: DynLimitAaqdnxazmdnzeuzqlzdmivkbrzizrmrbyfinszccnyysdpqdxbm
       type: boolean
-    DynLimitAavahandrysdhdihqleglthwoafxpsvsgvpwjqhfjmmggskkcwi:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
+    DynLimitAbpvfklgtmhzysmtwpxgekxifpmphxsyrkyaessgnukptgnkrig:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAbpvfklgtmhzysmtwpxgekxifpmphxsyrkyaessgnukptgnkrig
+      type: boolean
+    DynLimitAcfyomqqvrpqknxpffibsrfgprfddqsyyfmxvxolghbjfreatle:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
       minimum: 0
-      title: DynLimitAavahandrysdhdihqleglthwoafxpsvsgvpwjqhfjmmggskkcwi
+      title: DynLimitAcfyomqqvrpqknxpffibsrfgprfddqsyyfmxvxolghbjfreatle
+      type: integer
+    DynLimitAcqsvrsledurxustojteifsnnerocvnwmgoxltphkxhdbbgykhd:
+      default: true
+      description: Boolean flag whether a transaction is a call.
+      example: true
+      title: DynLimitAcqsvrsledurxustojteifsnnerocvnwmgoxltphkxhdbbgykhd
+      type: boolean
+    DynLimitAdgqlhgoqruunokvxkhgpzwgnubxaqvsqmaezblflzlcnwrtoqo:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAdgqlhgoqruunokvxkhgpzwgnubxaqvsqmaezblflzlcnwrtoqo
       type: integer
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
@@ -2181,45 +2203,45 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
-    DynLimitAfmfbsjqvfbkpbudwyaljdpeeyolpfqdvvnolkwawjsdgkbucwt:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAfmfbsjqvfbkpbudwyaljdpeeyolpfqdvvnolkwawjsdgkbucwt
-      type: integer
-    DynLimitAgoyexrvedbolgicjmcfvqmrzklhxertnurchxcnfunbgtokbvy:
+    DynLimitAgpmxagcexsemwdzurvedfemzcftxkljdrtxylvnixcshiudife:
       default: true
       description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAgoyexrvedbolgicjmcfvqmrzklhxertnurchxcnfunbgtokbvy
+      title: DynLimitAgpmxagcexsemwdzurvedfemzcftxkljdrtxylvnixcshiudife
       type: boolean
     DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf:
       description: The max short shares available.
       example: 10000
       title: DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf
       type: integer
-    DynLimitAharqftxlsfqznanxhaxmuhkgipiturfjzeuacsrsblpipygzve:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAharqftxlsfqznanxhaxmuhkgipiturfjzeuacsrsblpipygzve
-      type: integer
-    DynLimitAhjvvnujccjcfpivqttmmpdjwuoozsrtzbrvqtbbduqjwfhktkt:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAhjvvnujccjcfpivqttmmpdjwuoozsrtzbrvqtbbduqjwfhktkt
-      type: integer
-    DynLimitAhznogpsvjbbajmcarfjsbgcrhzykptnpkkiskbdynzkkrhunya:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAhznogpsvjbbajmcarfjsbgcrhzykptnpkkiskbdynzkkrhunya
-      type: integer
+    DynLimitAgvvknbiihwuthzslrnrzwtskbetrnwscrxyhwmbhreswravdnr:
+      default: true
+      description: Boolean flag whether a transaction is a intermarket sweep.
+      example: true
+      title: DynLimitAgvvknbiihwuthzslrnrzwtskbetrnwscrxyhwmbhreswravdnr
+      type: boolean
+    DynLimitAhscpvgkgzftusqbanhhnvhuyicfguenmcjdaantixfawgtybuc:
+      default: true
+      description: Boolean flag whether a transaction is from the floor.
+      example: true
+      title: DynLimitAhscpvgkgzftusqbanhhnvhuyicfguenmcjdaantixfawgtybuc
+      type: boolean
     DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
+      type: integer
+    DynLimitAkqwcqxpfeozdtbyblzpebnwugedjbczuaptyfppepkrtevwxga:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAkqwcqxpfeozdtbyblzpebnwugedjbczuaptyfppepkrtevwxga
+      type: integer
+    DynLimitAljhokargwbnsulkqkcozhzlcokzaoiyfxqvvutpksxkiopuyui:
+      description: 'The maximum size on that alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAljhokargwbnsulkqkcozhzlcokzaoiyfxqvvutpksxkiopuyui
       type: integer
     DynLimitAmgvwdedprykkkwubboqoucydelwfunvmsgjwjjjzoktwvuggur:
       default: 0
@@ -2233,18 +2255,6 @@ components:
       example: 0.1
       title: DynLimitAmiwzvcvlafbptywihmivtogxztamfplnstoilspyiqonfmgxis
       type: integer
-    DynLimitAmknihbkhfwyuwalbkdpdcbbhdjyjgkzyotaevzdilqhjtwrlbl:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAmknihbkhfwyuwalbkdpdcbbhdjyjgkzyotaevzdilqhjtwrlbl
-      type: integer
-    DynLimitAmpcbcxiurupgqeutsijbqibwzizsgtwdjabevezyccmiuzebxw:
-      default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
-      example: true
-      title: DynLimitAmpcbcxiurupgqeutsijbqibwzizsgtwdjabevezyccmiuzebxw
-      type: boolean
     DynLimitAmxmdyrsybvtrzmcmrakrncwtrghafdvtxplwnvfxotlemwclyu:
       description: The min days to cover.
       example: 1.1
@@ -2255,12 +2265,6 @@ components:
       example: 0.05
       title: DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet
       type: integer
-    DynLimitAodhzgmpmqkiborsyljcorqwswyumvkumptgjovxqojsqgqurlo:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAodhzgmpmqkiborsyljcorqwswyumvkumptgjovxqojsqgqurlo
-      type: boolean
     DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk:
       description: The max rebate rate.
       example: 5.34
@@ -2276,18 +2280,6 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
-    DynLimitAqeisupxjlxpomgumiosmatssgtznddscmmayptekexymrydlnu:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAqeisupxjlxpomgumiosmatssgtznddscmmayptekexymrydlnu
-      type: integer
-    DynLimitAqvhotkxkantmfrltjqxmdtiozluqjdfqkjvhwlnqoghnihjlnh:
-      default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
-      example: true
-      title: DynLimitAqvhotkxkantmfrltjqxmdtiozluqjdfqkjvhwlnqoghnihjlnh
-      type: boolean
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -2299,18 +2291,30 @@ components:
       example: true
       title: DynLimitArqsjqhmnxasqdbwlhxpggrbxbzrywrqimvqctrexlomhtnfepj
       type: boolean
-    DynLimitAshodgnpmalvgjetqwjnjopjlhwsueqtvsvyknocnixnpvuixek:
+    DynLimitArxdtuvvxeguawlusjxgahqrheqcgdqeyzsgkldlhdmajevhihm:
+      default: true
+      description: Boolean flag whether a transaction is a put.
+      example: true
+      title: DynLimitArxdtuvvxeguawlusjxgahqrheqcgdqeyzsgkldlhdmajevhihm
+      type: boolean
+    DynLimitAswrhrpdnrgwrxgfrauovarsqgyzkhfjcsrgqkbvziqnepkwjwr:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAswrhrpdnrgwrxgfrauovarsqgyzkhfjcsrgqkbvziqnepkwjwr
+      type: boolean
+    DynLimitAthntixamnlkiqvlckvnjhwmruywazjfgwjjoylrxtcafnngtrl:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAthntixamnlkiqvlckvnjhwmruywazjfgwjjoylrxtcafnngtrl
+      type: integer
+    DynLimitAvfsvqjqmhougdutgizaqbzrhbipcxpzdbkwupctzeemjfjcotr:
       description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAshodgnpmalvgjetqwjnjopjlhwsueqtvsvyknocnixnpvuixek
+      title: DynLimitAvfsvqjqmhougdutgizaqbzrhbipcxpzdbkwupctzeemjfjcotr
       type: integer
-    DynLimitAsrusorgmxgceqdteeyntmizmqkbdqofommuqkyobviowyzomsw:
-      default: true
-      description: Boolean flag whether a transaction is from the floor.
-      example: true
-      title: DynLimitAsrusorgmxgceqdteeyntmizmqkbdqofommuqkyobviowyzomsw
-      type: boolean
     DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj:
       description: The min short shares available.
       example: 0
@@ -2326,12 +2330,18 @@ components:
       example: 100000000
       title: DynLimitAxjheprcsljmvplbcjldheerzymjvlsybquzhatrknvmtdlzowe
       type: integer
-    DynLimitAxjkqdunifbdgkubsckenquubdgsojidibcrlncxfepnjkhrbra:
-      default: true
-      description: Boolean flag whether a transaction is a call.
-      example: true
-      title: DynLimitAxjkqdunifbdgkubsckenquubdgsojidibcrlncxfepnjkhrbra
-      type: boolean
+    DynLimitAxmdceezibfsryplyzpouandltrdaaknmuwpdwofymxucktqppx:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAxmdceezibfsryplyzpouandltrdaaknmuwpdwofymxucktqppx
+      type: integer
+    DynLimitAxnaeuwofgqaqzzsudxznfoltwxbjhewytzturmjpyumhjliqij:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAxnaeuwofgqaqzzsudxznfoltwxbjhewytzturmjpyumhjliqij
+      type: integer
     DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri:
       description: The max days to cover.
       example: 5.3
@@ -2342,17 +2352,11 @@ components:
       example: 10000000
       title: DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink
       type: integer
-    DynLimitAyqtmmjoembiyxlrouzghqfcvgvifllphwbwkigqympbemtnqbm:
+    DynLimitAymdiscwsvradwbiivcrkbmxzovcqxybkrtatucfsvnvrfgvdvg:
       default: true
-      description: Boolean flag whether a transaction is bid side.
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
-      title: DynLimitAyqtmmjoembiyxlrouzghqfcvgvifllphwbwkigqympbemtnqbm
-      type: boolean
-    DynLimitAysagnoqtcoiraflabnghgfsyktcskhnxifxrprmcilutqzljxf:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAysagnoqtcoiraflabnghgfsyktcskhnxifxrprmcilutqzljxf
+      title: DynLimitAymdiscwsvradwbiivcrkbmxzovcqxybkrtatucfsvnvrfgvdvg
       type: boolean
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -12368,8 +12372,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
-      example: '13.52369891956068210400'
+      description: The 30 day implied volatility from 1 month ago.
+      example: '0.2136848270893097'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -19658,91 +19662,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmknihbkhfwyuwalbkdpdcbbhdjyjgkzyotaevzdilqhjtwrlbl'
+            $ref: '#/components/schemas/DynLimitAxnaeuwofgqaqzzsudxznfoltwxbjhewytzturmjpyumhjliqij'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAavahandrysdhdihqleglthwoafxpsvsgvpwjqhfjmmggskkcwi'
+            $ref: '#/components/schemas/DynLimitAxmdceezibfsryplyzpouandltrdaaknmuwpdwofymxucktqppx'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfmfbsjqvfbkpbudwyaljdpeeyolpfqdvvnolkwawjsdgkbucwt'
+            $ref: '#/components/schemas/DynLimitAdgqlhgoqruunokvxkhgpzwgnubxaqvsqmaezblflzlcnwrtoqo'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAharqftxlsfqznanxhaxmuhkgipiturfjzeuacsrsblpipygzve'
+            $ref: '#/components/schemas/DynLimitAljhokargwbnsulkqkcozhzlcokzaoiyfxqvvutpksxkiopuyui'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAshodgnpmalvgjetqwjnjopjlhwsueqtvsvyknocnixnpvuixek'
+            $ref: '#/components/schemas/DynLimitAvfsvqjqmhougdutgizaqbzrhbipcxpzdbkwupctzeemjfjcotr'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhjvvnujccjcfpivqttmmpdjwuoozsrtzbrvqtbbduqjwfhktkt'
+            $ref: '#/components/schemas/DynLimitAkqwcqxpfeozdtbyblzpebnwugedjbczuaptyfppepkrtevwxga'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhznogpsvjbbajmcarfjsbgcrhzykptnpkkiskbdynzkkrhunya'
+            $ref: '#/components/schemas/DynLimitAthntixamnlkiqvlckvnjhwmruywazjfgwjjoylrxtcafnngtrl'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqeisupxjlxpomgumiosmatssgtznddscmmayptekexymrydlnu'
+            $ref: '#/components/schemas/DynLimitAcfyomqqvrpqknxpffibsrfgprfddqsyyfmxvxolghbjfreatle'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmpcbcxiurupgqeutsijbqibwzizsgtwdjabevezyccmiuzebxw'
+            $ref: '#/components/schemas/DynLimitAymdiscwsvradwbiivcrkbmxzovcqxybkrtatucfsvnvrfgvdvg'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsrusorgmxgceqdteeyntmizmqkbdqofommuqkyobviowyzomsw'
+            $ref: '#/components/schemas/DynLimitAhscpvgkgzftusqbanhhnvhuyicfguenmcjdaantixfawgtybuc'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqvhotkxkantmfrltjqxmdtiozluqjdfqkjvhwlnqoghnihjlnh'
+            $ref: '#/components/schemas/DynLimitAgvvknbiihwuthzslrnrzwtskbetrnwscrxyhwmbhreswravdnr'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAxjkqdunifbdgkubsckenquubdgsojidibcrlncxfepnjkhrbra'
+            $ref: '#/components/schemas/DynLimitAcqsvrsledurxustojteifsnnerocvnwmgoxltphkxhdbbgykhd'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAodhzgmpmqkiborsyljcorqwswyumvkumptgjovxqojsqgqurlo'
+            $ref: '#/components/schemas/DynLimitArxdtuvvxeguawlusjxgahqrheqcgdqeyzsgkldlhdmajevhihm'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAysagnoqtcoiraflabnghgfsyktcskhnxifxrprmcilutqzljxf'
+            $ref: '#/components/schemas/DynLimitAbpvfklgtmhzysmtwpxgekxifpmphxsyrkyaessgnukptgnkrig'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAapjkymfqjvkahncvwkkhtbmbssygrvnnxcssrrydmgszxhtuve'
+            $ref: '#/components/schemas/DynLimitAswrhrpdnrgwrxgfrauovarsqgyzkhfjcsrgqkbvziqnepkwjwr'
         - description: ''
           in: query
           name: rule_name[]
@@ -20735,6 +20739,355 @@ paths:
       summary: Politician Portfolios
       tags:
         - politician_portfolios
+  /api/politics/fec/candidates:
+    get:
+      callbacks: {}
+      description: |
+        Federal candidates ranked by company-linked money received in a cycle: PAC-tier totals,
+        employee-tier estimates, number of distinct companies, and basic candidate info with the
+        linked politician where known.
+      operationId: PublicApi.PoliticsFecController.candidates
+      parameters:
+        - description: Two-year election cycle, e.g. 2026. Defaults to the current cycle.
+          in: query
+          name: cycle
+          required: false
+          schema:
+            type: integer
+        - description: house | senate | president
+          in: query
+          name: office
+          required: false
+          schema:
+            type: string
+        - description: Two-letter state code.
+          in: query
+          name: state
+          required: false
+          schema:
+            type: string
+        - description: Party code, e.g. DEM, REP.
+          in: query
+          name: party
+          required: false
+          schema:
+            type: string
+        - description: Page number (default 1).
+          in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+        - description: Rows per page (default 50, max 200).
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company Politics Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Candidates with company-linked contributions
+      tags:
+        - politics
+  /api/politics/fec/companies:
+    get:
+      callbacks: {}
+      description: |
+        Every public company with tracked political activity: confirmed corporate PAC count, PAC-tier
+        contribution totals, employee-tier estimates (contributions by self-reported employees — an
+        estimate, kept separate from PAC numbers), party split, and lobbying spend for the cycle.
+        Sorted by PAC total.
+      operationId: PublicApi.PoliticsFecController.companies
+      parameters:
+        - description: Two-year election cycle, e.g. 2026. Defaults to the current cycle.
+          in: query
+          name: cycle
+          required: false
+          schema:
+            type: integer
+        - description: Minimum combined total.
+          in: query
+          name: min_total
+          required: false
+          schema:
+            type: integer
+        - description: Page number (default 1).
+          in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+        - description: Rows per page (default 50, max 200).
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company Politics Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Companies with political activity
+      tags:
+        - politics
+  /api/politics/fec/company/{ticker}/lobbying:
+    get:
+      callbacks: {}
+      description: |
+        Lobbying spend per quarter for a company from Senate LDA filings — in-house expenses
+        (self-filed reports) and outside income (hired-firm reports) as separate series, with the top
+        issue codes per period. `include_filings=true` adds the paginated filing list.
+      operationId: PublicApi.PoliticsFecController.lobbying
+      parameters:
+        - description: Company ticker.
+          in: path
+          name: ticker
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: include_filings
+          required: false
+          schema:
+            type: boolean
+        - description: Page number (default 1).
+          in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+        - description: Rows per page (default 50, max 200).
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company Politics Result'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message stating that the requested element was not found causing an empty result to be generated.'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Company lobbying totals and issues
+      tags:
+        - politics
+  /api/politics/fec/company/{ticker}/people:
+    get:
+      callbacks: {}
+      description: |
+        The people around a public company: candidates funded by its PAC and employees (with totals),
+        politicians who traded the stock, and company insiders.
+      operationId: PublicApi.PoliticsFecController.people
+      parameters:
+        - description: Company ticker.
+          in: path
+          name: ticker
+          required: true
+          schema:
+            type: string
+        - description: Two-year election cycle, e.g. 2026. Defaults to the current cycle.
+          in: query
+          name: cycle
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company Politics Result'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message stating that the requested element was not found causing an empty result to be generated.'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: People associated with a company
+      tags:
+        - politics
+  /api/politics/fec/contributions:
+    get:
+      callbacks: {}
+      description: |
+        The company-politics contribution feed. With `aggregated=true` (the default) rows are at the
+        company × candidate × cycle × tier grain — filter by `ticker` for a company's candidates, or by
+        `candidate_id` for a candidate's companies. With `aggregated=false` rows are individual
+        contributions, paginated by `cursor` (pass back `next_cursor` from the previous response);
+        `tier` selects `pac` (default) or `employee`.
+      operationId: PublicApi.PoliticsFecController.contributions
+      parameters:
+        - description: Default true.
+          in: query
+          name: aggregated
+          required: false
+          schema:
+            type: boolean
+        - description: ''
+          in: query
+          name: ticker
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: candidate_id
+          required: false
+          schema:
+            type: integer
+        - description: Politician UUID (aggregated only).
+          in: query
+          name: politician_id
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: party
+          required: false
+          schema:
+            type: string
+        - description: Two-year election cycle, e.g. 2026. Defaults to the current cycle.
+          in: query
+          name: cycle
+          required: false
+          schema:
+            type: integer
+        - description: pac | employee | all (aggregated default all).
+          in: query
+          name: tier
+          required: false
+          schema:
+            type: string
+        - description: Row-level only.
+          in: query
+          name: min_amount
+          required: false
+          schema:
+            type: integer
+        - description: Row-level only, ISO date.
+          in: query
+          name: min_date
+          required: false
+          schema:
+            type: string
+        - description: Row-level only, ISO date.
+          in: query
+          name: max_date
+          required: false
+          schema:
+            type: string
+        - description: 'Aggregated only: add a totals block.'
+          in: query
+          name: include_totals
+          required: false
+          schema:
+            type: boolean
+        - description: Row-level keyset cursor.
+          in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+        - description: Page number (default 1).
+          in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+        - description: Rows per page (default 50, max 200).
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company Politics Result'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Company political contributions
+      tags:
+        - politics
   /api/potus/posts:
     get:
       callbacks: {}
@@ -25215,13 +25568,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgoyexrvedbolgicjmcfvqmrzklhxertnurchxcnfunbgtokbvy'
+            $ref: '#/components/schemas/DynLimitAgpmxagcexsemwdzurvedfemzcftxkljdrtxylvnixcshiudife'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAyqtmmjoembiyxlrouzghqfcvgvifllphwbwkigqympbemtnqbm'
+            $ref: '#/components/schemas/DynLimitAaqdnxazmdnzeuzqlzdmivkbrzizrmrbyfinszccnyysdpqdxbm'
       responses:
         '200':
           content:
