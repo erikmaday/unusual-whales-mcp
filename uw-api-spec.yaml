@@ -1038,6 +1038,12 @@ components:
       example: 12348
       title: Call Volume
       type: integer
+    Call Wall:
+      description: Strike above spot with the largest positive net gamma exposure (resistance).
+      example: '600'
+      nullable: true
+      title: Call Wall
+      type: string
     Canceled:
       description: Whether the option trade was canceled.
       example: false
@@ -2160,40 +2166,22 @@ components:
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAaqdnxazmdnzeuzqlzdmivkbrzizrmrbyfinszccnyysdpqdxbm:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAaqdnxazmdnzeuzqlzdmivkbrzizrmrbyfinszccnyysdpqdxbm
-      type: boolean
-    DynLimitAbpvfklgtmhzysmtwpxgekxifpmphxsyrkyaessgnukptgnkrig:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAbpvfklgtmhzysmtwpxgekxifpmphxsyrkyaessgnukptgnkrig
-      type: boolean
-    DynLimitAcfyomqqvrpqknxpffibsrfgprfddqsyyfmxvxolghbjfreatle:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAalycugmtdtcqdkngxmbiwohudjucnvwpiicteltggdgvanczmr:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAcfyomqqvrpqknxpffibsrfgprfddqsyyfmxvxolghbjfreatle
-      type: integer
-    DynLimitAcqsvrsledurxustojteifsnnerocvnwmgoxltphkxhdbbgykhd:
-      default: true
-      description: Boolean flag whether a transaction is a call.
-      example: true
-      title: DynLimitAcqsvrsledurxustojteifsnnerocvnwmgoxltphkxhdbbgykhd
-      type: boolean
-    DynLimitAdgqlhgoqruunokvxkhgpzwgnubxaqvsqmaezblflzlcnwrtoqo:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAdgqlhgoqruunokvxkhgpzwgnubxaqvsqmaezblflzlcnwrtoqo
+      title: DynLimitAalycugmtdtcqdkngxmbiwohudjucnvwpiicteltggdgvanczmr
       type: integer
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
       example: 0.45
       title: DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn
+      type: integer
+    DynLimitAeyxrflhyivqmhyooavxkjqwpdxanerqzjnipzzzogpxwishomv:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAeyxrflhyivqmhyooavxkjqwpdxanerqzjnipzzzogpxwishomv
       type: integer
     DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa:
       default: 100
@@ -2203,45 +2191,57 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
-    DynLimitAgpmxagcexsemwdzurvedfemzcftxkljdrtxylvnixcshiudife:
+    DynLimitAfhvtgewkcgocjzscbmrardyxqjtuybppskfeofbfzjajdhnpve:
       default: true
-      description: Boolean flag whether a transaction is ask side.
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
-      title: DynLimitAgpmxagcexsemwdzurvedfemzcftxkljdrtxylvnixcshiudife
+      title: DynLimitAfhvtgewkcgocjzscbmrardyxqjtuybppskfeofbfzjajdhnpve
+      type: boolean
+    DynLimitAgosqtvnxqbisvpktvwhyzgbikhqlzlwwgsrsswcyyeiaonoooy:
+      default: true
+      description: Boolean flag whether a transaction is a put.
+      example: true
+      title: DynLimitAgosqtvnxqbisvpktvwhyzgbikhqlzlwwgsrsswcyyeiaonoooy
       type: boolean
     DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf:
       description: The max short shares available.
       example: 10000
       title: DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf
       type: integer
-    DynLimitAgvvknbiihwuthzslrnrzwtskbetrnwscrxyhwmbhreswravdnr:
-      default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
-      example: true
-      title: DynLimitAgvvknbiihwuthzslrnrzwtskbetrnwscrxyhwmbhreswravdnr
-      type: boolean
-    DynLimitAhscpvgkgzftusqbanhhnvhuyicfguenmcjdaantixfawgtybuc:
-      default: true
-      description: Boolean flag whether a transaction is from the floor.
-      example: true
-      title: DynLimitAhscpvgkgzftusqbanhhnvhuyicfguenmcjdaantixfawgtybuc
-      type: boolean
+    DynLimitAhjswepgcoqytqzogrwocqkejxnwtdlzlfgrqhzgsqgknsqhzxo:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAhjswepgcoqytqzogrwocqkejxnwtdlzlfgrqhzgsqgknsqhzxo
+      type: integer
+    DynLimitAhrzfjphnirzknehtnlqggytuhgxlogspqpuaugieddtssjblri:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAhrzfjphnirzknehtnlqggytuhgxlogspqpuaugieddtssjblri
+      type: integer
     DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
-    DynLimitAkqwcqxpfeozdtbyblzpebnwugedjbczuaptyfppepkrtevwxga:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAivrjvbipyxfhcwagblrszsjwnpteuhtmnadlzguihucqmzhyqo:
+      default: true
+      description: Boolean flag whether a transaction is from the floor.
+      example: true
+      title: DynLimitAivrjvbipyxfhcwagblrszsjwnpteuhtmnadlzguihucqmzhyqo
+      type: boolean
+    DynLimitAjjhvwwruurasgrhtcvgxvjrgwqjacsoncscswvfpdpqvjrtnnf:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAkqwcqxpfeozdtbyblzpebnwugedjbczuaptyfppepkrtevwxga
+      title: DynLimitAjjhvwwruurasgrhtcvgxvjrgwqjacsoncscswvfpdpqvjrtnnf
       type: integer
-    DynLimitAljhokargwbnsulkqkcozhzlcokzaoiyfxqvvutpksxkiopuyui:
+    DynLimitAjotevsknfflyizyawdviepsvqbtiyvxnsqghdcrsjrjxyjfbdd:
       description: 'The maximum size on that alert. Min: 0.'
       example: 125
       minimum: 0
-      title: DynLimitAljhokargwbnsulkqkcozhzlcokzaoiyfxqvvutpksxkiopuyui
+      title: DynLimitAjotevsknfflyizyawdviepsvqbtiyvxnsqghdcrsjrjxyjfbdd
       type: integer
     DynLimitAmgvwdedprykkkwubboqoucydelwfunvmsgjwjjjzoktwvuggur:
       default: 0
@@ -2265,6 +2265,12 @@ components:
       example: 0.05
       title: DynLimitAnbnwbvghyjjamoaeliijkuqyrcuxtbuhunosqyizueyzjfwpet
       type: integer
+    DynLimitAobzipyxdaloxvdbxzqmkscxtcmdnehdmoxlqvkoqtkoefquegr:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAobzipyxdaloxvdbxzqmkscxtcmdnehdmoxlqvkoqtkoefquegr
+      type: boolean
     DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk:
       description: The max rebate rate.
       example: 5.34
@@ -2280,6 +2286,12 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
+    DynLimitArparcuazyjbelenpbybvndaqiyvvoihswzfimvdtsgqdpllrzp:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitArparcuazyjbelenpbybvndaqiyvvoihswzfimvdtsgqdpllrzp
+      type: integer
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
@@ -2291,30 +2303,30 @@ components:
       example: true
       title: DynLimitArqsjqhmnxasqdbwlhxpggrbxbzrywrqimvqctrexlomhtnfepj
       type: boolean
-    DynLimitArxdtuvvxeguawlusjxgahqrheqcgdqeyzsgkldlhdmajevhihm:
+    DynLimitAsripzclguvzhvizlinmmjukjvayvfnlvlalqdngikngasskbnu:
       default: true
-      description: Boolean flag whether a transaction is a put.
+      description: Boolean flag whether a transaction is a call.
       example: true
-      title: DynLimitArxdtuvvxeguawlusjxgahqrheqcgdqeyzsgkldlhdmajevhihm
+      title: DynLimitAsripzclguvzhvizlinmmjukjvayvfnlvlalqdngikngasskbnu
       type: boolean
-    DynLimitAswrhrpdnrgwrxgfrauovarsqgyzkhfjcsrgqkbvziqnepkwjwr:
+    DynLimitAtkcfcbawqiyrzdxhzavufzegzybhcehylbnihdexcgwwetygbc:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAswrhrpdnrgwrxgfrauovarsqgyzkhfjcsrgqkbvziqnepkwjwr
+      title: DynLimitAtkcfcbawqiyrzdxhzavufzegzybhcehylbnihdexcgwwetygbc
       type: boolean
-    DynLimitAthntixamnlkiqvlckvnjhwmruywazjfgwjjoylrxtcafnngtrl:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
+    DynLimitAvdqplhbeswqlzpvbhgscftvfgkwykuqbddtqtxgdnntznwhxni:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
       minimum: 0
-      title: DynLimitAthntixamnlkiqvlckvnjhwmruywazjfgwjjoylrxtcafnngtrl
+      title: DynLimitAvdqplhbeswqlzpvbhgscftvfgkwykuqbddtqtxgdnntznwhxni
       type: integer
-    DynLimitAvfsvqjqmhougdutgizaqbzrhbipcxpzdbkwupctzeemjfjcotr:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAvfsvqjqmhougdutgizaqbzrhbipcxpzdbkwupctzeemjfjcotr
-      type: integer
+    DynLimitAwcbiepnymzslqdnlmjevsmyjdsjbikykirawulhlticadxubcp:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAwcbiepnymzslqdnlmjevsmyjdsjbikykirawulhlticadxubcp
+      type: boolean
     DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj:
       description: The min short shares available.
       example: 0
@@ -2330,33 +2342,27 @@ components:
       example: 100000000
       title: DynLimitAxjheprcsljmvplbcjldheerzymjvlsybquzhatrknvmtdlzowe
       type: integer
-    DynLimitAxmdceezibfsryplyzpouandltrdaaknmuwpdwofymxucktqppx:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAxmdceezibfsryplyzpouandltrdaaknmuwpdwofymxucktqppx
-      type: integer
-    DynLimitAxnaeuwofgqaqzzsudxznfoltwxbjhewytzturmjpyumhjliqij:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAxnaeuwofgqaqzzsudxznfoltwxbjhewytzturmjpyumhjliqij
-      type: integer
     DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri:
       description: The max days to cover.
       example: 5.3
       title: DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri
       type: integer
+    DynLimitAyczdblrttvrdikbvvdelmtajetcymucgfkmyvwerzvaevsxryk:
+      default: true
+      description: Boolean flag whether a transaction is a intermarket sweep.
+      example: true
+      title: DynLimitAyczdblrttvrdikbvvdelmtajetcymucgfkmyvwerzvaevsxryk
+      type: boolean
     DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink:
       description: The min total float.
       example: 10000000
       title: DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink
       type: integer
-    DynLimitAymdiscwsvradwbiivcrkbmxzovcqxybkrtatucfsvnvrfgvdvg:
+    DynLimitAzqbqbvrjtvelwgbonekjvbgumyepytjuojsowjrykqmxoztnhb:
       default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+      description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAymdiscwsvradwbiivcrkbmxzovcqxybkrtatucfsvnvrfgvdvg
+      title: DynLimitAzqbqbvrjtvelwgbonekjvbgumyepytjuojsowjrykqmxoztnhb
       type: boolean
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -4337,35 +4343,38 @@ components:
       type: object
     GEX Levels:
       description: |
-        Key gamma-exposure price levels derived from per-strike gamma. Each value is a strike price as a
-        decimal string, or null when unavailable for the date.
+        Key gamma-exposure price levels for a market date, derived from directionalized volume by default.
+        Each level is a price as a decimal string, or null when unavailable for the date.
       example:
         data:
           call_wall: '600'
+          date: 2026-08-20
           gamma_flip: '560'
           gamma_magnet: '575'
+          nearby_flips:
+            - '560'
+            - '561.5'
+            - '572'
           put_wall: '550'
+          source: vol
+          time: 2026-08-20T13:35:11.482Z
       properties:
         call_wall:
-          description: Strike above spot with the largest positive net gamma exposure (resistance).
-          example: '600'
-          nullable: true
-          type: string
+          $ref: '#/components/schemas/Call Wall'
+        date:
+          $ref: '#/components/schemas/Market General Trading day'
         gamma_flip:
-          description: Price where cumulative net gamma crosses zero (interpolated, nearest to spot) — the zero-gamma level.
-          example: '560'
-          nullable: true
-          type: string
+          $ref: '#/components/schemas/Gamma Flip'
         gamma_magnet:
-          description: Strike with the largest-magnitude net gamma (the strongest pin).
-          example: '575'
-          nullable: true
-          type: string
+          $ref: '#/components/schemas/Gamma Magnet'
+        nearby_flips:
+          $ref: '#/components/schemas/Nearby Gamma Flips'
         put_wall:
-          description: Strike below spot with the largest positive net gamma exposure (support).
-          example: '550'
-          nullable: true
-          type: string
+          $ref: '#/components/schemas/Put Wall'
+        source:
+          $ref: '#/components/schemas/GEX Source'
+        time:
+          $ref: '#/components/schemas/Gex Calculation Time'
       title: GEX Levels
       type: object
     GEX Per One Percent Move Directionalized Volume:
@@ -4374,10 +4383,31 @@ components:
       example: '-5559678859.12'
       title: GEX Per One Percent Move Directionalized Volume
       type: string
+    GEX Source:
+      default: vol
+      description: Which exposure basis to derive the levels from. `vol` is directionalized volume — the exposure dealers took on from the day's ask/bid sided flow. `oi` is open interest.
+      enum:
+        - vol
+        - oi
+      example: vol
+      title: GEX Source
+      type: string
     Gamma:
       description: The gamma of the option trade.
       example: '0.00775013889662635'
       title: Gamma
+      type: string
+    Gamma Flip:
+      description: Price where net dealer gamma crosses zero, nearest to spot — the zero-gamma level.
+      example: '560'
+      nullable: true
+      title: Gamma Flip
+      type: string
+    Gamma Magnet:
+      description: Strike with the largest-magnitude net gamma (the strongest pin).
+      example: '575'
+      nullable: true
+      title: Gamma Magnet
       type: string
     General ISO Date:
       description: An ISO date.
@@ -7398,6 +7428,17 @@ components:
         - time
       title: National Best Bid and Ask
       type: object
+    Nearby Gamma Flips:
+      description: Every zero-gamma crossing near spot, ordered by distance from it and capped at five.
+      example:
+        - '560'
+        - '561.5'
+        - '572'
+      items:
+        example: '560'
+        type: string
+      title: Nearby Gamma Flips
+      type: array
     Net Flow Data Point:
       description: A single data point in the net flow time series
       properties:
@@ -10675,6 +10716,12 @@ components:
       example: 12348
       title: Put Volume
       type: integer
+    Put Wall:
+      description: Strike below spot with the largest positive net gamma exposure (support).
+      example: '550'
+      nullable: true
+      title: Put Wall
+      type: string
     PutCall:
       description: Whether the holding is a put or a call (null if neither).
       example: put
@@ -13933,6 +13980,10 @@ info:
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com](mailto:oskar@unusualwhales.com).
     
     ## Changelog
+    
+    # 2026.08.22
+    - Updated [`/stock/:ticker/gex-levels`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.gex_levels) to derive its levels from spot directionalized volume — instead of a cumulative total over the static open-interest snapshot.
+    - Added `date`, `time`, `source`, and `nearby_flips` to the [`/stock/:ticker/gex-levels`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.gex_levels) response. `nearby_flips` lists the five zero-gamma crossings nearest spot, ordered by distance from it. `time` is when the underlying exposure snapshot was calculated.
     
     # 2026.08.21
     - Added new websocket channels [`interpolated_iv` and `interpolated_iv:TICKER`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.interpolated_iv). The channels stream interpolated implied volatility and expected moves at fixed horizons (1-365 trading days), the live counterpart of [`/stock/:ticker/interpolated-iv`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.interpolated_iv).
@@ -19662,91 +19713,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAxnaeuwofgqaqzzsudxznfoltwxbjhewytzturmjpyumhjliqij'
+            $ref: '#/components/schemas/DynLimitAvdqplhbeswqlzpvbhgscftvfgkwykuqbddtqtxgdnntznwhxni'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAxmdceezibfsryplyzpouandltrdaaknmuwpdwofymxucktqppx'
+            $ref: '#/components/schemas/DynLimitAeyxrflhyivqmhyooavxkjqwpdxanerqzjnipzzzogpxwishomv'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdgqlhgoqruunokvxkhgpzwgnubxaqvsqmaezblflzlcnwrtoqo'
+            $ref: '#/components/schemas/DynLimitArparcuazyjbelenpbybvndaqiyvvoihswzfimvdtsgqdpllrzp'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAljhokargwbnsulkqkcozhzlcokzaoiyfxqvvutpksxkiopuyui'
+            $ref: '#/components/schemas/DynLimitAjotevsknfflyizyawdviepsvqbtiyvxnsqghdcrsjrjxyjfbdd'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAvfsvqjqmhougdutgizaqbzrhbipcxpzdbkwupctzeemjfjcotr'
+            $ref: '#/components/schemas/DynLimitAhrzfjphnirzknehtnlqggytuhgxlogspqpuaugieddtssjblri'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAkqwcqxpfeozdtbyblzpebnwugedjbczuaptyfppepkrtevwxga'
+            $ref: '#/components/schemas/DynLimitAalycugmtdtcqdkngxmbiwohudjucnvwpiicteltggdgvanczmr'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAthntixamnlkiqvlckvnjhwmruywazjfgwjjoylrxtcafnngtrl'
+            $ref: '#/components/schemas/DynLimitAjjhvwwruurasgrhtcvgxvjrgwqjacsoncscswvfpdpqvjrtnnf'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcfyomqqvrpqknxpffibsrfgprfddqsyyfmxvxolghbjfreatle'
+            $ref: '#/components/schemas/DynLimitAhjswepgcoqytqzogrwocqkejxnwtdlzlfgrqhzgsqgknsqhzxo'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAymdiscwsvradwbiivcrkbmxzovcqxybkrtatucfsvnvrfgvdvg'
+            $ref: '#/components/schemas/DynLimitAfhvtgewkcgocjzscbmrardyxqjtuybppskfeofbfzjajdhnpve'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhscpvgkgzftusqbanhhnvhuyicfguenmcjdaantixfawgtybuc'
+            $ref: '#/components/schemas/DynLimitAivrjvbipyxfhcwagblrszsjwnpteuhtmnadlzguihucqmzhyqo'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgvvknbiihwuthzslrnrzwtskbetrnwscrxyhwmbhreswravdnr'
+            $ref: '#/components/schemas/DynLimitAyczdblrttvrdikbvvdelmtajetcymucgfkmyvwerzvaevsxryk'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcqsvrsledurxustojteifsnnerocvnwmgoxltphkxhdbbgykhd'
+            $ref: '#/components/schemas/DynLimitAsripzclguvzhvizlinmmjukjvayvfnlvlalqdngikngasskbnu'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitArxdtuvvxeguawlusjxgahqrheqcgdqeyzsgkldlhdmajevhihm'
+            $ref: '#/components/schemas/DynLimitAgosqtvnxqbisvpktvwhyzgbikhqlzlwwgsrsswcyyeiaonoooy'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbpvfklgtmhzysmtwpxgekxifpmphxsyrkyaessgnukptgnkrig'
+            $ref: '#/components/schemas/DynLimitAzqbqbvrjtvelwgbonekjvbgumyepytjuojsowjrykqmxoztnhb'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAswrhrpdnrgwrxgfrauovarsqgyzkhfjcsrgqkbvziqnepkwjwr'
+            $ref: '#/components/schemas/DynLimitAwcbiepnymzslqdnlmjevsmyjdsjbikykirawulhlticadxubcp'
         - description: ''
           in: query
           name: rule_name[]
@@ -25568,13 +25619,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgpmxagcexsemwdzurvedfemzcftxkljdrtxylvnixcshiudife'
+            $ref: '#/components/schemas/DynLimitAobzipyxdaloxvdbxzqmkscxtcmdnehdmoxlqvkoqtkoefquegr'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAaqdnxazmdnzeuzqlzdmivkbrzizrmrbyfinszccnyysdpqdxbm'
+            $ref: '#/components/schemas/DynLimitAtkcfcbawqiyrzdxhzavufzegzybhcehylbnihdexcgwwetygbc'
       responses:
         '200':
           content:
@@ -25796,17 +25847,30 @@ paths:
       callbacks: {}
       description: |
         The key gamma-exposure (GEX) price levels for a ticker on a given market date, derived from
-        per-strike net gamma exposure (`net = call_gex + put_gex`) evaluated relative to spot — the same
-        calculation used on the unusualwhales.com greek-exposure page:
+        per-strike net gamma exposure evaluated relative to spot:
         
         - `call_wall` — strike above spot with the largest positive net gamma (resistance)
         - `put_wall` — strike below spot with the largest positive net gamma (support)
         - `gamma_magnet` — strike with the largest-magnitude net gamma (the strongest pin)
-        - `gamma_flip` — price where cumulative net gamma crosses zero, linearly interpolated between
-          strikes and taken at the crossing nearest to spot (the zero-gamma level)
+        - `gamma_flip` — interpolated price where net dealer gamma crosses zero (between the two
+          strikes).
         
-        Any field may be `null` when there is no data for the date (or, for `gamma_flip`, no zero-crossing).
-        The spot-relative levels are also `null` when no spot price is available for the date.
+        The levels are built from **directionalized volume** by default — the exposure dealers took on from
+        the day's ask/bid sided flow, updated through the session. Pass `source` to derive them from another
+        basis instead:
+        
+        - `vol` — directionalized volume (default)
+        - `oi` — open interest
+        
+        `nearby_flips` lists every zero-gamma crossing near spot, ordered by distance from it and capped at
+        five, with `gamma_flip` as its first entry. On chains with many strikes the crossings often cluster
+        within a dollar or two, which means no single level is decisive — the list makes that visible.
+        
+        The response echoes the `source` used, along with `date`, the market date the levels describe, and
+        `time`, when the exposure snapshot behind them was calculated.
+        
+        Any level may be `null` when there is no data for the date (or, for `gamma_flip`, when net gamma
+        does not change sign across the strike range).
       operationId: PublicApi.TickerController.gex_levels
       parameters:
         - description: ''
@@ -25821,6 +25885,12 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Optional Market Date'
+        - description: ''
+          in: query
+          name: source
+          required: false
+          schema:
+            $ref: '#/components/schemas/GEX Source'
       responses:
         '200':
           content:
