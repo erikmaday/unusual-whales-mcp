@@ -1293,9 +1293,178 @@ components:
       nullable: true
       title: Company Market Cap
       type: string
-    Company Politics Result:
+    Company Politics Candidates:
       additionalProperties: true
-      title: Company Politics Result
+      description: Federal candidates ranked by company-linked money received in a cycle. company_linked_total covers only contributions attributed to public companies, not the candidate's overall receipts.
+      example:
+        cycle: 2026
+        data:
+          - candidate_id: 18342
+            company_count: 47
+            company_linked_total: '412500.00'
+            district: '09'
+            employee_total_estimated: '14500.00'
+            fec_candidate_id: H8MI09068
+            incumbent_challenge: incumbent
+            name: DOE, JANE A.
+            office: house
+            pac_total: '398000.00'
+            party: REP
+            politician_id: 1ccb3a38-6243-4c2f-bbcb-5986db785122
+            politician_slug: jane-doe
+            state: MI
+        limit: 50
+        page: 1
+      title: Company Politics Candidates
+      type: object
+    Company Politics Companies:
+      additionalProperties: true
+      description: Public companies with tracked political activity for a cycle. PAC-tier totals come from confirmed corporate PAC mappings; employee-tier totals are estimates from self-reported donor employers and are kept separate.
+      example:
+        cycle: 2026
+        data:
+          - company_name: HONEYWELL INTERNATIONAL INC
+            cycle: 2026
+            dem_total: '824500.00'
+            employee_contribution_count: 12
+            employee_total_estimated: '3280.00'
+            lobbying_total: '5230000.00'
+            other_total: '7000.00'
+            pac_contribution_count: 915
+            pac_count: 1
+            pac_total: '1781500.00'
+            rep_total: '953280.00'
+            ticker: HON
+        limit: 50
+        page: 1
+      title: Company Politics Companies
+      type: object
+    Company Politics Contribution Rows:
+      additionalProperties: true
+      description: 'The aggregated=false response shape: individual contributions for one tier. Pass next_cursor back as cursor to fetch the following page; next_cursor is null on the final page.'
+      example:
+        aggregated: false
+        data:
+          - amount: '2500.00'
+            candidate_id: 18342
+            candidate_name: DOE, JANE A.
+            committee_name: THE HOME DEPOT, INC. POLITICAL ACTION COMMITTEE
+            company_name: HOME DEPOT INC
+            contribution_id: 218764531
+            date: 2026-06-02
+            party: REP
+            pdf_url: https://docquery.fec.gov/cgi-bin/fecimg/?202607159876543210
+            report_year: 2026
+            ticker: HD
+            tier: pac
+        limit: 50
+        next_cursor: MjAyNjoyMTg3NjQ1MzE
+        tier: pac
+      title: Company Politics Contribution Rows
+      type: object
+    Company Politics Contributions:
+      additionalProperties: true
+      description: With aggregated=true (default), rows are company x candidate x cycle x tier with offset paging. With aggregated=false, rows are individual contributions for one tier, keyset-paginated via next_cursor.
+      example:
+        aggregated: true
+        data:
+          - candidate_id: 18342
+            candidate_name: DOE, JANE A.
+            company_name: HOME DEPOT INC
+            contribution_count: 4
+            cycle: 2026
+            first_date: 2025-03-14
+            last_date: 2026-06-02
+            office: house
+            party: REP
+            politician_id: 1ccb3a38-6243-4c2f-bbcb-5986db785122
+            politician_slug: jane-doe
+            state: MI
+            ticker: HD
+            tier: pac
+            total: '12500.00'
+        limit: 50
+        page: 1
+        totals:
+          contribution_count: 513
+          employee_total_estimated: '0'
+          pac_total: '1611500.00'
+          total: '1611500.00'
+      title: Company Politics Contributions
+      type: object
+    Company Politics Lobbying:
+      additionalProperties: true
+      description: Quarterly lobbying spend from Senate LDA filings. in_house_expenses are self-reported totals from the company's own filings; outside_income is what hired lobbying firms reported earning from the company - two separate series, not summable without double counting.
+      example:
+        company_name: HOME DEPOT INC
+        filings:
+          - client_name: THE HOME DEPOT
+            dt_posted: 2026-07-20T18:04:11Z
+            expenses: '1140000.00'
+            filing_period: second_quarter
+            filing_type: Q2
+            filing_uuid: f3a1c9d2-7b44-4e0e-9a1c-2f5d8b6e4a10
+            filing_year: 2026
+            income:
+            registrant_name: THE HOME DEPOT
+        limit: 50
+        page: 1
+        periods:
+          - filings_count: 9
+            in_house_expenses: '1140000.00'
+            outside_income: '380000.00'
+            quarter: 2
+            top_issue_codes:
+              - TAX
+              - TRD
+              - LBR
+              - CPT
+              - HCR
+            year: 2026
+          - filings_count: 8
+            in_house_expenses: '1080000.00'
+            outside_income: '350000.00'
+            quarter: 1
+            top_issue_codes:
+              - TAX
+              - TRD
+              - LBR
+            year: 2026
+        ticker: HD
+      title: Company Politics Lobbying
+      type: object
+    Company Politics People:
+      additionalProperties: true
+      description: 'The people around a public company: candidates funded by its PAC and employees, politicians who traded the stock, and company insiders.'
+      example:
+        candidates_funded:
+          - candidate_id: 18342
+            employee_total_estimated: '0'
+            name: DOE, JANE A.
+            office: house
+            pac_total: '12500.00'
+            party: REP
+            politician_id: 1ccb3a38-6243-4c2f-bbcb-5986db785122
+            politician_slug: jane-doe
+            state: MI
+            total: '12500.00'
+        company_name: HOME DEPOT INC
+        cycle: 2026
+        insiders:
+          - insider_id: 10343
+            is_person: true
+            name: DECKER EDWARD P
+            slug: decker-edward-p
+        politician_traders:
+          - chamber: house
+            last_filing_date: 2026-07-18
+            name: John Smith
+            party: Democrat
+            politician_id: 8b1f6c1e-93cf-4f52-a2b0-06c83f11d1a1
+            slug: john-smith
+            trade_count: 14
+        ticker: HD
+      title: Company Politics People
       type: object
     Company Profile:
       properties:
@@ -2166,28 +2335,22 @@ components:
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAdhyrnzxtssryfrxmvxqdvthtvwresutfvlwmleoefgdbnagrdt:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAdhyrnzxtssryfrxmvxqdvthtvwresutfvlwmleoefgdbnagrdt
-      type: boolean
+    DynLimitAbavpwytzawmmydhdcjcpexjlkglzqrwevcelwcikuedafgwnob:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAbavpwytzawmmydhdcjcpexjlkglzqrwevcelwcikuedafgwnob
+      type: integer
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
       example: 0.45
       title: DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn
       type: integer
-    DynLimitAedoiywvnqdhkfybjrmewcdcozioxdojijhbmkomtlpnhnzsxmd:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAedoiywvnqdhkfybjrmewcdcozioxdojijhbmkomtlpnhnzsxmd
-      type: boolean
-    DynLimitAfaonxrgbqsdutxgpyfbzohfoiipkkoqpfkfmenbkxiocobkahz:
-      description: 'The maximum size on that alert. Min: 0.'
+    DynLimitAfaswmfptyknphayarszihahlgsaceuzppnzuzkombzgwauxaka:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAfaonxrgbqsdutxgpyfbzohfoiipkkoqpfkfmenbkxiocobkahz
+      title: DynLimitAfaswmfptyknphayarszihahlgsaceuzppnzuzkombzgwauxaka
       type: integer
     DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa:
       default: 100
@@ -2197,45 +2360,57 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
+    DynLimitAgluwkoerpkrzydmaxphetxvgbbychnbdxruswqiravtqbremvx:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAgluwkoerpkrzydmaxphetxvgbbychnbdxruswqiravtqbremvx
+      type: boolean
     DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf:
       description: The max short shares available.
       example: 10000
       title: DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf
       type: integer
-    DynLimitAhkoubysozhfmnvublwitzqfctsedofewkvicdwzclybgkpclph:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+    DynLimitAgwyxrjlpkfidpsnspudpbaypfhdrdjqkhvxfdwahdjypsqthbp:
+      default: true
+      description: Boolean flag whether a transaction is a put.
+      example: true
+      title: DynLimitAgwyxrjlpkfidpsnspudpbaypfhdrdjqkhvxfdwahdjypsqthbp
+      type: boolean
+    DynLimitAhafvkibwsvtzlqeqquyidygifxyqibhrhvidbkpkuunkhosltc:
+      default: true
+      description: Boolean flag whether a transaction is a intermarket sweep.
+      example: true
+      title: DynLimitAhafvkibwsvtzlqeqquyidygifxyqibhrhvidbkpkuunkhosltc
+      type: boolean
+    DynLimitAhyhzvcqlfojsvamhdspyeriouzpvrfgsmavszabtyeveplalps:
+      default: true
+      description: Boolean flag whether a transaction is from the floor.
+      example: true
+      title: DynLimitAhyhzvcqlfojsvamhdspyeriouzpvrfgsmavszabtyeveplalps
+      type: boolean
+    DynLimitAiprgzblotdvzyuqpfmecwuvflcztyqabxgngyilokaylbouzpp:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAhkoubysozhfmnvublwitzqfctsedofewkvicdwzclybgkpclph
-      type: integer
-    DynLimitAigvlwdoxbuiohyqjrhmtbdctpdiipfksdkqsselsqxrlqojghi:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAigvlwdoxbuiohyqjrhmtbdctpdiipfksdkqsselsqxrlqojghi
+      title: DynLimitAiprgzblotdvzyuqpfmecwuvflcztyqabxgngyilokaylbouzpp
       type: integer
     DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
-    DynLimitAjfgxvbbopydfyurbeetdrxozflqdpeujleogudpwacyalsvxtk:
+    DynLimitAizedwguhvrbmqpssmgdbjbmcjoudwhbwjsktxbmzblbyohiqel:
       default: true
-      description: Boolean flag whether a transaction is a call.
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
-      title: DynLimitAjfgxvbbopydfyurbeetdrxozflqdpeujleogudpwacyalsvxtk
+      title: DynLimitAizedwguhvrbmqpssmgdbjbmcjoudwhbwjsktxbmzblbyohiqel
       type: boolean
-    DynLimitAkadlinxxzkhvbuzheimgercnsptsxjvdhfobruetgufwbmrsnv:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAkadlinxxzkhvbuzheimgercnsptsxjvdhfobruetgufwbmrsnv
-      type: integer
-    DynLimitAmexrtnwxbnklpuewdvvjyhdishvqfaydihdguwcohkwumtauwj:
+    DynLimitAlkjcqinvqrmjnzhsmuiubqohimigznabhqaplejygzsrieqkbe:
       default: true
-      description: Boolean flag whether a transaction is from the floor.
+      description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAmexrtnwxbnklpuewdvvjyhdishvqfaydihdguwcohkwumtauwj
+      title: DynLimitAlkjcqinvqrmjnzhsmuiubqohimigznabhqaplejygzsrieqkbe
       type: boolean
     DynLimitAmgvwdedprykkkwubboqoucydelwfunvmsgjwjjjzoktwvuggur:
       default: 0
@@ -2249,12 +2424,12 @@ components:
       example: 0.1
       title: DynLimitAmiwzvcvlafbptywihmivtogxztamfplnstoilspyiqonfmgxis
       type: integer
-    DynLimitAmukcoklapzeslicykruiilxsjyeozpvfqocnixsqhycdcwzbgd:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAmukcoklapzeslicykruiilxsjyeozpvfqocnixsqhycdcwzbgd
-      type: integer
+    DynLimitAmrcgsvojbbqzwfguibtgjauhondylexqdaqhbxpfnpabrfzebx:
+      default: true
+      description: Boolean flag whether to return only intraday alerts.
+      example: true
+      title: DynLimitAmrcgsvojbbqzwfguibtgjauhondylexqdaqhbxpfnpabrfzebx
+      type: boolean
     DynLimitAmxmdyrsybvtrzmcmrakrncwtrghafdvtxplwnvfxotlemwclyu:
       description: The min days to cover.
       example: 1.1
@@ -2276,6 +2451,12 @@ components:
       example: 5.34
       title: DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk
       type: integer
+    DynLimitAotgtqhghpafoxvaplndrvotgxqvpupqljktxuesgrqinrdaidd:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAotgtqhghpafoxvaplndrvotgxqvpupqljktxuesgrqinrdaidd
+      type: integer
     DynLimitApdnwejavjdeghjpywbfjnbuehgzwmislusryzphyunaxnoiglr:
       description: The min rebate rate.
       example: 0.11
@@ -2286,53 +2467,35 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
-    DynLimitApukaazmnqlscqnntnxhujlyoqhbgrlpjkhdiatqsazfxfoyknk:
-      default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
-      example: true
-      title: DynLimitApukaazmnqlscqnntnxhujlyoqhbgrlpjkhdiatqsazfxfoyknk
-      type: boolean
-    DynLimitArfsuiosrbivwhrfyniqxgfflhpfftamkffvfbcreayfbobvzhg:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAqgwitofkngmpvzyhaptaspipkemwfyvnkitdpbggelyhwfwkcw:
+      description: 'The maximum size on that alert. Min: 0.'
       example: 125
       minimum: 0
-      title: DynLimitArfsuiosrbivwhrfyniqxgfflhpfftamkffvfbcreayfbobvzhg
+      title: DynLimitAqgwitofkngmpvzyhaptaspipkemwfyvnkitdpbggelyhwfwkcw
+      type: integer
+    DynLimitAqyyjcrgmimbqhqparipajnldpyowdwxnmgfardgbklljvsihbp:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAqyyjcrgmimbqhqparipajnldpyowdwxnmgfardgbklljvsihbp
       type: integer
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv
       type: integer
-    DynLimitArqsjqhmnxasqdbwlhxpggrbxbzrywrqimvqctrexlomhtnfepj:
-      default: true
-      description: Boolean flag whether to return only intraday alerts.
-      example: true
-      title: DynLimitArqsjqhmnxasqdbwlhxpggrbxbzrywrqimvqctrexlomhtnfepj
-      type: boolean
-    DynLimitAsriclfayofemjacdlbpmuryvodptcxffrdlbrncoapobewewen:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAsriclfayofemjacdlbpmuryvodptcxffrdlbrncoapobewewen
-      type: boolean
     DynLimitAtkcfcbawqiyrzdxhzavufzegzybhcehylbnihdexcgwwetygbc:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
       title: DynLimitAtkcfcbawqiyrzdxhzavufzegzybhcehylbnihdexcgwwetygbc
       type: boolean
-    DynLimitAtqfrdjlrrfnovyrcohmfoxdntipgwgiudctvqmonjlonvefaew:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAtxmvvcmzyqrgyiswjqhfefvpbzwbehopnqphsmafefkbpfaaxb:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAtqfrdjlrrfnovyrcohmfoxdntipgwgiudctvqmonjlonvefaew
+      title: DynLimitAtxmvvcmzyqrgyiswjqhfefvpbzwbehopnqphsmafefkbpfaaxb
       type: integer
-    DynLimitAvrdggeztitfjjqwjdoneawtwrwqelzyvxmsjqblymcyluueefc:
-      default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
-      example: true
-      title: DynLimitAvrdggeztitfjjqwjdoneawtwrwqelzyvxmsjqblymcyluueefc
-      type: boolean
     DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj:
       description: The min short shares available.
       example: 0
@@ -2348,21 +2511,27 @@ components:
       example: 100000000
       title: DynLimitAxjheprcsljmvplbcjldheerzymjvlsybquzhatrknvmtdlzowe
       type: integer
+    DynLimitAxljtqkznmcdubndwbzklbhxtungimwxwrpjfovjsxsynerapvs:
+      default: true
+      description: Boolean flag whether a transaction is a call.
+      example: true
+      title: DynLimitAxljtqkznmcdubndwbzklbhxtungimwxwrpjfovjsxsynerapvs
+      type: boolean
     DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri:
       description: The max days to cover.
       example: 5.3
       title: DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri
       type: integer
+    DynLimitAycayvyfnatjmjisyfcwgtlrfktmilqfrdzopuunzrzwxhraxym:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAycayvyfnatjmjisyfcwgtlrfktmilqfrdzopuunzrzwxhraxym
+      type: integer
     DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink:
       description: The min total float.
       example: 10000000
       title: DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink
-      type: integer
-    DynLimitAypxydecajnfdnvavzqnbnieosjyluxzgsmkacnglersorhnfsh:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAypxydecajnfdnvavzqnbnieosjyluxzgsmkacnglersorhnfsh
       type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -12418,8 +12587,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The 30 day implied volatility from 1 month ago.
-      example: '0.2136848270893097'
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -14286,7 +14455,7 @@ paths:
           name: intraday_only
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitArqsjqhmnxasqdbwlhxpggrbxbzrywrqimvqctrexlomhtnfepj'
+            $ref: '#/components/schemas/DynLimitAmrcgsvojbbqzwfguibtgjauhondylexqdaqhbxpfnpabrfzebx'
         - description: ''
           in: query
           name: config_ids[]
@@ -19712,91 +19881,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmukcoklapzeslicykruiilxsjyeozpvfqocnixsqhycdcwzbgd'
+            $ref: '#/components/schemas/DynLimitAbavpwytzawmmydhdcjcpexjlkglzqrwevcelwcikuedafgwnob'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAypxydecajnfdnvavzqnbnieosjyluxzgsmkacnglersorhnfsh'
+            $ref: '#/components/schemas/DynLimitAotgtqhghpafoxvaplndrvotgxqvpupqljktxuesgrqinrdaidd'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhkoubysozhfmnvublwitzqfctsedofewkvicdwzclybgkpclph'
+            $ref: '#/components/schemas/DynLimitAycayvyfnatjmjisyfcwgtlrfktmilqfrdzopuunzrzwxhraxym'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfaonxrgbqsdutxgpyfbzohfoiipkkoqpfkfmenbkxiocobkahz'
+            $ref: '#/components/schemas/DynLimitAqgwitofkngmpvzyhaptaspipkemwfyvnkitdpbggelyhwfwkcw'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtqfrdjlrrfnovyrcohmfoxdntipgwgiudctvqmonjlonvefaew'
+            $ref: '#/components/schemas/DynLimitAqyyjcrgmimbqhqparipajnldpyowdwxnmgfardgbklljvsihbp'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitArfsuiosrbivwhrfyniqxgfflhpfftamkffvfbcreayfbobvzhg'
+            $ref: '#/components/schemas/DynLimitAiprgzblotdvzyuqpfmecwuvflcztyqabxgngyilokaylbouzpp'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAkadlinxxzkhvbuzheimgercnsptsxjvdhfobruetgufwbmrsnv'
+            $ref: '#/components/schemas/DynLimitAfaswmfptyknphayarszihahlgsaceuzppnzuzkombzgwauxaka'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAigvlwdoxbuiohyqjrhmtbdctpdiipfksdkqsselsqxrlqojghi'
+            $ref: '#/components/schemas/DynLimitAtxmvvcmzyqrgyiswjqhfefvpbzwbehopnqphsmafefkbpfaaxb'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApukaazmnqlscqnntnxhujlyoqhbgrlpjkhdiatqsazfxfoyknk'
+            $ref: '#/components/schemas/DynLimitAizedwguhvrbmqpssmgdbjbmcjoudwhbwjsktxbmzblbyohiqel'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmexrtnwxbnklpuewdvvjyhdishvqfaydihdguwcohkwumtauwj'
+            $ref: '#/components/schemas/DynLimitAhyhzvcqlfojsvamhdspyeriouzpvrfgsmavszabtyeveplalps'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAvrdggeztitfjjqwjdoneawtwrwqelzyvxmsjqblymcyluueefc'
+            $ref: '#/components/schemas/DynLimitAhafvkibwsvtzlqeqquyidygifxyqibhrhvidbkpkuunkhosltc'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjfgxvbbopydfyurbeetdrxozflqdpeujleogudpwacyalsvxtk'
+            $ref: '#/components/schemas/DynLimitAxljtqkznmcdubndwbzklbhxtungimwxwrpjfovjsxsynerapvs'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAedoiywvnqdhkfybjrmewcdcozioxdojijhbmkomtlpnhnzsxmd'
+            $ref: '#/components/schemas/DynLimitAgwyxrjlpkfidpsnspudpbaypfhdrdjqkhvxfdwahdjypsqthbp'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdhyrnzxtssryfrxmvxqdvthtvwresutfvlwmleoefgdbnagrdt'
+            $ref: '#/components/schemas/DynLimitAlkjcqinvqrmjnzhsmuiubqohimigznabhqaplejygzsrieqkbe'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsriclfayofemjacdlbpmuryvodptcxffrdlbrncoapobewewen'
+            $ref: '#/components/schemas/DynLimitAgluwkoerpkrzydmaxphetxvgbbychnbdxruswqiravtqbremvx'
         - description: ''
           in: query
           name: rule_name[]
@@ -20794,6 +20963,8 @@ paths:
         Federal candidates ranked by company-linked money received in a cycle: PAC-tier totals,
         employee-tier estimates, number of distinct companies, and basic candidate info with the
         linked politician where known.
+        
+        This is an enterprise only endpoint. Contact dev@unusualwhales.com for details about accessing this data.
       operationId: PublicApi.PoliticsFecController.candidates
       parameters:
         - description: Two-year election cycle, e.g. 2026. Defaults to the current cycle.
@@ -20837,7 +21008,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Company Politics Result'
+                $ref: '#/components/schemas/Company Politics Candidates'
           description: ''
         '422':
           content:
@@ -20859,8 +21030,7 @@ paths:
       callbacks: {}
       description: |
         Every public company with tracked political activity: confirmed corporate PAC count, PAC-tier
-        contribution totals, employee-tier estimates (contributions by self-reported employees — an
-        estimate, kept separate from PAC numbers), party split, and lobbying spend for the cycle.
+        contribution totals, employee-tier estimates (estimated contributions by self-reported employees, kept separate from PAC numbers), party split, and lobbying spend for the cycle.
         Sorted by PAC total.
       operationId: PublicApi.PoliticsFecController.companies
       parameters:
@@ -20893,7 +21063,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Company Politics Result'
+                $ref: '#/components/schemas/Company Politics Companies'
           description: ''
         '422':
           content:
@@ -20914,9 +21084,11 @@ paths:
     get:
       callbacks: {}
       description: |
-        Lobbying spend per quarter for a company from Senate LDA filings — in-house expenses
-        (self-filed reports) and outside income (hired-firm reports) as separate series, with the top
+        Lobbying spend per quarter for a company from Senate LDA filings, in-house expenses
+        (self-filed reports), and outside income (hired-firm reports) as separate series, with the top
         issue codes per period. `include_filings=true` adds the paginated filing list.
+        
+        This is an enterprise only endpoint. Contact dev@unusualwhales.com for details about accessing this data.
       operationId: PublicApi.PoliticsFecController.lobbying
       parameters:
         - description: Company ticker.
@@ -20948,7 +21120,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Company Politics Result'
+                $ref: '#/components/schemas/Company Politics Lobbying'
           description: ''
         '404':
           content:
@@ -20977,6 +21149,8 @@ paths:
       description: |
         The people around a public company: candidates funded by its PAC and employees (with totals),
         politicians who traded the stock, and company insiders.
+        
+        This is an enterprise only endpoint. Contact dev@unusualwhales.com for details about accessing this data.
       operationId: PublicApi.PoliticsFecController.people
       parameters:
         - description: Company ticker.
@@ -20996,7 +21170,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Company Politics Result'
+                $ref: '#/components/schemas/Company Politics People'
           description: ''
         '404':
           content:
@@ -21024,10 +21198,12 @@ paths:
       callbacks: {}
       description: |
         The company-politics contribution feed. With `aggregated=true` (the default) rows are at the
-        company × candidate × cycle × tier grain — filter by `ticker` for a company's candidates, or by
+        company × candidate × cycle × tier grain - filter by `ticker` for a company's candidates, or by
         `candidate_id` for a candidate's companies. With `aggregated=false` rows are individual
         contributions, paginated by `cursor` (pass back `next_cursor` from the previous response);
         `tier` selects `pac` (default) or `employee`.
+        
+        This is an enterprise only endpoint. Contact dev@unusualwhales.com for details about accessing this data.
       operationId: PublicApi.PoliticsFecController.contributions
       parameters:
         - description: Default true.
@@ -21119,7 +21295,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Company Politics Result'
+                oneOf:
+                  - $ref: '#/components/schemas/Company Politics Contributions'
+                  - $ref: '#/components/schemas/Company Politics Contribution Rows'
           description: ''
         '422':
           content:
@@ -23922,6 +24100,7 @@ paths:
         | gex_strike_expiry:TICKER    | Receive live gex strike updates for every strike & expiry of the given ticker.                                        |
         | periscope                   | Receive live periscope market-maker greek exposures (gamma/charm/vanna) per strike & expiry for every index ticker (SPX, VIX, XSP, NANOS). Not available on the enterprise and enterprise startup plans. |
         | periscope:TICKER            | Receive live periscope market-maker greek exposures per strike & expiry for the given index ticker. Not available on the enterprise and enterprise startup plans. |
+        | greeks:TICKER               | Receive live per-contract option greeks (first- and second-order) for every contract of the given underlying.         |
         | market_tide                 | Receive live updates of both the market tide and the otm market tide.                                                 |
         | net_flow:TICKER             | Receive live net call/put premium and volume aggregates for the specified ticker to build a net prem view.            |
         | interval_flow               | Receive per interval option flow statistics for a ticker (sweeps, floors, multilegs, Greek flows, IV, net prem). Use this to build alert systems to spot spikes in tickers   |
@@ -24470,6 +24649,96 @@ paths:
       parameters: []
       responses: {}
       summary: GEX
+      tags:
+        - websocket
+  /api/socket/greeks:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for websocket channel `greeks:<TICKER>`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream, for example `greeks:SPY`.
+        
+        The channel streams the live counterpart of [/api/stock/{ticker}/greeks](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.greeks),
+        with a different shape: the REST endpoint returns one row per strike for a single
+        expiry with `call_*`/`put_*` field pairs, while this channel streams **one message
+        per contract**, across all expiries, with a single set of greek fields plus
+        `option_type`. A message is emitted every time a contract's greeks are recalculated
+        and its theoretical price moved - for a busy underlying that is many messages per
+        second across the whole chain.
+        
+        Weekly/PM index series are folded into their canonical root: `greeks:SPX` includes
+        SPXW contracts (likewise VIXW under VIX, NDXP under NDX, RUTW under RUT). The
+        `ticker` field carries the canonical root; use `option_symbol` to tell the series
+        apart.
+        
+        Payload format:
+        
+        ```
+        [
+          "greeks:SPY",
+          {
+            "option_symbol": "SPY261218C00480000",
+            "ticker": "SPY",
+            "expiry": "2026-12-18",
+            "strike": "480",
+            "option_type": "call",
+            "timestamp": 1726670396000,
+            "volatility": 0.2543,
+            "delta": 0.5231,
+            "gamma": 0.0125,
+            "theta": -0.0821,
+            "vega": 1.2143,
+            "rho": 0.4312,
+            "theo": 38.5217,
+            "vanna": 0.1123,
+            "vomma": 2.3121,
+            "veta": -1.0212,
+            "speed": -0.0031,
+            "zomma": 0.0523,
+            "color": -0.0012,
+            "ultima": 3.1214,
+            "charm": -0.0214
+          }
+        ]
+        ```
+        
+        Note that unlike the `gex` and `periscope` channels, the greek values on this
+        channel are JSON **numbers**, not decimal strings: they are floating point
+        quantities as computed, so you may see full double precision (e.g.
+        `0.30000000000000004`). Round on your side to whatever precision you display.
+        
+        Fields:
+        
+        | Field | Type | Description |
+        |---|---|---|
+        | `option_symbol` | string | OSI option symbol; the contract's primary identifier. Keeps the raw series root (e.g. `SPXW...` on `greeks:SPX`). |
+        | `ticker` | string | Canonical underlying root, matching the channel key. |
+        | `expiry` | date string `YYYY-MM-DD` | Contract expiration. |
+        | `strike` | decimal string | Strike price. |
+        | `option_type` | string | `call` or `put`. |
+        | `timestamp` | int (ms) | Calculation time, unix epoch milliseconds. |
+        | `volatility` | number | Implied volatility. |
+        | `delta`, `gamma`, `theta`, `vega`, `rho` | number | First-order greeks. |
+        | `theo` | number | Theoretical price of the contract. |
+        | `vanna`, `vomma`, `veta`, `speed`, `zomma`, `color`, `ultima`, `charm` | number | Second-order greeks. |
+      operationId: PublicApi.SocketController.greeks
+      parameters: []
+      responses: {}
+      summary: Greeks
       tags:
         - websocket
   /api/socket/interpolated_iv:
