@@ -1554,6 +1554,18 @@ components:
       example: Adam Kinzinger
       title: Congress Member
       type: string
+    Congress trade order by field:
+      default: filed_at_date
+      description: The field to order the congress trades by. Defaults to filed_at_date.
+      enum:
+        - filed_at_date
+        - transaction_date
+        - low_value
+        - mid_value
+        - high_value
+      example: transaction_date
+      title: Congress trade order by field
+      type: string
     Continent:
       description: ''
       example: North America
@@ -2335,22 +2347,52 @@ components:
       example: 100000
       title: DynLimitAaiarpkmqeltxpeikbejqwzovkgqrujryjtyfdorrxiqrlvwhsq
       type: integer
-    DynLimitAbavpwytzawmmydhdcjcpexjlkglzqrwevcelwcikuedafgwnob:
+    DynLimitAbeobwclsdljrzbuejnzgwruniyamgqpnegkerrxuwchtkanbrq:
+      default: true
+      description: Boolean flag whether to return only intraday alerts.
+      example: true
+      title: DynLimitAbeobwclsdljrzbuejnzgwruniyamgqpnegkerrxuwchtkanbrq
+      type: boolean
+    DynLimitAbforjmoaptfcearxanvwghqnnqvodayjezcniiqrndfhghwqag:
+      default: true
+      description: Boolean flag whether a transaction is from the floor.
+      example: true
+      title: DynLimitAbforjmoaptfcearxanvwghqnnqvodayjezcniiqrndfhghwqag
+      type: boolean
+    DynLimitAbgsrafbwyqcjggcbrxcmohknwlalgjmmwuzfppaseszbkanedv:
       description: 'The minimum premium on that alert. Min: 0.'
       example: 12500.5
       minimum: 0
-      title: DynLimitAbavpwytzawmmydhdcjcpexjlkglzqrwevcelwcikuedafgwnob
+      title: DynLimitAbgsrafbwyqcjggcbrxcmohknwlalgjmmwuzfppaseszbkanedv
+      type: integer
+    DynLimitAcdzssmewxczknucgybayrgiugysliihxogvqnotwenofjwiqtt:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAcdzssmewxczknucgybayrgiugysliihxogvqnotwenofjwiqtt
+      type: integer
+    DynLimitAdljwylhfvgfqtaflproyovvpbhleacgqizsafezrxuegvtonef:
+      description: 'The maximum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAdljwylhfvgfqtaflproyovvpbhleacgqizsafezrxuegvtonef
+      type: integer
+    DynLimitAdqkyyobisjoylvrjesybtjhratbhhxtvkijxsbuwbrbqyzzzeg:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAdqkyyobisjoylvrjesybtjhratbhhxtvkijxsbuwbrbqyzzzeg
       type: integer
     DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn:
       description: The max fee rate.
       example: 0.45
       title: DynLimitAdqyxibqjfhjmzzebfpxvixnofkvffvlemjqutahaihzuarylmn
       type: integer
-    DynLimitAfaswmfptyknphayarszihahlgsaceuzppnzuzkombzgwauxaka:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAeiukmdydorfkvqzuqrzzmcdhdevbecrkzbwmecucgrwbnmqtfc:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAfaswmfptyknphayarszihahlgsaceuzppnzuzkombzgwauxaka
+      title: DynLimitAeiukmdydorfkvqzuqrzzmcdhdevbecrkzbwmecucgrwbnmqtfc
       type: integer
     DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa:
       default: 100
@@ -2360,57 +2402,39 @@ components:
       minimum: 0
       title: DynLimitAfczisxafgezlfuwzepbhiwqbukvmdtgddaknczwtmanpqjuaaa
       type: integer
-    DynLimitAgluwkoerpkrzydmaxphetxvgbbychnbdxruswqiravtqbremvx:
+    DynLimitAgavekjgycyberezajikrkllxxbvupthlljtbfknmxttxiwwdxy:
       default: true
-      description: Boolean flag whether a transaction is bid side.
+      description: Boolean flag whether a transaction is ask side.
       example: true
-      title: DynLimitAgluwkoerpkrzydmaxphetxvgbbychnbdxruswqiravtqbremvx
+      title: DynLimitAgavekjgycyberezajikrkllxxbvupthlljtbfknmxttxiwwdxy
+      type: boolean
+    DynLimitAgqajjvienwpiljdmrvvzltlgprnikxrhxsmivguhiitrdewybj:
+      default: true
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+      example: true
+      title: DynLimitAgqajjvienwpiljdmrvvzltlgprnikxrhxsmivguhiitrdewybj
       type: boolean
     DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf:
       description: The max short shares available.
       example: 10000
       title: DynLimitAgrozoonsqobedhiajcjfotmdzknpovygauiiwzttzhsqtlwemf
       type: integer
-    DynLimitAgwyxrjlpkfidpsnspudpbaypfhdrdjqkhvxfdwahdjypsqthbp:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAgwyxrjlpkfidpsnspudpbaypfhdrdjqkhvxfdwahdjypsqthbp
-      type: boolean
-    DynLimitAhafvkibwsvtzlqeqquyidygifxyqibhrhvidbkpkuunkhosltc:
-      default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
-      example: true
-      title: DynLimitAhafvkibwsvtzlqeqquyidygifxyqibhrhvidbkpkuunkhosltc
-      type: boolean
-    DynLimitAhyhzvcqlfojsvamhdspyeriouzpvrfgsmavszabtyeveplalps:
-      default: true
-      description: Boolean flag whether a transaction is from the floor.
-      example: true
-      title: DynLimitAhyhzvcqlfojsvamhdspyeriouzpvrfgsmavszabtyeveplalps
-      type: boolean
-    DynLimitAiprgzblotdvzyuqpfmecwuvflcztyqabxgngyilokaylbouzpp:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAiprgzblotdvzyuqpfmecwuvflcztyqabxgngyilokaylbouzpp
-      type: integer
     DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax:
       description: The max si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitAiqpvlkbsmwtkdsuqytestyjpjsjgxgdzhocfxyomeutzvqtyax
       type: integer
-    DynLimitAizedwguhvrbmqpssmgdbjbmcjoudwhbwjsktxbmzblbyohiqel:
+    DynLimitAjuowelnrcjxvcktlqwfshmucbtksqajabpdwexwdsepvsfjbyn:
       default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+      description: Boolean flag whether a transaction is a call.
       example: true
-      title: DynLimitAizedwguhvrbmqpssmgdbjbmcjoudwhbwjsktxbmzblbyohiqel
+      title: DynLimitAjuowelnrcjxvcktlqwfshmucbtksqajabpdwexwdsepvsfjbyn
       type: boolean
-    DynLimitAlkjcqinvqrmjnzhsmuiubqohimigznabhqaplejygzsrieqkbe:
+    DynLimitAlhhpuvmxoqodkmepgwezyekajxkvmghdibovntjphxxcrycwjk:
       default: true
-      description: Boolean flag whether a transaction is ask side.
+      description: Boolean flag whether a transaction is a intermarket sweep.
       example: true
-      title: DynLimitAlkjcqinvqrmjnzhsmuiubqohimigznabhqaplejygzsrieqkbe
+      title: DynLimitAlhhpuvmxoqodkmepgwezyekajxkvmghdibovntjphxxcrycwjk
       type: boolean
     DynLimitAmgvwdedprykkkwubboqoucydelwfunvmsgjwjjjzoktwvuggur:
       default: 0
@@ -2424,12 +2448,18 @@ components:
       example: 0.1
       title: DynLimitAmiwzvcvlafbptywihmivtogxztamfplnstoilspyiqonfmgxis
       type: integer
-    DynLimitAmrcgsvojbbqzwfguibtgjauhondylexqdaqhbxpfnpabrfzebx:
+    DynLimitAmnpinfyyuvdmravxqioimydxmcslhnlgpovlqggvambgrqwqcp:
       default: true
-      description: Boolean flag whether to return only intraday alerts.
+      description: Boolean flag whether a transaction is a put.
       example: true
-      title: DynLimitAmrcgsvojbbqzwfguibtgjauhondylexqdaqhbxpfnpabrfzebx
+      title: DynLimitAmnpinfyyuvdmravxqioimydxmcslhnlgpovlqggvambgrqwqcp
       type: boolean
+    DynLimitAmomepdxozkryomiydbkhzcthvjwfqalzkhuyozyelddkyfvnms:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAmomepdxozkryomiydbkhzcthvjwfqalzkhuyozyelddkyfvnms
+      type: integer
     DynLimitAmxmdyrsybvtrzmcmrakrncwtrghafdvtxplwnvfxotlemwclyu:
       description: The min days to cover.
       example: 1.1
@@ -2451,12 +2481,12 @@ components:
       example: 5.34
       title: DynLimitAopcmddgvncuyuibnwdxqqvwzgorwokcmttygcreolepxwinlnk
       type: integer
-    DynLimitAotgtqhghpafoxvaplndrvotgxqvpupqljktxuesgrqinrdaidd:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAotgtqhghpafoxvaplndrvotgxqvpupqljktxuesgrqinrdaidd
-      type: integer
+    DynLimitApcqzhhupuktpmgqvqyvnxkawdbtiqjchwwdblfbohjturcgtfh:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitApcqzhhupuktpmgqvqyvnxkawdbtiqjchwwdblfbohjturcgtfh
+      type: boolean
     DynLimitApdnwejavjdeghjpywbfjnbuehgzwmislusryzphyunaxnoiglr:
       description: The min rebate rate.
       example: 0.11
@@ -2467,22 +2497,16 @@ components:
       example: 0.01
       title: DynLimitApkrxcwicmouljbhmfmrltarukskjwfyuwwrelhciynqydpizqa
       type: integer
-    DynLimitAqgwitofkngmpvzyhaptaspipkemwfyvnkitdpbggelyhwfwkcw:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAqgwitofkngmpvzyhaptaspipkemwfyvnkitdpbggelyhwfwkcw
-      type: integer
-    DynLimitAqyyjcrgmimbqhqparipajnldpyowdwxnmgfardgbklljvsihbp:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAqyyjcrgmimbqhqparipajnldpyowdwxnmgfardgbklljvsihbp
-      type: integer
     DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv:
       description: The min si_float_with_synth_long_pct_of_total_shares.
       example: 0.05
       title: DynLimitArpfwrvvgapdircxpncyosfvlwcxiiwymysekvyxfcgkugfgsuv
+      type: integer
+    DynLimitArqoczjsyjbguyldvjzgaqmfaxiphwfqllpltxwfcskaidmypbn:
+      description: 'The maximum size on that alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitArqoczjsyjbguyldvjzgaqmfaxiphwfqllpltxwfcskaidmypbn
       type: integer
     DynLimitAtkcfcbawqiyrzdxhzavufzegzybhcehylbnihdexcgwwetygbc:
       default: true
@@ -2490,11 +2514,11 @@ components:
       example: true
       title: DynLimitAtkcfcbawqiyrzdxhzavufzegzybhcehylbnihdexcgwwetygbc
       type: boolean
-    DynLimitAtxmvvcmzyqrgyiswjqhfefvpbzwbehopnqphsmafefkbpfaaxb:
+    DynLimitAvtnddcpbenhcqckaiihbxgtbxgaeupararaiylaxajiekrmgla:
       description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAtxmvvcmzyqrgyiswjqhfefvpbzwbehopnqphsmafefkbpfaaxb
+      title: DynLimitAvtnddcpbenhcqckaiihbxgtbxgaeupararaiylaxajiekrmgla
       type: integer
     DynLimitAwjdnnnqekdxstvfbyqrdsstoysnoqnykdginwxdwamkskkivkj:
       description: The min short shares available.
@@ -2511,22 +2535,10 @@ components:
       example: 100000000
       title: DynLimitAxjheprcsljmvplbcjldheerzymjvlsybquzhatrknvmtdlzowe
       type: integer
-    DynLimitAxljtqkznmcdubndwbzklbhxtungimwxwrpjfovjsxsynerapvs:
-      default: true
-      description: Boolean flag whether a transaction is a call.
-      example: true
-      title: DynLimitAxljtqkznmcdubndwbzklbhxtungimwxwrpjfovjsxsynerapvs
-      type: boolean
     DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri:
       description: The max days to cover.
       example: 5.3
       title: DynLimitAxpqibvjazjdihecinkbfzmdoygmtcdoppivmncwxlmauoodfri
-      type: integer
-    DynLimitAycayvyfnatjmjisyfcwgtlrfktmilqfrdzopuunzrzwxhraxym:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAycayvyfnatjmjisyfcwgtlrfktmilqfrdzopuunzrzwxhraxym
       type: integer
     DynLimitAyelzaduwvxwoezfgredydrnihuyxezmypesolmohfvsexmnink:
       description: The min total float.
@@ -9553,6 +9565,25 @@ components:
           type: array
       title: Politician Portfolios
       type: object
+    Politician Trades:
+      additionalProperties: true
+      description: Trades reported by members of congress, with the linked politician where known.
+      example:
+        data:
+          - asset: NVIDIA Corporation - Common Stock
+            asset_type: stock
+            filed_at_date: 2026-07-15
+            high_value: '5000000'
+            id: b3f1c2d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+            low_value: '1000001'
+            mid_value: '3000000'
+            name: Nancy Pelosi
+            politician_id: 18f9fc95-4661-444e-99f5-99d3778e0c31
+            ticker: NVDA
+            transaction_date: 2026-06-20
+            transaction_type: Buy
+      title: Politician Trades
+      type: object
     Politicians List:
       example:
         data:
@@ -12587,8 +12618,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
-      example: '13.52369891956068210400'
+      description: The 30 day implied volatility from 1 month ago.
+      example: '0.2136848270893097'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -14149,6 +14180,9 @@ info:
     
     ## Changelog
     
+    # 2026.08.28
+    - Added a new websocket channel [`risk_reversal_skew`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.risk_reversal_skew). The channel streams live 25- and 10-delta risk reversal skew (put implied volatility minus call implied volatility) per expiry across every ticker, the live counterpart of [`/stock/:ticker/historical-risk-reversal-skew`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.historical_risk_reversal_skew). The channel is global only; there is no per-ticker variant.
+    
     # 2026.08.22
     - Updated [`/stock/:ticker/gex-levels`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.gex_levels) to derive its levels from spot directionalized volume — instead of a cumulative total over the static open-interest snapshot.
     - Added `date`, `time`, `source`, and `nearby_flips` to the [`/stock/:ticker/gex-levels`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.gex_levels) response. `nearby_flips` lists the five zero-gamma crossings nearest spot, ordered by distance from it. `time` is when the underlying exposure snapshot was calculated.
@@ -14455,7 +14489,7 @@ paths:
           name: intraday_only
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmrcgsvojbbqzwfguibtgjauhondylexqdaqhbxpfnpabrfzebx'
+            $ref: '#/components/schemas/DynLimitAbeobwclsdljrzbuejnzgwruniyamgqpnegkerrxuwchtkanbrq'
         - description: ''
           in: query
           name: config_ids[]
@@ -19881,91 +19915,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbavpwytzawmmydhdcjcpexjlkglzqrwevcelwcikuedafgwnob'
+            $ref: '#/components/schemas/DynLimitAbgsrafbwyqcjggcbrxcmohknwlalgjmmwuzfppaseszbkanedv'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAotgtqhghpafoxvaplndrvotgxqvpupqljktxuesgrqinrdaidd'
+            $ref: '#/components/schemas/DynLimitAdljwylhfvgfqtaflproyovvpbhleacgqizsafezrxuegvtonef'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAycayvyfnatjmjisyfcwgtlrfktmilqfrdzopuunzrzwxhraxym'
+            $ref: '#/components/schemas/DynLimitAcdzssmewxczknucgybayrgiugysliihxogvqnotwenofjwiqtt'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqgwitofkngmpvzyhaptaspipkemwfyvnkitdpbggelyhwfwkcw'
+            $ref: '#/components/schemas/DynLimitArqoczjsyjbguyldvjzgaqmfaxiphwfqllpltxwfcskaidmypbn'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqyyjcrgmimbqhqparipajnldpyowdwxnmgfardgbklljvsihbp'
+            $ref: '#/components/schemas/DynLimitAmomepdxozkryomiydbkhzcthvjwfqalzkhuyozyelddkyfvnms'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAiprgzblotdvzyuqpfmecwuvflcztyqabxgngyilokaylbouzpp'
+            $ref: '#/components/schemas/DynLimitAeiukmdydorfkvqzuqrzzmcdhdevbecrkzbwmecucgrwbnmqtfc'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfaswmfptyknphayarszihahlgsaceuzppnzuzkombzgwauxaka'
+            $ref: '#/components/schemas/DynLimitAdqkyyobisjoylvrjesybtjhratbhhxtvkijxsbuwbrbqyzzzeg'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtxmvvcmzyqrgyiswjqhfefvpbzwbehopnqphsmafefkbpfaaxb'
+            $ref: '#/components/schemas/DynLimitAvtnddcpbenhcqckaiihbxgtbxgaeupararaiylaxajiekrmgla'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAizedwguhvrbmqpssmgdbjbmcjoudwhbwjsktxbmzblbyohiqel'
+            $ref: '#/components/schemas/DynLimitAgqajjvienwpiljdmrvvzltlgprnikxrhxsmivguhiitrdewybj'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhyhzvcqlfojsvamhdspyeriouzpvrfgsmavszabtyeveplalps'
+            $ref: '#/components/schemas/DynLimitAbforjmoaptfcearxanvwghqnnqvodayjezcniiqrndfhghwqag'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhafvkibwsvtzlqeqquyidygifxyqibhrhvidbkpkuunkhosltc'
+            $ref: '#/components/schemas/DynLimitAlhhpuvmxoqodkmepgwezyekajxkvmghdibovntjphxxcrycwjk'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAxljtqkznmcdubndwbzklbhxtungimwxwrpjfovjsxsynerapvs'
+            $ref: '#/components/schemas/DynLimitAjuowelnrcjxvcktlqwfshmucbtksqajabpdwexwdsepvsfjbyn'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgwyxrjlpkfidpsnspudpbaypfhdrdjqkhvxfdwahdjypsqthbp'
+            $ref: '#/components/schemas/DynLimitAmnpinfyyuvdmravxqioimydxmcslhnlgpovlqggvambgrqwqcp'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlkjcqinvqrmjnzhsmuiubqohimigznabhqaplejygzsrieqkbe'
+            $ref: '#/components/schemas/DynLimitAgavekjgycyberezajikrkllxxbvupthlljtbfknmxttxiwwdxy'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgluwkoerpkrzydmaxphetxvgbbychnbdxruswqiravtqbremvx'
+            $ref: '#/components/schemas/DynLimitApcqzhhupuktpmgqvqyvnxkawdbtiqjchwwdblfbohjturcgtfh'
         - description: ''
           in: query
           name: rule_name[]
@@ -21312,6 +21346,110 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Company political contributions
+      tags:
+        - politics
+  /api/politics/politician/trades:
+    get:
+      callbacks: {}
+      description: |
+        Trades reported by members of congress, with the politician linked where known.
+        If a date is given, will only return trades whose transaction date is <= the given input date.
+        
+        This is an enterprise only endpoint. Contact dev@unusualwhales.com for details about accessing this data.
+      operationId: PublicApi.PoliticsFecController.politician_trades
+      parameters:
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+        - description: ''
+          in: query
+          name: ticker
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Ticker'
+        - description: ''
+          in: query
+          name: politician_id
+          required: false
+          schema:
+            $ref: '#/components/schemas/Politician ID'
+        - description: If true, will filter out any trades with a transaction date after the input date.
+          in: query
+          name: filter_late_reports
+          required: false
+          schema:
+            $ref: '#/components/schemas/Filter Late Reports Only'
+        - description: The page number for the data being requested (default is 1).
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
+        - description: If provided, will only return trades with a disclosure date >= this date.
+          in: query
+          name: disclosure_newer_than
+          required: false
+          schema:
+            $ref: '#/components/schemas/NewerThan'
+        - description: If provided, will only return trades with a disclosure date <= this date.
+          in: query
+          name: disclosure_older_than
+          required: false
+          schema:
+            $ref: '#/components/schemas/OlderThan'
+        - description: If provided, will only return trades with a transaction date >= this date.
+          in: query
+          name: transaction_newer_than
+          required: false
+          schema:
+            $ref: '#/components/schemas/NewerThan'
+        - description: If provided, will only return trades with a transaction date <= this date.
+          in: query
+          name: transaction_older_than
+          required: false
+          schema:
+            $ref: '#/components/schemas/OlderThan'
+        - description: ''
+          in: query
+          name: order_by
+          required: false
+          schema:
+            $ref: '#/components/schemas/Congress trade order by field'
+        - description: ''
+          in: query
+          name: order_direction
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderDirection'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Politician Trades'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Politician's trades
       tags:
         - politics
   /api/potus/posts:
@@ -24113,6 +24251,7 @@ paths:
         | interpolated_iv:TICKER      | Receive live interpolated IV and expected move updates at fixed horizons for the given ticker.                        |
         | iv_term_structure           | Receive live ATM IV and expected move updates per real option expiry for every ticker at once.                        |
         | iv_term_structure:TICKER    | Receive live ATM IV and expected move updates per real option expiry for the given ticker.                            |
+        | risk_reversal_skew          | Receive live 25- and 10-delta risk reversal skew (put IV minus call IV) per expiry for every ticker at once.          |
         
         The `option_trades` channel will stream all 6,000,000 option trades in real-time, `option_trades:<TICKER>` will stream
         all option trades for the given ticker in real-time.
@@ -25524,6 +25663,78 @@ paths:
       parameters: []
       responses: {}
       summary: Price
+      tags:
+        - websocket
+  /api/socket/risk_reversal_skew:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for the websocket channel `risk_reversal_skew`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the `risk_reversal_skew` channel.
+        
+        Each message carries the risk reversal skew — the put implied volatility minus the call
+        implied volatility — at one delta bucket for one expiry of one ticker. A positive value
+        means puts are more expensive than calls, the usual state for equity index options.
+        
+        ### Delivery characteristics
+        
+        Read these before writing a client, they are not obvious from the payload:
+        
+        - **Updates arrive in a batch at most every ~30 seconds**, not continuously.
+        - **The channel is only live between 04:00 and 16:00 ET.** Outside that window nothing
+          is published at all and the socket is silent. This is expected, not a fault.
+        - **One message per (ticker, expiry, delta) pair.** Because this is a global channel
+          covering the whole option universe and each ticker has many expiries, every batch is a
+          large burst of messages. Your client must read from the socket promptly: a slow
+          consumer is not disconnected, but frames it fails to keep up with are dropped.
+        - Only two delta buckets are published: `25` and `10`.
+        
+        This is the live counterpart of the [`/stock/:ticker/historical-risk-reversal-skew`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.historical_risk_reversal_skew)
+        endpoint, which returns the identical value under the same `risk_reversal` name. Note only
+        that the REST endpoint renders it as a decimal string, while this channel sends a JSON number.
+        
+        Payload format:
+        
+        ```
+        [
+          "risk_reversal_skew",
+          {
+            "ticker": "AAPL",
+            "date": "2026-08-20",
+            "expiry": "2026-09-18",
+            "delta": 25,
+            "risk_reversal": 0.0142
+          }
+        ]
+        ```
+        
+        ### Field reference
+        
+        | Field           | Type    | Description |
+        |-----------------|---------|-------------|
+        | `ticker`        | string  | Ticker of the underlying. |
+        | `date`          | string  | The trading date in `YYYY-MM-DD` format. |
+        | `expiry`        | string  | The option expiry this entry belongs to, in `YYYY-MM-DD` format. |
+        | `delta`         | integer | The delta bucket as a whole number out of 100: `25` means the 0.25 delta, `10` means the 0.10 delta. |
+        | `risk_reversal` | number  | Put implied volatility minus call implied volatility at that delta. Positive means puts are more expensive than calls. |
+      operationId: PublicApi.SocketController.risk_reversal_skew
+      parameters: []
+      responses: {}
+      summary: Risk reversal skew
       tags:
         - websocket
   /api/socket/trading_halts:
