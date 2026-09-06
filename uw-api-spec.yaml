@@ -788,6 +788,58 @@ components:
           type: array
       title: Annual Disclosures List
       type: object
+    Authentication Error:
+      description: Returned with HTTP 401 when a request carries no API token, or carries one the API cannot use. The response also carries a `WWW-Authenticate` header with the `Bearer` challenge. Branch on `reason` rather than on `message`, whose wording can change.
+      example:
+        code: authentication_required
+        documentation_url: https://api.unusualwhales.com/docs
+        expected_format: uuid
+        message: The API token provided is not in the expected format. Unusual Whales API tokens are UUIDs, such as 123e4567-e89b-12d3-a456-426614174000.
+        reason: malformed_token
+        request_id: GNI_YTC1CRnw2LACGBvE
+        retryable: false
+        support_email: dev@unusualwhales.com
+        token_url: https://unusualwhales.com/dashboard/api
+      properties:
+        code:
+          description: Always `authentication_required`.
+          enum:
+            - authentication_required
+          type: string
+        documentation_url:
+          description: Where to read this API documentation.
+          type: string
+        expected_format:
+          description: Present only when `reason` is `malformed_token`. The format the token must take.
+          enum:
+            - uuid
+          type: string
+        message:
+          description: A plain description of the failure, written for a person.
+          type: string
+        reason:
+          description: Which authentication failure occurred. `missing_token` means the request carried no token. `malformed_token` means a token was supplied but is not a UUID. `unrecognized_token` means the token is a UUID that no active token matches, which happens after a token is revoked or regenerated, or when it belongs to a different account.
+          enum:
+            - missing_token
+            - malformed_token
+            - unrecognized_token
+          type: string
+        request_id:
+          description: Identifies this request in Unusual Whales logs. Quote it when contacting support. It matches the `x-request-id` response header, and is absent when no request id was assigned.
+          type: string
+        retryable:
+          description: Always `false`. Replaying the same request unchanged returns the same error. Retrying with a corrected token can succeed.
+          enum:
+            - false
+          type: boolean
+        support_email:
+          description: Where to send questions about API access.
+          type: string
+        token_url:
+          description: Where to create and manage API tokens.
+          type: string
+      title: Authentication Error
+      type: object
     Avg Price:
       description: ''
       example: '23.49'
@@ -2590,208 +2642,208 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAbcwoqvorvzswycapqdasvzdmltpgyzofteicfxxdtorqznsdrq:
+    DynLimitAacxqynxnuuvdzhenkidiztnuokufyuacoqegnehbwpwylblfdk:
+      description: The min fee rate.
+      example: 0.01
+      title: DynLimitAacxqynxnuuvdzhenkidiztnuokufyuacoqegnehbwpwylblfdk
+      type: integer
+    DynLimitAacyivxzxrsyodwsgayqwoewigfdibuextisvhfxekqhajrvcik:
+      description: The max fee rate.
+      example: 0.45
+      title: DynLimitAacyivxzxrsyodwsgayqwoewigfdibuextisvhfxekqhajrvcik
+      type: integer
+    DynLimitAafohsevrwjizdgpdywmrxranuackpcepjdlocknejjbscaxfqi:
+      description: The max short shares available.
+      example: 10000
+      title: DynLimitAafohsevrwjizdgpdywmrxranuackpcepjdlocknejjbscaxfqi
+      type: integer
+    DynLimitAakabldmjjyeoyxaofiypixgqspqbmakrlwkxjgfkxjnhumpxkb:
       default: true
       description: Boolean flag whether a transaction is bid side.
       example: true
-      title: DynLimitAbcwoqvorvzswycapqdasvzdmltpgyzofteicfxxdtorqznsdrq
+      title: DynLimitAakabldmjjyeoyxaofiypixgqspqbmakrlwkxjgfkxjnhumpxkb
       type: boolean
-    DynLimitAbnafdjghqadghhqqlzodrinefcmcngvsovqzciyvgmznrhqlnq:
-      description: The min short interest.
-      example: 5000
-      title: DynLimitAbnafdjghqadghhqqlzodrinefcmcngvsovqzciyvgmznrhqlnq
-      type: integer
-    DynLimitAbqcmejlghhjjaqmjteasporbfgzmavlpfpurvgdgndbvvfpbyo:
-      description: The min fee rate.
-      example: 0.01
-      title: DynLimitAbqcmejlghhjjaqmjteasporbfgzmavlpfpurvgdgndbvvfpbyo
-      type: integer
-    DynLimitAbvgcabgcouzmrnzeqgcvylmoxcgizljtzafcmtofdlkwkkuwnx:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAbvgcabgcouzmrnzeqgcvylmoxcgizljtzafcmtofdlkwkkuwnx
-      type: boolean
-    DynLimitAcbssgxyvbcqdjlshsoncxwpohicusypbawonqpgszsxijhlvng:
-      description: The max si_float_with_synth_long_pct_of_total_shares.
-      example: 0.05
-      title: DynLimitAcbssgxyvbcqdjlshsoncxwpohicusypbawonqpgszsxijhlvng
-      type: integer
-    DynLimitAdayaiyqyarqeraxauwbtnlkntifgybgsawuwktwuuzjhkwekwu:
+    DynLimitAcznxdmjglmxreauarvirjzztnowcqidxilkbmnmtirqyfaagib:
       description: 'The maximum premium on that alert. Min: 0.'
       example: 12500.5
       minimum: 0
-      title: DynLimitAdayaiyqyarqeraxauwbtnlkntifgybgsawuwktwuuzjhkwekwu
+      title: DynLimitAcznxdmjglmxreauarvirjzztnowcqidxilkbmnmtirqyfaagib
       type: integer
-    DynLimitAddsfujlttglwwxtyusncjiunziariqjntbaiwguuecmzcozltd:
-      description: The max fee rate.
-      example: 0.45
-      title: DynLimitAddsfujlttglwwxtyusncjiunziariqjntbaiwguuecmzcozltd
-      type: integer
-    DynLimitAdvregfphydnakqlwmjechzlqkmmaqfftpwqnzaypizxnnzljvr:
+    DynLimitAdynhuvcmzajvhdccdgcuwqkkoillkdseuqphgtvjakxzfntpla:
       default: true
-      description: Boolean flag whether a transaction is from the floor.
+      description: Boolean flag whether a transaction is a intermarket sweep.
       example: true
-      title: DynLimitAdvregfphydnakqlwmjechzlqkmmaqfftpwqnzaypizxnnzljvr
+      title: DynLimitAdynhuvcmzajvhdccdgcuwqkkoillkdseuqphgtvjakxzfntpla
       type: boolean
-    DynLimitAfdhllfxoocvygdlbftkgovsnmskowscikjevprrotxtkgdgrth:
+    DynLimitAebhgbevbbjwxjgpdcgphjooabryrxppfcqqjcfypxllrnfskzu:
       description: The max short interest.
       example: 100000
-      title: DynLimitAfdhllfxoocvygdlbftkgovsnmskowscikjevprrotxtkgdgrth
+      title: DynLimitAebhgbevbbjwxjgpdcgphjooabryrxppfcqqjcfypxllrnfskzu
       type: integer
-    DynLimitAfnubfdrqycrwhroyptmctpwsfmfpgfjnfsbgtgsicftnwefmrx:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAfnubfdrqycrwhroyptmctpwsfmfpgfjnfsbgtgsicftnwefmrx
-      type: integer
-    DynLimitAfsczclklkawrtjrkcncacloddxbuwditchnysgxvezuhhedvka:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAfsczclklkawrtjrkcncacloddxbuwditchnysgxvezuhhedvka
-      type: boolean
-    DynLimitAfuoixduskhnjfprzbckuzsneaokplnheeisrygyxciaiidmkwi:
-      description: The max days to cover.
-      example: 5.3
-      title: DynLimitAfuoixduskhnjfprzbckuzsneaokplnheeisrygyxciaiidmkwi
-      type: integer
-    DynLimitAgakljkzkuylboaphswedvwikhqfvbpbqwndodfbjtpqrsydsmw:
-      description: The min days to cover.
-      example: 1.1
-      title: DynLimitAgakljkzkuylboaphswedvwikhqfvbpbqwndodfbjtpqrsydsmw
-      type: integer
-    DynLimitAhbgffvdmvwyqvvqwtddtrtnxnlzcieibzotygvdvqfmfuutrrb:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAhbgffvdmvwyqvvqwtddtrtnxnlzcieibzotygvdvqfmfuutrrb
-      type: integer
-    DynLimitAhgmxnpotbrelngpufrbndwgpsezfnmeakbfesiiwheaqtupsuj:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAhgmxnpotbrelngpufrbndwgpsezfnmeakbfesiiwheaqtupsuj
-      type: integer
-    DynLimitAhpsxctrsjnujrwkpurlayxodbhstxfuqqlwvijlwisrzwukvel:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAhpsxctrsjnujrwkpurlayxodbhstxfuqqlwvijlwisrzwukvel
-      type: boolean
-    DynLimitAidrrgushpmklyupjaycmnnsnwhexlwsjfstshxccpigntearcl:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAidrrgushpmklyupjaycmnnsnwhexlwsjfstshxccpigntearcl
-      type: integer
-    DynLimitAihmcocujrvqykthqgoqzuzcdafbqnzlsowcfswhaozfooedopu:
+    DynLimitAezwoanboxekjxmdrzmiggkdmyzlqmrnpwiwgahfaensujxsrrn:
       default: true
       description: Boolean flag whether to return only intraday alerts.
       example: true
-      title: DynLimitAihmcocujrvqykthqgoqzuzcdafbqnzlsowcfswhaozfooedopu
+      title: DynLimitAezwoanboxekjxmdrzmiggkdmyzlqmrnpwiwgahfaensujxsrrn
       type: boolean
-    DynLimitAisbwutfkzcjfxabxewbbwoktvmymbhofmqshqfusahbyklcgkw:
+    DynLimitAfivonogxvuzszvidvzfjxhmfpvhgwxrhmoqspsbsjtkfmxywmn:
       description: The max total float.
       example: 100000000
-      title: DynLimitAisbwutfkzcjfxabxewbbwoktvmymbhofmqshqfusahbyklcgkw
+      title: DynLimitAfivonogxvuzszvidvzfjxhmfpvhgwxrhmoqspsbsjtkfmxywmn
       type: integer
-    DynLimitAjefjrguuxcgghezzxnxyyopikjoovwjosyqnkxiadqzkssgcuu:
-      description: The min short interest float ratio.
-      example: 0.1
-      title: DynLimitAjefjrguuxcgghezzxnxyyopikjoovwjosyqnkxiadqzkssgcuu
-      type: integer
-    DynLimitAjvvyqlnoreyywpoutpxxthcbiohbfnaoiopmjkcnejrerigpth:
-      description: The min total float.
-      example: 10000000
-      title: DynLimitAjvvyqlnoreyywpoutpxxthcbiohbfnaoiopmjkcnejrerigpth
-      type: integer
-    DynLimitAlwuhntgsqzgoizxoitwjtytehazkipxzyyocaewtzohpokqyqx:
+    DynLimitAfwhbkhiwlpcvpbqkccaafwhrtiywvcnsnlfqtlqscupkrrmdlp:
       description: The min rebate rate.
       example: 0.11
-      title: DynLimitAlwuhntgsqzgoizxoitwjtytehazkipxzyyocaewtzohpokqyqx
+      title: DynLimitAfwhbkhiwlpcvpbqkccaafwhrtiywvcnsnlfqtlqscupkrrmdlp
       type: integer
-    DynLimitAmkrjwyrttrkneulykujwkhfxjwytnruvntkshpsueblpjsuhze:
+    DynLimitAfzdmpgadxmlcabxqexzptjnvkyfojyhlhfqvftsoafjkichyzr:
+      description: The min days to cover.
+      example: 1.1
+      title: DynLimitAfzdmpgadxmlcabxqexzptjnvkyfojyhlhfqvftsoafjkichyzr
+      type: integer
+    DynLimitAghomstbidjlypeokzytvrdegznmvnstlzpfoesamiqiebpdtst:
+      description: 'The maximum size on that alert. Min: 0.'
+      example: 125
+      minimum: 0
+      title: DynLimitAghomstbidjlypeokzytvrdegznmvnstlzpfoesamiqiebpdtst
+      type: integer
+    DynLimitAheiwqjocvdqzfccazxuzafnrbvinsgjrgozcuptvwuqeabxhmq:
+      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAheiwqjocvdqzfccazxuzafnrbvinsgjrgozcuptvwuqeabxhmq
+      type: integer
+    DynLimitAhnitpzbcawkmckfcytwuxgmqbsgdfqtwswqqyekxzarcfxfxqj:
       default: true
-      description: Boolean flag whether a transaction is bid side.
+      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
       example: true
-      title: DynLimitAmkrjwyrttrkneulykujwkhfxjwytnruvntkshpsueblpjsuhze
+      title: DynLimitAhnitpzbcawkmckfcytwuxgmqbsgdfqtwswqqyekxzarcfxfxqj
       type: boolean
-    DynLimitAmutbqqhvwgrlyttqvbxyvarqelxphrbkcpwdcanppixttecbok:
+    DynLimitAhrjiuwrfyydhgrgpnbbmmertehmsqxdpddowgonanbhgmepxus:
+      default: true
+      description: Boolean flag whether a transaction is a put.
+      example: true
+      title: DynLimitAhrjiuwrfyydhgrgpnbbmmertehmsqxdpddowgonanbhgmepxus
+      type: boolean
+    DynLimitAhsrtgayncutxblyfaeuwlwvfcqddcqyrhsfqxsxmmqlnxnnmvn:
       default: 100
       description: 'The limit of results. Default: 100. Max: 500. Min: 0.'
       example: 125
       maximum: 500
       minimum: 0
-      title: DynLimitAmutbqqhvwgrlyttqvbxyvarqelxphrbkcpwdcanppixttecbok
+      title: DynLimitAhsrtgayncutxblyfaeuwlwvfcqddcqyrhsfqxsxmmqlnxnnmvn
       type: integer
-    DynLimitApoywfdnnreeadgpgwhheptnvpsdrnjiaryazfpjyizpcpaaagc:
-      description: The min short shares available.
-      example: 0
-      title: DynLimitApoywfdnnreeadgpgwhheptnvpsdrnjiaryazfpjyizpcpaaagc
+    DynLimitAhyjdlcjdbznxjxufqqpmxxtnypupafddoqasuietthzjyajkwt:
+      description: The min short interest.
+      example: 5000
+      title: DynLimitAhyjdlcjdbznxjxufqqpmxxtnypupafddoqasuietthzjyajkwt
       type: integer
-    DynLimitApzlqabqbcruhkyfijavrbgamupsqpenquoxfbyimqdgugpxwmc:
+    DynLimitAkswwjnaedjeixlkcvggnhskwptmdqpjasvemgvzasgtjdbezes:
+      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAkswwjnaedjeixlkcvggnhskwptmdqpjasvemgvzasgtjdbezes
+      type: integer
+    DynLimitAleylevmxyvvplxmauwqvddynuaiwmsthrwfyturusnvdmqwoit:
+      default: true
+      description: Boolean flag whether a transaction is a call.
+      example: true
+      title: DynLimitAleylevmxyvvplxmauwqvddynuaiwmsthrwfyturusnvdmqwoit
+      type: boolean
+    DynLimitAlianfhavgyqyzfssrtyagyvoadvntfteeozrauuackozzplnhq:
+      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+      example: 125
+      minimum: 0
+      title: DynLimitAlianfhavgyqyzfssrtyagyvoadvntfteeozrauuackozzplnhq
+      type: integer
+    DynLimitAlnwixcrcfgomkechtmlpvpnqyiisvteufmsakmuzrtxxhlgcoe:
+      default: true
+      description: Boolean flag whether a transaction is bid side.
+      example: true
+      title: DynLimitAlnwixcrcfgomkechtmlpvpnqyiisvteufmsakmuzrtxxhlgcoe
+      type: boolean
+    DynLimitAmdtsgslumjzvldfppaqjyuuxrijnhbnzzfmwmxdjbvrqdwpdfe:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
       example: 100
       minimum: 0
-      title: DynLimitApzlqabqbcruhkyfijavrbgamupsqpenquoxfbyimqdgugpxwmc
+      title: DynLimitAmdtsgslumjzvldfppaqjyuuxrijnhbnzzfmwmxdjbvrqdwpdfe
       type: integer
-    DynLimitAqjmnajpladvbjopqwhespwofpwpmpedjtwrdughbdruqjtjeyl:
-      default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
-      example: true
-      title: DynLimitAqjmnajpladvbjopqwhespwofpwpmpedjtwrdughbdruqjtjeyl
-      type: boolean
-    DynLimitAsbmhpxyhxymnalfuinlmvuhvxsronrkcxrranwyapgocmqpthy:
-      description: The max rebate rate.
-      example: 5.34
-      title: DynLimitAsbmhpxyhxymnalfuinlmvuhvxsronrkcxrranwyapgocmqpthy
-      type: integer
-    DynLimitAskkwzxrcoxmzbsslpaqjmlofuqahvyfqmmhdgrlihwctbeipvr:
-      default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
-      example: true
-      title: DynLimitAskkwzxrcoxmzbsslpaqjmlofuqahvyfqmmhdgrlihwctbeipvr
-      type: boolean
-    DynLimitAtnzayjiaidfwfgeqzztkeqsduvuaprsozdnwbhloddrvtopjvn:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAmjzfgobqqmkezskxyoswyuxgeliffpslikbgffhdytedpxalav:
+      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
       example: 125
       minimum: 0
-      title: DynLimitAtnzayjiaidfwfgeqzztkeqsduvuaprsozdnwbhloddrvtopjvn
+      title: DynLimitAmjzfgobqqmkezskxyoswyuxgeliffpslikbgffhdytedpxalav
       type: integer
-    DynLimitAtywnidhrdkukynbcvlohgzdhedfmtjlurlfcreyqxsvupnrmsj:
-      description: The min si_float_with_synth_long_pct_of_total_shares.
-      example: 0.05
-      title: DynLimitAtywnidhrdkukynbcvlohgzdhedfmtjlurlfcreyqxsvupnrmsj
+    DynLimitAofovhyblhabfnbgehsbavpcrxmesfxwsycdwntcffistknhaoj:
+      description: The min short interest float ratio.
+      example: 0.1
+      title: DynLimitAofovhyblhabfnbgehsbavpcrxmesfxwsycdwntcffistknhaoj
       type: integer
-    DynLimitAulqqqvshlqbtcefjovrfhgzqudqiytnhtgpwtshuexdbhwrikg:
-      description: The max short shares available.
-      example: 10000
-      title: DynLimitAulqqqvshlqbtcefjovrfhgzqudqiytnhtgpwtshuexdbhwrikg
-      type: integer
-    DynLimitAvyunppwrdixfeppgvjmuxkscisizfdotspbfvvnbwlrlzamnge:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAvyunppwrdixfeppgvjmuxkscisizfdotspbfvvnbwlrlzamnge
-      type: integer
-    DynLimitAxlsgkgqradbdzgacvohxkfobuasdwmldiacjeauacopckyadhr:
-      default: true
-      description: Boolean flag whether a transaction is a call.
-      example: true
-      title: DynLimitAxlsgkgqradbdzgacvohxkfobuasdwmldiacjeauacopckyadhr
-      type: boolean
-    DynLimitAyrmlanbhrbzvxjuppptmbmjghofldzcvwrxipohrwdlvpufvgg:
+    DynLimitApajsbbfvlxedicjbfvjpwfjmiyvecdctktfvfcfodjbdjmvbyp:
       description: The max short interest float ratio.
       example: 0.05
-      title: DynLimitAyrmlanbhrbzvxjuppptmbmjghofldzcvwrxipohrwdlvpufvgg
+      title: DynLimitApajsbbfvlxedicjbfvjpwfjmiyvecdctktfvfcfodjbdjmvbyp
       type: integer
-    DynLimitAzcvyhkmogchszjhdzcacocqvpcemdojdhuncivqcfgjhdvyrgx:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+    DynLimitAqenxfbjhgxgmbltrpguxwnkdotrqbqmirdxuijcnabsfvtmwwp:
+      description: The max rebate rate.
+      example: 5.34
+      title: DynLimitAqenxfbjhgxgmbltrpguxwnkdotrqbqmirdxuijcnabsfvtmwwp
+      type: integer
+    DynLimitAqxelzmiyioqelcnoipdhpmgcwosrncmilspfhboxqlldoekfrc:
+      description: The max days to cover.
+      example: 5.3
+      title: DynLimitAqxelzmiyioqelcnoipdhpmgcwosrncmilspfhboxqlldoekfrc
+      type: integer
+    DynLimitAsqewxpsgzhrcynycyqdlinonqumwrqkfrcbxuidpqnkfzqtiok:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAsqewxpsgzhrcynycyqdlinonqumwrqkfrcbxuidpqnkfzqtiok
+      type: boolean
+    DynLimitAsydcdsybwlnjecfzngxonvosjbvxvqsvlekheljnzsnpnttcpv:
+      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
       example: 125
       minimum: 0
-      title: DynLimitAzcvyhkmogchszjhdzcacocqvpcemdojdhuncivqcfgjhdvyrgx
+      title: DynLimitAsydcdsybwlnjecfzngxonvosjbvxvqsvlekheljnzsnpnttcpv
+      type: integer
+    DynLimitAuavprxikefubdvuphuqgenbkouqbbxkyhjzflrhwucnljyxked:
+      description: The min total float.
+      example: 10000000
+      title: DynLimitAuavprxikefubdvuphuqgenbkouqbbxkyhjzflrhwucnljyxked
+      type: integer
+    DynLimitAuyujixzrpamobtbpyzeeqpezorcltaxxcutsgopwekzwbncjit:
+      default: true
+      description: Boolean flag whether a transaction is from the floor.
+      example: true
+      title: DynLimitAuyujixzrpamobtbpyzeeqpezorcltaxxcutsgopwekzwbncjit
+      type: boolean
+    DynLimitAxaktwvvfzddslqvzlskttdqhhjahprjylawxoetfzytokvivmv:
+      description: The min si_float_with_synth_long_pct_of_total_shares.
+      example: 0.05
+      title: DynLimitAxaktwvvfzddslqvzlskttdqhhjahprjylawxoetfzytokvivmv
+      type: integer
+    DynLimitAxomzkrelfvbbgssfkvzfwvwgbzqiukoiatjdbowqvurrgajrsc:
+      description: The min short shares available.
+      example: 0
+      title: DynLimitAxomzkrelfvbbgssfkvzfwvwgbzqiukoiatjdbowqvurrgajrsc
+      type: integer
+    DynLimitAxslnkuummqeoccqkrjcitewjrzdotgkrixckhdcmtzxmoqpqef:
+      default: true
+      description: Boolean flag whether a transaction is ask side.
+      example: true
+      title: DynLimitAxslnkuummqeoccqkrjcitewjrzdotgkrixckhdcmtzxmoqpqef
+      type: boolean
+    DynLimitAxypndprtlekkweoynvlklibrrdyqfthribiynjdnvkotyzvakx:
+      description: The max si_float_with_synth_long_pct_of_total_shares.
+      example: 0.05
+      title: DynLimitAxypndprtlekkweoynvlklibrrdyqfthribiynjdnvkotyzvakx
+      type: integer
+    DynLimitAypdhuhqetlfzhujtzilbnxtuwqnshukkfcnfodnijcshsmzszl:
+      description: 'The minimum premium on that alert. Min: 0.'
+      example: 12500.5
+      minimum: 0
+      title: DynLimitAypdhuhqetlfzhujtzilbnxtuwqnshukkfcnfodnijcshsmzszl
       type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
@@ -7793,6 +7845,50 @@ components:
       example: '0.5'
       title: MinValue
       type: string
+    Missing Access Error:
+      description: Returned with HTTP 403 when the API token is valid but is restricted to a set of routes that excludes the requested one. Route restrictions are set per token. This response carries no `WWW-Authenticate` header, because presenting different credentials for the same token does not change the outcome.
+      example:
+        code: missing_access
+        documentation_url: https://api.unusualwhales.com/docs
+        message: The API token provided is valid but is not permitted to access this route.
+        reason: route_not_permitted
+        request_id: GNI_YTC1CRnw2LACGBvE
+        retryable: false
+        support_email: dev@unusualwhales.com
+        token_url: https://unusualwhales.com/dashboard/api
+      properties:
+        code:
+          description: Always `missing_access`.
+          enum:
+            - missing_access
+          type: string
+        documentation_url:
+          description: Where to read this API documentation.
+          type: string
+        message:
+          description: A plain description of the failure, written for a person.
+          type: string
+        reason:
+          description: Always `route_not_permitted`.
+          enum:
+            - route_not_permitted
+          type: string
+        request_id:
+          description: Identifies this request in Unusual Whales logs. Quote it when contacting support. It matches the `x-request-id` response header, and is absent when no request id was assigned.
+          type: string
+        retryable:
+          description: Always `false`. Replaying the same request unchanged returns the same error.
+          enum:
+            - false
+          type: boolean
+        support_email:
+          description: Where to send questions about API access.
+          type: string
+        token_url:
+          description: Where to create and manage API tokens.
+          type: string
+      title: Missing Access Error
+      type: object
     Moneyness:
       description: Filter results by moneyness (all, itm, otm, atm)
       enum:
@@ -13157,8 +13253,8 @@ components:
       title: Stock IV 30d 1D
       type: string
     Stock IV 30d 1M:
-      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
-      example: '13.52369891956068210400'
+      description: The 30 day implied volatility from 1 month ago.
+      example: '0.2136848270893097'
       title: Stock IV 30d 1M
       type: string
     Stock IV 30d 1W:
@@ -15076,7 +15172,7 @@ paths:
           name: intraday_only
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAihmcocujrvqykthqgoqzuzcdafbqnzlsowcfswhaozfooedopu'
+            $ref: '#/components/schemas/DynLimitAezwoanboxekjxmdrzmiggkdmyzlqmrnpwiwgahfaensujxsrrn'
         - description: ''
           in: query
           name: config_ids[]
@@ -15120,6 +15216,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Alert'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15171,6 +15279,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Alert config'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15285,6 +15405,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Alert filters'
           description: The alert filters
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15339,6 +15471,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Alert DSL grammar'
           description: The Query language grammar
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15413,6 +15557,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Analytics Response'
           description: Analytics Sliding
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15497,6 +15653,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Analytics Response'
           description: Analytics Window
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15525,6 +15693,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/IPO Calendar Response'
           description: IPO Calendar
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15589,6 +15769,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Macro Series Response'
           description: Commodity Series
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15634,6 +15826,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Listings Response'
           description: Listings
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15668,6 +15872,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Dividends Response'
           description: Dividends
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15702,6 +15918,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Earnings Estimates Response'
           description: Earnings Estimates
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15736,6 +15964,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Company Profile Response'
           description: Company Profile
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15770,6 +16010,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Splits Response'
           description: Splits
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15811,6 +16063,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Transcript Response'
           description: Transcript
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15880,6 +16144,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Senate Stock'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15928,6 +16204,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Senate Stock'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -15967,6 +16255,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Senate Stock'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16015,6 +16315,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Senate Stock'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16071,6 +16383,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Unusual Trades'
           description: Unusual Trades
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16155,6 +16479,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Unusual Trades'
           description: Unusual Trades
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16202,6 +16538,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Unusual Trades Chart Data'
           description: Unusual Trades Chart Data
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16235,6 +16583,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Unusual Trades Stats'
           description: Unusual Trades Stats
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16311,6 +16671,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Crypto API OHLC Response'
           description: Crypto OHLC Candles
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16406,6 +16778,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Crypto Tokens List Response'
           description: Crypto Tokens list.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16441,6 +16825,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Crypto Tokens List Response'
           description: Crypto token metadata.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16494,6 +16890,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Crypto Transactions List Response'
           description: Crypto API Transactions
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16529,6 +16937,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Crypto Whale Transactions Response'
           description: Crypto Whale Transactions
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16564,6 +16984,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Crypto Recent Whales Response'
           description: Recent Crypto Whale Trades
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16628,6 +17060,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Crypto OHLC Response'
           description: Crypto OHLC Candles
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16663,6 +17107,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Crypto Pair State Response'
           description: Crypto Pair State
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '500':
           content:
             text/plain:
@@ -16748,6 +17204,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Darkpool Trade'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16861,6 +17329,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Darkpool Trade'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16904,6 +17384,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Darkpool Price Levels'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -16955,6 +17447,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Series Response'
           description: Digital Currency History
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17010,6 +17514,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Series Response'
           description: Digital Currency Intraday
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17059,6 +17575,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Earnings'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17108,6 +17636,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Earnings'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17151,6 +17691,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Historical Ticker Earnings'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17230,6 +17782,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Macro Series Response'
           description: Economic Series
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17347,6 +17911,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Etf Info'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17382,6 +17958,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Country & Sector exposure'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17433,6 +18021,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Series Response'
           description: FX History
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17486,6 +18086,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Series Response'
           description: FX Intraday
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17528,6 +18140,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/FX Rate Response'
           description: FX Spot Rate
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17570,6 +18194,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Futures Contracts'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17625,6 +18261,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Futures Display Factors'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17661,6 +18309,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Futures Display Factor'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17773,6 +18433,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Futures Flow'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17837,6 +18509,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Futures Candles'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17874,6 +18558,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Futures Stats'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -17950,6 +18646,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Futures Trades'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -18391,6 +19099,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Institutional Activity'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -18484,6 +19204,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Institutional Activity'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -18580,6 +19312,18 @@ paths:
               schema:
                 $ref: "#/components/schemas/An Institution's Holdings"
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -18640,6 +19384,18 @@ paths:
               schema:
                 $ref: "#/components/schemas/An Institution's Sector Exposure"
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -18725,6 +19481,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Institutional Ownership'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -18816,6 +19584,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Institution Summary'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -18883,6 +19663,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Latest Institutional Filings'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -18960,6 +19752,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Lit Trade'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19056,6 +19860,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Lit Trade'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19148,6 +19964,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Daily Market Report'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19177,6 +20005,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Economic calendar'
           description: Economic Calendar response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '500':
           content:
             text/plain:
@@ -19258,6 +20098,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/FDA Calendar'
           description: FDA Calendar response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '500':
           content:
             text/plain:
@@ -19288,6 +20140,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Insider statistics'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19374,6 +20238,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Daily Market Tide'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19402,6 +20278,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Movers Response'
           description: Movers
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19480,6 +20368,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Sector ETF'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '500':
           content:
             text/plain:
@@ -19523,6 +20423,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Top Net Impact'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19564,6 +20476,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Market Options Volume'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19606,6 +20530,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Daily Market Tide'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19648,6 +20584,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Daily Market Tide'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19742,6 +20690,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Expiry Tide Response'
           description: Net Flow Expiry Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19814,6 +20774,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Headline News'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19917,6 +20889,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option Contract Screener response.'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -19977,6 +20961,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option Trade'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -20028,6 +21024,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option contract '
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -20075,6 +21083,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option Contract Minute Ticks'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -20117,6 +21137,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option Contract Price Level Volume'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -20804,6 +21836,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option Trades Error Response'
           description: Invalid or unsupported option trade request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -20906,6 +21950,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option Trade Exchange Breakdown'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -20977,91 +22033,91 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAidrrgushpmklyupjaycmnnsnwhexlwsjfstshxccpigntearcl'
+            $ref: '#/components/schemas/DynLimitAypdhuhqetlfzhujtzilbnxtuwqnshukkfcnfodnijcshsmzszl'
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdayaiyqyarqeraxauwbtnlkntifgybgsawuwktwuuzjhkwekwu'
+            $ref: '#/components/schemas/DynLimitAcznxdmjglmxreauarvirjzztnowcqidxilkbmnmtirqyfaagib'
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhbgffvdmvwyqvvqwtddtrtnxnlzcieibzotygvdvqfmfuutrrb'
+            $ref: '#/components/schemas/DynLimitAmjzfgobqqmkezskxyoswyuxgeliffpslikbgffhdytedpxalav'
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhgmxnpotbrelngpufrbndwgpsezfnmeakbfesiiwheaqtupsuj'
+            $ref: '#/components/schemas/DynLimitAghomstbidjlypeokzytvrdegznmvnstlzpfoesamiqiebpdtst'
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAzcvyhkmogchszjhdzcacocqvpcemdojdhuncivqcfgjhdvyrgx'
+            $ref: '#/components/schemas/DynLimitAkswwjnaedjeixlkcvggnhskwptmdqpjasvemgvzasgtjdbezes'
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAvyunppwrdixfeppgvjmuxkscisizfdotspbfvvnbwlrlzamnge'
+            $ref: '#/components/schemas/DynLimitAlianfhavgyqyzfssrtyagyvoadvntfteeozrauuackozzplnhq'
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfnubfdrqycrwhroyptmctpwsfmfpgfjnfsbgtgsicftnwefmrx'
+            $ref: '#/components/schemas/DynLimitAsydcdsybwlnjecfzngxonvosjbvxvqsvlekheljnzsnpnttcpv'
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtnzayjiaidfwfgeqzztkeqsduvuaprsozdnwbhloddrvtopjvn'
+            $ref: '#/components/schemas/DynLimitAheiwqjocvdqzfccazxuzafnrbvinsgjrgozcuptvwuqeabxhmq'
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAskkwzxrcoxmzbsslpaqjmlofuqahvyfqmmhdgrlihwctbeipvr'
+            $ref: '#/components/schemas/DynLimitAhnitpzbcawkmckfcytwuxgmqbsgdfqtwswqqyekxzarcfxfxqj'
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdvregfphydnakqlwmjechzlqkmmaqfftpwqnzaypizxnnzljvr'
+            $ref: '#/components/schemas/DynLimitAuyujixzrpamobtbpyzeeqpezorcltaxxcutsgopwekzwbncjit'
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqjmnajpladvbjopqwhespwofpwpmpedjtwrdughbdruqjtjeyl'
+            $ref: '#/components/schemas/DynLimitAdynhuvcmzajvhdccdgcuwqkkoillkdseuqphgtvjakxzfntpla'
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAxlsgkgqradbdzgacvohxkfobuasdwmldiacjeauacopckyadhr'
+            $ref: '#/components/schemas/DynLimitAleylevmxyvvplxmauwqvddynuaiwmsthrwfyturusnvdmqwoit'
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbvgcabgcouzmrnzeqgcvylmoxcgizljtzafcmtofdlkwkkuwnx'
+            $ref: '#/components/schemas/DynLimitAhrjiuwrfyydhgrgpnbbmmertehmsqxdpddowgonanbhgmepxus'
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfsczclklkawrtjrkcncacloddxbuwditchnysgxvezuhhedvka'
+            $ref: '#/components/schemas/DynLimitAsqewxpsgzhrcynycyqdlinonqumwrqkfrcbxuidpqnkfzqtiok'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbcwoqvorvzswycapqdasvzdmltpgyzofteicfxxdtorqznsdrq'
+            $ref: '#/components/schemas/DynLimitAakabldmjjyeoyxaofiypixgqspqbmakrlwkxjgfkxjnhumpxkb'
         - description: ''
           in: query
           name: rule_name[]
@@ -21291,6 +22347,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Flow Alert'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -21335,6 +22403,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Flow Alert Detail'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -21558,6 +22638,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Multi-Leg Trades Response'
           description: Multi-Leg Trades
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -21594,6 +22686,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Multi-Leg Legs Response'
           description: Multi-Leg Legs
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -21635,6 +22739,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Optionable Tickers'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -21669,6 +22785,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Nasdaq Options Pulse Result'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -21742,6 +22870,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Nasdaq Options Pulse Result'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -21776,6 +22916,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Nasdaq Options Pulse Result'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -21827,6 +22979,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Annual Disclosures List'
           description: Annual Disclosures
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -21870,6 +23034,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Portfolio Holders'
           description: Portfolio Holders
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -21901,6 +23077,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Politicians List'
           description: Politicians List
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -21993,6 +23181,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Senate Stock'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22037,6 +23237,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Politician Portfolios'
           description: Politician Portfolios
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22106,6 +23318,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Company Politics Candidates'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22161,6 +23385,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Company Politics Companies'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22218,6 +23454,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Company Politics Lobbying'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '404':
           content:
             application/json:
@@ -22268,6 +23516,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Company Politics People'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '404':
           content:
             application/json:
@@ -22395,6 +23655,18 @@ paths:
                   - $ref: '#/components/schemas/Company Politics Contributions'
                   - $ref: '#/components/schemas/Company Politics Contribution Rows'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22499,6 +23771,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Politician Trades'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22549,6 +23833,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/POTUS Post'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22599,6 +23895,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/POTUS Schedule Entry'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22627,6 +23935,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prediction Market Insiders Response'
           description: Prediction Market Insiders
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22661,6 +23981,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prediction Market Detail Response'
           description: Prediction Market Details
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '404':
           content:
             application/json:
@@ -22701,6 +24033,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prediction Market Liquidity Response'
           description: Prediction Market Liquidity
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '404':
           content:
             application/json:
@@ -22741,6 +24085,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prediction Market Positions Response'
           description: Prediction Market Positions
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '404':
           content:
             application/json:
@@ -22781,6 +24137,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Search Prediction Market Users Response'
           description: Search Prediction Market Users
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22827,6 +24195,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prediction Smart Money Response'
           description: Prediction Smart Money
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22875,6 +24255,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Unusual Prediction Markets Response'
           description: Unusual Prediction Markets
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -22909,6 +24301,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prediction Market User Response'
           description: Prediction Market User
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '404':
           content:
             application/json:
@@ -22943,6 +24347,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prediction Market Whales Response'
           description: Prediction Market Whales
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -23003,6 +24419,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Private Markets Companies'
           description: Private Markets Companies
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -23041,6 +24469,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Private Markets Company Profile Response'
           description: Private Markets Company Profile
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '404':
           content:
             application/json:
@@ -23096,6 +24536,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Private Markets Funding Rounds'
           description: Private Markets Funding Rounds
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -23145,6 +24597,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Private Markets Investors'
           description: Private Markets Investors
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -23194,6 +24658,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Private Markets Management'
           description: Private Markets Management
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -23257,6 +24733,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Private Markets Pricing History'
           description: Private Markets Pricing
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -23301,6 +24789,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Top Private Markets Investors'
           description: Top Private Markets Investors
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -23338,6 +24838,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Private Markets Investor Profile Response'
           description: Private Markets Investor Profile
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '404':
           content:
             application/json:
@@ -23390,6 +24902,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Private Markets Search'
           description: Private Markets Search
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -23456,6 +24980,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Analyst Rating'
           description: Analyst rating response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -24178,6 +25714,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option Contract Screener response.'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -24664,6 +26212,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Stock Screener response'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -24693,6 +26253,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Seasonality Market'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '500':
           content:
             text/plain:
@@ -24765,6 +26337,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Seasonality Performers'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -24800,6 +26384,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Seasonality Monthly'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -24835,6 +26431,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Seasonality Year Month'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -24870,73 +26478,73 @@ paths:
           name: limit
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmutbqqhvwgrlyttqvbxyvarqelxphrbkcpwdcanppixttecbok'
+            $ref: '#/components/schemas/DynLimitAhsrtgayncutxblyfaeuwlwvfcqddcqyrhsfqxsxmmqlnxnnmvn'
         - description: ''
           in: query
           name: offset
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApzlqabqbcruhkyfijavrbgamupsqpenquoxfbyimqdgugpxwmc'
+            $ref: '#/components/schemas/DynLimitAmdtsgslumjzvldfppaqjyuuxrijnhbnzzfmwmxdjbvrqdwpdfe'
         - description: ''
           in: query
           name: min_short_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbnafdjghqadghhqqlzodrinefcmcngvsovqzciyvgmznrhqlnq'
+            $ref: '#/components/schemas/DynLimitAhyjdlcjdbznxjxufqqpmxxtnypupafddoqasuietthzjyajkwt'
         - description: ''
           in: query
           name: max_short_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfdhllfxoocvygdlbftkgovsnmskowscikjevprrotxtkgdgrth'
+            $ref: '#/components/schemas/DynLimitAebhgbevbbjwxjgpdcgphjooabryrxppfcqqjcfypxllrnfskzu'
         - description: ''
           in: query
           name: min_days_to_cover
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgakljkzkuylboaphswedvwikhqfvbpbqwndodfbjtpqrsydsmw'
+            $ref: '#/components/schemas/DynLimitAfzdmpgadxmlcabxqexzptjnvkyfojyhlhfqvftsoafjkichyzr'
         - description: ''
           in: query
           name: max_days_to_cover
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfuoixduskhnjfprzbckuzsneaokplnheeisrygyxciaiidmkwi'
+            $ref: '#/components/schemas/DynLimitAqxelzmiyioqelcnoipdhpmgcwosrncmilspfhboxqlldoekfrc'
         - description: ''
           in: query
           name: min_si_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjefjrguuxcgghezzxnxyyopikjoovwjosyqnkxiadqzkssgcuu'
+            $ref: '#/components/schemas/DynLimitAofovhyblhabfnbgehsbavpcrxmesfxwsycdwntcffistknhaoj'
         - description: ''
           in: query
           name: max_si_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAyrmlanbhrbzvxjuppptmbmjghofldzcvwrxipohrwdlvpufvgg'
+            $ref: '#/components/schemas/DynLimitApajsbbfvlxedicjbfvjpwfjmiyvecdctktfvfcfodjbdjmvbyp'
         - description: ''
           in: query
           name: min_si_float_with_synth_long_pct_of_total_shares
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAtywnidhrdkukynbcvlohgzdhedfmtjlurlfcreyqxsvupnrmsj'
+            $ref: '#/components/schemas/DynLimitAxaktwvvfzddslqvzlskttdqhhjahprjylawxoetfzytokvivmv'
         - description: ''
           in: query
           name: max_si_float_with_synth_long_pct_of_total_shares
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAcbssgxyvbcqdjlshsoncxwpohicusypbawonqpgszsxijhlvng'
+            $ref: '#/components/schemas/DynLimitAxypndprtlekkweoynvlklibrrdyqfthribiynjdnvkotyzvakx'
         - description: ''
           in: query
           name: min_total_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAjvvyqlnoreyywpoutpxxthcbiohbfnaoiopmjkcnejrerigpth'
+            $ref: '#/components/schemas/DynLimitAuavprxikefubdvuphuqgenbkouqbbxkyhjzflrhwucnljyxked'
         - description: ''
           in: query
           name: max_total_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAisbwutfkzcjfxabxewbbwoktvmymbhofmqshqfusahbyklcgkw'
+            $ref: '#/components/schemas/DynLimitAfivonogxvuzszvidvzfjxhmfpvhgwxrhmoqspsbsjtkfmxywmn'
         - description: ''
           in: query
           name: order_by
@@ -24966,37 +26574,37 @@ paths:
           name: min_fee_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbqcmejlghhjjaqmjteasporbfgzmavlpfpurvgdgndbvvfpbyo'
+            $ref: '#/components/schemas/DynLimitAacxqynxnuuvdzhenkidiztnuokufyuacoqegnehbwpwylblfdk'
         - description: ''
           in: query
           name: max_fee_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAddsfujlttglwwxtyusncjiunziariqjntbaiwguuecmzcozltd'
+            $ref: '#/components/schemas/DynLimitAacyivxzxrsyodwsgayqwoewigfdibuextisvhfxekqhajrvcik'
         - description: ''
           in: query
           name: min_rebate_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlwuhntgsqzgoizxoitwjtytehazkipxzyyocaewtzohpokqyqx'
+            $ref: '#/components/schemas/DynLimitAfwhbkhiwlpcvpbqkccaafwhrtiywvcnsnlfqtlqscupkrrmdlp'
         - description: ''
           in: query
           name: max_rebate_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsbmhpxyhxymnalfuinlmvuhvxsronrkcxrranwyapgocmqpthy'
+            $ref: '#/components/schemas/DynLimitAqenxfbjhgxgmbltrpguxwnkdotrqbqmirdxuijcnabsfvtmwwp'
         - description: ''
           in: query
           name: min_short_shares_available
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApoywfdnnreeadgpgwhheptnvpsdrnjiaryazfpjyizpcpaaagc'
+            $ref: '#/components/schemas/DynLimitAxomzkrelfvbbgssfkvzfwvwgbzqiukoiatjdbowqvurrgajrsc'
         - description: ''
           in: query
           name: max_short_shares_available
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAulqqqvshlqbtcefjovrfhgzqudqiytnhtgpwtshuexdbhwrikg'
+            $ref: '#/components/schemas/DynLimitAafohsevrwjizdgpdywmrxranuackpcepjdlocknejjbscaxfqi'
       responses:
         '200':
           content:
@@ -25004,6 +26612,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Short Screener'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -25051,6 +26671,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Short Data'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -25087,6 +26719,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Failures to Deliver'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -25126,6 +26770,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/V1 Short Interest and Float (Deprecated)'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -25165,6 +26821,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/V2 Short Interest and Float'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -25202,6 +26870,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Short Volume'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -25254,6 +26934,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Short Volume By Exchange'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -26976,6 +28668,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Ticker Exchanges'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '500':
           content:
             text/plain:
@@ -27005,6 +28709,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Market Sector Tickers'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27046,6 +28762,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option Contract Screener response.'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27082,6 +28810,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Balance Sheets Response'
           description: Balance Sheets
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27118,6 +28858,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Cash Flows Response'
           description: Cash Flow Statements
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27154,6 +28906,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Earnings Response'
           description: Earnings History
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27195,6 +28959,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Expiry breakdown'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27232,6 +29008,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Full Financials Response'
           description: Full Financials
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27272,13 +29060,13 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAhpsxctrsjnujrwkpurlayxodbhstxfuqqlwvijlwisrzwukvel'
+            $ref: '#/components/schemas/DynLimitAxslnkuummqeoccqkrjcitewjrzdotgkrixckhdcmtzxmoqpqef'
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAmkrjwyrttrkneulykujwkhfxjwytnruvntkshpsueblpjsuhze'
+            $ref: '#/components/schemas/DynLimitAlnwixcrcfgomkechtmlpvpnqyiisvteufmsakmuzrtxxhlgcoe'
       responses:
         '200':
           content:
@@ -27286,6 +29074,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Flow Alert'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27350,6 +29150,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Flow per strike'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27397,6 +29209,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Flow per strike'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27444,6 +29268,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Flow per expiry'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27480,6 +29316,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fundamental Breakdown Response'
           description: Fundamental Breakdown
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27557,6 +29405,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/GEX Levels'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27622,6 +29482,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Greek Exposure'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27663,6 +29535,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Greek Exposure By Expiry'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27704,6 +29588,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Greek Exposure By Strike'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27751,6 +29647,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Greek Exposure By Strike And Expiry'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27871,6 +29779,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Greeks'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27930,6 +29850,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Historical Risk Reversal Skew'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -27966,6 +29898,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Income Statements Response'
           description: Income Statements
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28001,6 +29945,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Ticker Info'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '404':
           content:
             application/json:
@@ -28043,6 +29999,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Insider statistics'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28087,6 +30055,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Interpolated IV'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28138,6 +30118,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/IV Rank'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28179,6 +30171,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Max Pain'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28263,6 +30267,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Net Prem Tick response.'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28393,6 +30409,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Candle data'
           description: OHLC Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28482,6 +30510,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Open Interest per Expiry'
           description: OI per expiry response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28523,6 +30563,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Open Interest per Strike'
           description: OI per strike response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28580,6 +30632,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option Chains response'
           description: Option chains response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28709,6 +30773,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option contracts'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28796,6 +30872,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option Trade-Stance Ranking response.'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28841,6 +30929,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Option Price Level'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28882,6 +30982,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Volume & OI per Expiry'
           description: Vol & OI per expiry response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28926,6 +31038,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Nasdaq Options Pulse Result'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -28977,6 +31101,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Ticker Options Volume'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29020,6 +31156,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Ownership'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29054,6 +31202,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Stock Quote Response'
           description: Latest Stock Quote
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '404':
           content:
             application/json:
@@ -29125,6 +31285,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Spot GEX exposures per 1min'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29212,6 +31384,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Spot greek exposures by strike'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29299,6 +31483,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Spot greek exposures by strike'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29358,6 +31554,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Spot greek exposures by strike'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29398,6 +31606,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Stock state'
           description: Stock State Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29444,6 +31664,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Off Lit Price Levels'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29537,6 +31769,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Technical Indicator Response'
           description: Technical Indicator
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29575,6 +31819,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Volume Unusualness'
           description: Volume Unusualness Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29617,6 +31873,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Volatility Result'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29659,6 +31927,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Volatility Result'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29710,6 +31990,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Realized Volatility'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29753,6 +32045,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Volatility Statistics'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29794,6 +32098,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Implied Volatility Term Structure'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29835,6 +32151,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Volatility Result'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29887,6 +32215,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Volatility Result'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29943,6 +32283,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Volatility Result'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
@@ -29978,6 +32330,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Volatility Result'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Missing Access Error'
+          description: Forbidden
         '422':
           content:
             application/json:
