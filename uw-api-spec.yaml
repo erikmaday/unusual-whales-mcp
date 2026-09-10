@@ -2642,12 +2642,6 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAbatmsuodspxeobijehfgnonzpfhbdamallphopiyeriabertch:
-      default: true
-      description: Boolean flag whether a transaction is from the floor.
-      example: true
-      title: DynLimitAbatmsuodspxeobijehfgnonzpfhbdamallphopiyeriabertch
-      type: boolean
     DynLimitAbxfmntwoqqofvhtmdtatolxvvlixvmuwbbtckohgquzpeqrorr:
       description: The max short interest float ratio.
       example: 0.05
@@ -2663,28 +2657,10 @@ components:
       example: 0.01
       title: DynLimitAdzqhbbkaznyrrjckvomlrdpkqsjoauihegsorojcwmtmueolmd
       type: integer
-    DynLimitAeadkngzwdxinxhycehxfhgaoeydvfyjreirfpvlymngftzdizz:
-      default: true
-      description: Boolean flag whether a transaction is a call.
-      example: true
-      title: DynLimitAeadkngzwdxinxhycehxfhgaoeydvfyjreirfpvlymngftzdizz
-      type: boolean
     DynLimitAebagjeqprgegmbahgztefoyefuojzurfrhsqyjljqtrapyjcor:
       description: The min rebate rate.
       example: 0.11
       title: DynLimitAebagjeqprgegmbahgztefoyefuojzurfrhsqyjljqtrapyjcor
-      type: integer
-    DynLimitAeoadutduyecnpzosumxmqlchauwenawqdtxxldeyuzjwtxrnna:
-      description: 'The maximum size on that alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAeoadutduyecnpzosumxmqlchauwenawqdtxxldeyuzjwtxrnna
-      type: integer
-    DynLimitAexyvfvcreeinphnftdmiuhctttoonzpjnrsfhtsexyaorrtmud:
-      description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAexyvfvcreeinphnftdmiuhctttoonzpjnrsfhtsexyaorrtmud
       type: integer
     DynLimitAfwbspuceguzvtzebcaxneuyzeblqaulzhrasjgfltdomclfhov:
       description: The min total float.
@@ -2706,34 +2682,10 @@ components:
       example: 1.1
       title: DynLimitAgxcqbqkdeemhsukixbavnjpksdrhmpwmsufnyhnlhdwxbakjdx
       type: integer
-    DynLimitAholhxkgcdvdecwtbaeoappaxkjaidlroamwvcrqcuheimpkpmh:
-      description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAholhxkgcdvdecwtbaeoappaxkjaidlroamwvcrqcuheimpkpmh
-      type: integer
-    DynLimitAksjwqwyjuabxkbstioiruonobduowihnurxqslwqfitcuecuka:
-      description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
-      example: 125
-      minimum: 0
-      title: DynLimitAksjwqwyjuabxkbstioiruonobduowihnurxqslwqfitcuecuka
-      type: integer
-    DynLimitAkyscqrlikgersbzblhnjayfjhlfznbktemhksvjsnehzonpobk:
-      description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAkyscqrlikgersbzblhnjayfjhlfznbktemhksvjsnehzonpobk
-      type: integer
     DynLimitAlactpqrbcvzrdquqoubbltwvhshiozpawtgoehgxzbhjeohdeu:
       description: The max short interest.
       example: 100000
       title: DynLimitAlactpqrbcvzrdquqoubbltwvhshiozpawtgoehgxzbhjeohdeu
-      type: integer
-    DynLimitAlggarnxeizzpbegtipvwyeeznbgjfqabtrdrvqpaigvklgbned:
-      description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
-      example: 125
-      minimum: 0
-      title: DynLimitAlggarnxeizzpbegtipvwyeeznbgjfqabtrdrvqpaigvklgbned
       type: integer
     DynLimitAllqzrqpxdjgrsrjvaakexxffsualworpsqlhiioogflahbdcxx:
       description: The max fee rate.
@@ -2745,53 +2697,11 @@ components:
       example: 0.05
       title: DynLimitAnfbhvcnwcbjmqgulfyvdvaruafcpwabkcildwakmmzcqpqrfls
       type: integer
-    DynLimitAnvwgzpakwgswyvygezsnffoglmidmxnkftbgjuljinhvuovlkd:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAnvwgzpakwgswyvygezsnffoglmidmxnkftbgjuljinhvuovlkd
-      type: boolean
-    DynLimitApqpgnkhdhealmhbfkmbjzcbbyhosjuamnbvmnxkvkqqrrtpzkb:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitApqpgnkhdhealmhbfkmbjzcbbyhosjuamnbvmnxkvkqqrrtpzkb
-      type: boolean
-    DynLimitAqbsbcqchepiohdgivswtlxrwwucjulanxzbzkxojpilqkzfmqm:
-      default: true
-      description: Boolean flag whether a transaction is a put.
-      example: true
-      title: DynLimitAqbsbcqchepiohdgivswtlxrwwucjulanxzbzkxojpilqkzfmqm
-      type: boolean
-    DynLimitAqbvlnyvhqfvnlajxllfgicklvhdiankfodvmpnstctlczfqnbf:
-      default: true
-      description: Boolean flag whether a transaction is ask side.
-      example: true
-      title: DynLimitAqbvlnyvhqfvnlajxllfgicklvhdiankfodvmpnstctlczfqnbf
-      type: boolean
-    DynLimitAqlhgnicnurvlzddloooklopcfreeutwqdqfcddrsgvpareohnw:
-      default: true
-      description: Boolean flag whether to return only intraday alerts.
-      example: true
-      title: DynLimitAqlhgnicnurvlzddloooklopcfreeutwqdqfcddrsgvpareohnw
-      type: boolean
     DynLimitAqolbvfmrcshyipvwmpyunqiosumgmeowbnzvvxkpnyqbtwxotn:
       description: The min short shares available.
       example: 0
       title: DynLimitAqolbvfmrcshyipvwmpyunqiosumgmeowbnzvvxkpnyqbtwxotn
       type: integer
-    DynLimitAqrlywpnccocqoaoqwgdclgyeugqfrwnzchqfllmzhicdrxaxkd:
-      default: true
-      description: Boolean flag whether a transaction is bid side.
-      example: true
-      title: DynLimitAqrlywpnccocqoaoqwgdclgyeugqfrwnzchqfllmzhicdrxaxkd
-      type: boolean
-    DynLimitAsfuxjsldqsxxofibeceqanwioysvovterlyauneqxxuvhcitrc:
-      default: true
-      description: Boolean flag whether a transaction is a intermarket sweep.
-      example: true
-      title: DynLimitAsfuxjsldqsxxofibeceqanwioysvovterlyauneqxxuvhcitrc
-      type: boolean
     DynLimitAsytkccminwohblfmzcoajljbepcuojllcrwthpeefgbeyxvruq:
       default: 0
       description: 'The offset of results. Default: 0. Min: 0.'
@@ -2822,29 +2732,11 @@ components:
       example: 5.3
       title: DynLimitAvipmtudvfkswdsmwkgscoyegseijonqeiowgesuhbcbdxjpfmi
       type: integer
-    DynLimitAxxtekqjicrmuldslvwzissmkjqvqggsaahmfuuxxwrbiuqrjff:
-      description: 'The maximum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAxxtekqjicrmuldslvwzissmkjqvqggsaahmfuuxxwrbiuqrjff
-      type: integer
-    DynLimitAybztyevpyhuvlqnxsfqpcqehcrulphfxhxcvnhartsgdizsdfz:
-      description: 'The minimum premium on that alert. Min: 0.'
-      example: 12500.5
-      minimum: 0
-      title: DynLimitAybztyevpyhuvlqnxsfqpcqehcrulphfxhxcvnhartsgdizsdfz
-      type: integer
     DynLimitAyfkecnudkpkjvkbhzstrchzngpizwbeoexadlxldqpfqbhmujr:
       description: The max rebate rate.
       example: 5.34
       title: DynLimitAyfkecnudkpkjvkbhzstrchzngpizwbeoexadlxldqpfqbhmujr
       type: integer
-    DynLimitAyqeuwlkopzbliugewpqqrvchywmuqxusfboslqjimcpdmcmvqp:
-      default: true
-      description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
-      example: true
-      title: DynLimitAyqeuwlkopzbliugewpqqrvchywmuqxusfboslqjimcpdmcmvqp
-      type: boolean
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
       example: '21.60'
@@ -11612,7 +11504,7 @@ components:
       title: Reaction
       type: string
     Realized Stock Volatility:
-      description: The realized/historical volatility of a stock's price over the past 30 days (21 trading days).
+      description: Annualized realized volatility over the selected number of trading days.
       example: '0.18338055163621902'
       title: Realized Stock Volatility
       type: string
@@ -11622,27 +11514,77 @@ components:
         data:
           - date: 2023-04-11
             implied_volatility: '0.23'
+            implied_volatility_days: 30
             price: '150.15'
             realized_volatility: '0.19'
+            realized_volatility_days: 21
             unshifted_rv_date: 2024-05-02
           - date: 2023-04-12
             implied_volatility: '0.22'
+            implied_volatility_days: 30
             price: '148.29'
             realized_volatility: '0.20'
+            realized_volatility_days: 21
             unshifted_rv_date: 2024-05-03
       properties:
         date:
           $ref: '#/components/schemas/Market General Trading day'
         implied_volatility:
-          $ref: '#/components/schemas/Stock IV 30d'
+          description: Annualized implied volatility for the mapped calendar day horizon.
+          example: '0.23'
+          type: string
+        implied_volatility_days:
+          example: 30
+          type: integer
         price:
           $ref: '#/components/schemas/Stock Close Price'
         realized_volatility:
           $ref: '#/components/schemas/Realized Stock Volatility'
+        realized_volatility_days:
+          example: 21
+          type: integer
         unshifted_rv_date:
           $ref: '#/components/schemas/Unshifted RV Date'
       title: Realized Volatility
       type: object
+    Realized Volatility Window:
+      description: A realized volatility value calculated over a fixed number of trading days.
+      properties:
+        date:
+          example: 2026-09-08
+          format: date
+          type: string
+        days:
+          example: 21
+          type: integer
+        realized_volatility:
+          example: '0.213456'
+          type: string
+        start_date:
+          example: 2026-08-10
+          format: date
+          type: string
+        ticker:
+          example: AAPL
+          type: string
+      title: Realized Volatility Window
+      type: object
+    RealizedVolatilityDays:
+      default: 21
+      description: Select the realized volatility horizon in trading days.
+      enum:
+        - 1
+        - 3
+        - 5
+        - 10
+        - 21
+        - 42
+        - 63
+        - 126
+        - 251
+      example: 21
+      title: RealizedVolatilityDays
+      type: integer
     Report Date:
       description: |
         The report date in the format of YYYY-MM-DD.
@@ -13319,6 +13261,11 @@ components:
       example: '0.18398597836494446'
       title: Stock IV 30d 1W
       type: string
+    Stock IV Rank:
+      description: The implied volatility relative to the implied volatility throughout the previous year. A rank of 0 indicates that the implied volatility is the lowest it has been within the past year. A rank of 100 indicates that the implied volatility is the highest it has been within the past year.
+      example: '13.52369891956068210400'
+      title: Stock IV Rank
+      type: string
     Stock Implied Move:
       description: The implied move of the underlying stock by a given date based on the money option contracts. It is calculated by multiplying the sum of the call and put price by 0.85. If no expiry date is included, then the implied move is for the nearest end of the week expiration (the nearest monthly expiration if there are no weekly contracts).
       example: '2.2398043036460877'
@@ -13694,7 +13641,7 @@ components:
         iv30d_1w:
           $ref: '#/components/schemas/Stock IV 30d 1W'
         iv_rank:
-          $ref: '#/components/schemas/Stock IV 30d 1M'
+          $ref: '#/components/schemas/Stock IV Rank'
         marketcap:
           $ref: '#/components/schemas/Stock Marketcap AUM'
         net_call_premium:
@@ -14708,6 +14655,42 @@ components:
       example: '-0.9'
       title: Vanna
       type: string
+    Variance Risk Premium Window:
+      description: A variance risk premium calculated as implied volatility minus realized volatility for mapped horizons.
+      properties:
+        date:
+          example: 2026-08-10
+          format: date
+          type: string
+        implied_volatility:
+          example: '0.263456'
+          type: string
+        implied_volatility_days:
+          example: 30
+          type: integer
+        rank:
+          description: The percentile rank among values for the same ticker and horizon pair that completed during the preceding year. Values range from 0 to 1. The value is null when a rank has not been calculated.
+          example: '0.75'
+          nullable: true
+          type: string
+        realized_date:
+          example: 2026-09-08
+          format: date
+          type: string
+        realized_volatility:
+          example: '0.213456'
+          type: string
+        realized_volatility_days:
+          example: 21
+          type: integer
+        risk_premium:
+          example: '0.05'
+          type: string
+        ticker:
+          example: AAPL
+          type: string
+      title: Variance Risk Premium Window
+      type: object
     Vega:
       description: The vega of the option trade.
       example: '0.3140468475903719'
@@ -14716,9 +14699,9 @@ components:
     Volatility Result:
       additionalProperties: true
       description: |
-        Volatility analytics payload. The exact shape depends on the endpoint:
-        `variance-risk-premium`, `anomaly/top` and `character/top` return arrays of daily/ticker rows;
-        `anomaly`, `character` and `vix-term-structure` return `{ latest, history }` objects.
+        Volatility analytics payload. The exact shape depends on the endpoint.
+        Variance risk premium, volatility windows, anomaly top, and character top return arrays of daily or ticker rows.
+        Anomaly, character, and VIX term structure return `{ latest, history }` objects.
       title: Volatility Result
       type: object
     Volatility Statistics:
@@ -14758,6 +14741,14 @@ components:
           $ref: '#/components/schemas/Stock Ticker'
       title: Volatility Statistics
       type: object
+    VolatilityWindowHistoryDays:
+      default: 365
+      description: Return volatility window rows from this many calendar days before the requested date.
+      example: 30
+      maximum: 365
+      minimum: 1
+      title: VolatilityWindowHistoryDays
+      type: integer
     Volume:
       description: The total options volume.
       example: 12348
@@ -15233,7 +15224,10 @@ paths:
           name: intraday_only
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqlhgnicnurvlzddloooklopcfreeutwqdqfcddrsgvpareohnw'
+            default: true
+            description: Boolean flag whether to return only intraday alerts.
+            example: true
+            type: boolean
         - description: ''
           in: query
           name: config_ids[]
@@ -22238,91 +22232,136 @@ paths:
           name: min_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAybztyevpyhuvlqnxsfqpcqehcrulphfxhxcvnhartsgdizsdfz'
+            description: 'The minimum premium on that alert. Min: 0.'
+            example: 12500.5
+            minimum: 0
+            type: integer
         - description: ''
           in: query
           name: max_premium
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAxxtekqjicrmuldslvwzissmkjqvqggsaahmfuuxxwrbiuqrjff'
+            description: 'The maximum premium on that alert. Min: 0.'
+            example: 12500.5
+            minimum: 0
+            type: integer
         - description: ''
           in: query
           name: min_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAksjwqwyjuabxkbstioiruonobduowihnurxqslwqfitcuecuka'
+            description: 'The minimum size on that alert. Size is defined as the sum of the sizes of all transactions that make up the alert. Min: 0.'
+            example: 125
+            minimum: 0
+            type: integer
         - description: ''
           in: query
           name: max_size
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAeoadutduyecnpzosumxmqlchauwenawqdtxxldeyuzjwtxrnna'
+            description: 'The maximum size on that alert. Min: 0.'
+            example: 125
+            minimum: 0
+            type: integer
         - description: ''
           in: query
           name: min_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlggarnxeizzpbegtipvwyeeznbgjfqabtrdrvqpaigvklgbned'
+            description: "The minimum volume on that alert's contract at the time of the alert. Min: 0."
+            example: 125
+            minimum: 0
+            type: integer
         - description: ''
           in: query
           name: max_volume
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAexyvfvcreeinphnftdmiuhctttoonzpjnrsfhtsexyaorrtmud'
+            description: "The maximum volume on that alert's contract at the time of the alert. Min: 0."
+            example: 125
+            minimum: 0
+            type: integer
         - description: ''
           in: query
           name: min_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAholhxkgcdvdecwtbaeoappaxkjaidlroamwvcrqcuheimpkpmh'
+            description: "The minimum open interest on that alert's contract at the time of the alert. Min: 0."
+            example: 125
+            minimum: 0
+            type: integer
         - description: ''
           in: query
           name: max_open_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAkyscqrlikgersbzblhnjayfjhlfznbktemhksvjsnehzonpobk'
+            description: "The maximum open interest on that alert's contract at the time of the alert. Min: 0."
+            example: 125
+            minimum: 0
+            type: integer
         - description: ''
           in: query
           name: all_opening
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAyqeuwlkopzbliugewpqqrvchywmuqxusfboslqjimcpdmcmvqp'
+            default: true
+            description: Boolean flag whether all transactions are opening transactions based on OI, Size & Volume. Since Flow Alerts with rule_name values of RepeatedHits, RepeatedHitsAscendingFill, and RepeatedHitsDescendingFill are composed of many individual transactions, it is extremely unlikely that the all_opening value will be true, so if you are interested in these Flow Alerts you should not set this query param to true.
+            example: true
+            type: boolean
         - description: ''
           in: query
           name: is_floor
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbatmsuodspxeobijehfgnonzpfhbdamallphopiyeriabertch'
+            default: true
+            description: Boolean flag whether a transaction is from the floor.
+            example: true
+            type: boolean
         - description: ''
           in: query
           name: is_sweep
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsfuxjsldqsxxofibeceqanwioysvovterlyauneqxxuvhcitrc'
+            default: true
+            description: Boolean flag whether a transaction is a intermarket sweep.
+            example: true
+            type: boolean
         - description: ''
           in: query
           name: is_call
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAeadkngzwdxinxhycehxfhgaoeydvfyjreirfpvlymngftzdizz'
+            default: true
+            description: Boolean flag whether a transaction is a call.
+            example: true
+            type: boolean
         - description: ''
           in: query
           name: is_put
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqbsbcqchepiohdgivswtlxrwwucjulanxzbzkxojpilqkzfmqm'
+            default: true
+            description: Boolean flag whether a transaction is a put.
+            example: true
+            type: boolean
         - description: ''
           in: query
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAnvwgzpakwgswyvygezsnffoglmidmxnkftbgjuljinhvuovlkd'
+            default: true
+            description: Boolean flag whether a transaction is ask side.
+            example: true
+            type: boolean
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitApqpgnkhdhealmhbfkmbjzcbbyhosjuamnbvmnxkvkqqrrtpzkb'
+            default: true
+            description: Boolean flag whether a transaction is bid side.
+            example: true
+            type: boolean
         - description: ''
           in: query
           name: rule_name[]
@@ -29277,13 +29316,19 @@ paths:
           name: is_ask_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqbvlnyvhqfvnlajxllfgicklvhdiankfodvmpnstctlczfqnbf'
+            default: true
+            description: Boolean flag whether a transaction is ask side.
+            example: true
+            type: boolean
         - description: ''
           in: query
           name: is_bid_side
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqrlywpnccocqoaoqwgdclgyeugqfrwnzchqfllmzhicdrxaxkd'
+            default: true
+            description: Boolean flag whether a transaction is bid side.
+            example: true
+            type: boolean
       responses:
         '200':
           content:
@@ -32290,11 +32335,12 @@ paths:
     get:
       callbacks: {}
       description: |
-        The implied and realized volatility of a given ticker. The implied volatility is the expected 30 day forward looking volatility.
+        Returns implied and realized volatility history for a ticker. `days` selects the realized volatility
+        horizon in trading days. Each realized horizon uses its mapped implied volatility horizon. The default
+        is 21 trading days of realized volatility paired with 30 calendar days of implied volatility.
         
-        `realized_volatility` is computed forward over roughly 20 trading days, so the value for a given date is
-        not known until about a month later. The most recent roughly 20 rows are `null` by design. For
-        point-in-time use, lag this field.
+        A row's `date` is the implied volatility observation date. `unshifted_rv_date` is the date when the
+        realized volatility window ends. Recent rows can have a `null` realized value until that window ends.
       operationId: PublicApi.TickerController.realized_volatility
       parameters:
         - description: ''
@@ -32315,6 +32361,12 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Time frame'
+        - description: ''
+          in: query
+          name: days
+          required: false
+          schema:
+            $ref: '#/components/schemas/RealizedVolatilityDays'
       responses:
         '200':
           content:
@@ -32349,6 +32401,66 @@ paths:
       summary: Realized Volatility
       tags:
         - stock
+  /api/stock/{ticker}/volatility/realized/windows:
+    get:
+      callbacks: {}
+      description: |
+        Returns every realized volatility horizon with a completion date in the requested calendar lookback.
+        `history_days` defaults to 365 and cannot exceed 365. Rows are ordered by completion date from newest to oldest.
+      operationId: PublicApi.VolatilityController.realized_volatility_windows
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+        - description: ''
+          in: query
+          name: history_days
+          required: false
+          schema:
+            $ref: '#/components/schemas/VolatilityWindowHistoryDays'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Realized Volatility Window'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Realized Volatility Windows
+      tags:
+        - volatility
   /api/stock/{ticker}/volatility/stats:
     get:
       callbacks: {}
@@ -32461,7 +32573,8 @@ paths:
     get:
       callbacks: {}
       description: |
-        The variance risk premium (implied vs realized variance) history for a ticker.
+        Returns variance risk premium history for a ticker. `days` selects the realized volatility horizon in
+        trading days. The default is 21 trading days paired with 30 calendar days of implied volatility.
       operationId: PublicApi.VolatilityController.variance_risk_premium
       parameters:
         - description: ''
@@ -32476,12 +32589,18 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Optional Market Date'
+        - description: ''
+          in: query
+          name: days
+          required: false
+          schema:
+            $ref: '#/components/schemas/RealizedVolatilityDays'
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Volatility Result'
+                $ref: '#/components/schemas/Variance Risk Premium Window'
           description: ''
         '401':
           content:
@@ -32508,6 +32627,67 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Variance Risk Premium
+      tags:
+        - volatility
+  /api/stock/{ticker}/volatility/variance-risk-premium/windows:
+    get:
+      callbacks: {}
+      description: |
+        Returns every variance risk premium horizon with an implied volatility observation date in the requested
+        calendar lookback. `history_days` defaults to 365 and cannot exceed 365. Rows are ordered by observation
+        date from newest to oldest. Each row includes the realized volatility completion date.
+      operationId: PublicApi.VolatilityController.variance_risk_premium_windows
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+        - description: ''
+          in: query
+          name: history_days
+          required: false
+          schema:
+            $ref: '#/components/schemas/VolatilityWindowHistoryDays'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Variance Risk Premium Window'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Variance Risk Premium Windows
       tags:
         - volatility
   /api/volatility/anomaly/top:
