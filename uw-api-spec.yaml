@@ -2,6 +2,11 @@
 components:
   responses: {}
   schemas:
+    Accession Number:
+      description: SEC EDGAR accession number of the filing this row came from.
+      example: 0001127602-24-012345
+      title: Accession Number
+      type: string
     Actual EPS:
       description: ''
       example: '1.44'
@@ -500,6 +505,12 @@ components:
           type: object
       title: Alert filters
       type: object
+    Amended Original Accession Number:
+      description: For /A amendments, the accession number of the filing being amended; null otherwise.
+      example: 0001127602-24-011111
+      nullable: true
+      title: Amended Original Accession Number
+      type: string
     An Institution's Holdings:
       description: The holdings for an institution.
       example:
@@ -6258,7 +6269,16 @@ components:
       title: Insider Filing Date
       type: string
     Insider Form Type:
-      description: The form type of the insider trade.
+      description: 'The SEC form the row came from: 3 (initial ownership), 4 (change in ownership), 5 (annual), 144 (notice of intended sale, not an executed trade), each with an /A variant for amendments.'
+      enum:
+        - '3'
+        - 3/A
+        - '4'
+        - 4/A
+        - '5'
+        - 5/A
+        - '144'
+        - 144/A
       example: '4'
       title: Insider Form Type
       type: string
@@ -6467,6 +6487,10 @@ components:
             transaction_date: 2024-12-12
             transactions: 1
       properties:
+        accession_no:
+          $ref: '#/components/schemas/Accession Number'
+        amended_original_accession_no:
+          $ref: '#/components/schemas/Amended Original Accession Number'
         amount:
           $ref: '#/components/schemas/Insider Amount'
         date_excercisable:
@@ -6489,6 +6513,8 @@ components:
           $ref: '#/components/schemas/Insider Is Officer'
         is_ten_percent_owner:
           $ref: '#/components/schemas/Insider Is 10 Owner'
+        issuer_cik:
+          $ref: '#/components/schemas/Issuer CIK'
         natureofownership:
           $ref: '#/components/schemas/Insider Nature of Ownership'
         officer_title:
@@ -6499,6 +6525,8 @@ components:
           $ref: '#/components/schemas/Insider Price'
         price_excercisable:
           $ref: '#/components/schemas/Insider Price Excercisable'
+        reporter_cik:
+          $ref: '#/components/schemas/Reporter CIK'
         security_ad_code:
           $ref: '#/components/schemas/Insider Security AD Code'
         security_title:
@@ -7077,6 +7105,11 @@ components:
         $ref: '#/components/schemas/Single issue type'
       title: Issue types
       type: array
+    Issuer CIK:
+      description: SEC Central Index Key of the issuing company.
+      example: '0001326801'
+      title: Issuer CIK
+      type: string
     Last NBBO Ask:
       description: The NBBO Ask price for the final tick of that day's trading session.
       example: '0.45'
@@ -11606,6 +11639,11 @@ components:
       description: 'The earnings report time. Possible values include: premarket, postmarket and unknown'
       example: postmarket
       title: Report Time
+      type: string
+    Reporter CIK:
+      description: SEC Central Index Key of the reporting owner. Stable across issuers and over time, so use it rather than owner_name to tie one insider's filings together.
+      example: '0001548760'
+      title: Reporter CIK
       type: string
     Revenue Breakdown Row:
       description: A revenue figure split by product or geography.
@@ -19020,12 +19058,28 @@ paths:
           required: false
           schema:
             type: string
-        - description: Filter by security acquisition disposition codes
+        - description: 'Filter by SEC form: 3, 3/A, 4, 4/A, 5, 5/A, 144, 144/A. Form 144 is a notice of intended sale, so pass 4 (and 4/A for amendments) to get executed trades only. Default: all forms.'
           example:
-            - COM
-            - PRF
+            - '4'
+            - 4/A
           in: query
-          name: security_ad_codes
+          name: form_types[]
+          required: false
+          schema:
+            type: string
+        - description: Exact match on the reporting owner's SEC CIK. The stable identifier for one insider across companies and years; owner_name spelling varies between filings.
+          example: '0001548760'
+          in: query
+          name: reporter_cik
+          required: false
+          schema:
+            type: string
+        - description: 'Filter by security acquisition/disposition codes: NA, ND, DA, DD, D'
+          example:
+            - NA
+            - ND
+          in: query
+          name: security_ad_codes[]
           required: false
           schema:
             type: string
