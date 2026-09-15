@@ -14944,6 +14944,9 @@ info:
     
     ## Changelog
     
+    # 2026.09.12
+    - Added a new websocket channel [`ta_1d_live:{TICKER}`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.ta_1d_live). The channel streams technical-analysis indicator values (moving averages, RSI, MACD, Bollinger bands, ADX, Aroon, ATR, CCI, MFI, OBV, stochastics and Williams %R) computed on daily candles for one ticker. During regular trading hours it resends the day that is still forming as the price moves, so the newest message for a `date` replaces the ones before it. An indicator reads as `null` until enough daily history exists to compute it. The `1d` in the name is the candle interval and `live` means the values track the open session.
+    
     # 2026.09.04
     - Added new websocket channels [`quotes` and `quotes:{TICKER}`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.quotes). They stream the live best bid and ask - for every ticker at once, or for a single ticker - and are the live counterpart of [`/stock/:ticker/quote`](https://api.unusualwhales.com/docs/operations/PublicApi.StockQuoteController.show).
     
@@ -27323,6 +27326,11 @@ paths:
         | risk_reversal_skew          | Receive live 25- and 10-delta risk reversal skew (put IV minus call IV) per expiry for every ticker at once.          |
         | quotes                      | Receive live best bid and ask (top of book) updates for every ticker at once. This is a high volume firehose - prefer `quotes:TICKER` unless you need the full tape. |
         | quotes:TICKER               | Receive live best bid and ask (top of book) updates for the given ticker. |
+        | greek_flow                  | Receive live delta & vega flow from option trades for every ticker at once, bucketed to the minute and updated about once a second. |
+        | greek_flow:TICKER           | The same for the given ticker. Silent while that ticker has no option trades. |
+        | greek_flow_expiry           | Same as `greek_flow`, additionally broken out by option expiry, for every ticker at once. |
+        | greek_flow_expiry:TICKER    | Per-minute delta & vega flow broken out by option expiry for the given ticker. |
+        | ta_1d_live:TICKER           | Receive live technical-analysis indicator values on the daily candle for the given ticker. |
         
         The `option_trades` channel will stream all 6,000,000 option trades in real-time, `option_trades:<TICKER>` will stream
         all option trades for the given ticker in real-time.
@@ -27859,6 +27867,221 @@ paths:
       parameters: []
       responses: {}
       summary: GEX
+      tags:
+        - websocket
+  /api/socket/greek_flow:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for the websocket channels `greek_flow` and `greek_flow:<TICKER>`.
+        For the same data broken out by option expiry, see [`greek_flow_expiry`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.greek_flow_expiry).
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream, for example `greek_flow:SPY` for SPY's delta and
+        vega flow. Omit the ticker suffix to receive updates for every ticker.
+        
+        Each message carries the delta and vega exposure of the option trades that printed for one
+        ticker in one minute and arrived since the previous message for that minute; see Delivery
+        characteristics below for how to sum them. `total_*` fields carry the greek's own sign - for
+        delta that means calls contribute positive and puts negative - so they are net greek exposure
+        regardless of who was the aggressor. `dir_*` fields instead sign the magnitude by trade
+        sentiment: for delta, bullish trades (bought calls, sold puts) positive and bearish negative;
+        for vega, buys (ask side) positive and sells (bid side) negative. Mid/no-side trades are
+        excluded from every `dir_*` field.
+        
+        ### Delivery characteristics
+        
+        Read these before writing a client, they are not obvious from the payload:
+        
+        - **Each message is a partial sum, not a running total.** A minute's bucket is flushed
+          roughly once per second as trades arrive, so to get that minute's total you must **add
+          together every message sharing the same `ticker` and `timestamp`**. Grouping on `timestamp`
+          alone is wrong on the global channel, where every ticker's messages carry that same minute.
+          A client that overwrites on the key instead of adding will silently under-report.
+        - Because of that, a dropped frame does not just delay a value, it changes your sum. Read
+          from the socket promptly: a slow consumer is not disconnected, but frames it fails to keep
+          up with are dropped.
+        - **Updates are trade-driven, not scheduled.** A ticker with no option trades in the window
+          produces no message at all - there is no per-minute tick and no zero-valued heartbeat. A
+          minute bucket is also never announced as closed: messages carrying a given `timestamp`
+          simply stop arriving.
+        - The channels are keyed by the **root** ticker: weekly/PM index series are folded into their
+          root (`SPXW` under `SPX`, `NDXP` under `NDX`, `VIXW` under `VIX`, `RUTW` under `RUT`).
+          Joining `greek_flow:SPXW` is acknowledged as, and streams, `greek_flow:SPX`.
+        - All flow values are decimal strings, matching the REST endpoint below.
+        
+        This is the live counterpart of [`/stock/:ticker/greek-flow`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.greek_flow),
+        which returns the same fields with the same encodings. Note the REST endpoint serves each
+        minute's **accumulated total**, while this channel serves the per-second partials that add up
+        to it.
+        
+        Payload format for `greek_flow:<TICKER>`:
+        
+        ```
+        [
+          "greek_flow:SPY",
+          {
+            "ticker": "SPY",
+            "timestamp": "2026-09-04T15:46:00Z",
+            "total_delta_flow": "-21257.36",
+            "dir_delta_flow": "-43593.96",
+            "otm_total_delta_flow": "-28564.02",
+            "otm_dir_delta_flow": "14947.51",
+            "total_vega_flow": "350944.58",
+            "dir_vega_flow": "31243.04",
+            "otm_total_vega_flow": "101745.64",
+            "otm_dir_vega_flow": "11421.03",
+            "transactions": 1188,
+            "volume": 12348
+          }
+        ]
+        ```
+        
+        ### Field reference
+        
+        | Field                  | Type    | Description |
+        |------------------------|---------|-------------|
+        | `ticker`               | string  | Root ticker of the underlying. |
+        | `timestamp`            | string  | The minute bucket these trades fall into, ISO 8601 UTC. |
+        | `total_delta_flow`     | string  | Sum of signed delta exposure: `delta * contracts * 100`. |
+        | `dir_delta_flow`       | string  | Delta magnitude signed by sentiment: positive for bullish trades (buy call / sell put), negative for bearish. |
+        | `otm_total_delta_flow` | string  | `total_delta_flow` counting only trades identified as out of the money. |
+        | `otm_dir_delta_flow`   | string  | `dir_delta_flow` counting only trades identified as out of the money. |
+        | `total_vega_flow`      | string  | Sum of vega exposure: `vega * contracts * 100`. |
+        | `dir_vega_flow`        | string  | Vega magnitude signed by side: positive for buys (ask side), negative for sells (bid side). |
+        | `otm_total_vega_flow`  | string  | `total_vega_flow` counting only trades identified as out of the money. |
+        | `otm_dir_vega_flow`    | string  | `dir_vega_flow` counting only trades identified as out of the money. |
+        | `transactions`         | integer | Number of option trades aggregated into this message. A trade whose delta or vega was unavailable still counts here and in `volume` but adds zero to that greek's flow fields. |
+        | `volume`               | integer | Total contracts traded across the aggregated trades. |
+      operationId: PublicApi.SocketController.greek_flow
+      parameters: []
+      responses: {}
+      summary: Greek flow
+      tags:
+        - websocket
+  /api/socket/greek_flow_expiry:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for the websocket channels `greek_flow_expiry` and
+        `greek_flow_expiry:<TICKER>`.
+        For the same data aggregated across all expiries, see [`greek_flow`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.greek_flow).
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream, for example `greek_flow_expiry:SPY` for SPY's
+        delta and vega flow broken out per option expiry. Omit the ticker suffix to receive updates
+        for every ticker.
+        
+        Each message carries the delta and vega exposure of the option trades that printed for one
+        ticker, in one minute, **for a single option expiry**, and arrived since the previous message
+        for that minute and expiry; see Delivery characteristics below for how to sum them. Both
+        channels are built from the same option trades, so once every message for a minute has
+        arrived, that minute's expiries sum to the same minute on the
+        [`greek_flow`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.greek_flow)
+        channel. `total_*` fields carry the greek's own sign - for delta that means calls contribute
+        positive and puts negative - so they are net greek exposure regardless of who was the
+        aggressor. `dir_*` fields instead sign the magnitude by trade sentiment: for delta, bullish
+        trades (bought calls, sold puts) positive and bearish negative; for vega, buys (ask side)
+        positive and sells (bid side) negative. Mid/no-side trades are excluded from every `dir_*`
+        field.
+        
+        ### Delivery characteristics
+        
+        Read these before writing a client, they are not obvious from the payload:
+        
+        - **Each message is a partial sum, not a running total.** A minute's bucket is flushed
+          roughly once per second as trades arrive, so to get that minute's total for one expiry you
+          must **add together every message sharing the same `ticker`, `timestamp` and `expiry`**.
+          Grouping on `timestamp` alone is wrong even on the per-ticker channel, since every expiry
+          that traded carries that same minute; on the global channel every ticker does too. A client
+          that overwrites on the key instead of adding will silently under-report.
+        - Because of that, a dropped frame does not just delay a value, it changes your sum. Read
+          from the socket promptly: a slow consumer is not disconnected, but frames it fails to keep
+          up with are dropped.
+        - **Updates are trade-driven, not scheduled.** An expiry with no option trades in the window
+          produces no message at all - there is no per-minute tick and no zero-valued heartbeat. A
+          minute bucket is also never announced as closed: messages carrying a given `timestamp`
+          simply stop arriving.
+        - **This channel carries considerably more messages than `greek_flow`** - one per expiry that
+          traded, rather than one per ticker.
+        - The channels are keyed by the **root** ticker: weekly/PM index series are folded into their
+          root (`SPXW` under `SPX`, `NDXP` under `NDX`, `VIXW` under `VIX`, `RUTW` under `RUT`).
+          Joining `greek_flow_expiry:SPXW` is acknowledged as, and streams, `greek_flow_expiry:SPX`.
+        - All flow values are decimal strings, matching the REST endpoint below.
+        
+        This is the live counterpart of [`/stock/:ticker/greek-flow/:expiry`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.greek_flow_expiry),
+        which returns the same fields with the same encodings. Note the REST endpoint serves each
+        minute's **accumulated total**, while this channel serves the per-second partials that add up
+        to it.
+        
+        Payload format for `greek_flow_expiry:<TICKER>`:
+        
+        ```
+        [
+          "greek_flow_expiry:SPY",
+          {
+            "ticker": "SPY",
+            "timestamp": "2026-09-04T15:46:00Z",
+            "expiry": "2026-10-16",
+            "total_delta_flow": "-21257.36",
+            "dir_delta_flow": "-43593.96",
+            "otm_total_delta_flow": "-28564.02",
+            "otm_dir_delta_flow": "14947.51",
+            "total_vega_flow": "350944.58",
+            "dir_vega_flow": "31243.04",
+            "otm_total_vega_flow": "101745.64",
+            "otm_dir_vega_flow": "11421.03",
+            "transactions": 77,
+            "volume": 4242
+          }
+        ]
+        ```
+        
+        ### Field reference
+        
+        | Field                  | Type    | Description |
+        |------------------------|---------|-------------|
+        | `ticker`               | string  | Root ticker of the underlying. |
+        | `timestamp`            | string  | The minute bucket these trades fall into, ISO 8601 UTC. |
+        | `expiry`               | string  | The option expiry this bucket is broken out by, `YYYY-MM-DD`. |
+        | `total_delta_flow`     | string  | Sum of signed delta exposure: `delta * contracts * 100`. |
+        | `dir_delta_flow`       | string  | Delta magnitude signed by sentiment: positive for bullish trades (buy call / sell put), negative for bearish. |
+        | `otm_total_delta_flow` | string  | `total_delta_flow` counting only trades identified as out of the money. |
+        | `otm_dir_delta_flow`   | string  | `dir_delta_flow` counting only trades identified as out of the money. |
+        | `total_vega_flow`      | string  | Sum of vega exposure: `vega * contracts * 100`. |
+        | `dir_vega_flow`        | string  | Vega magnitude signed by side: positive for buys (ask side), negative for sells (bid side). |
+        | `otm_total_vega_flow`  | string  | `total_vega_flow` counting only trades identified as out of the money. |
+        | `otm_dir_vega_flow`    | string  | `dir_vega_flow` counting only trades identified as out of the money. |
+        | `transactions`         | integer | Number of option trades aggregated into this message. A trade whose delta or vega was unavailable still counts here and in `volume` but adds zero to that greek's flow fields. |
+        | `volume`               | integer | Total contracts traded across the aggregated trades. |
+      operationId: PublicApi.SocketController.greek_flow_expiry
+      parameters: []
+      responses: {}
+      summary: Greek flow by expiry
       tags:
         - websocket
   /api/socket/greeks:
@@ -28913,6 +29136,128 @@ paths:
       parameters: []
       responses: {}
       summary: Risk reversal skew
+      tags:
+        - websocket
+  /api/socket/ta_1d_live:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for the websocket channel `ta_1d_live:<TICKER>`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel for the ticker you want, for example `ta_1d_live:AAPL`.
+        
+        Each message carries one ticker's technical-analysis indicators computed on **daily**
+        candles.
+        
+        The `1d` in the channel name is the candle interval and `live` means the values track
+        the session while it is still open.
+        
+        ### Delivery characteristics
+        
+        Read these before writing a client, they are not obvious from the payload:
+        
+        - **Messages describe the day that is still forming, not a finished candle.** While the
+          session is open, a new message is sent each time the price moves, up to once a second,
+          and each one supersedes the one before it for that ticker. The values it carries are
+          the ones a calculation over the finished daily candles produces.
+        - **The channel is live during regular trading hours only.** Outside them nothing is
+          published and the socket is silent for this channel.
+        - **An indicator is `null` until enough daily history exists to compute it.** Each one
+          opens on its own schedule: on-balance volume from the first session, `rsi_14` from the
+          15th, `sma_200` from the 200th. Every field is present on every message, so an
+          indicator that is not ready reads as `null` rather than being left out.
+        - **The channel sends nothing when you join.** The first message arrives on the next
+          price move, which outside regular hours means the next session.
+        - **The number in a field name is its configuration.** `rsi_14` is the relative strength
+          index over 14 periods, `bb_20_2` is Bollinger bands over 20 periods at 2 standard
+          deviations, `macd_12_26_9` is MACD with fast period 12, slow period 26 and signal
+          period 9, and `stoch_5_3_3` is the stochastic oscillator with fast K 5, slow K 3 and
+          slow D 3.
+        - **Read `obv` as a relative series, never as a level.** On-balance volume accumulates
+          from wherever the calculation started, so the absolute number is not comparable across
+          restarts. Its direction and its crossovers carry the meaning.
+        
+        Payload format:
+        
+        ```
+        [
+          "ta_1d_live:AAPL",
+          {
+            "ticker": "AAPL",
+            "adx_14": 23.45,
+            "aroon_14": {"down": 21.43, "up": 78.57},
+            "atr_14": 3.25,
+            "bb_14_2": {"upper": 236.5, "middle": 230.0, "lower": 223.5},
+            "bb_20_2": {"upper": 238.0, "middle": 229.5, "lower": 221.0},
+            "cci_14": 88.1,
+            "ema_9": 231.2,
+            "ema_14": 230.4,
+            "ema_20": 229.8,
+            "ema_21": 229.7,
+            "ema_50": 225.1,
+            "macd_12_26_9": {"macd": 1.75, "signal": 1.25, "histogram": 0.5},
+            "mfi_14": 61.3,
+            "obv": 1234567890.0,
+            "rsi_14": 57.8,
+            "sma_10": 231.0,
+            "sma_14": 230.2,
+            "sma_20": 229.5,
+            "sma_50": 224.9,
+            "sma_200": 210.3,
+            "stoch_5_3_3": {"k": 72.5, "d": 68.1},
+            "willr_14": -27.5
+          }
+        ]
+        ```
+        
+        ### Field reference
+        
+        Every indicator field is a JSON number or `null`. The values are TA-Lib outputs passed
+        through unchanged, so each indicator's scale is the one TA-Lib defines for it. Prices
+        are in dollars, matching the daily closes the indicators are computed from.
+        
+        | Field | Type | Description |
+        |---|---|---|
+        | `ticker` | string | Underlying ticker. Same as the `:` suffix on the channel name. |
+        | `adx_14` | number | Average directional index over 14 periods, from 0 to 100. |
+        | `aroon_14` | object | Aroon over 14 periods, as `down` and `up`, each from 0 to 100. `up` reports how recently the period high was set and `down` how recently the period low was set. |
+        | `atr_14` | number | Average true range over 14 periods. |
+        | `bb_14_2` | object | Bollinger bands over 14 periods at 2 standard deviations, as `upper`, `middle` and `lower`. `middle` is the simple moving average the bands are built around, and the outer bands sit 2 standard deviations either side of it. |
+        | `bb_20_2` | object | Bollinger bands over 20 periods at 2 standard deviations, same shape as `bb_14_2`. |
+        | `cci_14` | number | Commodity channel index over 14 periods. |
+        | `ema_9` | number | Exponential moving average of the close over 9 periods. |
+        | `ema_14` | number | Exponential moving average of the close over 14 periods. |
+        | `ema_20` | number | Exponential moving average of the close over 20 periods. |
+        | `ema_21` | number | Exponential moving average of the close over 21 periods. |
+        | `ema_50` | number | Exponential moving average of the close over 50 periods. |
+        | `macd_12_26_9` | object | MACD with fast period 12, slow period 26 and signal period 9, as `macd`, `signal` and `histogram`. `macd` is the fast EMA minus the slow EMA, `signal` is an EMA of `macd`, and `histogram` is `macd` minus `signal`. |
+        | `mfi_14` | number | Money flow index over 14 periods, from 0 to 100. |
+        | `obv` | number | On-balance volume. Cumulative from wherever the calculation started, so compare direction and crossovers rather than the level. |
+        | `rsi_14` | number | Relative strength index over 14 periods, from 0 to 100. |
+        | `sma_10` | number | Simple moving average of the close over 10 periods. |
+        | `sma_14` | number | Simple moving average of the close over 14 periods. |
+        | `sma_20` | number | Simple moving average of the close over 20 periods. |
+        | `sma_50` | number | Simple moving average of the close over 50 periods. |
+        | `sma_200` | number | Simple moving average of the close over 200 periods. |
+        | `stoch_5_3_3` | object | Stochastic oscillator with fast K 5, slow K 3 and slow D 3, as `k` and `d`, each from 0 to 100. `k` is the faster line and `d` is a moving average of it. |
+        | `willr_14` | number | Williams %R over 14 periods, from -100 to 0. |
+      operationId: PublicApi.SocketController.ta_1d_live
+      parameters: []
+      responses: {}
+      summary: Technical analysis indicators
       tags:
         - websocket
   /api/socket/trading_halts:
