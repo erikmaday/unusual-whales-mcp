@@ -14940,7 +14940,7 @@ info:
     Need Kafka streaming? Our Startup + Kafka tier at $3,000/mo adds real-time Kafka cluster access. Annual plan available at $30,000/yr (2 months free) with the same 1,000 req/min burst allowance. [Start building →](https://unusualwhales.com/checkout?plan=enterprise_startup_kafka&interval=monthly)
     
     ## Enterprise/Professional Subscribers
-    For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com](mailto:oskar@unusualwhales.com).
+    For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com](mailto:oskar@unusualwhales.com?cc=enterprise@unusualwhales.com,nastja.petrovic@unusualwhales.com).
     
     ## Changelog
     
@@ -18316,7 +18316,7 @@ paths:
       callbacks: {}
       description: |
         Active CME futures contracts with trading activity over the last `days` CME sessions (default 3, max 30),
-        most active first. Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+        most active first. Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.contracts
       parameters:
         - description: Lookback in CME sessions, skipping weekends and holidays (default 3, max 30).
@@ -18371,7 +18371,7 @@ paths:
       description: |
         CME per-instrument display factors, used to convert raw integer prices to their displayed decimal values.
         Filter by `asset` (e.g. HO, ES, CL) or `subtype`. Paginate with `after_id` + `limit` across the full ~158k contract table.
-        Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+        Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.display_factors
       parameters:
         - description: CME asset code to filter by, e.g. HO, ES, CL.
@@ -18437,7 +18437,7 @@ paths:
       callbacks: {}
       description: |
         Display factor for a single CME contract identified by its numeric `security_id`.
-        Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+        Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.display_factor
       parameters:
         - description: CME numeric security ID.
@@ -18486,7 +18486,7 @@ paths:
       description: |
         Newest-first trade prints across ALL contracts, block trades included by default.
         Each row carries `is_block` and `is_spread`. Optional server-side filters narrow the feed.
-        Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+        Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.flow
       parameters:
         - description: Max rows (default 100, max 500).
@@ -18608,7 +18608,7 @@ paths:
     get:
       callbacks: {}
       description: |
-        OHLCV candles for a contract. Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+        OHLCV candles for a contract. Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.candles
       parameters:
         - description: Dated CME contract symbol, e.g. ESU6.
@@ -18685,7 +18685,7 @@ paths:
       callbacks: {}
       description: |
         Latest session statistics for a contract: official settlement (day-change reference),
-        settlement date, open interest and session volume. Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+        settlement date, open interest and session volume. Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.stats
       parameters:
         - description: Dated CME contract symbol, e.g. ESU6.
@@ -18737,7 +18737,7 @@ paths:
         Response includes both regular and CME block trades by default; each row has `is_block` to distinguish them.
         Pass `blocks_only=true` to return only block trades.
         Pass `skip_blocks=true` to exclude block trades and return only regular prints.
-        Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com for access.
+        Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.trades
       parameters:
         - description: Dated CME contract symbol, e.g. ESU6.
@@ -27317,7 +27317,7 @@ paths:
         | contract_screener           | Receive live option contract snapshots (Greeks, side volumes, OI growth indicators). This your entry point to build a screener on top of option contracts.                   |
         | trading_halts               | Receive live trading state changes (halts, resumes, LULD pauses) for individual tickers.                              |
         | custom_alerts               | Receive notifications matching the alert configurations on your own Unusual Whales account.                           |
-        | futures_trades              | Receive live CME futures trade prints across all contracts. Available on the Advanced API tier, or with the `futures` add-on — email oskar@unusualwhales.com for access. |
+        | futures_trades              | Receive live CME futures trade prints across all contracts. Available on the Advanced API tier, or with the `futures` add-on — email oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access. |
         | futures:TICKER              | Similar to `futures_trades` but only for the specified dated contract, e.g. `futures:ESU6`. Available on the Advanced API tier, or with the `futures` add-on. |
         | interpolated_iv             | Receive live interpolated IV and expected move updates at fixed horizons (1-365 days) for every ticker at once.       |
         | interpolated_iv:TICKER      | Receive live interpolated IV and expected move updates at fixed horizons for the given ticker.                        |
