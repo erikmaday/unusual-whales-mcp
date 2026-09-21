@@ -2653,101 +2653,6 @@ components:
       example: Keytruda
       title: Drug Name
       type: string
-    DynLimitAbxfmntwoqqofvhtmdtatolxvvlixvmuwbbtckohgquzpeqrorr:
-      description: The max short interest float ratio.
-      example: 0.05
-      title: DynLimitAbxfmntwoqqofvhtmdtatolxvvlixvmuwbbtckohgquzpeqrorr
-      type: integer
-    DynLimitAdotcwkfjvcgxvnoholpalxawuppvboithbuvjlskhtlzmtltlj:
-      description: The min short interest float ratio.
-      example: 0.1
-      title: DynLimitAdotcwkfjvcgxvnoholpalxawuppvboithbuvjlskhtlzmtltlj
-      type: integer
-    DynLimitAdzqhbbkaznyrrjckvomlrdpkqsjoauihegsorojcwmtmueolmd:
-      description: The min fee rate.
-      example: 0.01
-      title: DynLimitAdzqhbbkaznyrrjckvomlrdpkqsjoauihegsorojcwmtmueolmd
-      type: integer
-    DynLimitAebagjeqprgegmbahgztefoyefuojzurfrhsqyjljqtrapyjcor:
-      description: The min rebate rate.
-      example: 0.11
-      title: DynLimitAebagjeqprgegmbahgztefoyefuojzurfrhsqyjljqtrapyjcor
-      type: integer
-    DynLimitAfwbspuceguzvtzebcaxneuyzeblqaulzhrasjgfltdomclfhov:
-      description: The min total float.
-      example: 10000000
-      title: DynLimitAfwbspuceguzvtzebcaxneuyzeblqaulzhrasjgfltdomclfhov
-      type: integer
-    DynLimitAgcqicnhgsdlqnyfkkzairbcflvqgffsnbaclhhurihecchjaza:
-      description: The max si_float_with_synth_long_pct_of_total_shares.
-      example: 0.05
-      title: DynLimitAgcqicnhgsdlqnyfkkzairbcflvqgffsnbaclhhurihecchjaza
-      type: integer
-    DynLimitAgjgqfirkolzmdhwuosxzqjlhmvmydxmciemxjuvlwssjgzniny:
-      description: The max short shares available.
-      example: 10000
-      title: DynLimitAgjgqfirkolzmdhwuosxzqjlhmvmydxmciemxjuvlwssjgzniny
-      type: integer
-    DynLimitAgxcqbqkdeemhsukixbavnjpksdrhmpwmsufnyhnlhdwxbakjdx:
-      description: The min days to cover.
-      example: 1.1
-      title: DynLimitAgxcqbqkdeemhsukixbavnjpksdrhmpwmsufnyhnlhdwxbakjdx
-      type: integer
-    DynLimitAlactpqrbcvzrdquqoubbltwvhshiozpawtgoehgxzbhjeohdeu:
-      description: The max short interest.
-      example: 100000
-      title: DynLimitAlactpqrbcvzrdquqoubbltwvhshiozpawtgoehgxzbhjeohdeu
-      type: integer
-    DynLimitAllqzrqpxdjgrsrjvaakexxffsualworpsqlhiioogflahbdcxx:
-      description: The max fee rate.
-      example: 0.45
-      title: DynLimitAllqzrqpxdjgrsrjvaakexxffsualworpsqlhiioogflahbdcxx
-      type: integer
-    DynLimitAnfbhvcnwcbjmqgulfyvdvaruafcpwabkcildwakmmzcqpqrfls:
-      description: The min si_float_with_synth_long_pct_of_total_shares.
-      example: 0.05
-      title: DynLimitAnfbhvcnwcbjmqgulfyvdvaruafcpwabkcildwakmmzcqpqrfls
-      type: integer
-    DynLimitAqolbvfmrcshyipvwmpyunqiosumgmeowbnzvvxkpnyqbtwxotn:
-      description: The min short shares available.
-      example: 0
-      title: DynLimitAqolbvfmrcshyipvwmpyunqiosumgmeowbnzvvxkpnyqbtwxotn
-      type: integer
-    DynLimitAsytkccminwohblfmzcoajljbepcuojllcrwthpeefgbeyxvruq:
-      default: 0
-      description: 'The offset of results. Default: 0. Min: 0.'
-      example: 100
-      minimum: 0
-      title: DynLimitAsytkccminwohblfmzcoajljbepcuojllcrwthpeefgbeyxvruq
-      type: integer
-    DynLimitAsyyqfuckszfpvhcjopvfvlbdmscwmdovvoxyqwbavqbrksyrwa:
-      default: 100
-      description: 'The limit of results. Default: 100. Max: 500. Min: 0.'
-      example: 125
-      maximum: 500
-      minimum: 0
-      title: DynLimitAsyyqfuckszfpvhcjopvfvlbdmscwmdovvoxyqwbavqbrksyrwa
-      type: integer
-    DynLimitAszwdipjfkcejsnaffcakcgqvglllnrjhhuwodfqcjhqnqwqhpd:
-      description: The max total float.
-      example: 100000000
-      title: DynLimitAszwdipjfkcejsnaffcakcgqvglllnrjhhuwodfqcjhqnqwqhpd
-      type: integer
-    DynLimitAuevqyruqxdxnalpuolhozdsilpmumgqxeozdueyrbqnqopfxgu:
-      description: The min short interest.
-      example: 5000
-      title: DynLimitAuevqyruqxdxnalpuolhozdsilpmumgqxeozdueyrbqnqopfxgu
-      type: integer
-    DynLimitAvipmtudvfkswdsmwkgscoyegseijonqeiowgesuhbcbdxjpfmi:
-      description: The max days to cover.
-      example: 5.3
-      title: DynLimitAvipmtudvfkswdsmwkgscoyegseijonqeiowgesuhbcbdxjpfmi
-      type: integer
-    DynLimitAyfkecnudkpkjvkbhzstrchzngpizwbeoexadlxldqpfqbhmujr:
-      description: The max rebate rate.
-      example: 5.34
-      title: DynLimitAyfkecnudkpkjvkbhzstrchzngpizwbeoexadlxldqpfqbhmujr
-      type: integer
     EWMA NBBO Ask:
       description: The exponentially weighted moving average of the National Best Bid and Offer ask side.
       example: '21.60'
@@ -6711,6 +6616,7 @@ components:
             share_holdings: '359232.0'
             share_value: '359232.0'
             short_name: Elliott Investment Management
+            succession:
             tags:
               - activist
             total_value: '359232.0'
@@ -6764,6 +6670,8 @@ components:
           $ref: '#/components/schemas/Share Value'
         short_name:
           $ref: '#/components/schemas/Short Name'
+        succession:
+          $ref: '#/components/schemas/Succession'
         tags:
           $ref: '#/components/schemas/Tags'
         total_value:
@@ -14626,6 +14534,70 @@ components:
       example: '150.0'
       title: Strike
       type: string
+    Succession:
+      description: Whether this institution's 13F reporting moved to or from another CIK, and which institutions are involved. It is `null` when the institution has neither a successor nor predecessors. The description of the institutions list endpoint shows all five possible shapes.
+      example:
+        current_holder:
+        predecessors:
+          - cik: '0001569785'
+            effective_report_date: 2017-06-30
+            name: BTG PACTUAL ASSET MANAGEMENT S.A. DTVM
+        succeeded_by:
+          cik: '0001569579'
+          effective_report_date: 2024-06-30
+          name: BTG PACTUAL ASSET MANAGEMENT US LLC
+      nullable: true
+      properties:
+        current_holder:
+          description: The last institution in the chain of successors. It is set only when the reporting moved again after `succeeded_by` took over, and it is `null` otherwise.
+          nullable: true
+          properties:
+            cik:
+              description: The institution's CIK.
+              example: '0001569579'
+              type: string
+            name:
+              description: The institution's name.
+              example: BTG PACTUAL ASSET MANAGEMENT US LLC
+              type: string
+          type: object
+        predecessors:
+          description: The institutions whose reporting this institution took over directly, oldest `effective_report_date` first. The array is empty when there are none.
+          items:
+            properties:
+              cik:
+                description: The institution's CIK.
+                example: '0002026053'
+                type: string
+              effective_report_date:
+                description: The end date, in ISO format, of the first quarter for which the successor reports the predecessor's holdings.
+                example: 2026-06-30
+                type: string
+              name:
+                description: The institution's name.
+                example: PERSHING SQUARE INC.
+                type: string
+            type: object
+          type: array
+        succeeded_by:
+          description: The institution that reports this institution's holdings starting with the quarter ending `effective_report_date`. It is `null` if this institution's reporting has not moved.
+          nullable: true
+          properties:
+            cik:
+              description: The institution's CIK.
+              example: '0002026053'
+              type: string
+            effective_report_date:
+              description: The end date, in ISO format, of the first quarter for which the successor reports the predecessor's holdings.
+              example: 2026-06-30
+              type: string
+            name:
+              description: The institution's name.
+              example: PERSHING SQUARE INC.
+              type: string
+          type: object
+      title: Succession
+      type: object
     Tags:
       description: Tags related to the institution.
       example:
@@ -20518,7 +20490,101 @@ paths:
       description: |
         Returns a list of institutions.
         
+        WARNING: An institution's 13F reporting can move to a different CIK. Check the `succession` field of each row before you request holdings, sectors or activity for an institution. Those endpoints return the data filed under one CIK and do not include quarters reported under a predecessor's or successor's CIK.
+        
         If you are looking to build a database of insitutional positions use https://unusualwhales.com/skills/institutional.md
+        
+        **Succession**
+        
+        A succession is recorded when a filer that previously filed 13F holdings reports files a 13F notice (form 13F-NT) naming exactly one other manager, and that manager filed a 13F holdings report for the same quarter. From that quarter on, the other manager reports the filer's holdings. `effective_report_date` is the end date of that quarter in ISO format.
+        
+        - `succeeded_by` is the institution that took over this institution's reporting. Request its CIK for quarters on or after `succeeded_by.effective_report_date`. It is `null` if this institution's reporting has not moved.
+        - `current_holder` is the last institution in the chain of successors. It is set only when the reporting moved again after `succeeded_by` took over, and it is `null` otherwise. It has no `effective_report_date`.
+        - `predecessors` lists the institutions whose reporting this institution took over directly, oldest `effective_report_date` first. Request a predecessor's CIK for quarters before its `effective_report_date`. The array is empty when there are none.
+        - `succession` is `null` when the institution has neither a successor nor predecessors.
+        
+        The field has one of five shapes.
+        
+        **A. No succession**
+        
+        ```json
+        { "succession": null }
+        ```
+        
+        **B. Succeeded.** Starting with the quarter ending 2026-06-30, PERSHING SQUARE INC. reports the holdings of PERSHING SQUARE CAPITAL MANAGEMENT, L.P. This is the row of PERSHING SQUARE CAPITAL MANAGEMENT, L.P.
+        
+        ```json
+        {
+          "succession": {
+            "succeeded_by": {
+              "name": "PERSHING SQUARE INC.",
+              "cik": "0002026053",
+              "effective_report_date": "2026-06-30"
+            },
+            "current_holder": null,
+            "predecessors": []
+          }
+        }
+        ```
+        
+        **C. Succeeded, and the holdings moved again.** Starting with the quarter ending 2017-06-30, BTG PACTUAL GLOBAL ASSET MANAGEMENT LTD reported this institution's holdings. They later moved to BTG PACTUAL ASSET MANAGEMENT US LLC, the last institution in the chain. Request `current_holder.cik` for the latest quarters.
+        
+        ```json
+        {
+          "succession": {
+            "succeeded_by": {
+              "name": "BTG PACTUAL GLOBAL ASSET MANAGEMENT LTD",
+              "cik": "0001567992",
+              "effective_report_date": "2017-06-30"
+            },
+            "current_holder": {
+              "name": "BTG PACTUAL ASSET MANAGEMENT US LLC",
+              "cik": "0001569579"
+            },
+            "predecessors": []
+          }
+        }
+        ```
+        
+        **D. Took over another filer.** This is the row of PERSHING SQUARE INC. It reports the holdings of PERSHING SQUARE CAPITAL MANAGEMENT, L.P. starting with the quarter ending 2026-06-30. Holdings for earlier quarters are filed under CIK 0001336528.
+        
+        ```json
+        {
+          "succession": {
+            "succeeded_by": null,
+            "current_holder": null,
+            "predecessors": [
+              {
+                "name": "PERSHING SQUARE CAPITAL MANAGEMENT, L.P.",
+                "cik": "0001336528",
+                "effective_report_date": "2026-06-30"
+              }
+            ]
+          }
+        }
+        ```
+        
+        **E. Both sides at once.** This institution took over the reporting of BTG PACTUAL ASSET MANAGEMENT S.A. DTVM starting with the quarter ending 2017-06-30, and handed its own reporting to BTG PACTUAL ASSET MANAGEMENT US LLC starting with the quarter ending 2024-06-30. `current_holder` is `null` because BTG PACTUAL ASSET MANAGEMENT US LLC has not handed its reporting on.
+        
+        ```json
+        {
+          "succession": {
+            "succeeded_by": {
+              "name": "BTG PACTUAL ASSET MANAGEMENT US LLC",
+              "cik": "0001569579",
+              "effective_report_date": "2024-06-30"
+            },
+            "current_holder": null,
+            "predecessors": [
+              {
+                "name": "BTG PACTUAL ASSET MANAGEMENT S.A. DTVM",
+                "cik": "0001569785",
+                "effective_report_date": "2017-06-30"
+              }
+            ]
+          }
+        }
+        ```
       operationId: PublicApi.InstitutionController.list
       parameters:
         - description: ''
@@ -27592,73 +27658,102 @@ paths:
           name: limit
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsyyqfuckszfpvhcjopvfvlbdmscwmdovvoxyqwbavqbrksyrwa'
+            default: 100
+            description: 'The limit of results. Default: 100. Max: 500. Min: 0.'
+            example: 125
+            maximum: 500
+            minimum: 0
+            type: integer
         - description: ''
           in: query
           name: offset
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAsytkccminwohblfmzcoajljbepcuojllcrwthpeefgbeyxvruq'
+            default: 0
+            description: 'The offset of results. Default: 0. Min: 0.'
+            example: 100
+            minimum: 0
+            type: integer
         - description: ''
           in: query
           name: min_short_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAuevqyruqxdxnalpuolhozdsilpmumgqxeozdueyrbqnqopfxgu'
+            description: The min short interest.
+            example: 5000
+            type: integer
         - description: ''
           in: query
           name: max_short_interest
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAlactpqrbcvzrdquqoubbltwvhshiozpawtgoehgxzbhjeohdeu'
+            description: The max short interest.
+            example: 100000
+            type: integer
         - description: ''
           in: query
           name: min_days_to_cover
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgxcqbqkdeemhsukixbavnjpksdrhmpwmsufnyhnlhdwxbakjdx'
+            description: The min days to cover.
+            example: 1.1
+            type: integer
         - description: ''
           in: query
           name: max_days_to_cover
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAvipmtudvfkswdsmwkgscoyegseijonqeiowgesuhbcbdxjpfmi'
+            description: The max days to cover.
+            example: 5.3
+            type: integer
         - description: ''
           in: query
           name: min_si_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdotcwkfjvcgxvnoholpalxawuppvboithbuvjlskhtlzmtltlj'
+            description: The min short interest float ratio.
+            example: 0.1
+            type: integer
         - description: ''
           in: query
           name: max_si_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAbxfmntwoqqofvhtmdtatolxvvlixvmuwbbtckohgquzpeqrorr'
+            description: The max short interest float ratio.
+            example: 0.05
+            type: integer
         - description: ''
           in: query
           name: min_si_float_with_synth_long_pct_of_total_shares
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAnfbhvcnwcbjmqgulfyvdvaruafcpwabkcildwakmmzcqpqrfls'
+            description: The min si_float_with_synth_long_pct_of_total_shares.
+            example: 0.05
+            type: integer
         - description: ''
           in: query
           name: max_si_float_with_synth_long_pct_of_total_shares
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgcqicnhgsdlqnyfkkzairbcflvqgffsnbaclhhurihecchjaza'
+            description: The max si_float_with_synth_long_pct_of_total_shares.
+            example: 0.05
+            type: integer
         - description: ''
           in: query
           name: min_total_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAfwbspuceguzvtzebcaxneuyzeblqaulzhrasjgfltdomclfhov'
+            description: The min total float.
+            example: 10000000
+            type: integer
         - description: ''
           in: query
           name: max_total_float
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAszwdipjfkcejsnaffcakcgqvglllnrjhhuwodfqcjhqnqwqhpd'
+            description: The max total float.
+            example: 100000000
+            type: integer
         - description: ''
           in: query
           name: order_by
@@ -27688,37 +27783,49 @@ paths:
           name: min_fee_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAdzqhbbkaznyrrjckvomlrdpkqsjoauihegsorojcwmtmueolmd'
+            description: The min fee rate.
+            example: 0.01
+            type: integer
         - description: ''
           in: query
           name: max_fee_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAllqzrqpxdjgrsrjvaakexxffsualworpsqlhiioogflahbdcxx'
+            description: The max fee rate.
+            example: 0.45
+            type: integer
         - description: ''
           in: query
           name: min_rebate_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAebagjeqprgegmbahgztefoyefuojzurfrhsqyjljqtrapyjcor'
+            description: The min rebate rate.
+            example: 0.11
+            type: integer
         - description: ''
           in: query
           name: max_rebate_rate
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAyfkecnudkpkjvkbhzstrchzngpizwbeoexadlxldqpfqbhmujr'
+            description: The max rebate rate.
+            example: 5.34
+            type: integer
         - description: ''
           in: query
           name: min_short_shares_available
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAqolbvfmrcshyipvwmpyunqiosumgmeowbnzvvxkpnyqbtwxotn'
+            description: The min short shares available.
+            example: 0
+            type: integer
         - description: ''
           in: query
           name: max_short_shares_available
           required: false
           schema:
-            $ref: '#/components/schemas/DynLimitAgjgqfirkolzmdhwuosxzqjlhmvmydxmciemxjuvlwssjgzniny'
+            description: The max short shares available.
+            example: 10000
+            type: integer
       responses:
         '200':
           content:
