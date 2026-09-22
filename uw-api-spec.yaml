@@ -5933,6 +5933,63 @@ components:
           $ref: '#/components/schemas/Stock Volatility'
       title: Implied Volatility Term Structure
       type: object
+    Implied Volatility Term Structure Distribution:
+      description: The range of one expiry's at the money implied volatility over the 365 calendar days ending on `date`. Volatility values are annualized decimals, so `0.43` means 43%.
+      properties:
+        date:
+          example: 2026-09-18
+          format: date
+          type: string
+        dte:
+          description: The number of calendar days from `date` to `expiry`.
+          example: 91
+          type: integer
+        expiry:
+          example: 2026-12-18
+          format: date
+          type: string
+        first_date:
+          description: The earliest trading day included in the lookback for the expiry.
+          example: 2025-09-19
+          format: date
+          type: string
+        max:
+          description: The highest daily value in the lookback.
+          example: '0.595370292271564'
+          type: string
+        median:
+          description: The median of the daily values, interpolated linearly and rounded to 6 decimals.
+          example: '0.491979'
+          type: string
+        min:
+          description: The lowest daily value in the lookback.
+          example: '0.4291603363676975'
+          type: string
+        percentile:
+          description: The share of daily values at or below `volatility`, from 0 to 1. The value on `date` counts as one of the daily values.
+          example: '0.0080'
+          type: string
+        q1:
+          description: The first quartile of the daily values, interpolated linearly and rounded to 6 decimals.
+          example: '0.474857'
+          type: string
+        q3:
+          description: The third quartile of the daily values, interpolated linearly and rounded to 6 decimals.
+          example: '0.548378'
+          type: string
+        samples:
+          description: The number of daily values in the lookback, one per trading day with a value for the expiry.
+          example: 251
+          type: integer
+        ticker:
+          example: TSLA
+          type: string
+        volatility:
+          description: The implied volatility of the expiry on `date`. It is the average of the latest call and put implied volatility at the at the money strike.
+          example: '0.4295974677151735'
+          type: string
+      title: Implied Volatility Term Structure Distribution
+      type: object
     Income Statement:
       description: A single income-statement period. All monetary figures are numeric strings, null when not reported.
       properties:
@@ -6979,6 +7036,59 @@ components:
           example: '0.299'
           type: string
       title: Interpolated IV
+      type: object
+    Interpolated IV Distribution:
+      description: The range of one fixed maturity's interpolated implied volatility over the 365 calendar days ending on `date`. Volatility values are annualized decimals, so `0.43` means 43%.
+      properties:
+        date:
+          example: 2026-09-18
+          format: date
+          type: string
+        days:
+          description: The fixed maturity in calendar days. One of 7, 30, 60, 90, 180 or 365.
+          example: 30
+          type: integer
+        first_date:
+          description: The earliest trading day included in the lookback for the maturity.
+          example: 2025-09-19
+          format: date
+          type: string
+        max:
+          description: The highest daily value in the lookback.
+          example: '0.648'
+          type: string
+        median:
+          description: The median of the daily values, interpolated linearly and rounded to 6 decimals.
+          example: '0.461'
+          type: string
+        min:
+          description: The lowest daily value in the lookback.
+          example: '0.369'
+          type: string
+        percentile:
+          description: The share of daily values at or below `volatility`, from 0 to 1. The value on `date` counts as one of the daily values.
+          example: '0.1434'
+          type: string
+        q1:
+          description: The first quartile of the daily values, interpolated linearly and rounded to 6 decimals.
+          example: '0.426'
+          type: string
+        q3:
+          description: The third quartile of the daily values, interpolated linearly and rounded to 6 decimals.
+          example: '0.487'
+          type: string
+        samples:
+          description: The number of daily values in the lookback, one per trading day with a positive value.
+          example: 251
+          type: integer
+        ticker:
+          example: TSLA
+          type: string
+        volatility:
+          description: The interpolated implied volatility of the maturity on `date`.
+          example: '0.412'
+          type: string
+      title: Interpolated IV Distribution
       type: object
     Is Active:
       description: Is the politician an active member.
@@ -31687,6 +31797,65 @@ paths:
       summary: Interpolated IV
       tags:
         - stock
+  /api/stock/{ticker}/interpolated-iv/distribution:
+    get:
+      callbacks: {}
+      description: |
+        Returns one row per fixed maturity with the range of its interpolated implied volatility over the
+        365 calendar days ending on `date`. Each row holds the minimum, first quartile, median, third quartile
+        and maximum of the daily values, the value on `date`, and the share of daily values at or below it.
+        
+        The response covers the 7, 30, 60, 90, 180 and 365 day maturities. Daily values at or below zero are
+        ignored, and a maturity without a positive value on `date` is omitted. Rows are ordered by maturity
+        from shortest to longest. `date` defaults to the last trading day.
+      operationId: PublicApi.VolatilityController.interpolated_iv_distribution
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interpolated IV Distribution'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Interpolated IV Distribution
+      tags:
+        - volatility
   /api/stock/{ticker}/iv-rank:
     get:
       callbacks: {}
@@ -33876,6 +34045,65 @@ paths:
       summary: Implied Volatility Term Structure
       tags:
         - stock
+  /api/stock/{ticker}/volatility/term-structure/distribution:
+    get:
+      callbacks: {}
+      description: |
+        Returns one row per expiry with the range of that expiry's at the money implied volatility over the
+        365 calendar days ending on `date`. Each row holds the minimum, first quartile, median, third quartile
+        and maximum of the daily values, the value on `date`, and the share of daily values at or below it.
+        
+        The response covers expiries after `date` and at most 365 days after it. An expiry without a value on
+        `date` is omitted. Expiries listed recently have few daily values, so check `samples` before comparing
+        ranges. Rows are ordered by expiry from nearest to furthest. `date` defaults to the last trading day.
+      operationId: PublicApi.VolatilityController.term_structure_distribution
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Implied Volatility Term Structure Distribution'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Implied Volatility Term Structure Distribution
+      tags:
+        - volatility
   /api/stock/{ticker}/volatility/variance-risk-premium:
     get:
       callbacks: {}
