@@ -3636,10 +3636,20 @@ components:
           $ref: '#/components/schemas/Option Contract All Opening Trades'
         created_at:
           $ref: '#/components/schemas/General UTC Timestamp'
+        delta:
+          description: Size weighted delta of all transactions that make up the flow alert. Null when unavailable.
+          format: double
+          nullable: true
+          type: number
         expiry:
           $ref: '#/components/schemas/Option Contract Expiry'
         expiry_count:
           $ref: '#/components/schemas/Option Contract Expiry Count'
+        gamma:
+          description: Size weighted gamma of all transactions that make up the flow alert. Null when unavailable.
+          format: double
+          nullable: true
+          type: number
         has_floor:
           $ref: '#/components/schemas/Option Contract Has Floor'
         has_multileg:
@@ -3650,14 +3660,34 @@ components:
           $ref: '#/components/schemas/Single Trade Is Sweep'
         issue_type:
           $ref: '#/components/schemas/Stock Issue Type'
+        iv:
+          description: Size weighted implied volatility of all transactions that make up the flow alert. Null when unavailable.
+          format: double
+          nullable: true
+          type: number
         open_interest:
           $ref: '#/components/schemas/ToBeDone'
         option_chain:
           $ref: '#/components/schemas/Option Contract Symbol'
         price:
           $ref: '#/components/schemas/ToBeDone'
+        rho:
+          description: Size weighted rho of all transactions that make up the flow alert. Null when unavailable.
+          format: double
+          nullable: true
+          type: number
         strike:
           $ref: '#/components/schemas/Option Contract Strike'
+        theo:
+          description: Size weighted theoretical option price of all transactions that make up the flow alert. Null when unavailable.
+          format: double
+          nullable: true
+          type: number
+        theta:
+          description: Size weighted theta of all transactions that make up the flow alert. Null when unavailable.
+          format: double
+          nullable: true
+          type: number
         ticker:
           $ref: '#/components/schemas/ToBeDone'
         total_ask_side_prem:
@@ -3674,6 +3704,11 @@ components:
           $ref: '#/components/schemas/Option Contract Type'
         underlying_price:
           $ref: '#/components/schemas/ToBeDone'
+        vega:
+          description: Size weighted vega of all transactions that make up the flow alert. Null when unavailable.
+          format: double
+          nullable: true
+          type: number
         volume:
           $ref: '#/components/schemas/ToBeDone'
         volume_oi_ratio:
@@ -14597,6 +14632,107 @@ components:
         volume:
           $ref: '#/components/schemas/Stock Volume'
       title: Stock state
+      type: object
+    StockScreenerQueryHelp:
+      properties:
+        fields:
+          items:
+            properties:
+              aliases:
+                items:
+                  type: string
+                type: array
+              description:
+                nullable: true
+                type: string
+              kind:
+                enum:
+                  - number
+                  - boolean
+                  - symbol
+                  - list
+                  - keyword
+                type: string
+              name:
+                type: string
+            required:
+              - name
+              - aliases
+              - kind
+              - description
+            type: object
+          type: array
+        functions:
+          items:
+            type: string
+          type: array
+        keywords:
+          items:
+            type: string
+          type: array
+        operators:
+          items:
+            type: string
+          type: array
+        scopes:
+          items:
+            type: string
+          type: array
+        syntax:
+          properties:
+            examples:
+              items:
+                type: string
+              type: array
+            format:
+              enum:
+                - EBNF
+              type: string
+            function_signatures:
+              items:
+                properties:
+                  max_args:
+                    description: Null when there is no upper argument limit.
+                    nullable: true
+                    type: integer
+                  min_args:
+                    type: integer
+                  name:
+                    type: string
+                required:
+                  - name
+                  - min_args
+                  - max_args
+                type: object
+              type: array
+            grammar:
+              description: EBNF grammar for constructing stock screener queries.
+              type: string
+            notes:
+              items:
+                type: string
+              type: array
+          required:
+            - format
+            - grammar
+            - notes
+            - examples
+            - function_signatures
+          type: object
+        watchlists:
+          description: Empty for this endpoint. Personal watchlists are not forwarded to the screener.
+          items:
+            type: string
+          type: array
+      required:
+        - syntax
+        - fields
+        - keywords
+        - operators
+        - functions
+        - scopes
+        - watchlists
+      title: StockScreenerQueryHelp
       type: object
     StockTradesMaxPremium:
       description: The maximum premium requested trades should have.
@@ -27020,8 +27156,75 @@ paths:
         
         Decimal values are returned as strings. Fractional returns use 0.05 for 5 percent.
         Unavailable values are null.
+        
+        ## Query language examples
+        
+        Pass an expression in `query`. It is combined with the other filters. Get the grammar and current field reference from `/api/screener/stocks/dsl`.
+        
+        Volume based gamma exposure at least twice the magnitude of OI based gamma exposure:
+        ```text
+        where abs(gex_gamma_per_one_percent_move_oi) > 0 and abs(gex_gamma_per_one_percent_move_vol) >= abs(gex_gamma_per_one_percent_move_oi) * 2
+        ```
+        
+        Price at least two ATRs above the 20 day EMA:
+        ```text
+        where atr_14 > 0 and price - ema_20 >= atr_14 * 2
+        ```
+        
+        Call volume at least twice put volume:
+        ```text
+        where put_volume > 0 and call_volume >= put_volume * 2
+        ```
+        
+        Call to put volume ratio at least 10 or at most 0.1:
+        ```text
+        where call_volume > 0 and put_volume > 0 and (call_volume / put_volume >= 10 or call_volume / put_volume <= 0.1)
+        ```
+        
+        Ratio of 7 day IV to 30 day IV at least 1.5 or at most 1 / 1.5:
+        ```text
+        where iv7d > 0 and iv30d > 0 and (iv7d / iv30d >= 1.5 or iv7d / iv30d <= 1 / 1.5)
+        ```
+        
+        Price in the top 20% of its 52 week range on a logarithmic scale:
+        ```text
+        where week_52_low > 0 and week_52_high > week_52_low and price > 0 and price <= week_52_high and log(price / week_52_low) / log(week_52_high / week_52_low) >= 0.8
+        ```
+        
+        The logarithmic position is 0 at the low and 1 at the high. Equal steps represent equal proportional price moves.
+        
+        Absolute log return since the previous close at least two approximate daily standard deviations using 30 day IV:
+        ```text
+        where change > -1 and iv30d > 0 and abs(ln(1 + change)) >= 2 * iv30d * sqrt(1 / 251)
+        ```
+        
+        The same daily return screen using 7 day IV:
+        ```text
+        where change > -1 and iv7d > 0 and abs(ln(1 + change)) >= 2 * iv7d * sqrt(1 / 251)
+        ```
+        
+        Distance from the 20 day EMA at least the 7 day expected move:
+        ```text
+        where implied_move_7 > 0 and abs(price - ema_20) >= implied_move_7
+        ```
+        
+        Momentum excluding the latest month above 10%, with RSI at or below 30:
+        ```text
+        where one_year_close > 0 and ((one_month_close / one_year_close) - 1) > 0.10 and rsi_14 <= 30
+        ```
+        
+        This combines a Gray and Vogel inspired momentum measure with an RSI pullback condition. See [How to Measure Momentum](https://alphaarchitect.com/how-to-measure-momentum/) for background.
+        `one_month_close` and `one_year_close` are the latest regular closes on or before one calendar month and one calendar year before the row date. The formula measures the return between those reference closes.
+        The `one_year_close > 0` guard keeps the denominator positive. This filter is not the full Quantitative Momentum strategy.
       operationId: PublicApi.ScreenerController.stock_screener
       parameters:
+        - description: Query language expression combined with the other filters. Get supported fields, operators, and scopes from /api/screener/stocks/dsl.
+          example: where price * 0.75 <= week_52_low and insider_buy_volume12m >= 10000 and insider_sell_volume12m <= 1000 and marketcap >= 1B
+          in: query
+          name: query
+          required: false
+          schema:
+            type: string
         - description: ''
           in: query
           name: ticker
@@ -27527,6 +27730,46 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Stock Screener
+      tags:
+        - screener
+  /api/screener/stocks/dsl:
+    get:
+      callbacks: {}
+      description: Returns an EBNF grammar, syntax notes, examples, function argument counts, supported fields, aliases, types, descriptions, keywords, operators, functions, scopes, and available watchlist names for the stock screener query parameter.
+      operationId: PublicApi.ScreenerController.stock_screener_query_help
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockScreenerQueryHelp'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Stock screener query language
       tags:
         - screener
   /api/seasonality/market:
