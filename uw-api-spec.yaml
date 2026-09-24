@@ -27216,6 +27216,51 @@ paths:
         This combines a Gray and Vogel inspired momentum measure with an RSI pullback condition. See [How to Measure Momentum](https://alphaarchitect.com/how-to-measure-momentum/) for background.
         `one_month_close` and `one_year_close` are the latest regular closes on or before one calendar month and one calendar year before the row date. The formula measures the return between those reference closes.
         The `one_year_close > 0` guard keeps the denominator positive. This filter is not the full Quantitative Momentum strategy.
+        
+        ## Gamma-dominance flips
+        
+        Aggregate gamma provides a view into trader sentiment over short timeframes because near-the-money gamma tends to be highest in the closest expiries.
+        
+        To screen for bearish trade ideas based on a flip from call gamma-dominance to put gamma-dominance, use these query parameters:
+        
+        ```json
+        {
+          "min_open_interest": 50000,
+          "max_gex_perc_change": -1,
+          "max_gex_net_change": 0
+        }
+        ```
+        
+        Equivalent `query` expression:
+        
+        ```text
+        where open_interest >= 50000 and gex_perc_change <= -1 and gex_net_change <= 0
+        ```
+        
+        - A minimum total open interest of 50,000 screens for relatively active names, using open interest as a liquidity proxy.
+        - `gex_perc_change` is `(current net gamma - previous net gamma) / previous net gamma`. A value below -1 indicates a sign change in either direction, not necessarily a fall in net gamma. `max_gex_net_change: 0` selects the downward direction.
+        - `gex_ratio` is absolute put gamma divided by absolute call gamma. A downward net gamma cross corresponds to this ratio crossing upward through 1 into put gamma-dominance, when call gamma is nonzero.
+        
+        To screen for bullish trade ideas based on the opposite flip, from put gamma-dominance to call gamma-dominance, use these query parameters:
+        
+        ```json
+        {
+          "min_open_interest": 50000,
+          "max_gex_perc_change": -1,
+          "min_gex_net_change": 0
+        }
+        ```
+        
+        Equivalent `query` expression:
+        
+        ```text
+        where open_interest >= 50000 and gex_perc_change <= -1 and gex_net_change >= 0
+        ```
+        
+        - The open interest and percentage-change thresholds are unchanged because the sign-change test is the same in both directions.
+        - `min_gex_net_change: 0` selects the upward direction. Net gamma rising through zero corresponds to `gex_ratio` crossing downward through 1 into call gamma-dominance.
+        
+        These thresholds are inclusive. A `gex_perc_change` of exactly -1 means net gamma reached zero, so both screens also include that boundary, where `gex_ratio` is 1 when defined. A strict flip has `gex_perc_change < -1`. Percentage change is null when previous net gamma is zero, and the ratio is null when call gamma is zero.
       operationId: PublicApi.ScreenerController.stock_screener
       parameters:
         - description: Query language expression combined with the other filters. Get supported fields, operators, and scopes from /api/screener/stocks/dsl.
@@ -28915,7 +28960,14 @@ paths:
               "MPRL"
             ],
             "bid": "7.15",
-            "ask": "7.3"
+            "ask": "7.3",
+            "iv": 0.2543,
+            "delta": 0.4821,
+            "gamma": 0.0125,
+            "theta": -0.0342,
+            "vega": 0.1187,
+            "rho": 0.0456,
+            "theo": 7.28
           }
         ]
         ```
@@ -28952,6 +29004,13 @@ paths:
         | `upstream_condition_details` | string[] | Union of upstream condition codes (`"slan"`, `"auto"`, ...) seen across the trades. |
         | `exchanges` | string[] | OPRA exchanges that printed the matching trades. |
         | `url` | string | Deep link to the alert on unusualwhales.com (may be empty). |
+        | `iv` | float \| null | Size-weighted implied volatility across the trades in the alert. `null` when unavailable. |
+        | `delta` | float \| null | Size-weighted delta across the trades in the alert. `null` when unavailable. |
+        | `gamma` | float \| null | Size-weighted gamma across the trades in the alert. `null` when unavailable. |
+        | `theta` | float \| null | Size-weighted theta across the trades in the alert. `null` when unavailable. |
+        | `vega` | float \| null | Size-weighted vega across the trades in the alert. `null` when unavailable. |
+        | `rho` | float \| null | Size-weighted rho across the trades in the alert. `null` when unavailable. |
+        | `theo` | float \| null | Size-weighted theoretical option price across the trades in the alert. `null` when unavailable. |
       operationId: PublicApi.SocketController.flow_alerts
       parameters: []
       responses: {}
