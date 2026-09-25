@@ -2545,7 +2545,7 @@ components:
       type: integer
     Default 500 Max 500 Min 1:
       default: 500
-      description: 'How many items to return. Default: 500. Max: 500. Min: 1.'
+      description: 'How many items to return. Max: 500. Min: 1. Returns up to 500 when omitted.'
       example: 10
       maximum: 500
       minimum: 1
@@ -33538,6 +33538,12 @@ paths:
         For example, the gamma exposure for directional volume is call_gamma_ask, and the value will be negative since a trade made at the ask means the market makers are selling/short the call.
         
         To get the full directionalized exposure, just sum up the call ask, call bid, put ask and put bid of a greek and strike.
+        
+        Summing every strike of a ticker reproduces the ticker level values of the [spot exposures per 1 min](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_one_minute) endpoint: `oi` = `call_oi + put_oi`, `vol` = `call_vol + put_vol` and directional = `call_bid + call_ask + put_bid + put_ask`.
+        
+        Strikes are returned in ascending order, up to 500 per request. A ticker with a wider chain than that needs every page collected before the sums line up, so walk `page` from 0 until a page comes back empty. Narrowing with `min_strike` or `max_strike` leaves out the exposure of the excluded strikes.
+        
+        Each strike carries its own `time` and `price`, recorded when the greek exposure is recalculated. Recalculation triggers on the daily open interest update, when a new transaction is observed on the strike, or the contract-level greeks change due to a significant move in price, volatility, or time. This occurs at most once every 30 seconds. Strikes within this response can differ in `time`, possibly by hours when a strike does not trade often and its greeks do not change much.
       operationId: PublicApi.TickerController.spot_exposures_by_strike
       parameters:
         - description: ''
