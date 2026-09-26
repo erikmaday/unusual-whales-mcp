@@ -2457,6 +2457,16 @@ components:
           $ref: '#/components/schemas/Stock Day Stock Volume'
       title: Darkpool Trade
       type: object
+    Darkpool cancellation status:
+      default: all
+      description: Filter trades by cancellation status. all includes every trade, cancelled_only includes only cancelled trades, and hide_cancelled excludes cancelled trades while retaining trades with an unset cancellation flag. Defaults to all.
+      enum:
+        - all
+        - cancelled_only
+        - hide_cancelled
+      example: hide_cancelled
+      title: Darkpool cancellation status
+      type: string
     Darkpool order by field:
       default: executed_at
       description: The field to order the darkpool trades by. Defaults to executed_at.
@@ -15934,6 +15944,9 @@ info:
     
     ## Changelog
     
+    # 2026.09.21
+    - Added a new websocket channel [`stock_screener`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.stock_screener). It streams the latest stock screener row of every ticker and is the live counterpart of [`/screener/stocks`](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.stock_screener).
+    
     # 2026.09.12
     - Added a new websocket channel [`ta_1d_live:{TICKER}`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.ta_1d_live). The channel streams technical-analysis indicator values (moving averages, RSI, MACD, Bollinger bands, ADX, Aroon, ATR, CCI, MFI, OBV, stochastics and Williams %R) computed on daily candles for one ticker. During regular trading hours it resends the day that is still forming as the price moves, so the newest message for a `date` replaces the ones before it. An indicator reads as `null` until enough daily history exists to compute it. The `1d` in the name is the candle interval and `live` means the values track the open session.
     
@@ -18291,6 +18304,12 @@ paths:
             $ref: '#/components/schemas/OrderDirection'
         - description: ''
           in: query
+          name: cancellation_status
+          required: false
+          schema:
+            $ref: '#/components/schemas/Darkpool cancellation status'
+        - description: ''
+          in: query
           name: order_by
           required: false
           schema:
@@ -18414,6 +18433,12 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/OrderDirection'
+        - description: ''
+          in: query
+          name: cancellation_status
+          required: false
+          schema:
+            $ref: '#/components/schemas/Darkpool cancellation status'
         - description: ''
           in: query
           name: order_by
@@ -27263,13 +27288,93 @@ paths:
         These thresholds are inclusive. A `gex_perc_change` of exactly -1 means net gamma reached zero, so both screens also include that boundary, where `gex_ratio` is 1 when defined. A strict flip has `gex_perc_change < -1`. Percentage change is null when previous net gamma is zero, and the ratio is null when call gamma is zero.
       operationId: PublicApi.ScreenerController.stock_screener
       parameters:
-        - description: Query language expression combined with the other filters. Get supported fields, operators, and scopes from /api/screener/stocks/dsl.
+        - description: Query language expression combined with the other filters. Use the query language for complex filters with mathematical calculations and comparisons between fields. Get supported fields, operators, and scopes from /api/screener/stocks/dsl.
           example: where price * 0.75 <= week_52_low and insider_buy_volume12m >= 10000 and insider_sell_volume12m <= 1000 and marketcap >= 1B
           in: query
           name: query
           required: false
           schema:
             type: string
+        - description: Return securities with a price change over one calendar year of at least this decimal fraction, inclusive. 0.5 means a 50% gain and -0.2 means a 20% loss. Uses the latest accepted price and the latest regular close on or before the calendar cutoff. Rows with an unavailable return are excluded.
+          example: 0.5
+          in: query
+          name: min_pct_price_change_1_year
+          required: false
+          schema:
+            format: float
+            type: number
+        - description: Return securities with a price change over one calendar year of at most this decimal fraction, inclusive. 0.5 means a 50% gain and -0.2 means a 20% loss. Uses the latest accepted price and the latest regular close on or before the calendar cutoff. Rows with an unavailable return are excluded.
+          example: -0.2
+          in: query
+          name: max_pct_price_change_1_year
+          required: false
+          schema:
+            format: float
+            type: number
+        - description: Return securities with a price change over six calendar months of at least this decimal fraction, inclusive. 0.5 means a 50% gain and -0.2 means a 20% loss. Uses the latest accepted price and the latest regular close on or before the calendar cutoff. Rows with an unavailable return are excluded.
+          example: 0.25
+          in: query
+          name: min_pct_price_change_6_month
+          required: false
+          schema:
+            format: float
+            type: number
+        - description: Return securities with a price change over six calendar months of at most this decimal fraction, inclusive. 0.5 means a 50% gain and -0.2 means a 20% loss. Uses the latest accepted price and the latest regular close on or before the calendar cutoff. Rows with an unavailable return are excluded.
+          example: -0.25
+          in: query
+          name: max_pct_price_change_6_month
+          required: false
+          schema:
+            format: float
+            type: number
+        - description: Return securities with a price change over three calendar months of at least this decimal fraction, inclusive. 0.5 means a 50% gain and -0.2 means a 20% loss. Uses the latest accepted price and the latest regular close on or before the calendar cutoff. Rows with an unavailable return are excluded.
+          example: 0.12
+          in: query
+          name: min_pct_price_change_3_month
+          required: false
+          schema:
+            format: float
+            type: number
+        - description: Return securities with a price change over three calendar months of at most this decimal fraction, inclusive. 0.5 means a 50% gain and -0.2 means a 20% loss. Uses the latest accepted price and the latest regular close on or before the calendar cutoff. Rows with an unavailable return are excluded.
+          example: -0.12
+          in: query
+          name: max_pct_price_change_3_month
+          required: false
+          schema:
+            format: float
+            type: number
+        - description: Return securities with a price change over one calendar month of at least this decimal fraction, inclusive. 0.5 means a 50% gain and -0.2 means a 20% loss. Uses the latest accepted price and the latest regular close on or before the calendar cutoff. Rows with an unavailable return are excluded.
+          example: 0.15
+          in: query
+          name: min_pct_price_change_1_month
+          required: false
+          schema:
+            format: float
+            type: number
+        - description: Return securities with a price change over one calendar month of at most this decimal fraction, inclusive. 0.5 means a 50% gain and -0.2 means a 20% loss. Uses the latest accepted price and the latest regular close on or before the calendar cutoff. Rows with an unavailable return are excluded.
+          example: -0.1
+          in: query
+          name: max_pct_price_change_1_month
+          required: false
+          schema:
+            format: float
+            type: number
+        - description: Return securities with a price change over seven calendar days of at least this decimal fraction, inclusive. 0.5 means a 50% gain and -0.2 means a 20% loss. Uses the latest accepted price and the latest regular close on or before the calendar cutoff. Rows with an unavailable return are excluded.
+          example: 0.05
+          in: query
+          name: min_pct_price_change_1_week
+          required: false
+          schema:
+            format: float
+            type: number
+        - description: Return securities with a price change over seven calendar days of at most this decimal fraction, inclusive. 0.5 means a 50% gain and -0.2 means a 20% loss. Uses the latest accepted price and the latest regular close on or before the calendar cutoff. Rows with an unavailable return are excluded.
+          example: -0.2
+          in: query
+          name: max_pct_price_change_1_week
+          required: false
+          schema:
+            format: float
+            type: number
         - description: ''
           in: query
           name: ticker
@@ -27346,6 +27451,13 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Sectors'
+        - description: Return securities with this exact company industry label. Separate multiple labels with commas to match any listed industry. Labels come from company data, not a fixed enumeration. The industries and industry_type aliases are also accepted.
+          example: Semiconductors
+          in: query
+          name: industry
+          required: false
+          schema:
+            type: string
         - description: The minimum marketcap.
           example: '1000000'
           in: query
@@ -28637,6 +28749,7 @@ paths:
         | greek_flow_expiry           | Same as `greek_flow`, additionally broken out by option expiry, for every ticker at once. |
         | greek_flow_expiry:TICKER    | Per-minute delta & vega flow broken out by option expiry for the given ticker. |
         | ta_1d_live:TICKER           | Receive live technical-analysis indicator values on the daily candle for the given ticker. |
+        | stock_screener              | Receive the live stock screener row of every ticker (option flow, price, volatility, open interest, GEX, fundamentals, quote and daily technical indicators). |
         
         The `option_trades` channel will stream all 6,000,000 option trades in real-time, `option_trades:<TICKER>` will stream
         all option trades for the given ticker in real-time.
@@ -30456,6 +30569,156 @@ paths:
       parameters: []
       responses: {}
       summary: Risk reversal skew
+      tags:
+        - websocket
+  /api/socket/stock_screener:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for the websocket channel `stock_screener`.
+        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the `stock_screener` channel.
+        
+        Each message carries the latest stock screener row for one ticker. This channel is the live
+        counterpart of the [`/screener/stocks`](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.stock_screener)
+        endpoint. A field has the same name and meaning here as in that endpoint's rows, so see the
+        endpoint for what each field measures.
+        
+        ### Delivery characteristics
+        
+        Read these before writing a client, they are not obvious from the payload:
+        
+        - **Every message is a complete row.** The newest message for a `ticker` and `date` replaces
+          every earlier one. The channel never sends a message that removes a row. Key your rows by
+          `ticker` and `date`, and drop the rows of an earlier `date` once a newer one arrives.
+        - **A ticker is sent up to once a second, whenever any of its inputs updates.** A new bid or
+          ask quote counts as an update, so during market hours most actively quoted tickers are sent
+          every second.
+        - **The channel sends nothing when you join.** Load the current rows from `/screener/stocks`
+          first, and again after every reconnect, then apply the messages from this channel on top.
+        - **This is a high volume channel.** It covers every ticker the screener tracks, and each
+          message is about 5 KB of JSON. When the screener service restarts, every ticker is sent at
+          once, and when the premarket session opens at 04:00 ET most tickers are.
+        - **Keep this channel on its own connection.** A client that does not read the socket fast
+          enough is not disconnected, but frames it cannot keep up with are dropped. The drops hit
+          every channel joined on that connection, not only this one. Enable permessage-deflate if
+          your websocket client supports it.
+        - **Index prices are withheld.** For an index ticker (`is_index` is `true`), the channel
+          sends `null` for the same price fields as `/screener/stocks`: `open`, `close`, `high`,
+          `low`, `prev_close`, `intraday_change`, `week_52_high`, `week_52_low`, `bid`, `ask`, the
+          reference closes `one_week_close`, `one_month_close`, `three_month_close`,
+          `six_month_close`, `ytd_close`, `one_year_close`, `five_year_close` and
+          `last_earnings_price`, and the returns `one_day_perc`, `one_week_perc`, `one_month_perc`,
+          `three_month_perc`, `six_month_perc`, `ytd_perc`, `one_year_perc`, `five_year_perc` and
+          `earnings_perc`.
+        - The channel is global only. There is no `stock_screener:<TICKER>` variant.
+        
+        ### Values
+        
+        Decimal values are sent as strings, as on `/screener/stocks`. The technical indicators are
+        JSON numbers. Dates use the `YYYY-MM-DD` format, and `quote_time` is a Unix timestamp in
+        milliseconds.
+        
+        Every field is present in every message. An unavailable value is `null`, with two exceptions.
+        `call_volume`, `put_volume`, `call_premium`, `put_premium`, `bullish_premium`,
+        `bearish_premium` and the six `insider_*` volumes read `0` (or `"0"` for the decimals) when
+        no data is available. `is_index` is `false` when the issue type is unknown.
+        
+        The technical indicators are flat fields, as on `/screener/stocks`. For example, MACD is sent
+        as `macd_12_26_9`, `macd_12_26_9_signal` and `macd_12_26_9_histogram`, while the
+        `ta_1d_live` channel sends one nested `macd_12_26_9` object.
+        
+        ### Differences from `/screener/stocks`
+        
+        - `full_name` is always `null`.
+        - These fields of `/screener/stocks` are not sent: `net_premium`, `z_score`,
+          `steepness_180_30`, `missing_periscope` and the twelve `gex_daily_*` fields.
+        - `net_premium` is `net_call_premium` minus `net_put_premium`, so you can compute it from
+          this channel.
+        
+        Payload format (shortened, a real message carries every field listed below):
+        
+        ```
+        [
+          "stock_screener",
+          {
+            "date": "2026-09-18",
+            "ticker": "AAPL",
+            "call_volume": 1200,
+            "put_volume": 800,
+            "call_premium": "345000.50",
+            "put_premium": "123000.25",
+            "put_call_ratio": "0.6666666666666666666666666667",
+            "net_call_premium": "150000",
+            "net_put_premium": "-20000",
+            "open": "230.00",
+            "close": "231.42",
+            "high": "232.10",
+            "low": "229.50",
+            "stock_volume": 40000000,
+            "prev_close": "229.00",
+            "volatility": "0.25",
+            "implied_move_30": "12.345",
+            "iv_rank": "34.5",
+            "full_name": null,
+            "marketcap": "3471300000000",
+            "next_earnings_date": "2026-10-29",
+            "er_time": "postmarket",
+            "sector": "Technology",
+            "issue_type": "Common Stock",
+            "is_index": false,
+            "total_open_interest": 5000000,
+            "gex_gamma_per_one_percent_move_oi": "123456.78",
+            "one_day_return_stddevs": "0.68",
+            "one_week_close": "228.61",
+            "one_day_perc": "0.0105676855895196506550218341",
+            "etf_share_flow": null,
+            "insider_sell_volume_3m": 120000,
+            "bid": "231.41",
+            "bid_quantity": 300,
+            "ask": "231.43",
+            "ask_quantity": 200,
+            "quote_time": 1789000000000,
+            "rsi_14": 57.5,
+            "macd_12_26_9": 1.5,
+            "macd_12_26_9_signal": 1.25,
+            "macd_12_26_9_histogram": 0.25
+          }
+        ]
+        ```
+        
+        ### Fields
+        
+        | Group | Fields |
+        |---|---|
+        | Row | `ticker`, `date` |
+        | Option flow | `call_volume`, `put_volume`, `call_premium`, `put_premium`, `bearish_premium`, `bullish_premium`, `call_volume_ask_side`, `call_volume_bid_side`, `call_volume_mid_side`, `put_volume_ask_side`, `put_volume_bid_side`, `put_volume_mid_side`, `call_premium_mid_side`, `put_premium_mid_side`, `cum_dir_gamma`, `cum_dir_vega`, `cum_dir_delta`, `put_call_ratio`, `net_call_premium`, `net_put_premium`, `avg_3_day_call_volume`, `avg_3_day_put_volume`, `avg_7_day_call_volume`, `avg_7_day_put_volume`, `avg_30_day_call_volume`, `avg_30_day_put_volume`, `prev_call_volume`, `prev_put_volume` |
+        | Price and volume | `open`, `close`, `high`, `low`, `stock_volume`, `intraday_change`, `relative_volume`, `prev_close` |
+        | Implied volatility | `implied_move`, `implied_move_perc`, `volatility`, `iv30d`, `iv30d_1d`, `iv30d_1w`, `iv30d_1m`, `iv_rank`, `iv_rank_1m`, `iv_percentile_1m`, `iv_percentile_1y`, and `implied_move_N`, `implied_move_perc_N`, `volatility_N` for N = 1, 5, 7, 14, 30, 60, 90, 180 and 365 |
+        | Company | `full_name`, `marketcap`, `issue_type`, `is_index`, `sector`, `industry_type`, `has_options`, `short_int`, `avg30_volume`, `week_52_high`, `week_52_low`, `next_earnings_date`, `er_time`, `rv_1d_last_12q`, `next_dividend_date` |
+        | Open interest | `total_open_interest`, `call_open_interest`, `put_open_interest`, `avg_30_day_call_oi`, `avg_30_day_put_oi`, `prev_call_oi`, `prev_put_oi` |
+        | Greek exposure | `gex_gamma_per_one_percent_move_oi`, `gex_delta_per_one_percent_move_oi`, `gex_charm_per_one_percent_move_oi`, `gex_vanna_per_one_percent_move_oi`, `gex_gamma_per_one_percent_move_vol`, `gex_delta_per_one_percent_move_vol`, `gex_charm_per_one_percent_move_vol`, `gex_vanna_per_one_percent_move_vol`, `gex_gamma_per_one_percent_move_dir`, `gex_charm_per_one_percent_move_dir`, `gex_vanna_per_one_percent_move_dir`, `gex_net_change`, `gex_perc_change`, `gex_ratio` |
+        | Performance | `one_day_perc`, `one_week_perc`, `one_month_perc`, `three_month_perc`, `six_month_perc`, `ytd_perc`, `one_year_perc`, `five_year_perc`, `earnings_perc`, `one_day_return_stddevs`, `one_week_return_stddevs`, `one_month_return_stddevs`, `one_week_close`, `one_month_close`, `three_month_close`, `six_month_close`, `ytd_close`, `one_year_close`, `five_year_close`, `last_earnings_price`, `last_earnings_date`, `realized_volatility`, `variance_risk_premium` |
+        | Fundamentals | `etf_share_flow`, `eps_growth_4q`, `eps_growth_8q`, `eps_growth_12q`, `eps_growth_16q`, `shares_outstanding`, `shares_outstanding_growth_4q`, `shares_outstanding_growth_8q`, `shares_outstanding_growth_12q`, `latest_dividend`, `latest_dividend_date`, `latest_dividend_payment_date`, `ttm_dividend`, `dividend_yield`, `insider_buy_volume_3m`, `insider_sell_volume_3m`, `insider_buy_volume_6m`, `insider_sell_volume_6m`, `insider_buy_volume_12m`, `insider_sell_volume_12m` |
+        | Quote | `bid`, `bid_quantity`, `ask`, `ask_quantity`, `quote_time` |
+        | Daily technical indicators | `adx_14`, `aroon_14_down`, `aroon_14_up`, `atr_14`, `bb_14_2_upper`, `bb_14_2_middle`, `bb_14_2_lower`, `bb_20_2_upper`, `bb_20_2_middle`, `bb_20_2_lower`, `cci_14`, `ema_9`, `ema_14`, `ema_20`, `ema_21`, `ema_50`, `macd_12_26_9`, `macd_12_26_9_signal`, `macd_12_26_9_histogram`, `mfi_14`, `obv`, `rsi_14`, `sma_10`, `sma_14`, `sma_20`, `sma_50`, `sma_200`, `stoch_5_3_3_k`, `stoch_5_3_3_d`, `willr_14` |
+      operationId: PublicApi.SocketController.stock_screener
+      parameters: []
+      responses: {}
+      summary: Stock screener
       tags:
         - websocket
   /api/socket/ta_1d_live:
