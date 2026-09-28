@@ -15734,6 +15734,165 @@ components:
       example: '0.3140468475903719'
       title: Vega
       type: string
+    Volatility Context:
+      description: Implied volatility, skew, term structure and market conditions for one ticker on one date.
+      properties:
+        date:
+          description: The trading day the values describe. It is the latest day with term structure data on or before the requested date.
+          example: 2026-09-25
+          format: date
+          type: string
+        earnings_date:
+          description: The next scheduled earnings report on or after `date`, or null when none is scheduled.
+          example: 2026-10-28
+          format: date
+          nullable: true
+          type: string
+        expiry:
+          description: |
+            The requested expiry, or the listed expiry closest to 30 days out when none is requested. The object is null
+            when the requested expiry has no term structure data on `date`.
+          nullable: true
+          properties:
+            dte:
+              example: 28
+              type: integer
+            earnings_in_expiry:
+              description: True when the next earnings report falls on or before the expiry.
+              example: false
+              type: boolean
+            expiry:
+              example: 2026-10-23
+              format: date
+              type: string
+            implied_move:
+              description: The expected move to expiry in dollars.
+              example: 30.58
+              nullable: true
+              type: number
+            implied_move_perc:
+              description: The expected move to expiry as a decimal share of the stock price.
+              example: 0.0822
+              nullable: true
+              type: number
+            iv:
+              example: 0.4386
+              nullable: true
+              type: number
+          type: object
+        iv30:
+          description: 30-day implied volatility as a decimal. 0.439 means 43.9%.
+          example: 0.439
+          nullable: true
+          type: number
+        iv_percentile:
+          description: The percentage of days in the past year with a lower 30-day implied volatility.
+          example: 32.8
+          nullable: true
+          type: number
+        iv_rank:
+          description: Where `iv30` sits between its one-year low (0) and high (100).
+          example: 25.46
+          nullable: true
+          type: number
+        iv_rv_ratio:
+          description: '`iv30` divided by `rv`. Values above 1 mean options are priced above recent realized movement.'
+          example: 1.009
+          nullable: true
+          type: number
+        market:
+          description: |
+            Market-wide volatility from the latest available closes. `vix_curve_inverted` is true when VIX closed above
+            VIX3M. `vix_futures_regime` compares the front two VIX futures and is `contango`, `flat` or `backwardation`.
+          properties:
+            vix:
+              example: 14.87
+              nullable: true
+              type: number
+            vix3m:
+              example: 17.93
+              nullable: true
+              type: number
+            vix_curve_inverted:
+              example: false
+              nullable: true
+              type: boolean
+            vix_futures_regime:
+              example: contango
+              nullable: true
+              type: string
+          type: object
+        rv:
+          description: Realized volatility over the `rv_days` trading days that ended on or before `date`, as a decimal.
+          example: 0.435
+          nullable: true
+          type: number
+        rv_days:
+          example: 21
+          type: integer
+        skew:
+          description: |
+            The 25-delta risk reversal for the expiry in `expiry`. `risk_reversal` is the 25-delta put implied volatility
+            minus the 25-delta call implied volatility, so a positive value means puts are priced richer. `scaled` divides it
+            by `iv30`. `label` is `put_rich` when `scaled` is above 0.06, `call_rich` when it is below 0, and `flat` otherwise.
+            The object is null when no risk reversal is recorded for that expiry.
+          nullable: true
+          properties:
+            delta:
+              example: 25
+              type: integer
+            label:
+              enum:
+                - put_rich
+                - flat
+                - call_rich
+              example: call_rich
+              nullable: true
+              type: string
+            risk_reversal:
+              example: -0.0221
+              type: number
+            scaled:
+              example: -0.0504
+              nullable: true
+              type: number
+          type: object
+        term_structure:
+          description: |
+            Compares 30-day and 90-day implied volatility. `slope` is `iv_90d / iv_30d - 1`. `regime` is `contango` when
+            `iv_90d` is more than 1% above `iv_30d`, `backwardation` when it is more than 1% below, and `flat` otherwise.
+            `inverted` is true when `regime` is `backwardation`. Every field is null when either volatility is missing.
+          properties:
+            inverted:
+              example: true
+              nullable: true
+              type: boolean
+            iv_30d:
+              example: 0.439
+              nullable: true
+              type: number
+            iv_90d:
+              example: 0.419
+              nullable: true
+              type: number
+            regime:
+              enum:
+                - contango
+                - flat
+                - backwardation
+              example: backwardation
+              nullable: true
+              type: string
+            slope:
+              example: -0.0456
+              nullable: true
+              type: number
+          type: object
+        ticker:
+          example: TSLA
+          type: string
+      title: Volatility Context
+      type: object
     Volatility Result:
       additionalProperties: true
       description: |
@@ -28730,6 +28889,7 @@ paths:
         | greeks                      | Receive live per-contract option greeks (first- and second-order) for every contract of every underlying.             |
         | greeks:TICKER               | Receive live per-contract option greeks (first- and second-order) for every contract of the given underlying.         |
         | market_tide                 | Receive live updates of both the market tide and the otm market tide.                                                 |
+        | otm_market_tide             | Receive live updates of only the otm market tide. It carries the `otm_net_*` values of `market_tide` under unprefixed names. |
         | net_flow:TICKER             | Receive live net call/put premium and volume aggregates for the specified ticker to build a net prem view.            |
         | interval_flow               | Receive per interval option flow statistics for a ticker (sweeps, floors, multilegs, Greek flows, IV, net prem). Use this to build alert systems to spot spikes in tickers   |
         | contract_screener           | Receive live option contract snapshots (Greeks, side volumes, OI growth indicators). This your entry point to build a screener on top of option contracts.                   |
@@ -28737,6 +28897,8 @@ paths:
         | custom_alerts               | Receive notifications matching the alert configurations on your own Unusual Whales account.                           |
         | futures_trades              | Receive live CME futures trade prints across all contracts. Available on the Advanced API tier, or with the `futures` add-on — email oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access. |
         | futures:TICKER              | Similar to `futures_trades` but only for the specified dated contract, e.g. `futures:ESU6`. Available on the Advanced API tier, or with the `futures` add-on. |
+        | futures_blocks              | Receive live CME block trades in futures contracts and multi-leg futures strategies, across all symbols. Available on the Advanced API tier, or with the `futures` add-on. |
+        | futures_blocks:SYMBOL       | Similar to `futures_blocks` but only for the specified contract or strategy symbol, e.g. `futures_blocks:ESZ6`. Available on the Advanced API tier, or with the `futures` add-on. |
         | interpolated_iv             | Receive live interpolated IV and expected move updates at fixed horizons (1-365 days) for every ticker at once.       |
         | interpolated_iv:TICKER      | Receive live interpolated IV and expected move updates at fixed horizons for the given ticker.                        |
         | iv_term_structure           | Receive live ATM IV and expected move updates per real option expiry for every ticker at once.                        |
@@ -29128,6 +29290,158 @@ paths:
       parameters: []
       responses: {}
       summary: Flow alerts
+      tags:
+        - websocket
+  /api/socket/futures_blocks:
+    get:
+      callbacks: {}
+      description: |
+        **NOTE:**
+        This is the documentation for the websocket channels `futures_blocks` and `futures_blocks:<SYMBOL>`.
+        The channels are available on the Advanced API tier, or with the `futures` add-on. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
+        
+        You can find fully-functional examples that stream data from many channels here:
+        
+        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
+        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
+        
+        
+        
+        Connect to the websocket URI:
+        
+        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
+        
+        then `join` the channel you wish to stream, for example `futures_blocks:ESZ6` for block trades in `ESZ6`.
+        Omit the symbol suffix (`futures_blocks`) to receive block trades in every contract and strategy.
+        
+        Each message carries one CME block trade in a futures contract or in a multi-leg futures strategy.
+        CME publishes a block trade after it executes: `executed_at` is when the trade executed and
+        `reported_at` is when CME reported it.
+        
+        ### Delivery characteristics
+        
+        - **A block trade can be sent more than once.** CME reports a block with the action `new`, and
+          reports it again with `update` when the block changes or `delete` when CME removes it. The
+          newest message for a block replaces the earlier ones. Identify a block by `trade_id`,
+          `exchange` and `trade_date` together, because CME reuses a `trade_id` in later sessions.
+          A repeated report, or one older than the last message sent for the block, is not sent.
+        - **A multi-leg trade arrives as one message.** For a multi-leg (`MLEG`) block the `legs` array
+          lists the legs. CME also reports each leg as a separate trade, and the channel does not send
+          those.
+        - **`futures_blocks:<SYMBOL>` matches `sym` exactly, and the symbol is case-sensitive.** A
+          multi-leg block goes to the channel of its strategy symbol, such as `futures_blocks:SR3:GN`,
+          not to the channels of its leg contracts.
+        - **Only futures and multi-leg blocks are sent.** `sec_type` is `FUT` or `MLEG`. Block trades in
+          options on futures are not sent on this channel.
+        - **The channel sends nothing when you join.** To load earlier block trades, call
+          [`/futures/:contract/trades`](https://api.unusualwhales.com/docs/operations/PublicApi.FuturesController.trades)
+          or [`/futures/flow`](https://api.unusualwhales.com/docs/operations/PublicApi.FuturesController.flow)
+          with `blocks_only=true`.
+        - **Joining without access returns an error.** Without the Advanced API tier or the `futures`
+          add-on, a join is answered with an `{"error": "..."}` frame and the connection stays open.
+        
+        Payload format for a single contract:
+        
+        ```
+        [
+          "futures_blocks:ESZ6",
+          {
+            "sym": "ESZ6",
+            "product": "ES",
+            "exchange": "XCME",
+            "trade_date": "2026-09-18",
+            "executed_at": 1789741867000,
+            "reported_at": 1789741912000,
+            "price": "6612.25",
+            "qty": "250",
+            "sec_type": "FUT",
+            "action": "new",
+            "trade_id": 84213907,
+            "strategy_link_id": null,
+            "legs": [],
+            "quote_bid": "6612.00",
+            "quote_ask": "6612.25",
+            "quote_ts": 1789741866950,
+            "is_block": true
+          }
+        ]
+        ```
+        
+        Payload format for a multi-leg strategy:
+        
+        ```
+        [
+          "futures_blocks",
+          {
+            "sym": "SR3:GN",
+            "product": "",
+            "exchange": "XCME",
+            "trade_date": "2026-09-18",
+            "executed_at": 1789742100000,
+            "reported_at": 1789742160000,
+            "price": null,
+            "qty": "2500",
+            "sec_type": "MLEG",
+            "action": "new",
+            "trade_id": 22693914,
+            "strategy_link_id": 22693914,
+            "legs": [
+              {
+                "sym": "SR3Z6 C9606",
+                "price": "0.12",
+                "qty": "2500",
+                "sec_type": "OOF",
+                "leg_side": "BUY",
+                "ratio_qty": "1"
+              }
+            ],
+            "quote_bid": null,
+            "quote_ask": null,
+            "quote_ts": null,
+            "is_block": true
+          }
+        ]
+        ```
+        
+        ### Field reference
+        
+        `price`, `qty` and the leg prices and quantities are decimal strings with at most 8 decimal places.
+        Timestamps are Unix timestamps in milliseconds.
+        
+        | Field | Type | Description |
+        |---|---|---|
+        | `sym` | string | CME Globex symbol of the contract, such as `ESZ6`, or of the strategy for a multi-leg trade, such as `SR3:GN`. Same as the `:` suffix on the keyed channel name. |
+        | `product` | string | Globex product root of the contract, such as `ES` or `ZN`. Empty string for multi-leg trades and for contracts whose root is not known yet. |
+        | `exchange` | string | Exchange MIC, such as `XCME` or `XCBT`. Empty string when unavailable. |
+        | `trade_date` | string | CME trade date in `YYYY-MM-DD` format. |
+        | `executed_at` | int | Time the trade executed. |
+        | `reported_at` | int | Time CME reported the block trade. |
+        | `price` | decimal string \| null | Trade price. `null` when CME reports no price, which is the case for multi-leg trades. Their prices are on the legs. |
+        | `qty` | decimal string | Traded quantity. |
+        | `sec_type` | string | `FUT` for a futures contract, `MLEG` for a multi-leg strategy. |
+        | `action` | string | `new`, `update` or `delete`. |
+        | `trade_id` | int | CME trade ID. Unique only together with `exchange` and `trade_date`. |
+        | `strategy_link_id` | int \| null | CME strategy link ID. `null` when CME sends none. When present, it equals `trade_id`. |
+        | `legs` | object[] | The legs of a multi-leg trade, described below. Empty for a single contract. |
+        | `quote_bid` | decimal string \| null | Best bid recorded with the contract's last regular (non-block) trade at or before `reported_at`, from at most 3 days earlier. `null` for multi-leg trades, for `delete` messages, and when there is no such trade. |
+        | `quote_ask` | decimal string \| null | Best ask recorded with the same trade as `quote_bid`. `null` in the same cases. |
+        | `quote_ts` | int \| null | Time that regular trade executed. `null` in the same cases. |
+        | `is_block` | boolean | Always `true`. The REST futures trade endpoints carry the same field to tell block trades from regular prints. |
+        
+        Each entry of `legs`:
+        
+        | Field | Type | Description |
+        |---|---|---|
+        | `sym` | string | CME Globex symbol of the leg, such as `SR3Z6 C9606`. |
+        | `price` | decimal string \| null | Leg price. `null` when CME sends none. |
+        | `qty` | decimal string | Leg quantity. |
+        | `sec_type` | string | Security type of the leg as CME reports it, such as `FUT` or `OOF` (option on a future). |
+        | `leg_side` | string \| null | Side of the leg as CME reports it, such as `BUY`. `null` when CME sends none. |
+        | `ratio_qty` | string \| null | Ratio quantity of the leg within the strategy, such as `1`. `null` when CME sends none. |
+      operationId: PublicApi.SocketController.futures_blocks
+      parameters: []
+      responses: {}
+      summary: Futures block trades
       tags:
         - websocket
   /api/socket/gex:
@@ -29965,7 +30279,7 @@ paths:
       callbacks: {}
       description: |
         **NOTE:**
-        This is the documentation for websocket channel `market_tide`.
+        This is the documentation for websocket channels `market_tide` and `otm_market_tide`.
         Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
         
         You can find fully-functional examples that stream data from many channels here:
@@ -29980,6 +30294,11 @@ paths:
         `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
         
         then `join` the channel you wish to stream: `market_tide` for the live market-wide net call/put premium and volume aggregate. The OTM-only breakout is included in the same payload via the `otm_net_*` fields.
+        
+        Join `otm_market_tide` instead if you only need the OTM breakout. Every update is sent on
+        both channels with the same `timestamp`, and the `otm_market_tide` message carries the
+        `otm_net_*` values of `market_tide` under the names `net_volume`, `net_call_premium` and
+        `net_put_premium`. If you join both channels, you receive the OTM values twice.
         
         Payload format:
         
@@ -30011,6 +30330,29 @@ paths:
         | `otm_net_volume` | int | Same as `net_volume` but restricted to OTM contracts. |
         | `otm_net_call_premium` | decimal string | Same as `net_call_premium` but restricted to OTM contracts. |
         | `otm_net_put_premium` | decimal string | Same as `net_put_premium` but restricted to OTM contracts. |
+        
+        ### `otm_market_tide`
+        
+        Payload format, for the same update as the `market_tide` example above:
+        
+        ```
+        [
+          "otm_market_tide",
+          {
+            "timestamp": "2026-04-27T14:27:54Z",
+            "net_volume": 1345,
+            "net_call_premium": "272395.0",
+            "net_put_premium": "-190694.0"
+          }
+        ]
+        ```
+        
+        | Field | Type | Description |
+        |---|---|---|
+        | `timestamp` | ISO 8601 string | Aggregation time, UTC. Equal to `timestamp` of the matching `market_tide` message. |
+        | `net_volume` | int | Net call volume minus net put volume, counting only OTM contracts. Same value as `otm_net_volume` on `market_tide`. |
+        | `net_call_premium` | decimal string | Net call premium of OTM contracts, in dollars. Same value as `otm_net_call_premium` on `market_tide`. |
+        | `net_put_premium` | decimal string | Net put premium of OTM contracts, in dollars. Same value as `otm_net_put_premium` on `market_tide`. |
       operationId: PublicApi.SocketController.market_tide
       parameters: []
       responses: {}
@@ -34321,6 +34663,70 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Volatility Character
+      tags:
+        - volatility
+  /api/stock/{ticker}/volatility/context:
+    get:
+      callbacks: {}
+      description: |
+        Returns the volatility context for a ticker on one date: 30-day implied volatility with its one-year rank and
+        percentile, realized volatility, the term structure regime (contango, flat or backwardation), the 25-delta skew
+        with a put-rich, flat or call-rich label, the implied move and earnings timing for one expiry, and VIX conditions.
+        
+        Pass `expiry` to describe a specific expiry. Without it, the response uses the listed expiry closest to 30 days
+        out. `date` defaults to the last trading day. A value that has no data is null, never zero.
+      operationId: PublicApi.VolatilityController.context
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+        - description: Describe this expiry (YYYY-MM-DD) instead of the one closest to 30 days out.
+          in: query
+          name: expiry
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volatility Context'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Volatility Context
       tags:
         - volatility
   /api/stock/{ticker}/volatility/option-sentiment:
