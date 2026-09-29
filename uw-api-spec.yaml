@@ -8693,8 +8693,8 @@ components:
         
         Pass `greeks=true` to instead get an enriched object per contract with strike, expiry, type,
         NBBO (`nbbo_bid`/`nbbo_ask`), `implied_volatility`, `open_interest`, `volume`, `delta`, `gamma`,
-        `theta`, `vega`, `rho` and `last_tape_time` — everything needed to rank contracts from a single
-        call, without a separate greeks request per expiry.
+        `theta`, `vega`, `rho` and `last_tape_time`. Enriched rows are sorted by `expires`, `strike` and
+        `option_symbol` and returned in pages of up to 500. Use `limit` and `page` to read the rest of the chain.
         
         Example enriched row (`greeks=true`):
         
@@ -16103,31 +16103,34 @@ info:
     
     ## Changelog
     
+    # 2026.09.28
+    - The websocket documentation moved to [https://api.unusualwhales.com/docs/websocket](https://api.unusualwhales.com/docs/websocket), with one page per channel. REST endpoints that serve the same data as a websocket channel link to that channel's page.
+    
     # 2026.09.21
-    - Added a new websocket channel [`stock_screener`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.stock_screener). It streams the latest stock screener row of every ticker and is the live counterpart of [`/screener/stocks`](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.stock_screener).
+    - Added a new websocket channel [`stock_screener`](https://api.unusualwhales.com/docs/websocket/stock-screener). It streams the latest stock screener row of every ticker and is the live counterpart of [`/screener/stocks`](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.stock_screener).
     
     # 2026.09.12
-    - Added a new websocket channel [`ta_1d_live:{TICKER}`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.ta_1d_live). The channel streams technical-analysis indicator values (moving averages, RSI, MACD, Bollinger bands, ADX, Aroon, ATR, CCI, MFI, OBV, stochastics and Williams %R) computed on daily candles for one ticker. During regular trading hours it resends the day that is still forming as the price moves, so the newest message for a `date` replaces the ones before it. An indicator reads as `null` until enough daily history exists to compute it. The `1d` in the name is the candle interval and `live` means the values track the open session.
+    - Added a new websocket channel [`ta_1d_live:{TICKER}`](https://api.unusualwhales.com/docs/websocket/technical-analysis-indicators). The channel streams technical-analysis indicator values (moving averages, RSI, MACD, Bollinger bands, ADX, Aroon, ATR, CCI, MFI, OBV, stochastics and Williams %R) computed on daily candles for one ticker. During regular trading hours it resends the day that is still forming as the price moves, so the newest message for a `date` replaces the ones before it. An indicator reads as `null` until enough daily history exists to compute it. The `1d` in the name is the candle interval and `live` means the values track the open session.
     
     # 2026.09.04
-    - Added new websocket channels [`quotes` and `quotes:{TICKER}`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.quotes). They stream the live best bid and ask - for every ticker at once, or for a single ticker - and are the live counterpart of [`/stock/:ticker/quote`](https://api.unusualwhales.com/docs/operations/PublicApi.StockQuoteController.show).
+    - Added new websocket channels [`quotes` and `quotes:{TICKER}`](https://api.unusualwhales.com/docs/websocket/stock-quotes). They stream the live best bid and ask - for every ticker at once, or for a single ticker - and are the live counterpart of [`/stock/:ticker/quote`](https://api.unusualwhales.com/docs/operations/PublicApi.StockQuoteController.show).
     
     # 2026.09.01
-    - Added a global [`greeks`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.greeks) websocket channel. It streams the same per-contract option greeks as `greeks:<TICKER>`, but for every underlying at once. This is a high volume firehose - prefer the per-ticker channel unless you need the full tape.
+    - Added a global [`greeks`](https://api.unusualwhales.com/docs/websocket/greeks) websocket channel. It streams the same per-contract option greeks as `greeks:<TICKER>`, but for every underlying at once. This is a high volume firehose - prefer the per-ticker channel unless you need the full tape.
     
     # 2026.08.30
     - MCP now advertises build guidance: `instructions` on initialize; builder prompts `build_dashboard_app`, `build_confluence_alert`, `build_trading_bot`, `build_data_stream`, `start_from_example`, and `setup_api_project`; tools `get_build_recipe` and `get_api_examples` (scripts from [https://github.com/unusual-whales/api-examples](https://github.com/unusual-whales/api-examples)); and `resources/list` / `resources/templates/list` / `resources/read` for playbooks and example files.
     
     # 2026.08.28
-    - Added a new websocket channel [`risk_reversal_skew`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.risk_reversal_skew). The channel streams live 25- and 10-delta risk reversal skew (put implied volatility minus call implied volatility) per expiry across every ticker, the live counterpart of [`/stock/:ticker/historical-risk-reversal-skew`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.historical_risk_reversal_skew). The channel is global only; there is no per-ticker variant.
+    - Added a new websocket channel [`risk_reversal_skew`](https://api.unusualwhales.com/docs/websocket/risk-reversal-skew). The channel streams live 25- and 10-delta risk reversal skew (put implied volatility minus call implied volatility) per expiry across every ticker, the live counterpart of [`/stock/:ticker/historical-risk-reversal-skew`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.historical_risk_reversal_skew). The channel is global only; there is no per-ticker variant.
     
     # 2026.08.22
     - Updated [`/stock/:ticker/gex-levels`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.gex_levels) to derive its levels from spot directionalized volume — instead of a cumulative total over the static open-interest snapshot.
     - Added `date`, `time`, `source`, and `nearby_flips` to the [`/stock/:ticker/gex-levels`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.gex_levels) response. `nearby_flips` lists the five zero-gamma crossings nearest spot, ordered by distance from it. `time` is when the underlying exposure snapshot was calculated.
     
     # 2026.08.21
-    - Added new websocket channels [`interpolated_iv` and `interpolated_iv:TICKER`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.interpolated_iv). The channels stream interpolated implied volatility and expected moves at fixed horizons (1-365 trading days), the live counterpart of [`/stock/:ticker/interpolated-iv`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.interpolated_iv).
-    - Added new websocket channels [`iv_term_structure` and `iv_term_structure:TICKER`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.iv_term_structure). The channels stream ATM implied volatility and expected moves per real option expiry — the raw entries behind `interpolated_iv` — the live counterpart of [`/stock/:ticker/volatility/term-structure`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.implied_volatility_term_structure).
+    - Added new websocket channels [`interpolated_iv` and `interpolated_iv:TICKER`](https://api.unusualwhales.com/docs/websocket/interpolated-iv). The channels stream interpolated implied volatility and expected moves at fixed horizons (1-365 trading days), the live counterpart of [`/stock/:ticker/interpolated-iv`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.interpolated_iv).
+    - Added new websocket channels [`iv_term_structure` and `iv_term_structure:TICKER`](https://api.unusualwhales.com/docs/websocket/iv-term-structure). The channels stream ATM implied volatility and expected moves per real option expiry — the raw entries behind `interpolated_iv` — the live counterpart of [`/stock/:ticker/volatility/term-structure`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.implied_volatility_term_structure).
     
     # 2026.04.30
     Added a new advanced-tier endpoint group. All routes below require API Advanced, Enterprise Startup, Enterprise Startup + Kafka, or Enterprise tier.
@@ -16202,7 +16205,7 @@ info:
     
     # 2025.09.23
     
-    - Added new websocket channels [`lit_trades`](https://api.unusualwhales.com/docs#/operations/PublicApi.SocketController.lit_trades) and [`off_lit_trades`](https://api.unusualwhales.com/docs#/operations/PublicApi.SocketController.off_lit_trades) to stream live lit (exchange-based) and off-lit (dark pool) trades respectively.
+    - Added new websocket channels [`lit_trades`](https://api.unusualwhales.com/docs/websocket/lit-trades) and [`off_lit_trades`](https://api.unusualwhales.com/docs/websocket/off-lit-trades) to stream live lit (exchange-based) and off-lit (dark pool) trades respectively.
     
     # 2025.09.22
     
@@ -16275,7 +16278,7 @@ info:
     - Updated dark pool/off lit endpoints to allow filtering for size, premium & consolidated volume
     
     # 2025.01.22
-    - Added [`gex_strike_expiry:<TICKER>`](https://api.unusualwhales.com/docs#/operations/PublicApi.SocketController.gex) channel to the websocket
+    - Added [`gex_strike_expiry:<TICKER>`](https://api.unusualwhales.com/docs/websocket/gex) channel to the websocket
     - Added `call_option_symbol` & `put_option_symbol` to [`/stock/{ticker}/greeks`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.greeks)
     
     # 2025.01.16
@@ -16344,7 +16347,7 @@ info:
     - Added directionalized volume fields to [`/stock/:ticker/spot-exposures`](PublicApi.TickerController.spot_exposures_one_minute) and [`/stock/:ticker/spot-exposures/strike`](PublicApi.TickerController.spot_exposures_by_strike)
     
     # 2024.05.17
-    - Added the channels `gex:TICKER` & `gex_strike:TICKER` to the [websocket](https://api.unusualwhales.com/docs#/operations/PublicApi.SocketController.channels)
+    - Added the channels `gex:TICKER` & `gex_strike:TICKER` to the [websocket](https://api.unusualwhales.com/docs/websocket)
     
     # 2024.05.07
     - Added the ability to filter [`/option-trades/flow-alerts`](PublicApi.OptionTradeController.flow_alerts) by timestamps through the two new query parameters `older_than` and `newer_than`
@@ -16361,7 +16364,7 @@ info:
     
     # 2024.05.01
     - Added endpoint [`/stock/:ticker/spot-exposures/strike`](PublicApi.TickerController.spot_exposures_by_strike)
-    - Added new channel [`price:TICKER`](https://api.unusualwhales.com/docs#/operations/PublicApi.SocketController.channels) to the websocket. The channel will push live price updates for the given ticker.
+    - Added new channel [`price:TICKER`](https://api.unusualwhales.com/docs/websocket) to the websocket. The channel will push live price updates for the given ticker.
     
     # 2024.04.25
     - Added endpoint [`/stock/:ticker/greek-exposure/strike`](PublicApi.TickerController.greek_exposure_by_strike)
@@ -16406,6 +16409,8 @@ paths:
       callbacks: {}
       description: |
         Returns all the alerts that have been triggered for the user.
+        
+        For real time streaming of triggered alerts, subscribe to the `custom_alerts` websocket channel, see [https://api.unusualwhales.com/docs/websocket/custom-alerts](https://api.unusualwhales.com/docs/websocket/custom-alerts).
         
         Time filtering is available using the `newer_than` and `older_than` parameters:
         - The maximum lookback period is 14 days
@@ -16596,7 +16601,7 @@ paths:
         ```
         
         The created alerts are delivered like the alerts created on [https://unusualwhales.com/custom-alerts](https://unusualwhales.com/custom-alerts)
-        and their triggers can be fetched from the alerts endpoint or streamed over the `custom_alerts` websocket channel.
+        and their triggers can be fetched from the alerts endpoint or streamed over the [`custom_alerts`](https://api.unusualwhales.com/docs/websocket/custom-alerts) websocket channel.
         
         The alerts and usage of the websocket are the easiest way to setup and get notified on anything that matches your filter configs.
         The query language is a powerful tool to create complex configurations in a SQL like language.
@@ -18404,7 +18409,7 @@ paths:
       description: |
         Returns the latest darkpool trades.
         
-        For real time streaming of darkpool trades, subscribe to the `off_lit_trades` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.off_lit_trades](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.off_lit_trades).
+        For real time streaming of darkpool trades, subscribe to the `off_lit_trades` websocket channel, see [https://api.unusualwhales.com/docs/websocket/off-lit-trades](https://api.unusualwhales.com/docs/websocket/off-lit-trades).
       operationId: PublicApi.DarkpoolController.darkpool_recent
       parameters:
         - description: ''
@@ -18514,7 +18519,7 @@ paths:
         Returns the darkpool trades for the given ticker on a given day.
         Date must be the current or a past date. If no date is given, returns data for the current/last market day.
         
-        For real time streaming of darkpool trades, subscribe to the `off_lit_trades` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.off_lit_trades](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.off_lit_trades).
+        For real time streaming of darkpool trades, subscribe to the `off_lit_trades` websocket channel, see [https://api.unusualwhales.com/docs/websocket/off-lit-trades](https://api.unusualwhales.com/docs/websocket/off-lit-trades).
         
         `executed_at` is an ISO 8601 timestamp in UTC. `trf_executed_at` is the time the trade was reported to
         the tape.
@@ -19660,6 +19665,7 @@ paths:
       description: |
         Newest-first trade prints across ALL contracts, block trades included by default.
         Each row carries `is_block` and `is_spread`. Optional server-side filters narrow the feed.
+        For real time streaming of block trades, subscribe to the `futures_blocks` websocket channel, see [https://api.unusualwhales.com/docs/websocket/futures-block-trades](https://api.unusualwhales.com/docs/websocket/futures-block-trades).
         Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.flow
       parameters:
@@ -19911,6 +19917,7 @@ paths:
         Response includes both regular and CME block trades by default; each row has `is_block` to distinguish them.
         Pass `blocks_only=true` to return only block trades.
         Pass `skip_blocks=true` to exclude block trades and return only regular prints.
+        For real time streaming of block trades, subscribe to the `futures_blocks` websocket channel, see [https://api.unusualwhales.com/docs/websocket/futures-block-trades](https://api.unusualwhales.com/docs/websocket/futures-block-trades).
         Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.trades
       parameters:
@@ -21195,6 +21202,8 @@ paths:
       callbacks: {}
       description: |
         Returns the latest lit exchange trades.
+        
+        For real time streaming of lit trades, subscribe to the `lit_trades` websocket channel, see [https://api.unusualwhales.com/docs/websocket/lit-trades](https://api.unusualwhales.com/docs/websocket/lit-trades).
       operationId: PublicApi.LitFlowController.lit_flow_recent
       parameters:
         - description: ''
@@ -21284,6 +21293,9 @@ paths:
       callbacks: {}
       description: |
         Returns the lit exchange trades for the given ticker on a given day.
+        
+        For real time streaming of lit trades, subscribe to the `lit_trades` websocket channel, see [https://api.unusualwhales.com/docs/websocket/lit-trades](https://api.unusualwhales.com/docs/websocket/lit-trades).
+        
         Date must be the current or a past date. If no date is given, returns data for the current/last market day.
       operationId: PublicApi.LitFlowController.lit_flow_ticker
       parameters:
@@ -21597,12 +21609,15 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Ticker'
-        - description: Maximum number of results to return
+        - description: Maximum number of results to return. Defaults to 100. Values above 500 are clamped to 500.
           in: query
           name: limit
           required: false
           schema:
-            $ref: '#/components/schemas/Default 100 Max 200 Min 1'
+            default: 100
+            maximum: 500
+            minimum: 1
+            type: integer
       responses:
         '200':
           content:
@@ -21715,7 +21730,7 @@ paths:
         
         For a market tide for ETF holdings check out [https://api.unusualwhales.com/docs/operations/PublicApi.MarketController.etf_tide](https://api.unusualwhales.com/docs/operations/PublicApi.MarketController.etf_tide).
         
-        For real time streaming market tide data, subscribe to the `market_tide` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.channels](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.channels).
+        For real time streaming market tide data, subscribe to the `market_tide` websocket channel, see [https://api.unusualwhales.com/docs/websocket/market-tide](https://api.unusualwhales.com/docs/websocket/market-tide).
         
         ----
         This can be used to build a market overview such as:
@@ -22253,6 +22268,8 @@ paths:
         Use the `search_term` parameter to filter by headline content, or the `ticker` parameter to filter
         by related ticker symbols. The data includes the headline text, source, related tickers, sentiment,
         and whether it's considered a major news item.
+        
+        For real time streaming of headlines, subscribe to the `news` websocket channel, see [https://api.unusualwhales.com/docs/websocket/news](https://api.unusualwhales.com/docs/websocket/news).
       operationId: PublicApi.NewsController.headlines
       parameters:
         - description: ''
@@ -22335,7 +22352,7 @@ paths:
         
         Every Hottest Chains filter is accepted here and overrides the preset (e.g. `?min_premium=25000&max_dte=30`); pass `unusual=false` to return the full screen. For the complete list of filters and the response shape see the [Hottest Chains endpoint](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.contract_screener).
         
-        For real time streaming of the same data, subscribe to the `contract_screener` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.contract_screener](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.contract_screener).
+        For real time streaming of the same data, subscribe to the `contract_screener` websocket channel, see [https://api.unusualwhales.com/docs/websocket/contract-screener](https://api.unusualwhales.com/docs/websocket/contract-screener).
         
         NOTE: Contracts with a volume of less than 200 are not being returned
       operationId: PublicApi.ScreenerController.unusual_activity
@@ -22711,7 +22728,7 @@ paths:
         `multi_vol` and `stock_multi_vol` are overlapping subsets of `volume`, not separate amounts to subtract.
         
         On this REST endpoint, `executed_at`, `nbbo_bid_time` and `nbbo_ask_time` are ISO 8601 timestamps in UTC.
-        On the WebSocket `option_trades` channel, the same fields are Unix epoch timestamps in milliseconds.
+        On the WebSocket [`option_trades`](https://api.unusualwhales.com/docs/websocket/option-trades) channel, the same fields are Unix epoch timestamps in milliseconds.
       operationId: PublicApi.OptionTradeController.index
       parameters:
         - description: ''
@@ -23535,7 +23552,7 @@ paths:
         and use [https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alert](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alert)
         to retrieve the individual transactions.
         
-        For real time streaming of flow alerts, subscribe to the `flow-alerts` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.flow_alerts](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.flow_alerts).
+        For real time streaming of flow alerts, subscribe to the `flow-alerts` websocket channel, see [https://api.unusualwhales.com/docs/websocket/flow-alerts](https://api.unusualwhales.com/docs/websocket/flow-alerts).
         
         The 14-day lookback limit on the custom alerts endpoint (`/api/alerts`) does not apply to this endpoint.
       operationId: PublicApi.OptionTradeController.flow_alerts
@@ -24006,6 +24023,8 @@ paths:
         Download all option transactions (the "full tape") for a given trading date.
         
         To filter option transactions for the current trading day use the [Option Trades endpoint](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index).
+        
+        For real time streaming of option trades, subscribe to the `option_trades` websocket channel, see [https://api.unusualwhales.com/docs/websocket/option-trades](https://api.unusualwhales.com/docs/websocket/option-trades).
         
         How far back you can download is determined by your plan's historical lookback window with data available since 2022-01-01.
         
@@ -26597,7 +26616,7 @@ paths:
         For an example of what can be build with this endpoint check out the [Hottest Contracts](https://unusualwhales.com/hottest-contracts?limit=100&hide_index_etf=true)
         on UnusualWhales.
         
-        For real time streaming of the same data, subscribe to the `contract_screener` websocket channel, see [https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.contract_screener](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.contract_screener).
+        For real time streaming of the same data, subscribe to the `contract_screener` websocket channel, see [https://api.unusualwhales.com/docs/websocket/contract-screener](https://api.unusualwhales.com/docs/websocket/contract-screener).
         
         NOTE: Contracts with a volume of less than 200 are not being returned
       operationId: PublicApi.ScreenerController.contract_screener
@@ -27337,6 +27356,8 @@ paths:
         Live bid and ask quotes are null for historical snapshots.
         
         Rows default to combined call and put volume in descending order.  
+        
+        For real time streaming of the latest screener row of every ticker, subscribe to the `stock_screener` websocket channel, see [https://api.unusualwhales.com/docs/websocket/stock-screener](https://api.unusualwhales.com/docs/websocket/stock-screener).
         
         Decimal values are returned as strings. Fractional returns use 0.05 for 5 percent.
         Unavailable values are null.
@@ -28851,2389 +28872,6 @@ paths:
       summary: Short Volume By Exchange
       tags:
         - short
-  /api/socket:
-    get:
-      callbacks: {}
-      description: |
-        Returns the available WebSocket channels for connections.
-        
-        ## Websocket Guide
-        #You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        If you are an AI or work with AI there is an available websocket skill at: https://unusualwhales.com/skills/websocket.md
-        
-        The following channels are available:
-        | Channel                     | Description                                                                                                           |
-        |-----------------------------|-----------------------------------------------------------------------------------------------------------------------|
-        | option_trades               | Receive live option trades throughout the trading session. Expect 6-10M records per day.                              |
-        | option_trades:TICKER        | Similar to `option_trades` but receive all trades only for the specified ticker.                                      |
-        | flow-alerts                 | Receive live flow alerts (all of them unfiltered). This data can be used to build views like [https://unusualwhales.com/option-flow-alerts](https://unusualwhales.com/option-flow-alerts). |
-        | price                       | Receive live price updates for every ticker at once.                                                                  |
-        | price:TICKER                | Receive live price updates for the given ticker.                                                                      |
-        | news                        | Receive live headline news (Truth Social posts + aggregator news).                                                    |
-        | lit_trades                  | Receive live lit (exchange-based) trades throughout the trading session.                                              |
-        | off_lit_trades              | Receive live off-lit (dark pool) trades throughout the trading session.                                               |
-        | gex                         | Receive live gex updates for every ticker at once.                                                                    |
-        | gex:TICKER                  | Receive live gex update for the given ticker.                                                                         |
-        | gex_strike                  | Receive live gex strike updates for every strike of every ticker.                                                     |
-        | gex_strike:TICKER           | Receive live gex strike updates for every strike of the given ticker.                                                 |
-        | gex_strike_expiry           | Receive live gex strike updates for every strike & expiry of every ticker.                                            |
-        | gex_strike_expiry:TICKER    | Receive live gex strike updates for every strike & expiry of the given ticker.                                        |
-        | periscope                   | Receive live periscope market-maker greek exposures (gamma/charm/vanna) per strike & expiry for every index ticker (SPX, VIX, XSP, NANOS). Not available on the enterprise and enterprise startup plans. |
-        | periscope:TICKER            | Receive live periscope market-maker greek exposures per strike & expiry for the given index ticker. Not available on the enterprise and enterprise startup plans. |
-        | greeks                      | Receive live per-contract option greeks (first- and second-order) for every contract of every underlying.             |
-        | greeks:TICKER               | Receive live per-contract option greeks (first- and second-order) for every contract of the given underlying.         |
-        | market_tide                 | Receive live updates of both the market tide and the otm market tide.                                                 |
-        | otm_market_tide             | Receive live updates of only the otm market tide. It carries the `otm_net_*` values of `market_tide` under unprefixed names. |
-        | net_flow:TICKER             | Receive live net call/put premium and volume aggregates for the specified ticker to build a net prem view.            |
-        | interval_flow               | Receive per interval option flow statistics for a ticker (sweeps, floors, multilegs, Greek flows, IV, net prem). Use this to build alert systems to spot spikes in tickers   |
-        | contract_screener           | Receive live option contract snapshots (Greeks, side volumes, OI growth indicators). This your entry point to build a screener on top of option contracts.                   |
-        | trading_halts               | Receive live trading state changes (halts, resumes, LULD pauses) for individual tickers.                              |
-        | custom_alerts               | Receive notifications matching the alert configurations on your own Unusual Whales account.                           |
-        | futures_trades              | Receive live CME futures trade prints across all contracts. Available on the Advanced API tier, or with the `futures` add-on — email oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access. |
-        | futures:TICKER              | Similar to `futures_trades` but only for the specified dated contract, e.g. `futures:ESU6`. Available on the Advanced API tier, or with the `futures` add-on. |
-        | futures_blocks              | Receive live CME block trades in futures contracts and multi-leg futures strategies, across all symbols. Available on the Advanced API tier, or with the `futures` add-on. |
-        | futures_blocks:SYMBOL       | Similar to `futures_blocks` but only for the specified contract or strategy symbol, e.g. `futures_blocks:ESZ6`. Available on the Advanced API tier, or with the `futures` add-on. |
-        | interpolated_iv             | Receive live interpolated IV and expected move updates at fixed horizons (1-365 days) for every ticker at once.       |
-        | interpolated_iv:TICKER      | Receive live interpolated IV and expected move updates at fixed horizons for the given ticker.                        |
-        | iv_term_structure           | Receive live ATM IV and expected move updates per real option expiry for every ticker at once.                        |
-        | iv_term_structure:TICKER    | Receive live ATM IV and expected move updates per real option expiry for the given ticker.                            |
-        | risk_reversal_skew          | Receive live 25- and 10-delta risk reversal skew (put IV minus call IV) per expiry for every ticker at once.          |
-        | quotes                      | Receive live best bid and ask (top of book) updates for every ticker at once. This is a high volume firehose - prefer `quotes:TICKER` unless you need the full tape. |
-        | quotes:TICKER               | Receive live best bid and ask (top of book) updates for the given ticker. |
-        | greek_flow                  | Receive live delta & vega flow from option trades for every ticker at once, bucketed to the minute and updated about once a second. |
-        | greek_flow:TICKER           | The same for the given ticker. Silent while that ticker has no option trades. |
-        | greek_flow_expiry           | Same as `greek_flow`, additionally broken out by option expiry, for every ticker at once. |
-        | greek_flow_expiry:TICKER    | Per-minute delta & vega flow broken out by option expiry for the given ticker. |
-        | ta_1d_live:TICKER           | Receive live technical-analysis indicator values on the daily candle for the given ticker. |
-        | stock_screener              | Receive the live stock screener row of every ticker (option flow, price, volatility, open interest, GEX, fundamentals, quote and daily technical indicators). |
-        
-        The `option_trades` channel will stream all 6,000,000 option trades in real-time, `option_trades:<TICKER>` will stream
-        all option trades for the given ticker in real-time.
-        
-        `flow-alerts` will stream from the alerts [page](https://unusualwhales.com/option-flow-alerts?limit=50)
-        
-        ## Connect
-        For a python example script that streams gex by ticker (gex:TICKER), flow alerts (flow-alerts), and all TSLA option trades (option_trades:TSLA), see our "examples" repo on Github: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        
-        We will use [websocat](https://github.com/vi/websocat) to demonstrate how to connect to the WebSocket server.
-        
-        ```bash
-        websocat "wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>"
-        {"channel":"option_trades","msg_type":"join"}
-        ```
-        The server will then reply with
-        ```bash
-        ["option_trades",{"response":{},"status":"ok"}]
-        ```
-        indicating that the connection was successful.
-        
-        You will then receive data in the following format:
-        ```bash
-        [<CHANNEL_NAME>, <PAYLOAD>]
-        ```
-        during market hours.
-        
-        To receive the trades only for a specific ticker, use the following command:
-        ```bash
-        {"channel":"option_trades","msg_type":"join"}
-        ```
-        
-        You can join multiple channels with the same websocket connection:
-        ```bash
-        websocat "wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>"
-        {"channel":"option_trades","msg_type":"join"}
-        ["option_trades",{"response":{},"status":"ok"}]
-        {"channel":"option_trades:JPM","msg_type":"join"}
-        ["option_trades:JPM",{"response":{},"status":"ok"}]
-        ```
-        
-        ## Using a client
-        If you are using Python, you can use the [websocket-client](https://github.com/websocket-client/websocket-client) library to connect to the server.
-        
-        ```python
-        import websocket
-        import time
-        import rel
-        import json
-        
-        def on_message(ws, msg):
-            msg = json.loads(msg)
-            channel, payload = msg
-            print(f"Got a message on channel {channel}: Payload: {payload}")
-        
-        def on_error(ws, error):
-            print(error)
-        
-        def on_close(ws, close_status_code, close_msg):
-            print("### closed ###")
-        
-        def on_open(ws):
-            print("Opened connection")
-            msg = {"channel":"option_trades","msg_type":"join"}
-            ws.send(json.dumps(msg))
-        
-        if __name__ == "__main__":
-            websocket.enableTrace(False)
-            ws = websocket.WebSocketApp("wss://api.unusualwhales.com/socket?token=<YOUR_TOKEN>",
-                                      on_open=on_open,
-                                      on_message=on_message,
-                                      on_error=on_error,
-                                      on_close=on_close)
-        
-            ws.run_forever(dispatcher=rel, reconnect=5)  # Set dispatcher to automatic reconnection, 5 second reconnect delay if connection closed unexpectedly
-            rel.signal(2, rel.abort)  # Keyboard Interrupt
-            rel.dispatch()
-        
-        
-        ## Historic data
-        To download/access historic data, use the endpoint [/api/option-trades/full-tape](https://api.unusualwhales.com/docs#/operations/PublicApi.OptionTradeController.full_tape)
-      operationId: PublicApi.SocketController.channels
-      parameters: []
-      responses: {}
-      summary: WebSocket channels
-      tags:
-        - websocket
-  /api/socket/contract_screener:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channel `contract_screener`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        The data on this channel is the exact same data shown on [https://unusualwhales.com/options-screener](https://unusualwhales.com/options-screener).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream: `contract_screener` for live hot-option-contract snapshots (Greeks, side volumes, OI growth indicators).
-        
-        Payload format:
-        
-        ```
-        [
-          "contract_screener",
-          {
-            "option_symbol": "WMT260501P00126000",
-            "tape_time": "2026-04-27T14:27:56Z",
-            "volume": 498,
-            "open_interest": 536,
-            "prev_oi": 349,
-            "trades": 143,
-            "premium": "32830.00",
-            "ask_side_volume": 231,
-            "bid_side_volume": 190,
-            "neutral_volume": 0,
-            "floor_volume": 50,
-            "high": "0.76",
-            "low": "0.51",
-            "open": "0.53",
-            "close": "0.75",
-            "iv": "0.3222611630685708",
-            "bid": "0.73",
-            "ask": "0.75",
-            "multileg_volume": 10,
-            "avg_price": "0.6592369477911646586345381529",
-            "mid_volume": 77,
-            "sweep_volume": 2,
-            "cross_volume": 0,
-            "stock_multi_leg_volume": 0,
-            "days_of_oi_increases": 3,
-            "days_of_vol_greater_than_oi": 0,
-            "chain_prev_close": "0.55",
-            "delta": "-0.2759145792070713",
-            "gamma": "0.0771084404181128",
-            "theta": "-0.180959140636331",
-            "vega": "0.04495190198751509",
-            "is_new": false,
-            "ask_side_perc_7_day": "0.750000",
-            "bid_side_perc_7_day": "0.250000"
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        Each message is a snapshot of a single option contract that's currently active. Streamed continuously throughout the session.
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `option_symbol` | string | OSI option chain id. |
-        | `tape_time` | ISO 8601 string | Snapshot time, UTC. |
-        | `volume` | int | Session volume on the contract. |
-        | `open_interest` | int | Open interest as of `tape_time`. |
-        | `prev_oi` | int | Open interest at the previous session close. Compare with `open_interest` to detect OI growth. |
-        | `trades` | int | Number of distinct trades in the session. |
-        | `premium` | decimal string | Total dollar premium traded today. |
-        | `ask_side_volume`, `bid_side_volume`, `neutral_volume` | int | Volume broken out by side classification. |
-        | `mid_volume` | int | Volume executed at the NBBO mid. |
-        | `floor_volume`, `sweep_volume`, `cross_volume`, `multileg_volume`, `stock_multi_leg_volume` | int | Volume by trade kind. |
-        | `high` / `low` / `open` / `close` | decimal string | Session OHLC for this contract. |
-        | `avg_price` | decimal string | Volume-weighted average trade price. |
-        | `bid` / `ask` | decimal string | NBBO at `tape_time`. |
-        | `iv` | decimal string \| null | Implied volatility at `tape_time`. |
-        | `delta` / `gamma` / `theta` / `vega` | decimal string \| null | Greeks at `tape_time`. |
-        | `chain_prev_close` | decimal string \| null | Closing price of the contract at the previous session close. |
-        | `days_of_oi_increases` | int | Consecutive sessions where OI increased. |
-        | `days_of_vol_greater_than_oi` | int | Consecutive sessions where session volume exceeded OI. |
-        | `is_new` | bool | `true` for newly listed contracts. |
-        | `ask_side_perc_7_day` / `bid_side_perc_7_day` | decimal string \| null | Fraction of the last 7 trading days' volume that printed on the ask side / bid side. |
-      operationId: PublicApi.SocketController.contract_screener
-      parameters: []
-      responses: {}
-      summary: Contract screener
-      tags:
-        - websocket
-  /api/socket/custom_alerts:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channel `custom_alerts`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        Unlike the other websocket channels, `custom_alerts` is a **per-user** stream. You only receive notifications that match the alert configurations on the Unusual Whales account that owns the API token used to connect. Configure alerts on [https://unusualwhales.com/notifications](https://unusualwhales.com/notifications); every notification fired against your account is also delivered on this channel.
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel: `custom_alerts`.
-        
-        Payload format:
-        
-        ```
-        [
-          "custom_alerts",
-          {
-            "name": "Aggressive ask-side flow on AAPL",
-            "noti_type": "flow_alerts",
-            "user_noti_config_id": "f80a7f23-2cf6-4bc2-b7cd-2cb13e7a9a80",
-            "user_id": "0d5b0a13-b9d8-4f3b-8a4f-7c6c9a9a1b40",
-            "symbol": "AAPL",
-            "symbol_type": "stock",
-            "tape_time": "2026-04-27T14:32:11Z",
-            "meta": {}
-          }
-        ]
-        ```
-        
-        `meta` is a free-form object whose shape depends on `noti_type`.
-        
-        ### Field reference
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `name` | string | The alert configuration's display name. |
-        | `noti_type` | string | The kind of alert that fired (e.g. `"flow_alerts"`, `"price_alert"`, `"news"`). Determines the shape of `meta`. |
-        | `user_noti_config_id` | uuid string | Identifier of the alert configuration that produced this notification. Use this to group alerts by the rule that fired them. |
-        | `user_id` | uuid string | Account that received the alert (always the account associated with the API token). |
-        | `symbol` | string \| null | Symbol the alert is about, if applicable. |
-        | `symbol_type` | `"stock"` \| `"option_chain"` \| null | Tells you how to interpret `symbol`. |
-        | `tape_time` | ISO 8601 string | Time the alert fired, UTC. |
-        | `meta` | object | Free-form payload whose shape depends on `noti_type`. |
-      operationId: PublicApi.SocketController.custom_alerts
-      parameters: []
-      responses: {}
-      summary: Custom alerts
-      tags:
-        - websocket
-  /api/socket/flow_alerts:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channel `flow-alerts`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream: `flow-alerts` for all flow alerts.
-        
-        Payload format:
-        
-        ```
-        [
-          "flow-alerts",
-          {
-            "rule_id": "5ce5ec11-087c-4c00-b164-08106b015856",
-            "rule_name": "RepeatedHitsDescendingFill",
-            "ticker": "DIA",
-            "option_chain": "DIA241018C00415000",
-            "underlying_price": 415.981,
-            "volume": 106,
-            "total_size": 50,
-            "total_premium": 36466,
-            "total_ask_side_prem": 36466,
-            "total_bid_side_prem": 0,
-            "start_time": 1726670212648,
-            "end_time": 1726670212748,
-            "url": "",
-            "price": 7.3,
-            "has_multileg": false,
-            "has_sweep": false,
-            "has_floor": false,
-            "open_interest": 575,
-            "all_opening_trades": false,
-            "id": "29ed5829-e4ce-4934-876b-51985d2f9b70",
-            "has_singleleg": true,
-            "volume_oi_ratio": 0,
-            "trade_ids": [
-              "417f0cd6-09ae-4d43-8542-38557bb713aa",
-              "4af4c646-4b21-4a27-8326-db7b0698d3d8",
-              "74ddcd55-dcb3-4543-a488-16ee7ca91d45",
-              "4ec49859-74a2-4d32-9911-ea329dd77326",
-              "e164da3a-a6aa-41d9-a948-c17817453a21",
-              "b0d98eeb-1429-4494-9dcc-8d5e7eb46f7d",
-              "81b1dcad-f3f6-48a2-bf51-0bfd362ad372"
-            ],
-            "trade_count": 7,
-            "expiry_count": 1,
-            "executed_at": 1726670212748,
-            "ask_vol": 52,
-            "bid_vol": 49,
-            "no_side_vol": 0,
-            "mid_vol": 5,
-            "multi_vol": 0,
-            "stock_multi_vol": 0,
-            "upstream_condition_details": [
-              "auto",
-              "slan"
-            ],
-            "exchanges": [
-              "XCBO",
-              "MPRL"
-            ],
-            "bid": "7.15",
-            "ask": "7.3",
-            "iv": 0.2543,
-            "delta": 0.4821,
-            "gamma": 0.0125,
-            "theta": -0.0342,
-            "vega": 0.1187,
-            "rho": 0.0456,
-            "theo": 7.28
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        A flow alert is an aggregate of one or more individual `option_trades` that matched a rule (sweep, repeated hits, etc.). Use `trade_ids` to look up the underlying option trades.
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `id` | uuid string | Unique alert identifier. |
-        | `rule_id` | uuid string | Identifier of the rule that produced the alert. |
-        | `rule_name` | string \| null | Human-readable rule name (e.g. `"RepeatedHitsDescendingFill"`). May be null if the rule definition is not present. |
-        | `ticker` | string | Underlying ticker. |
-        | `option_chain` | string | OSI option chain id matched by the alert. |
-        | `underlying_price` | float | Spot price of the underlying at `end_time`. |
-        | `volume` | int | Aggregate session volume on the contract at `end_time`. |
-        | `total_size` | int | Sum of `size` across the trades in this alert. |
-        | `total_premium` | float | Sum of `premium` across the trades in this alert. |
-        | `total_ask_side_prem` / `total_bid_side_prem` | float | Premium broken out by side classification at trade time. |
-        | `start_time` / `end_time` | int (ms) | First and last trade timestamps included in the alert (unix epoch milliseconds). |
-        | `executed_at` | int (ms) | Same as `end_time` (kept for backwards compatibility). |
-        | `price` | float | Last trade price in the aggregation window. |
-        | `bid` / `ask` | decimal string | NBBO at `end_time`. |
-        | `open_interest` | int | Open interest on the contract as of the most recent close. |
-        | `volume_oi_ratio` | float | `volume / open_interest`. `0` if `open_interest` is `0`. |
-        | `has_sweep` / `has_floor` / `has_singleleg` / `has_multileg` | bool | True if at least one matching trade is of that kind. |
-        | `all_opening_trades` | bool | True if every matching trade looks like an opening trade (price near ask). |
-        | `trade_ids` | string[] | UUIDs of the underlying `option_trades`; cross-reference against the `option_trades` channel or the full-tape endpoint. |
-        | `trade_count` | int | `length(trade_ids)`. |
-        | `expiry_count` | int | Number of distinct expiries spanned by the matching trades (almost always `1`). |
-        | `ask_vol` / `bid_vol` / `mid_vol` / `no_side_vol` | int | Aggregate volume by side classification across the trades. |
-        | `multi_vol` / `stock_multi_vol` | int | Multi-leg / stock-combo volume across the trades. |
-        | `upstream_condition_details` | string[] | Union of upstream condition codes (`"slan"`, `"auto"`, ...) seen across the trades. |
-        | `exchanges` | string[] | OPRA exchanges that printed the matching trades. |
-        | `url` | string | Deep link to the alert on unusualwhales.com (may be empty). |
-        | `iv` | float \| null | Size-weighted implied volatility across the trades in the alert. `null` when unavailable. |
-        | `delta` | float \| null | Size-weighted delta across the trades in the alert. `null` when unavailable. |
-        | `gamma` | float \| null | Size-weighted gamma across the trades in the alert. `null` when unavailable. |
-        | `theta` | float \| null | Size-weighted theta across the trades in the alert. `null` when unavailable. |
-        | `vega` | float \| null | Size-weighted vega across the trades in the alert. `null` when unavailable. |
-        | `rho` | float \| null | Size-weighted rho across the trades in the alert. `null` when unavailable. |
-        | `theo` | float \| null | Size-weighted theoretical option price across the trades in the alert. `null` when unavailable. |
-      operationId: PublicApi.SocketController.flow_alerts
-      parameters: []
-      responses: {}
-      summary: Flow alerts
-      tags:
-        - websocket
-  /api/socket/futures_blocks:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for the websocket channels `futures_blocks` and `futures_blocks:<SYMBOL>`.
-        The channels are available on the Advanced API tier, or with the `futures` add-on. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream, for example `futures_blocks:ESZ6` for block trades in `ESZ6`.
-        Omit the symbol suffix (`futures_blocks`) to receive block trades in every contract and strategy.
-        
-        Each message carries one CME block trade in a futures contract or in a multi-leg futures strategy.
-        CME publishes a block trade after it executes: `executed_at` is when the trade executed and
-        `reported_at` is when CME reported it.
-        
-        ### Delivery characteristics
-        
-        - **A block trade can be sent more than once.** CME reports a block with the action `new`, and
-          reports it again with `update` when the block changes or `delete` when CME removes it. The
-          newest message for a block replaces the earlier ones. Identify a block by `trade_id`,
-          `exchange` and `trade_date` together, because CME reuses a `trade_id` in later sessions.
-          A repeated report, or one older than the last message sent for the block, is not sent.
-        - **A multi-leg trade arrives as one message.** For a multi-leg (`MLEG`) block the `legs` array
-          lists the legs. CME also reports each leg as a separate trade, and the channel does not send
-          those.
-        - **`futures_blocks:<SYMBOL>` matches `sym` exactly, and the symbol is case-sensitive.** A
-          multi-leg block goes to the channel of its strategy symbol, such as `futures_blocks:SR3:GN`,
-          not to the channels of its leg contracts.
-        - **Only futures and multi-leg blocks are sent.** `sec_type` is `FUT` or `MLEG`. Block trades in
-          options on futures are not sent on this channel.
-        - **The channel sends nothing when you join.** To load earlier block trades, call
-          [`/futures/:contract/trades`](https://api.unusualwhales.com/docs/operations/PublicApi.FuturesController.trades)
-          or [`/futures/flow`](https://api.unusualwhales.com/docs/operations/PublicApi.FuturesController.flow)
-          with `blocks_only=true`.
-        - **Joining without access returns an error.** Without the Advanced API tier or the `futures`
-          add-on, a join is answered with an `{"error": "..."}` frame and the connection stays open.
-        
-        Payload format for a single contract:
-        
-        ```
-        [
-          "futures_blocks:ESZ6",
-          {
-            "sym": "ESZ6",
-            "product": "ES",
-            "exchange": "XCME",
-            "trade_date": "2026-09-18",
-            "executed_at": 1789741867000,
-            "reported_at": 1789741912000,
-            "price": "6612.25",
-            "qty": "250",
-            "sec_type": "FUT",
-            "action": "new",
-            "trade_id": 84213907,
-            "strategy_link_id": null,
-            "legs": [],
-            "quote_bid": "6612.00",
-            "quote_ask": "6612.25",
-            "quote_ts": 1789741866950,
-            "is_block": true
-          }
-        ]
-        ```
-        
-        Payload format for a multi-leg strategy:
-        
-        ```
-        [
-          "futures_blocks",
-          {
-            "sym": "SR3:GN",
-            "product": "",
-            "exchange": "XCME",
-            "trade_date": "2026-09-18",
-            "executed_at": 1789742100000,
-            "reported_at": 1789742160000,
-            "price": null,
-            "qty": "2500",
-            "sec_type": "MLEG",
-            "action": "new",
-            "trade_id": 22693914,
-            "strategy_link_id": 22693914,
-            "legs": [
-              {
-                "sym": "SR3Z6 C9606",
-                "price": "0.12",
-                "qty": "2500",
-                "sec_type": "OOF",
-                "leg_side": "BUY",
-                "ratio_qty": "1"
-              }
-            ],
-            "quote_bid": null,
-            "quote_ask": null,
-            "quote_ts": null,
-            "is_block": true
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        `price`, `qty` and the leg prices and quantities are decimal strings with at most 8 decimal places.
-        Timestamps are Unix timestamps in milliseconds.
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `sym` | string | CME Globex symbol of the contract, such as `ESZ6`, or of the strategy for a multi-leg trade, such as `SR3:GN`. Same as the `:` suffix on the keyed channel name. |
-        | `product` | string | Globex product root of the contract, such as `ES` or `ZN`. Empty string for multi-leg trades and for contracts whose root is not known yet. |
-        | `exchange` | string | Exchange MIC, such as `XCME` or `XCBT`. Empty string when unavailable. |
-        | `trade_date` | string | CME trade date in `YYYY-MM-DD` format. |
-        | `executed_at` | int | Time the trade executed. |
-        | `reported_at` | int | Time CME reported the block trade. |
-        | `price` | decimal string \| null | Trade price. `null` when CME reports no price, which is the case for multi-leg trades. Their prices are on the legs. |
-        | `qty` | decimal string | Traded quantity. |
-        | `sec_type` | string | `FUT` for a futures contract, `MLEG` for a multi-leg strategy. |
-        | `action` | string | `new`, `update` or `delete`. |
-        | `trade_id` | int | CME trade ID. Unique only together with `exchange` and `trade_date`. |
-        | `strategy_link_id` | int \| null | CME strategy link ID. `null` when CME sends none. When present, it equals `trade_id`. |
-        | `legs` | object[] | The legs of a multi-leg trade, described below. Empty for a single contract. |
-        | `quote_bid` | decimal string \| null | Best bid recorded with the contract's last regular (non-block) trade at or before `reported_at`, from at most 3 days earlier. `null` for multi-leg trades, for `delete` messages, and when there is no such trade. |
-        | `quote_ask` | decimal string \| null | Best ask recorded with the same trade as `quote_bid`. `null` in the same cases. |
-        | `quote_ts` | int \| null | Time that regular trade executed. `null` in the same cases. |
-        | `is_block` | boolean | Always `true`. The REST futures trade endpoints carry the same field to tell block trades from regular prints. |
-        
-        Each entry of `legs`:
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `sym` | string | CME Globex symbol of the leg, such as `SR3Z6 C9606`. |
-        | `price` | decimal string \| null | Leg price. `null` when CME sends none. |
-        | `qty` | decimal string | Leg quantity. |
-        | `sec_type` | string | Security type of the leg as CME reports it, such as `FUT` or `OOF` (option on a future). |
-        | `leg_side` | string \| null | Side of the leg as CME reports it, such as `BUY`. `null` when CME sends none. |
-        | `ratio_qty` | string \| null | Ratio quantity of the leg within the strategy, such as `1`. `null` when CME sends none. |
-      operationId: PublicApi.SocketController.futures_blocks
-      parameters: []
-      responses: {}
-      summary: Futures block trades
-      tags:
-        - websocket
-  /api/socket/gex:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channels `gex`, `gex:<TICKER>`, `gex_strike`, `gex_strike:<TICKER>`, `gex_strike_expiry`, and `gex_strike_expiry:<TICKER>`.
-        Websocket access for personal use is only available through the[Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream, for example `gex:SPY` for live GEX updates for SPY, `gex_strike:SPY` for strike-level GEX data, or `gex_strike_expiry:SPY` for strike and expiry level GEX data. Omit the ticker suffix to receive the corresponding updates for every ticker.
-        
-        If you are connecting to multiple ticker specific GEX channels and just want updates for all tickers, connect only to the corresponding global channel: `gex`, `gex_strike`, or `gex_strike_expiry`.
-        
-        Payload format:
-        
-        Format for `gex:<TICKER>`:
-        ```
-        [
-          "gex:SPY",
-          {
-            "ticker": "SPY",
-            "timestamp": 1726670396000,
-            "gamma_per_one_percent_move_oi": "-262444980.31",
-            "delta_per_one_percent_move_oi": "",
-            "charm_per_one_percent_move_oi": "-1677926539943.05",
-            "vanna_per_one_percent_move_oi": "2842602508.57",
-            "price": "562.86",
-            "gamma_per_one_percent_move_vol": "-934307209.58",
-            "delta_per_one_percent_move_vol": "",
-            "charm_per_one_percent_move_vol": "-556207588704.10",
-            "vanna_per_one_percent_move_vol": "128814703.59",
-            "gamma_per_one_percent_move_dir": "-9372185.61",
-            "charm_per_one_percent_move_dir": "-2055997560.50",
-            "vanna_per_one_percent_move_dir": "-6220855.09"
-          }
-        ]
-        ```
-        
-        Format for `gex_strike:<TICKER>`:
-        ```
-        [
-          "gex_strike:SPY",
-          {
-            "ticker": "SPY",
-            "timestamp": 1726670426000,
-            "call_delta_oi": "0.4521",
-            "put_delta_oi": "-0.3812",
-            "call_gamma_oi": "174792.59",
-            "put_gamma_oi": "-1172037.66",
-            "call_charm_oi": "85658181.72",
-            "put_charm_oi": "-315259003.37",
-            "call_vanna_oi": "-6103.51",
-            "put_vanna_oi": "1337727.64",
-            "call_delta_vol": "0.0413",
-            "put_delta_vol": "-0.0288",
-            "call_gamma_vol": "15596.81",
-            "put_gamma_vol": "-236.69",
-            "call_charm_vol": "-326871.58",
-            "put_charm_vol": "-68457.78",
-            "call_vanna_vol": "2063.13",
-            "put_vanna_vol": "845.06",
-            "strike": "290",
-            "price": "562.96",
-            "call_gamma_ask_vol": "-4064.62",
-            "call_gamma_bid_vol": "11532.18",
-            "put_gamma_ask_vol": "-140.95",
-            "put_gamma_bid_vol": "95.73",
-            "call_charm_ask_vol": "85184.72",
-            "call_charm_bid_vol": "-241686.87",
-            "put_charm_ask_vol": "-59412.37",
-            "put_charm_bid_vol": "9045.42",
-            "call_vanna_ask_vol": "-537.66",
-            "call_vanna_bid_vol": "1525.46",
-            "put_vanna_ask_vol": "523.79",
-            "put_vanna_bid_vol": "-321.27"
-          }
-        ]
-        ```
-        
-        Format for `gex_strike_expiry:<TICKER>`:
-        ```
-        [
-          "gex_strike_expiry:SPY",
-          {
-            "ticker": "SPY",
-            "expiry": "2025-01-24",
-            "timestamp": 1726670426000,
-            "call_delta_oi": "0.4521",
-            "put_delta_oi": "-0.3812",
-            "call_gamma_oi": "174792.59",
-            "put_gamma_oi": "-1172037.66",
-            "call_charm_oi": "85658181.72",
-            "put_charm_oi": "-315259003.37",
-            "call_vanna_oi": "-6103.51",
-            "put_vanna_oi": "1337727.64",
-            "call_delta_vol": "0.0413",
-            "put_delta_vol": "-0.0288",
-            "call_gamma_vol": "15596.81",
-            "put_gamma_vol": "-236.69",
-            "call_charm_vol": "-326871.58",
-            "put_charm_vol": "-68457.78",
-            "call_vanna_vol": "2063.13",
-            "put_vanna_vol": "845.06",
-            "strike": "290",
-            "price": "562.96",
-            "call_gamma_ask_vol": "-4064.62",
-            "call_gamma_bid_vol": "11532.18",
-            "put_gamma_ask_vol": "-140.95",
-            "put_gamma_bid_vol": "95.73",
-            "call_charm_ask_vol": "85184.72",
-            "call_charm_bid_vol": "-241686.87",
-            "put_charm_ask_vol": "-59412.37",
-            "put_charm_bid_vol": "9045.42",
-            "call_vanna_ask_vol": "-537.66",
-            "call_vanna_bid_vol": "1525.46",
-            "put_vanna_ask_vol": "523.79",
-            "put_vanna_bid_vol": "-321.27"
-          }
-        ]
-        ```
-        
-        ### Field reference: `gex:<TICKER>` (ticker-aggregate)
-        
-        Per-ticker totals of dealer Greek exposures, expressed as the dollar move per 1% move in the underlying.
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `ticker` | string | |
-        | `timestamp` | int (ms) | Calculation time, unix epoch milliseconds. |
-        | `price` | decimal string | Underlying spot at `timestamp`. |
-        | `gamma_per_one_percent_move_oi` | decimal | Dollar gamma per 1% spot move, weighted by open interest. |
-        | `delta_per_one_percent_move_oi` | decimal | Dollar delta per 1% spot move, weighted by open interest. |
-        | `charm_per_one_percent_move_oi` | decimal | Dollar charm (delta decay) per 1% spot move, weighted by open interest. |
-        | `vanna_per_one_percent_move_oi` | decimal | Dollar vanna (delta sensitivity to vol) per 1% spot move, weighted by open interest. |
-        | `gamma_per_one_percent_move_vol`, `delta_per_one_percent_move_vol`, `charm_per_one_percent_move_vol`, `vanna_per_one_percent_move_vol` | decimal | Same metrics weighted by session volume rather than open interest. |
-        | `gamma_per_one_percent_move_dir`, `charm_per_one_percent_move_dir`, `vanna_per_one_percent_move_dir` | decimal | Directional (bid/ask classified) volume-weighted variants. |
-        
-        ### Field reference: `gex_strike:<TICKER>` and `gex_strike_expiry:<TICKER>`
-        
-        Greek exposures broken out by strike (and additionally by expiry for the `_expiry` channel). All numeric Greek fields are decimal strings. Calls and puts are reported separately; sum them to get net exposure at the strike.
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `ticker` | string | |
-        | `strike` | decimal string | Strike price. |
-        | `expiry` | date string `YYYY-MM-DD` | Only on `gex_strike_expiry`. |
-        | `timestamp` | int (ms) | Calculation time, unix epoch milliseconds. |
-        | `price` | decimal string | Underlying spot at `timestamp`. |
-        | `call_delta_oi` / `put_delta_oi` | decimal | Delta exposure from calls / puts at this strike, weighted by open interest. |
-        | `call_gamma_oi` / `put_gamma_oi` | decimal | Gamma exposure from calls / puts at this strike, weighted by open interest. |
-        | `call_charm_oi` / `put_charm_oi` | decimal | Charm exposure from calls / puts at this strike, weighted by open interest. |
-        | `call_vanna_oi` / `put_vanna_oi` | decimal | Vanna exposure from calls / puts at this strike, weighted by open interest. |
-        | `call_delta_vol`, `put_delta_vol`, `call_gamma_vol`, `put_gamma_vol`, `call_charm_vol`, `put_charm_vol`, `call_vanna_vol`, `put_vanna_vol` | decimal | Same metrics weighted by session volume rather than open interest. |
-        | `call_gamma_ask_vol` / `call_gamma_bid_vol` / `put_gamma_ask_vol` / `put_gamma_bid_vol` | decimal | Gamma exposure attributed to ask-side (assumed dealer-sold) and bid-side (assumed dealer-bought) flow at this strike. |
-        | `call_charm_ask_vol`, `call_charm_bid_vol`, `put_charm_ask_vol`, `put_charm_bid_vol` | decimal | Charm exposure split by side. |
-        | `call_vanna_ask_vol`, `call_vanna_bid_vol`, `put_vanna_ask_vol`, `put_vanna_bid_vol` | decimal | Vanna exposure split by side. |
-      operationId: PublicApi.SocketController.gex
-      parameters: []
-      responses: {}
-      summary: GEX
-      tags:
-        - websocket
-  /api/socket/greek_flow:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for the websocket channels `greek_flow` and `greek_flow:<TICKER>`.
-        For the same data broken out by option expiry, see [`greek_flow_expiry`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.greek_flow_expiry).
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream, for example `greek_flow:SPY` for SPY's delta and
-        vega flow. Omit the ticker suffix to receive updates for every ticker.
-        
-        Each message carries the delta and vega exposure of the option trades that printed for one
-        ticker in one minute and arrived since the previous message for that minute; see Delivery
-        characteristics below for how to sum them. `total_*` fields carry the greek's own sign - for
-        delta that means calls contribute positive and puts negative - so they are net greek exposure
-        regardless of who was the aggressor. `dir_*` fields instead sign the magnitude by trade
-        sentiment: for delta, bullish trades (bought calls, sold puts) positive and bearish negative;
-        for vega, buys (ask side) positive and sells (bid side) negative. Mid/no-side trades are
-        excluded from every `dir_*` field.
-        
-        ### Delivery characteristics
-        
-        Read these before writing a client, they are not obvious from the payload:
-        
-        - **Each message is a partial sum, not a running total.** A minute's bucket is flushed
-          roughly once per second as trades arrive, so to get that minute's total you must **add
-          together every message sharing the same `ticker` and `timestamp`**. Grouping on `timestamp`
-          alone is wrong on the global channel, where every ticker's messages carry that same minute.
-          A client that overwrites on the key instead of adding will silently under-report.
-        - Because of that, a dropped frame does not just delay a value, it changes your sum. Read
-          from the socket promptly: a slow consumer is not disconnected, but frames it fails to keep
-          up with are dropped.
-        - **Updates are trade-driven, not scheduled.** A ticker with no option trades in the window
-          produces no message at all - there is no per-minute tick and no zero-valued heartbeat. A
-          minute bucket is also never announced as closed: messages carrying a given `timestamp`
-          simply stop arriving.
-        - The channels are keyed by the **root** ticker: weekly/PM index series are folded into their
-          root (`SPXW` under `SPX`, `NDXP` under `NDX`, `VIXW` under `VIX`, `RUTW` under `RUT`).
-          Joining `greek_flow:SPXW` is acknowledged as, and streams, `greek_flow:SPX`.
-        - All flow values are decimal strings, matching the REST endpoint below.
-        
-        This is the live counterpart of [`/stock/:ticker/greek-flow`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.greek_flow),
-        which returns the same fields with the same encodings. Note the REST endpoint serves each
-        minute's **accumulated total**, while this channel serves the per-second partials that add up
-        to it.
-        
-        Payload format for `greek_flow:<TICKER>`:
-        
-        ```
-        [
-          "greek_flow:SPY",
-          {
-            "ticker": "SPY",
-            "timestamp": "2026-09-04T15:46:00Z",
-            "total_delta_flow": "-21257.36",
-            "dir_delta_flow": "-43593.96",
-            "otm_total_delta_flow": "-28564.02",
-            "otm_dir_delta_flow": "14947.51",
-            "total_vega_flow": "350944.58",
-            "dir_vega_flow": "31243.04",
-            "otm_total_vega_flow": "101745.64",
-            "otm_dir_vega_flow": "11421.03",
-            "transactions": 1188,
-            "volume": 12348
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        | Field                  | Type    | Description |
-        |------------------------|---------|-------------|
-        | `ticker`               | string  | Root ticker of the underlying. |
-        | `timestamp`            | string  | The minute bucket these trades fall into, ISO 8601 UTC. |
-        | `total_delta_flow`     | string  | Sum of signed delta exposure: `delta * contracts * 100`. |
-        | `dir_delta_flow`       | string  | Delta magnitude signed by sentiment: positive for bullish trades (buy call / sell put), negative for bearish. |
-        | `otm_total_delta_flow` | string  | `total_delta_flow` counting only trades identified as out of the money. |
-        | `otm_dir_delta_flow`   | string  | `dir_delta_flow` counting only trades identified as out of the money. |
-        | `total_vega_flow`      | string  | Sum of vega exposure: `vega * contracts * 100`. |
-        | `dir_vega_flow`        | string  | Vega magnitude signed by side: positive for buys (ask side), negative for sells (bid side). |
-        | `otm_total_vega_flow`  | string  | `total_vega_flow` counting only trades identified as out of the money. |
-        | `otm_dir_vega_flow`    | string  | `dir_vega_flow` counting only trades identified as out of the money. |
-        | `transactions`         | integer | Number of option trades aggregated into this message. A trade whose delta or vega was unavailable still counts here and in `volume` but adds zero to that greek's flow fields. |
-        | `volume`               | integer | Total contracts traded across the aggregated trades. |
-      operationId: PublicApi.SocketController.greek_flow
-      parameters: []
-      responses: {}
-      summary: Greek flow
-      tags:
-        - websocket
-  /api/socket/greek_flow_expiry:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for the websocket channels `greek_flow_expiry` and
-        `greek_flow_expiry:<TICKER>`.
-        For the same data aggregated across all expiries, see [`greek_flow`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.greek_flow).
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream, for example `greek_flow_expiry:SPY` for SPY's
-        delta and vega flow broken out per option expiry. Omit the ticker suffix to receive updates
-        for every ticker.
-        
-        Each message carries the delta and vega exposure of the option trades that printed for one
-        ticker, in one minute, **for a single option expiry**, and arrived since the previous message
-        for that minute and expiry; see Delivery characteristics below for how to sum them. Both
-        channels are built from the same option trades, so once every message for a minute has
-        arrived, that minute's expiries sum to the same minute on the
-        [`greek_flow`](https://api.unusualwhales.com/docs/operations/PublicApi.SocketController.greek_flow)
-        channel. `total_*` fields carry the greek's own sign - for delta that means calls contribute
-        positive and puts negative - so they are net greek exposure regardless of who was the
-        aggressor. `dir_*` fields instead sign the magnitude by trade sentiment: for delta, bullish
-        trades (bought calls, sold puts) positive and bearish negative; for vega, buys (ask side)
-        positive and sells (bid side) negative. Mid/no-side trades are excluded from every `dir_*`
-        field.
-        
-        ### Delivery characteristics
-        
-        Read these before writing a client, they are not obvious from the payload:
-        
-        - **Each message is a partial sum, not a running total.** A minute's bucket is flushed
-          roughly once per second as trades arrive, so to get that minute's total for one expiry you
-          must **add together every message sharing the same `ticker`, `timestamp` and `expiry`**.
-          Grouping on `timestamp` alone is wrong even on the per-ticker channel, since every expiry
-          that traded carries that same minute; on the global channel every ticker does too. A client
-          that overwrites on the key instead of adding will silently under-report.
-        - Because of that, a dropped frame does not just delay a value, it changes your sum. Read
-          from the socket promptly: a slow consumer is not disconnected, but frames it fails to keep
-          up with are dropped.
-        - **Updates are trade-driven, not scheduled.** An expiry with no option trades in the window
-          produces no message at all - there is no per-minute tick and no zero-valued heartbeat. A
-          minute bucket is also never announced as closed: messages carrying a given `timestamp`
-          simply stop arriving.
-        - **This channel carries considerably more messages than `greek_flow`** - one per expiry that
-          traded, rather than one per ticker.
-        - The channels are keyed by the **root** ticker: weekly/PM index series are folded into their
-          root (`SPXW` under `SPX`, `NDXP` under `NDX`, `VIXW` under `VIX`, `RUTW` under `RUT`).
-          Joining `greek_flow_expiry:SPXW` is acknowledged as, and streams, `greek_flow_expiry:SPX`.
-        - All flow values are decimal strings, matching the REST endpoint below.
-        
-        This is the live counterpart of [`/stock/:ticker/greek-flow/:expiry`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.greek_flow_expiry),
-        which returns the same fields with the same encodings. Note the REST endpoint serves each
-        minute's **accumulated total**, while this channel serves the per-second partials that add up
-        to it.
-        
-        Payload format for `greek_flow_expiry:<TICKER>`:
-        
-        ```
-        [
-          "greek_flow_expiry:SPY",
-          {
-            "ticker": "SPY",
-            "timestamp": "2026-09-04T15:46:00Z",
-            "expiry": "2026-10-16",
-            "total_delta_flow": "-21257.36",
-            "dir_delta_flow": "-43593.96",
-            "otm_total_delta_flow": "-28564.02",
-            "otm_dir_delta_flow": "14947.51",
-            "total_vega_flow": "350944.58",
-            "dir_vega_flow": "31243.04",
-            "otm_total_vega_flow": "101745.64",
-            "otm_dir_vega_flow": "11421.03",
-            "transactions": 77,
-            "volume": 4242
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        | Field                  | Type    | Description |
-        |------------------------|---------|-------------|
-        | `ticker`               | string  | Root ticker of the underlying. |
-        | `timestamp`            | string  | The minute bucket these trades fall into, ISO 8601 UTC. |
-        | `expiry`               | string  | The option expiry this bucket is broken out by, `YYYY-MM-DD`. |
-        | `total_delta_flow`     | string  | Sum of signed delta exposure: `delta * contracts * 100`. |
-        | `dir_delta_flow`       | string  | Delta magnitude signed by sentiment: positive for bullish trades (buy call / sell put), negative for bearish. |
-        | `otm_total_delta_flow` | string  | `total_delta_flow` counting only trades identified as out of the money. |
-        | `otm_dir_delta_flow`   | string  | `dir_delta_flow` counting only trades identified as out of the money. |
-        | `total_vega_flow`      | string  | Sum of vega exposure: `vega * contracts * 100`. |
-        | `dir_vega_flow`        | string  | Vega magnitude signed by side: positive for buys (ask side), negative for sells (bid side). |
-        | `otm_total_vega_flow`  | string  | `total_vega_flow` counting only trades identified as out of the money. |
-        | `otm_dir_vega_flow`    | string  | `dir_vega_flow` counting only trades identified as out of the money. |
-        | `transactions`         | integer | Number of option trades aggregated into this message. A trade whose delta or vega was unavailable still counts here and in `volume` but adds zero to that greek's flow fields. |
-        | `volume`               | integer | Total contracts traded across the aggregated trades. |
-      operationId: PublicApi.SocketController.greek_flow_expiry
-      parameters: []
-      responses: {}
-      summary: Greek flow by expiry
-      tags:
-        - websocket
-  /api/socket/greeks:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channels `greeks` and `greeks:<TICKER>`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream: `greeks` for every underlying at once,
-        or `greeks:SPY` for a single one.
-        
-        Both channels stream the live counterpart of [/api/stock/{ticker}/greeks](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.greeks),
-        with a different shape: the REST endpoint returns one row per strike for a single
-        expiry with `call_*`/`put_*` field pairs, while these channels stream **one message
-        per contract**, across all expiries, with a single set of greek fields plus
-        `option_type`. A message is emitted every time a contract's greeks are recalculated
-        and its theoretical price moved - for a busy underlying that is many messages per
-        second across the whole chain.
-        
-        Weekly/PM index series are folded into their canonical root on both channels:
-        `greeks:SPX` includes SPXW contracts (likewise VIXW under VIX, NDXP under NDX, RUTW
-        under RUT). The `ticker` field carries the canonical root; use `option_symbol` to
-        tell the series apart.
-        
-        Payload format:
-        
-        Format for `greeks:<TICKER>`:
-        
-        ```
-        [
-          "greeks:SPY",
-          {
-            "option_symbol": "SPY261218C00480000",
-            "ticker": "SPY",
-            "expiry": "2026-12-18",
-            "strike": "480",
-            "option_type": "call",
-            "timestamp": 1726670396000,
-            "volatility": 0.2543,
-            "delta": 0.5231,
-            "gamma": 0.0125,
-            "theta": -0.0821,
-            "vega": 1.2143,
-            "rho": 0.4312,
-            "theo": 38.5217,
-            "vanna": 0.1123,
-            "vomma": 2.3121,
-            "veta": -1.0212,
-            "speed": -0.0031,
-            "zomma": 0.0523,
-            "color": -0.0012,
-            "ultima": 3.1214,
-            "charm": -0.0214
-          }
-        ]
-        ```
-        
-        The global `greeks` channel streams the same per-contract object for every
-        underlying, tagged `greeks` (the `ticker` field distinguishes them):
-        
-        ```
-        [
-          "greeks",
-          {
-            "option_symbol": "AAPL261218C00250000",
-            "ticker": "AAPL",
-            "expiry": "2026-12-18",
-            "strike": "250",
-            "option_type": "call",
-            "timestamp": 1726670396000,
-            "volatility": 0.3121,
-            "delta": 0.4812,
-            "gamma": 0.0214,
-            "theta": -0.0712,
-            "vega": 0.8123,
-            "rho": 0.2145,
-            "theo": 14.2317,
-            "vanna": 0.0912,
-            "vomma": 1.7213,
-            "veta": -0.8121,
-            "speed": -0.0021,
-            "zomma": 0.0312,
-            "color": -0.0009,
-            "ultima": 2.1123,
-            "charm": -0.0118
-          }
-        ]
-        ```
-        
-        **The global `greeks` channel is a firehose.** Every contract of every optionable
-        underlying is repriced continuously, so this channel is in the same volume class as
-        `option_trades` and `gex_strike_expiry` - tens of thousands of messages per second
-        at peak. Prefer `greeks:<TICKER>` unless you genuinely need the whole chain, and if
-        you do subscribe globally, read the socket on a dedicated task and buffer/flush
-        rather than processing inline: a client that cannot keep up will have frames
-        dropped.
-        
-        Note that unlike the `gex` and `periscope` channels, the greek values on these
-        channels are JSON **numbers**, not decimal strings: they are floating point
-        quantities as computed, so you may see full double precision (e.g.
-        `0.30000000000000004`). Round on your side to whatever precision you display.
-        
-        Fields:
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `option_symbol` | string | OSI option symbol; the contract's primary identifier. Keeps the raw series root (e.g. `SPXW...` under `SPX`). |
-        | `ticker` | string | Canonical underlying root. On `greeks:<TICKER>` it matches the channel key; on the global `greeks` channel it identifies the underlying. |
-        | `expiry` | date string `YYYY-MM-DD` | Contract expiration. |
-        | `strike` | decimal string | Strike price. |
-        | `option_type` | string | `call` or `put`. |
-        | `timestamp` | int (ms) | Calculation time, unix epoch milliseconds. |
-        | `volatility` | number | Implied volatility. |
-        | `delta`, `gamma`, `theta`, `vega`, `rho` | number | First-order greeks. |
-        | `theo` | number | Theoretical price of the contract. |
-        | `vanna`, `vomma`, `veta`, `speed`, `zomma`, `color`, `ultima`, `charm` | number | Second-order greeks. |
-      operationId: PublicApi.SocketController.greeks
-      parameters: []
-      responses: {}
-      summary: Greeks
-      tags:
-        - websocket
-  /api/socket/interpolated_iv:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channels `interpolated_iv` and `interpolated_iv:<TICKER>`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream, for example `interpolated_iv:AAPL` for live interpolated IV updates for AAPL.
-        Omit the ticker suffix (`interpolated_iv`) to receive the updates for every ticker.
-        
-        This is the live counterpart of the [`/stock/:ticker/interpolated-iv`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.interpolated_iv) endpoint.
-        A ticker updates at most every ~5 seconds, with one message per horizon (1, 5, 7, 14, 30, 60, 90, 180, 365 trading days).
-        If a horizon lines up with a real option expiry the values are taken from that expiry (`is_exact: true`); otherwise they are
-        interpolated between the two surrounding expiries in total variance space (`is_exact: false`).
-        
-        Payload format:
-        
-        ```
-        [
-          "interpolated_iv:AAPL",
-          {
-            "ticker": "AAPL",
-            "date": "2026-08-20",
-            "days": 30,
-            "volatility": 0.299,
-            "implied_move": 12.345,
-            "implied_move_perc": 0.058,
-            "is_exact": false
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        | Field               | Type    | Description |
-        |---------------------|---------|-------------|
-        | `ticker`            | string  | Ticker of the underlying. |
-        | `date`              | string  | The trading date in `YYYY-MM-DD` format. |
-        | `days`              | integer | The horizon in trading days this entry is interpolated to. One of 1, 5, 7, 14, 30, 60, 90, 180, 365. |
-        | `volatility`        | number  | The interpolated implied volatility at this horizon, as a decimal (e.g. `0.299` = 29.9%). |
-        | `implied_move`      | number  | The expected absolute move of the underlying in dollars by this horizon. |
-        | `implied_move_perc` | number  | The expected move as a fraction of the underlying price by this horizon. |
-        | `is_exact`          | boolean | True if an actual option expiry matched this horizon exactly, false if the values were interpolated. |
-      operationId: PublicApi.SocketController.interpolated_iv
-      parameters: []
-      responses: {}
-      summary: Interpolated IV
-      tags:
-        - websocket
-  /api/socket/interval_flow:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channel `interval_flow`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        The data on this channel is the exact same data shown on [https://unusualwhales.com/ticker-interval-flow](https://unusualwhales.com/ticker-interval-flow).
-        
-        Ticker Interval flow shows you summary stats about option transactions for a given ticker in a 5min window. It shows the options volume, transactions count, greek exposure, net premium, implied move change and many more stats. This is very useful if you want to build an alerting system that alerts if there is a volume spike or some other sort of spike in a ticker in a short time frame.
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream: `interval_flow` for live per-interval option flow statistics. Each message carries a single ticker in its `ticker` field; subscribers receive updates for all tickers across the channel.
-        
-        Payload format:
-        
-        ```
-        [
-          "interval_flow",
-          {
-            "ticker": "CVNA",
-            "interval_type": "All",
-            "start_time": "2026-04-27T14:25:00Z",
-            "tape_time": "2026-04-27T14:27:54.391Z",
-            "call_vol": 76,
-            "put_vol": 155,
-            "transactions": 73,
-            "call_vol_ask_side": 38,
-            "call_vol_bid_side": 37,
-            "call_vol_neutral_side": 1,
-            "put_vol_ask_side": 28,
-            "put_vol_bid_side": 107,
-            "put_vol_neutral_side": 20,
-            "call_sweep_vol": 0,
-            "put_sweep_vol": 0,
-            "call_floor_vol": 0,
-            "put_floor_vol": 0,
-            "call_cross_vol": 0,
-            "put_cross_vol": 0,
-            "call_multi_vol": 22,
-            "put_multi_vol": 12,
-            "cum_net_call_delta": 200,
-            "cum_net_put_delta": -149,
-            "avg_dte": "4",
-            "avg_otm": "0.697458",
-            "avg_size": "1",
-            "avg_prem": "54",
-            "net_call_prem": 16424,
-            "net_put_prem": -10344,
-            "open": "407",
-            "close": "406.322",
-            "implied_move_perc_30d_open": 165,
-            "implied_move_perc_30d_close": 165,
-            "volatility_30d_open": 849,
-            "volatility_30d_close": 855,
-            "delta_flow": 1243,
-            "gamma_flow": 11,
-            "vega_flow": 6780,
-            "dir_delta_flow": 8,
-            "dir_gamma_flow": -38,
-            "dir_vega_flow": -892
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        Each message describes a 5-minute window of option flow for a single ticker. Two messages are emitted per ticker per interval, distinguished by `interval_type`: one rolls up all contracts, the other restricts to OTM contracts.
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `ticker` | string | Underlying ticker. |
-        | `interval_type` | `"All"` \| `"OtmOnly"` | `"All"` includes every contract; `"OtmOnly"` restricts to OTM. |
-        | `start_time` | ISO 8601 string | Start of the 5-minute window (UTC). |
-        | `tape_time` | ISO 8601 string | Time of the snapshot within the window. The same window may emit multiple messages as the window fills; only the latest is current. |
-        | `call_vol` / `put_vol` | int | Total call / put volume in the window. |
-        | `transactions` | int | Distinct option transactions in the window. |
-        | `call_vol_ask_side`, `call_vol_bid_side`, `call_vol_neutral_side` | int | Call volume by trade-side classification. |
-        | `put_vol_ask_side`, `put_vol_bid_side`, `put_vol_neutral_side` | int | Put volume by trade-side classification. |
-        | `call_sweep_vol` / `put_sweep_vol` | int | Volume tagged as sweep (multi-exchange print). |
-        | `call_floor_vol` / `put_floor_vol` | int | Volume tagged as floor trade. |
-        | `call_cross_vol` / `put_cross_vol` | int | Volume from cross trades. |
-        | `call_multi_vol` / `put_multi_vol` | int | Volume from multi-leg trades. |
-        | `cum_net_call_delta` / `cum_net_put_delta` | int | Session-cumulative net delta from calls / puts (signed by side). |
-        | `avg_dte` | decimal string \| null | Average days-to-expiration across the window's trades. |
-        | `avg_otm` | decimal string \| null | Average OTM percentage across the window. |
-        | `avg_size` | decimal string \| null | Average trade size in contracts. |
-        | `avg_prem` | decimal string \| null | Average per-trade premium in dollars. |
-        | `net_call_prem` / `net_put_prem` | int | Net call / put premium in the window (`ask_side - bid_side`), in dollars. |
-        | `open` / `close` | decimal string \| null | Underlying price at the start / end of the window. |
-        | `implied_move_perc_30d_open` / `implied_move_perc_30d_close` | int | 30-day implied move at window open / close, in basis points. |
-        | `volatility_30d_open` / `volatility_30d_close` | int | 30-day implied volatility at window open / close, in basis points. |
-        | `delta_flow` / `gamma_flow` / `vega_flow` | int | Absolute Greek flow in the window. |
-        | `dir_delta_flow` / `dir_gamma_flow` / `dir_vega_flow` | int | Directional (signed by side) Greek flow in the window. |
-      operationId: PublicApi.SocketController.interval_flow
-      parameters: []
-      responses: {}
-      summary: Ticker Interval flow
-      tags:
-        - websocket
-  /api/socket/iv_term_structure:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channels `iv_term_structure` and `iv_term_structure:<TICKER>`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream, for example `iv_term_structure:AAPL` for live term-structure updates for AAPL.
-        Omit the ticker suffix (`iv_term_structure`) to receive the updates for every ticker.
-        
-        Each message carries the ATM implied volatility and expected move for one real option expiry, the raw
-        per-expiry entries that the `interpolated_iv` channels interpolate onto fixed horizons. This is the live
-        counterpart of the [`/stock/:ticker/volatility/term-structure`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.implied_volatility_term_structure) endpoint.
-        A ticker updates at most every ~5 seconds, with one message per expiry whose values changed.
-        
-        Payload format:
-        
-        ```
-        [
-          "iv_term_structure:AAPL",
-          {
-            "ticker": "AAPL",
-            "date": "2026-08-20",
-            "expiry": "2026-09-18",
-            "volatility": 0.299,
-            "implied_move": 12.345,
-            "implied_move_perc": 0.058
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        | Field               | Type   | Description |
-        |---------------------|--------|-------------|
-        | `ticker`            | string | Ticker of the underlying. |
-        | `date`              | string | The trading date in `YYYY-MM-DD` format. |
-        | `expiry`            | string | The option expiry this entry belongs to, in `YYYY-MM-DD` format. |
-        | `volatility`        | number | The ATM implied volatility for this expiry, as a decimal (e.g. `0.299` = 29.9%). Average of the ATM call and put IVs. |
-        | `implied_move`      | number | The expected absolute move of the underlying in dollars by this expiry. |
-        | `implied_move_perc` | number | The expected move as a fraction of the underlying price by this expiry. |
-      operationId: PublicApi.SocketController.iv_term_structure
-      parameters: []
-      responses: {}
-      summary: IV term structure
-      tags:
-        - websocket
-  /api/socket/lit_trades:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channel `lit_trades`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream: `lit_trades` for all lit (exchange-based) trades.
-        
-        Payload format:
-        
-        ```
-        [
-          "lit_trades",
-          {
-            "symbol": "AAPL",
-            "price": "150.25",
-            "type": "lit",
-            "size": 100,
-            "volume": 1000,
-            "trade_settlement": "regular",
-            "trade_code": "opening_print",
-            "ext_hour_sold_codes": null,
-            "sale_cond_codes": "cross_trade",
-            "executed_at": "2024-09-22T14:30:00Z",
-            "trf_executed_at": null,
-            "nbbo_bid": "150.20",
-            "nbbo_ask": "150.25",
-            "nbbo_bid_quantity": 500,
-            "nbbo_ask_quantity": 800,
-            "sector": "Technology",
-            "next_earnings_date": "2024-10-25",
-            "avg30_volume": "75000000.0",
-            "issue_type": "Common Stock",
-            "marketcap": "2400000000000.0"
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `symbol` | string | Underlying ticker. |
-        | `price` | decimal string | Trade price. |
-        | `size` | int | Trade size in shares. |
-        | `volume` | int | Cumulative session volume on the symbol as of this trade. |
-        | `type` | `"lit"` | Always `"lit"` on this channel. |
-        | `trade_settlement` | string \| null | Settlement type, e.g. `"regular"`, `"cash"`, `"next_day"`, `"seller"`. |
-        | `trade_code` | string \| null | Special trade code such as `"opening_print"`, `"closing_print"`, `"odd_lot"`, etc. `null` for unflagged trades. |
-        | `ext_hour_sold_codes` | string \| null | Extended-hours indicator, e.g. `"extended_hours_trade"`. `null` during regular session. |
-        | `sale_cond_codes` | string \| null | Special sale condition, e.g. `"cross_trade"`, `"derivatively_priced"`. |
-        | `executed_at` | ISO 8601 string | Trade execution timestamp on the exchange (UTC). |
-        | `trf_executed_at` | ISO 8601 string \| null | When the print was reported to the TRF. |
-        | `nbbo_bid` / `nbbo_ask` | decimal string | NBBO at the time of the trade. |
-        | `nbbo_bid_quantity` / `nbbo_ask_quantity` | int | NBBO size on each side. |
-        | `sector` | string \| null | GICS-style sector of the underlying. |
-        | `issue_type` | string \| null | E.g. `"Common Stock"`, `"ETF"`, `"ADR"`. |
-        | `next_earnings_date` | date string `YYYY-MM-DD` \| null | Next scheduled earnings date for the underlying. |
-        | `avg30_volume` | decimal string \| null | Average daily share volume over the last 30 trading days. |
-        | `marketcap` | decimal string \| null | Market capitalization in dollars. |
-      operationId: PublicApi.SocketController.lit_trades
-      parameters: []
-      responses: {}
-      summary: Lit trades
-      tags:
-        - websocket
-  /api/socket/market_tide:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channels `market_tide` and `otm_market_tide`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream: `market_tide` for the live market-wide net call/put premium and volume aggregate. The OTM-only breakout is included in the same payload via the `otm_net_*` fields.
-        
-        Join `otm_market_tide` instead if you only need the OTM breakout. Every update is sent on
-        both channels with the same `timestamp`, and the `otm_market_tide` message carries the
-        `otm_net_*` values of `market_tide` under the names `net_volume`, `net_call_premium` and
-        `net_put_premium`. If you join both channels, you receive the OTM values twice.
-        
-        Payload format:
-        
-        ```
-        [
-          "market_tide",
-          {
-            "timestamp": "2026-04-27T14:27:54Z",
-            "net_volume": 991,
-            "net_call_premium": "488078.0",
-            "net_put_premium": "-218102.0",
-            "otm_net_volume": 1345,
-            "otm_net_call_premium": "272395.0",
-            "otm_net_put_premium": "-190694.0"
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        Aggregates roll up every option transaction across the market. `net_*` fields cover all options; `otm_net_*` fields are restricted to out-of-the-money contracts (where dealer hedging tends to dominate price action).
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `timestamp` | ISO 8601 string | Aggregation time, UTC. |
-        | `net_volume` | int | Net call volume minus net put volume across the entire market. |
-        | `net_call_premium` | decimal string | Net call premium (`ask_side - bid_side`) across all options, in dollars. |
-        | `net_put_premium` | decimal string | Net put premium (`ask_side - bid_side`) across all options, in dollars. |
-        | `otm_net_volume` | int | Same as `net_volume` but restricted to OTM contracts. |
-        | `otm_net_call_premium` | decimal string | Same as `net_call_premium` but restricted to OTM contracts. |
-        | `otm_net_put_premium` | decimal string | Same as `net_put_premium` but restricted to OTM contracts. |
-        
-        ### `otm_market_tide`
-        
-        Payload format, for the same update as the `market_tide` example above:
-        
-        ```
-        [
-          "otm_market_tide",
-          {
-            "timestamp": "2026-04-27T14:27:54Z",
-            "net_volume": 1345,
-            "net_call_premium": "272395.0",
-            "net_put_premium": "-190694.0"
-          }
-        ]
-        ```
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `timestamp` | ISO 8601 string | Aggregation time, UTC. Equal to `timestamp` of the matching `market_tide` message. |
-        | `net_volume` | int | Net call volume minus net put volume, counting only OTM contracts. Same value as `otm_net_volume` on `market_tide`. |
-        | `net_call_premium` | decimal string | Net call premium of OTM contracts, in dollars. Same value as `otm_net_call_premium` on `market_tide`. |
-        | `net_put_premium` | decimal string | Net put premium of OTM contracts, in dollars. Same value as `otm_net_put_premium` on `market_tide`. |
-      operationId: PublicApi.SocketController.market_tide
-      parameters: []
-      responses: {}
-      summary: Market tide
-      tags:
-        - websocket
-  /api/socket/net_flow:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channel `net_flow:<TICKER>`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream, for example `net_flow:SPY` for live net call/put premium and volume aggregates for SPY.
-        
-        Payload format:
-        
-        ```
-        [
-          "net_flow:SPY",
-          {
-            "ticker": "SPY",
-            "net_call_prem": "1716.00",
-            "net_call_vol": 6,
-            "net_put_prem": "1990.00",
-            "net_put_vol": 17,
-            "time": 1777300076003
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `ticker` | string | Underlying ticker. Same as the `:` suffix on the channel name. |
-        | `net_call_prem` | decimal string | Cumulative net call premium for the session (`ask_side - bid_side`) in dollars. |
-        | `net_call_vol` | int | Cumulative net call volume for the session (`ask_side - bid_side`). |
-        | `net_put_prem` | decimal string | Cumulative net put premium for the session (`ask_side - bid_side`) in dollars. |
-        | `net_put_vol` | int | Cumulative net put volume for the session (`ask_side - bid_side`). |
-        | `time` | int (ms) | Last update time, unix epoch milliseconds (UTC). |
-      operationId: PublicApi.SocketController.net_flow
-      parameters: []
-      responses: {}
-      summary: Net flow
-      tags:
-        - websocket
-  /api/socket/news:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channel `news`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream: `news` for all live headline news.
-        
-        Payload format:
-        
-        ```
-        [
-          "news",
-          {
-            "headline":"US Energy Secretary foresees many more LNG export deals signed",
-            "timestamp":"2025-06-11T21:40:56Z",
-            "source":"social-media",
-            "tickers":[],
-            "is_trump_ts":false
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `headline` | string | The full headline text. For Truth Social posts this is the post body verbatim. |
-        | `timestamp` | ISO 8601 string | Time the headline was published, UTC. |
-        | `source` | string | One of `"social-media"` (Truth Social posts), `"aggregator"`, or any other upstream source string passed through verbatim. |
-        | `tickers` | string[] | Tickers tagged on the headline. Empty for Truth Social posts. |
-        | `is_trump_ts` | bool | `true` only when the source is Truth Social and the author is `@realDonaldTrump`. Use this to filter the highest-signal Truth Social subset. |
-      operationId: PublicApi.SocketController.news
-      parameters: []
-      responses: {}
-      summary: News
-      tags:
-        - websocket
-  /api/socket/off_lit_trades:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channel `off_lit_trades`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream: `off_lit_trades` for all off-lit (dark pool) trades.
-        
-        Payload format:
-        
-        ```
-        [
-          "off_lit_trades",
-          {
-            "symbol": "AAPL",
-            "price": "150.25",
-            "type": "off_lit",
-            "size": 100,
-            "volume": 1000,
-            "trade_settlement": "regular",
-            "trade_code": null,
-            "ext_hour_sold_codes": "extended_hours_trade",
-            "sale_cond_codes": null,
-            "executed_at": "2024-09-22T14:30:00Z",
-            "trf_executed_at": "2024-09-22T14:30:00.250Z",
-            "nbbo_bid": "150.20",
-            "nbbo_ask": "150.25",
-            "nbbo_bid_quantity": 500,
-            "nbbo_ask_quantity": 800,
-            "sector": "Technology",
-            "next_earnings_date": "2024-10-25",
-            "avg30_volume": "75000000.0",
-            "issue_type": "Common Stock",
-            "marketcap": "2400000000000.0"
-          }
-        ]
-        ```
-        
-        The schema is identical to `lit_trades` but `type` is always `"off_lit"`. Off-lit prints are reported to the consolidated tape via a TRF (typically with a small delay), so `trf_executed_at` is more frequently populated on this channel and may differ from `executed_at`.
-        
-        ### Field reference
-        
-        See the `lit_trades` field reference above for the full schema. The two channels share the same payload shape.
-      operationId: PublicApi.SocketController.off_lit_trades
-      parameters: []
-      responses: {}
-      summary: Off-lit trades
-      tags:
-        - websocket
-  /api/socket/option_trades:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channels `option_trades` and `option_trades:<TICKER>`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel(s) you wish to stream, for example `option_trades` for all tickers or `option_trades:TSLA` for TSLA transactions only.
-        
-        Payload format:
-        
-        ```
-        {
-            "id":"a4dc6020-0611-4c23-b0bc-99944c7348ab",
-            "underlying_symbol":"UVIX",
-            "executed_at":1726670167412,
-            "nbbo_bid":"0.01",
-            "nbbo_bid_size":37,
-            "nbbo_bid_time":1726670167388,
-            "nbbo_ask":"0.09",
-            "nbbo_ask_size":18,
-            "nbbo_ask_time":1726670167401,
-            "size":1,
-            "price":"0.01",
-            "option_symbol":"UVIX240920C00025000",
-            "created_at":1726670167461,
-            "report_flags":[
-        
-            ],
-            "tags":[
-              "bid_side",
-              "bearish",
-              "etf"
-            ],
-            "expiry":"2024-09-20",
-            "option_type":"call",
-            "open_interest":410,
-            "strike":"25.0000000000",
-            "premium":"1.00",
-            "volume":105,
-            "underlying_price":"4.9261",
-            "ewma_nbbo_ask":"0.09",
-            "ewma_nbbo_bid":"0.01",
-            "implied_volatility":"8.46381958089369",
-            "delta":"0.01132315610146539",
-            "theta":"-0.02291485773244166",
-            "gamma":"0.00962272181839715",
-            "vega":"0.0001082948756510385",
-            "rho":"0.000002508438316242667",
-            "theo":"0.01",
-            "trade_code":"slan",
-            "exchange":"XCBO",
-            "ask_vol":10,
-            "bid_vol":95,
-            "no_side_vol":0,
-            "mid_vol":0,
-            "multi_vol":0,
-            "stock_multi_vol":0
-        }
-        ```
-        
-        ### Field reference
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `id` | uuid string | Unique trade identifier. Use this to dedupe and to cross-reference `flow-alerts.trade_ids`. |
-        | `underlying_symbol` | string | Underlying ticker (e.g. `AAPL`, `SPX`). |
-        | `executed_at` | int (ms) | Trade execution time, unix epoch milliseconds (UTC). |
-        | `nbbo_bid` / `nbbo_ask` | decimal string | NBBO at the time of the trade. |
-        | `nbbo_bid_size` / `nbbo_ask_size` | int or null | Quoted size in contracts at the corresponding NBBO price. `null` when quote metadata is unavailable. |
-        | `nbbo_bid_time` / `nbbo_ask_time` | int (ms) or null | Last update time for the corresponding NBBO quote, in unix epoch milliseconds (UTC). `null` when quote metadata is unavailable. |
-        | `ewma_nbbo_bid` / `ewma_nbbo_ask` | decimal string | Exponentially-weighted moving average of the NBBO; smoother reference price for noisy quotes. |
-        | `size` | int | Number of contracts in this trade. |
-        | `price` | decimal string | Per-contract price. |
-        | `premium` | decimal string | Total dollar premium for the trade (`size * price * multiplier`). The multiplier is `100` for most contracts; `NANOS` uses `1` and `XSP` uses `10`. |
-        | `option_symbol` | string | OSI option chain id (e.g. `UVIX240920C00025000`). |
-        | `expiry` | date string `YYYY-MM-DD` | Contract expiration. |
-        | `option_type` | `"call"` \| `"put"` | |
-        | `strike` | decimal string | Strike price. |
-        | `open_interest` | int | Open interest as of the most recent trading day's close. |
-        | `volume` | int | Cumulative session volume on this contract up to and including this trade. |
-        | `underlying_price` | decimal string | Spot price of the underlying at the time of the trade. Empty string when `tags` contains `"index"`. |
-        | `implied_volatility`, `delta`, `theta`, `gamma`, `vega`, `rho`, `theo` | decimal string | Greeks and theoretical price computed from the NBBO mid at trade time. |
-        | `trade_code` | string | Upstream condition codes (comma-separated), e.g. `"slan"`, `"auto"`, `"slan,isoi"`. |
-        | `exchange` | string | OPRA exchange identifier (`XCBO`, `MPRL`, `XPHL`, ...). |
-        | `report_flags` | string[] | Out-of-band reporting flags from upstream (e.g. `"cross_trade"`). Empty for normal prints. |
-        | `tags` | string[] | Side and classification tags. Side: `"ask_side"` / `"bid_side"` / `"mid_side"` / `"no_side"`. Classification: `"bullish"` / `"bearish"`, plus `"index"`, `"etf"`, `"china"`, `"volatility"`, `"dividend"`, `"arbitrage"`. |
-        | `ask_vol` / `bid_vol` / `mid_vol` / `no_side_vol` | int | Cumulative session volume on this contract attributed to each side (NBBO at trade time). Sums to `volume` minus `multi_vol` and `stock_multi_vol`. |
-        | `multi_vol` | int | Cumulative session volume from multi-leg option trades. |
-        | `stock_multi_vol` | int | Cumulative session volume from option-stock combos (delta-neutral packages, etc.). |
-      operationId: PublicApi.SocketController.option_trades
-      parameters: []
-      responses: {}
-      summary: Option trades
-      tags:
-        - websocket
-  /api/socket/periscope:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channels `periscope` and `periscope:<TICKER>`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        These channels are not available on the enterprise and enterprise startup plans; joining them returns an error.
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream: `periscope` for every index ticker at once,
-        or `periscope:SPX` for a single ticker.
-        
-        Payload format:
-        
-        Format for `periscope:<TICKER>`:
-        ```
-        [
-          "periscope:SPX",
-          {
-            "ticker": "SPX",
-            "timestamp": 1726670396000,
-            "total_rows": 11987,
-            "has_more": true,
-            "rows": [
-              {
-                "strike": "5200",
-                "expiry": "2026-07-02",
-                "gamma": 1234.5,
-                "charm": -12.3,
-                "vanna": 4.5
-              },
-              {
-                "strike": "5225",
-                "expiry": "2026-07-02",
-                "gamma": 987.6,
-                "charm": -10.1,
-                "vanna": 3.2
-              }
-            ]
-          }
-        ]
-        ```
-        
-        The global `periscope` channel streams the same envelope frames for every index ticker,
-        tagged `periscope` (the `ticker` field distinguishes them):
-        ```
-        [
-          "periscope",
-          {
-            "ticker": "SPX",
-            "timestamp": 1726670396000,
-            "total_rows": 11987,
-            "has_more": true,
-            "rows": [
-              {
-                "strike": "5200",
-                "expiry": "2026-07-02",
-                "gamma": 1234.5,
-                "charm": -12.3,
-                "vanna": 4.5
-              }
-            ]
-          }
-        ]
-        ```
-        
-        Each frame carries a batch of up to 1024 strike/expiry rows. A full snapshot spans
-        several frames; all frames of one snapshot share the same `timestamp`, and a new
-        `timestamp` starts the next snapshot (snapshots are published about once a
-        minute). `has_more` is `true` on every frame but the last one of a snapshot, so
-        the frame with `"has_more": false` closes the board. Sum the `rows` lengths across
-        frames with the same `timestamp` and compare against `total_rows` to verify you
-        received the complete snapshot.
-        
-        | Field           | Type                     | Description                                                                    |
-        | --------------- | ------------------------ | ------------------------------------------------------------------------------ |
-        | `ticker`        | string                   | Index ticker (SPX, VIX, XSP, NANOS).                                           |
-        | `timestamp`     | int (ms)                 | Snapshot time, unix epoch milliseconds. Shared by every frame of the snapshot. |
-        | `total_rows`    | int                      | Row count of the whole snapshot.                                               |
-        | `has_more`      | bool                     | More frames of this snapshot follow; `false` on the last frame.                |
-        | `rows`          | array                    | Up to 1024 rows per frame.                                                     |
-        | `rows[].strike` | decimal string           | Strike price.                                                                  |
-        | `rows[].expiry` | date string `YYYY-MM-DD` | Contract expiration.                                                           |
-        | `rows[].gamma`, `rows[].charm`, `rows[].vanna` | float | Market-maker greek exposure at this strike & expiry. |
-      operationId: PublicApi.SocketController.periscope
-      parameters: []
-      responses: {}
-      summary: Periscope
-      tags:
-        - websocket
-  /api/socket/price:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channels `price` and `price:<TICKER>`.
-        Websocket access for personal use is only available through the[Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream, for example `price:SPY` for live price updates for SPY or `price` for live price updates for every ticker.
-        
-        If you are connecting to multiple `price:<TICKER>` channels and just want prices for all tickers, connect only to the global `price` channel.
-        
-        Payload format:
-        
-        Format for `price:<TICKER>`:
-        ```
-        ["price:SPY",{"ticker":"SPY","close":"562.82","time":1726670327692,"vol":6015555}]
-        ```
-        
-        Format for `price`:
-        ```
-        ["price",{"ticker":"SPY","close":"562.82","time":1726670327692,"vol":6015555}]
-        ```
-        
-        ### Field reference
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `ticker` | string | Ticker symbol. |
-        | `close` | decimal string | Last trade price. |
-        | `time` | int (ms) | Trade execution time, unix epoch milliseconds (UTC). |
-        | `vol` | int | Cumulative session volume on the underlying as of `time`. |
-      operationId: PublicApi.SocketController.price
-      parameters: []
-      responses: {}
-      summary: Price
-      tags:
-        - websocket
-  /api/socket/quotes:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for the websocket channels `quotes` and `quotes:<TICKER>`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream, for example `quotes:AAPL` for the live best bid and ask on AAPL.
-        
-        Join `quotes` for every ticker at once, or `quotes:AAPL` for one.
-        
-        This is the live counterpart of [`/stock/:ticker/quote`](https://api.unusualwhales.com/docs/operations/PublicApi.StockQuoteController.show),
-        which returns the same values on the same scale, nested under `bid` and `ask` objects
-        rather than flat. Use it to fetch the current book when you subscribe: the channel sends
-        nothing until the ticker's next quote.
-        
-        Payload format:
-        
-        ```
-        [
-          "quotes:AAPL",
-          {
-            "ticker": "AAPL",
-            "bid": "229.955",
-            "bid_size": 300,
-            "ask": "229.965",
-            "ask_size": 100
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `ticker` | string | Underlying ticker. Same as the `:` suffix on the channel name. |
-        | `bid` | decimal string | Best bid price in dollars. |
-        | `bid_size` | int | Number of shares displayed at the best bid. |
-        | `ask` | decimal string | Best ask price in dollars. |
-        | `ask_size` | int | Number of shares displayed at the best ask. |
-      operationId: PublicApi.SocketController.quotes
-      parameters: []
-      responses: {}
-      summary: Stock quotes
-      tags:
-        - websocket
-  /api/socket/risk_reversal_skew:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for the websocket channel `risk_reversal_skew`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the `risk_reversal_skew` channel.
-        
-        Each message carries the risk reversal skew — the put implied volatility minus the call
-        implied volatility — at one delta bucket for one expiry of one ticker. A positive value
-        means puts are more expensive than calls, the usual state for equity index options.
-        
-        ### Delivery characteristics
-        
-        Read these before writing a client, they are not obvious from the payload:
-        
-        - **Updates arrive in a batch at most every ~30 seconds**, not continuously.
-        - **The channel is only live between 04:00 and 16:00 ET.** Outside that window nothing
-          is published at all and the socket is silent. This is expected, not a fault.
-        - **One message per (ticker, expiry, delta) pair.** Because this is a global channel
-          covering the whole option universe and each ticker has many expiries, every batch is a
-          large burst of messages. Your client must read from the socket promptly: a slow
-          consumer is not disconnected, but frames it fails to keep up with are dropped.
-        - Only two delta buckets are published: `25` and `10`.
-        
-        This is the live counterpart of the [`/stock/:ticker/historical-risk-reversal-skew`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.historical_risk_reversal_skew)
-        endpoint, which returns the identical value under the same `risk_reversal` name. Note only
-        that the REST endpoint renders it as a decimal string, while this channel sends a JSON number.
-        
-        Payload format:
-        
-        ```
-        [
-          "risk_reversal_skew",
-          {
-            "ticker": "AAPL",
-            "date": "2026-08-20",
-            "expiry": "2026-09-18",
-            "delta": 25,
-            "risk_reversal": 0.0142
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        | Field           | Type    | Description |
-        |-----------------|---------|-------------|
-        | `ticker`        | string  | Ticker of the underlying. |
-        | `date`          | string  | The trading date in `YYYY-MM-DD` format. |
-        | `expiry`        | string  | The option expiry this entry belongs to, in `YYYY-MM-DD` format. |
-        | `delta`         | integer | The delta bucket as a whole number out of 100: `25` means the 0.25 delta, `10` means the 0.10 delta. |
-        | `risk_reversal` | number  | Put implied volatility minus call implied volatility at that delta. Positive means puts are more expensive than calls. |
-      operationId: PublicApi.SocketController.risk_reversal_skew
-      parameters: []
-      responses: {}
-      summary: Risk reversal skew
-      tags:
-        - websocket
-  /api/socket/stock_screener:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for the websocket channel `stock_screener`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the `stock_screener` channel.
-        
-        Each message carries the latest stock screener row for one ticker. This channel is the live
-        counterpart of the [`/screener/stocks`](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.stock_screener)
-        endpoint. A field has the same name and meaning here as in that endpoint's rows, so see the
-        endpoint for what each field measures.
-        
-        ### Delivery characteristics
-        
-        Read these before writing a client, they are not obvious from the payload:
-        
-        - **Every message is a complete row.** The newest message for a `ticker` and `date` replaces
-          every earlier one. The channel never sends a message that removes a row. Key your rows by
-          `ticker` and `date`, and drop the rows of an earlier `date` once a newer one arrives.
-        - **A ticker is sent up to once a second, whenever any of its inputs updates.** A new bid or
-          ask quote counts as an update, so during market hours most actively quoted tickers are sent
-          every second.
-        - **The channel sends nothing when you join.** Load the current rows from `/screener/stocks`
-          first, and again after every reconnect, then apply the messages from this channel on top.
-        - **This is a high volume channel.** It covers every ticker the screener tracks, and each
-          message is about 5 KB of JSON. When the screener service restarts, every ticker is sent at
-          once, and when the premarket session opens at 04:00 ET most tickers are.
-        - **Keep this channel on its own connection.** A client that does not read the socket fast
-          enough is not disconnected, but frames it cannot keep up with are dropped. The drops hit
-          every channel joined on that connection, not only this one. Enable permessage-deflate if
-          your websocket client supports it.
-        - **Index prices are withheld.** For an index ticker (`is_index` is `true`), the channel
-          sends `null` for the same price fields as `/screener/stocks`: `open`, `close`, `high`,
-          `low`, `prev_close`, `intraday_change`, `week_52_high`, `week_52_low`, `bid`, `ask`, the
-          reference closes `one_week_close`, `one_month_close`, `three_month_close`,
-          `six_month_close`, `ytd_close`, `one_year_close`, `five_year_close` and
-          `last_earnings_price`, and the returns `one_day_perc`, `one_week_perc`, `one_month_perc`,
-          `three_month_perc`, `six_month_perc`, `ytd_perc`, `one_year_perc`, `five_year_perc` and
-          `earnings_perc`.
-        - The channel is global only. There is no `stock_screener:<TICKER>` variant.
-        
-        ### Values
-        
-        Decimal values are sent as strings, as on `/screener/stocks`. The technical indicators are
-        JSON numbers. Dates use the `YYYY-MM-DD` format, and `quote_time` is a Unix timestamp in
-        milliseconds.
-        
-        Every field is present in every message. An unavailable value is `null`, with two exceptions.
-        `call_volume`, `put_volume`, `call_premium`, `put_premium`, `bullish_premium`,
-        `bearish_premium` and the six `insider_*` volumes read `0` (or `"0"` for the decimals) when
-        no data is available. `is_index` is `false` when the issue type is unknown.
-        
-        The technical indicators are flat fields, as on `/screener/stocks`. For example, MACD is sent
-        as `macd_12_26_9`, `macd_12_26_9_signal` and `macd_12_26_9_histogram`, while the
-        `ta_1d_live` channel sends one nested `macd_12_26_9` object.
-        
-        ### Differences from `/screener/stocks`
-        
-        - `full_name` is always `null`.
-        - These fields of `/screener/stocks` are not sent: `net_premium`, `z_score`,
-          `steepness_180_30`, `missing_periscope` and the twelve `gex_daily_*` fields.
-        - `net_premium` is `net_call_premium` minus `net_put_premium`, so you can compute it from
-          this channel.
-        
-        Payload format (shortened, a real message carries every field listed below):
-        
-        ```
-        [
-          "stock_screener",
-          {
-            "date": "2026-09-18",
-            "ticker": "AAPL",
-            "call_volume": 1200,
-            "put_volume": 800,
-            "call_premium": "345000.50",
-            "put_premium": "123000.25",
-            "put_call_ratio": "0.6666666666666666666666666667",
-            "net_call_premium": "150000",
-            "net_put_premium": "-20000",
-            "open": "230.00",
-            "close": "231.42",
-            "high": "232.10",
-            "low": "229.50",
-            "stock_volume": 40000000,
-            "prev_close": "229.00",
-            "volatility": "0.25",
-            "implied_move_30": "12.345",
-            "iv_rank": "34.5",
-            "full_name": null,
-            "marketcap": "3471300000000",
-            "next_earnings_date": "2026-10-29",
-            "er_time": "postmarket",
-            "sector": "Technology",
-            "issue_type": "Common Stock",
-            "is_index": false,
-            "total_open_interest": 5000000,
-            "gex_gamma_per_one_percent_move_oi": "123456.78",
-            "one_day_return_stddevs": "0.68",
-            "one_week_close": "228.61",
-            "one_day_perc": "0.0105676855895196506550218341",
-            "etf_share_flow": null,
-            "insider_sell_volume_3m": 120000,
-            "bid": "231.41",
-            "bid_quantity": 300,
-            "ask": "231.43",
-            "ask_quantity": 200,
-            "quote_time": 1789000000000,
-            "rsi_14": 57.5,
-            "macd_12_26_9": 1.5,
-            "macd_12_26_9_signal": 1.25,
-            "macd_12_26_9_histogram": 0.25
-          }
-        ]
-        ```
-        
-        ### Fields
-        
-        | Group | Fields |
-        |---|---|
-        | Row | `ticker`, `date` |
-        | Option flow | `call_volume`, `put_volume`, `call_premium`, `put_premium`, `bearish_premium`, `bullish_premium`, `call_volume_ask_side`, `call_volume_bid_side`, `call_volume_mid_side`, `put_volume_ask_side`, `put_volume_bid_side`, `put_volume_mid_side`, `call_premium_mid_side`, `put_premium_mid_side`, `cum_dir_gamma`, `cum_dir_vega`, `cum_dir_delta`, `put_call_ratio`, `net_call_premium`, `net_put_premium`, `avg_3_day_call_volume`, `avg_3_day_put_volume`, `avg_7_day_call_volume`, `avg_7_day_put_volume`, `avg_30_day_call_volume`, `avg_30_day_put_volume`, `prev_call_volume`, `prev_put_volume` |
-        | Price and volume | `open`, `close`, `high`, `low`, `stock_volume`, `intraday_change`, `relative_volume`, `prev_close` |
-        | Implied volatility | `implied_move`, `implied_move_perc`, `volatility`, `iv30d`, `iv30d_1d`, `iv30d_1w`, `iv30d_1m`, `iv_rank`, `iv_rank_1m`, `iv_percentile_1m`, `iv_percentile_1y`, and `implied_move_N`, `implied_move_perc_N`, `volatility_N` for N = 1, 5, 7, 14, 30, 60, 90, 180 and 365 |
-        | Company | `full_name`, `marketcap`, `issue_type`, `is_index`, `sector`, `industry_type`, `has_options`, `short_int`, `avg30_volume`, `week_52_high`, `week_52_low`, `next_earnings_date`, `er_time`, `rv_1d_last_12q`, `next_dividend_date` |
-        | Open interest | `total_open_interest`, `call_open_interest`, `put_open_interest`, `avg_30_day_call_oi`, `avg_30_day_put_oi`, `prev_call_oi`, `prev_put_oi` |
-        | Greek exposure | `gex_gamma_per_one_percent_move_oi`, `gex_delta_per_one_percent_move_oi`, `gex_charm_per_one_percent_move_oi`, `gex_vanna_per_one_percent_move_oi`, `gex_gamma_per_one_percent_move_vol`, `gex_delta_per_one_percent_move_vol`, `gex_charm_per_one_percent_move_vol`, `gex_vanna_per_one_percent_move_vol`, `gex_gamma_per_one_percent_move_dir`, `gex_charm_per_one_percent_move_dir`, `gex_vanna_per_one_percent_move_dir`, `gex_net_change`, `gex_perc_change`, `gex_ratio` |
-        | Performance | `one_day_perc`, `one_week_perc`, `one_month_perc`, `three_month_perc`, `six_month_perc`, `ytd_perc`, `one_year_perc`, `five_year_perc`, `earnings_perc`, `one_day_return_stddevs`, `one_week_return_stddevs`, `one_month_return_stddevs`, `one_week_close`, `one_month_close`, `three_month_close`, `six_month_close`, `ytd_close`, `one_year_close`, `five_year_close`, `last_earnings_price`, `last_earnings_date`, `realized_volatility`, `variance_risk_premium` |
-        | Fundamentals | `etf_share_flow`, `eps_growth_4q`, `eps_growth_8q`, `eps_growth_12q`, `eps_growth_16q`, `shares_outstanding`, `shares_outstanding_growth_4q`, `shares_outstanding_growth_8q`, `shares_outstanding_growth_12q`, `latest_dividend`, `latest_dividend_date`, `latest_dividend_payment_date`, `ttm_dividend`, `dividend_yield`, `insider_buy_volume_3m`, `insider_sell_volume_3m`, `insider_buy_volume_6m`, `insider_sell_volume_6m`, `insider_buy_volume_12m`, `insider_sell_volume_12m` |
-        | Quote | `bid`, `bid_quantity`, `ask`, `ask_quantity`, `quote_time` |
-        | Daily technical indicators | `adx_14`, `aroon_14_down`, `aroon_14_up`, `atr_14`, `bb_14_2_upper`, `bb_14_2_middle`, `bb_14_2_lower`, `bb_20_2_upper`, `bb_20_2_middle`, `bb_20_2_lower`, `cci_14`, `ema_9`, `ema_14`, `ema_20`, `ema_21`, `ema_50`, `macd_12_26_9`, `macd_12_26_9_signal`, `macd_12_26_9_histogram`, `mfi_14`, `obv`, `rsi_14`, `sma_10`, `sma_14`, `sma_20`, `sma_50`, `sma_200`, `stoch_5_3_3_k`, `stoch_5_3_3_d`, `willr_14` |
-      operationId: PublicApi.SocketController.stock_screener
-      parameters: []
-      responses: {}
-      summary: Stock screener
-      tags:
-        - websocket
-  /api/socket/ta_1d_live:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for the websocket channel `ta_1d_live:<TICKER>`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel for the ticker you want, for example `ta_1d_live:AAPL`.
-        
-        Each message carries one ticker's technical-analysis indicators computed on **daily**
-        candles.
-        
-        The `1d` in the channel name is the candle interval and `live` means the values track
-        the session while it is still open.
-        
-        ### Delivery characteristics
-        
-        Read these before writing a client, they are not obvious from the payload:
-        
-        - **Messages describe the day that is still forming, not a finished candle.** While the
-          session is open, a new message is sent each time the price moves, up to once a second,
-          and each one supersedes the one before it for that ticker. The values it carries are
-          the ones a calculation over the finished daily candles produces.
-        - **The channel is live during regular trading hours only.** Outside them nothing is
-          published and the socket is silent for this channel.
-        - **An indicator is `null` until enough daily history exists to compute it.** Each one
-          opens on its own schedule: on-balance volume from the first session, `rsi_14` from the
-          15th, `sma_200` from the 200th. Every field is present on every message, so an
-          indicator that is not ready reads as `null` rather than being left out.
-        - **The channel sends nothing when you join.** The first message arrives on the next
-          price move, which outside regular hours means the next session.
-        - **The number in a field name is its configuration.** `rsi_14` is the relative strength
-          index over 14 periods, `bb_20_2` is Bollinger bands over 20 periods at 2 standard
-          deviations, `macd_12_26_9` is MACD with fast period 12, slow period 26 and signal
-          period 9, and `stoch_5_3_3` is the stochastic oscillator with fast K 5, slow K 3 and
-          slow D 3.
-        - **Read `obv` as a relative series, never as a level.** On-balance volume accumulates
-          from wherever the calculation started, so the absolute number is not comparable across
-          restarts. Its direction and its crossovers carry the meaning.
-        
-        Payload format:
-        
-        ```
-        [
-          "ta_1d_live:AAPL",
-          {
-            "ticker": "AAPL",
-            "adx_14": 23.45,
-            "aroon_14": {"down": 21.43, "up": 78.57},
-            "atr_14": 3.25,
-            "bb_14_2": {"upper": 236.5, "middle": 230.0, "lower": 223.5},
-            "bb_20_2": {"upper": 238.0, "middle": 229.5, "lower": 221.0},
-            "cci_14": 88.1,
-            "ema_9": 231.2,
-            "ema_14": 230.4,
-            "ema_20": 229.8,
-            "ema_21": 229.7,
-            "ema_50": 225.1,
-            "macd_12_26_9": {"macd": 1.75, "signal": 1.25, "histogram": 0.5},
-            "mfi_14": 61.3,
-            "obv": 1234567890.0,
-            "rsi_14": 57.8,
-            "sma_10": 231.0,
-            "sma_14": 230.2,
-            "sma_20": 229.5,
-            "sma_50": 224.9,
-            "sma_200": 210.3,
-            "stoch_5_3_3": {"k": 72.5, "d": 68.1},
-            "willr_14": -27.5
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        Every indicator field is a JSON number or `null`. The values are TA-Lib outputs passed
-        through unchanged, so each indicator's scale is the one TA-Lib defines for it. Prices
-        are in dollars, matching the daily closes the indicators are computed from.
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `ticker` | string | Underlying ticker. Same as the `:` suffix on the channel name. |
-        | `adx_14` | number | Average directional index over 14 periods, from 0 to 100. |
-        | `aroon_14` | object | Aroon over 14 periods, as `down` and `up`, each from 0 to 100. `up` reports how recently the period high was set and `down` how recently the period low was set. |
-        | `atr_14` | number | Average true range over 14 periods. |
-        | `bb_14_2` | object | Bollinger bands over 14 periods at 2 standard deviations, as `upper`, `middle` and `lower`. `middle` is the simple moving average the bands are built around, and the outer bands sit 2 standard deviations either side of it. |
-        | `bb_20_2` | object | Bollinger bands over 20 periods at 2 standard deviations, same shape as `bb_14_2`. |
-        | `cci_14` | number | Commodity channel index over 14 periods. |
-        | `ema_9` | number | Exponential moving average of the close over 9 periods. |
-        | `ema_14` | number | Exponential moving average of the close over 14 periods. |
-        | `ema_20` | number | Exponential moving average of the close over 20 periods. |
-        | `ema_21` | number | Exponential moving average of the close over 21 periods. |
-        | `ema_50` | number | Exponential moving average of the close over 50 periods. |
-        | `macd_12_26_9` | object | MACD with fast period 12, slow period 26 and signal period 9, as `macd`, `signal` and `histogram`. `macd` is the fast EMA minus the slow EMA, `signal` is an EMA of `macd`, and `histogram` is `macd` minus `signal`. |
-        | `mfi_14` | number | Money flow index over 14 periods, from 0 to 100. |
-        | `obv` | number | On-balance volume. Cumulative from wherever the calculation started, so compare direction and crossovers rather than the level. |
-        | `rsi_14` | number | Relative strength index over 14 periods, from 0 to 100. |
-        | `sma_10` | number | Simple moving average of the close over 10 periods. |
-        | `sma_14` | number | Simple moving average of the close over 14 periods. |
-        | `sma_20` | number | Simple moving average of the close over 20 periods. |
-        | `sma_50` | number | Simple moving average of the close over 50 periods. |
-        | `sma_200` | number | Simple moving average of the close over 200 periods. |
-        | `stoch_5_3_3` | object | Stochastic oscillator with fast K 5, slow K 3 and slow D 3, as `k` and `d`, each from 0 to 100. `k` is the faster line and `d` is a moving average of it. |
-        | `willr_14` | number | Williams %R over 14 periods, from -100 to 0. |
-      operationId: PublicApi.SocketController.ta_1d_live
-      parameters: []
-      responses: {}
-      summary: Technical analysis indicators
-      tags:
-        - websocket
-  /api/socket/trading_halts:
-    get:
-      callbacks: {}
-      description: |
-        **NOTE:**
-        This is the documentation for websocket channel `trading_halts`.
-        Websocket access for personal use is only available through the [Advanced plan](https://unusualwhales.com/pricing?product=api).
-        
-        You can find fully-functional examples that stream data from many channels here:
-        
-        - Python: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output)
-        - Javascript: [https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs](https://github.com/unusual-whales/api-examples/tree/main/examples/ws-multi-channel-multi-output-nodejs)
-        
-        
-        
-        Connect to the websocket URI:
-        
-        `wss://api.unusualwhales.com/socket?token=<YOUR_API_TOKEN>`
-        
-        then `join` the channel you wish to stream: `trading_halts` for live trading-state changes (halts, resumes, LULD pauses, etc.) sourced from UTP/CTA.
-        
-        Payload format:
-        
-        ```
-        [
-          "trading_halts",
-          {
-            "ticker": "GME",
-            "state": "halted",
-            "reason": "LUDP",
-            "time": "2026-04-27T14:31:02Z"
-          }
-        ]
-        ```
-        
-        ### Field reference
-        
-        | Field | Type | Description |
-        |---|---|---|
-        | `ticker` | string | Ticker whose trading state changed. |
-        | `state` | string | New trading state, e.g. `"halted"`, `"resumed"`, `"paused"`. Values are passed through from the upstream feed. |
-        | `reason` | string | Reason code from the upstream feed (e.g. `"LUDP"` for LULD volatility pause, `"T1"` for news pending, `""` if no reason was provided). |
-        | `time` | ISO 8601 string | When the state change occurred, UTC. |
-      operationId: PublicApi.SocketController.trading_halts
-      parameters: []
-      responses: {}
-      summary: Trading halts
-      tags:
-        - websocket
   /api/stock-directory/ticker-exchanges:
     get:
       callbacks: {}
@@ -31839,6 +29477,8 @@ paths:
       callbacks: {}
       description: |
         Returns the latest flows for the given ticker. Optionally a min premium and a side can be supplied in the query for further filtering.
+        
+        For real time streaming of option trades for a ticker, subscribe to the `option_trades:<TICKER>` websocket channel, see [https://api.unusualwhales.com/docs/websocket/option-trades](https://api.unusualwhales.com/docs/websocket/option-trades).
       operationId: PublicApi.TickerController.flow_recent
       parameters:
         - description: ''
@@ -32278,6 +29918,8 @@ paths:
       description: |
         Returns the tickers greek flow (delta & vega flow) for the given market day broken down per minute.
         Date must be the current or a past date. If no date is given, returns data for the current/last market day.
+        
+        For real time streaming of the same data, subscribe to the `greek_flow:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/greek-flow](https://api.unusualwhales.com/docs/websocket/greek-flow).
       operationId: PublicApi.TickerController.greek_flow
       parameters:
         - description: ''
@@ -32320,6 +29962,8 @@ paths:
       description: |
         Returns the tickers greek flow (delta & vega flow) for the given market day broken down per minute & expiry.
         Date must be the current or a past date. If no date is given, returns data for the current/last market day.
+        
+        For real time streaming of the same data, subscribe to the `greek_flow_expiry:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/greek-flow-by-expiry](https://api.unusualwhales.com/docs/websocket/greek-flow-by-expiry).
       operationId: PublicApi.TickerController.greek_flow_expiry
       parameters:
         - description: ''
@@ -32374,6 +30018,8 @@ paths:
         `/api/stock/{ticker}/option-contracts`. That endpoint also returns per-contract delta, gamma, theta,
         vega and rho. Charm and vanna remain available here. Join `call_option_symbol` or `put_option_symbol`
         to the option contracts response's `option_symbol`.
+        
+        For real time streaming of per-contract greeks across all expiries, subscribe to the `greeks:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/greeks](https://api.unusualwhales.com/docs/websocket/greeks).
       operationId: PublicApi.TickerController.greeks
       parameters:
         - description: ''
@@ -32433,6 +30079,8 @@ paths:
       callbacks: {}
       description: |
         Returns the historical risk reversal skew (the difference between put and call volatility) at a delta of 25 or 10 (colloquial for 0.25 or 0.1) for a given expiry date.
+        
+        For real time streaming of the same data, subscribe to the `risk_reversal_skew` websocket channel, see [https://api.unusualwhales.com/docs/websocket/risk-reversal-skew](https://api.unusualwhales.com/docs/websocket/risk-reversal-skew).
       operationId: PublicApi.TickerController.historical_risk_reversal_skew
       parameters:
         - description: ''
@@ -32656,6 +30304,8 @@ paths:
         with the next 2 closest expirations
         
         Date must be the current or a past date. If no date is given, returns data for the current/last market day.
+        
+        For real time streaming of the same data, subscribe to the `interpolated_iv:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/interpolated-iv](https://api.unusualwhales.com/docs/websocket/interpolated-iv).
       operationId: PublicApi.TickerController.interpolated_iv
       parameters:
         - description: ''
@@ -32885,6 +30535,8 @@ paths:
       description: |
         Returns the net premium ticks for a given ticker which can be used to build the following chart:
         ![Net Prem chart](https://i.imgur.com/Rom1kcB.png)
+        
+        For real time streaming of net call and put premium and volume, subscribe to the `net_flow:<TICKER>` websocket channel, see [https://api.unusualwhales.com/docs/websocket/net-flow](https://api.unusualwhales.com/docs/websocket/net-flow).
         
         ----
         Each tick is resembling the data for a single minute tick. To build a daily chart
@@ -33307,6 +30959,10 @@ paths:
         `^(?<symbol>[\w]*)(?<expiry>(\d{2})(\d{2})(\d{2}))(?<type>[PC])(?<strike>\d{8})$`
         
         Keep in mind that the strike needs to be divided by 1,000.
+        
+        With `greeks=true`, the response is paginated. Rows are sorted by `expires`, then `strike`, then
+        `option_symbol`, all ascending. `limit` sets the page size and `page` selects the page, starting at 0.
+        Without `greeks=true`, the response contains every option symbol and `limit` and `page` have no effect.
       operationId: PublicApi.TickerController.option_chains
       parameters:
         - description: ''
@@ -33321,7 +30977,7 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Optional Market Date'
-        - description: When true, return an enriched row per contract (strike, expiry, type, NBBO, IV, OI, volume, delta, gamma, theta, vega, rho, last_tape_time) instead of the default array of option-symbol strings.
+        - description: When true, return an enriched row per contract (strike, expiry, type, NBBO, IV, OI, volume, delta, gamma, theta, vega, rho, last_tape_time) instead of the default array of option-symbol strings. Enriched rows are paginated with `limit` and `page`.
           examples:
             - true
             - false
@@ -33330,6 +30986,18 @@ paths:
           required: false
           schema:
             type: boolean
+        - description: 'How many enriched rows to return when `greeks=true`. Max: 500. Min: 1. Returns up to 500 when omitted.'
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+        - description: Page number of enriched rows when `greeks=true`. Starts on page 0.
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
       responses:
         '200':
           content:
@@ -33891,7 +31559,10 @@ paths:
   /api/stock/{ticker}/quote:
     get:
       callbacks: {}
-      description: Returns the latest trade, national best bid and ask, derived quote values, and quote change statistics for each market session.
+      description: |
+        Returns the latest trade, national best bid and ask, derived quote values, and quote change statistics for each market session.
+        
+        For real time streaming of the best bid and ask, subscribe to the `quotes:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/stock-quotes](https://api.unusualwhales.com/docs/websocket/stock-quotes).
       operationId: PublicApi.StockQuoteController.show
       parameters:
         - description: ''
@@ -33969,6 +31640,8 @@ paths:
         As such, in the event of large positive gamma, volatility is suppressed as market makers will hedge by buying as the stock price decreases and selling as the stock price increases. And in the event of large negative gamma, volatility is amplified as market makers will hedge by buying as the stock price increases and selling as the stock price decreases.
         
         This data updates about once per minute during the cash session.
+        
+        For real time streaming of the same data, subscribe to the `gex:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/gex](https://api.unusualwhales.com/docs/websocket/gex).
       operationId: PublicApi.TickerController.spot_exposures_one_minute
       parameters:
         - description: ''
@@ -34026,6 +31699,8 @@ paths:
         Data is available since 2025-01-16.
         
         [Click here for the spot docs](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_by_strike)
+        
+        For real time streaming of the same data, subscribe to the `gex_strike_expiry:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/gex](https://api.unusualwhales.com/docs/websocket/gex).
       operationId: PublicApi.TickerController.spot_exposures_by_strike_expiry_v2
       parameters:
         - description: ''
@@ -34149,6 +31824,8 @@ paths:
         Strikes are returned in ascending order, up to 500 per request. A ticker with a wider chain than that needs every page collected before the sums line up, so walk `page` from 0 until a page comes back empty. Narrowing with `min_strike` or `max_strike` leaves out the exposure of the excluded strikes.
         
         Each strike carries its own `time` and `price`, recorded when the greek exposure is recalculated. Recalculation triggers on the daily open interest update, when a new transaction is observed on the strike, or the contract-level greeks change due to a significant move in price, volatility, or time. This occurs at most once every 30 seconds. Strikes within this response can differ in `time`, possibly by hours when a strike does not trade often and its greeks do not change much.
+        
+        For real time streaming of the same data, subscribe to the `gex_strike:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/gex](https://api.unusualwhales.com/docs/websocket/gex).
       operationId: PublicApi.TickerController.spot_exposures_by_strike
       parameters:
         - description: ''
@@ -34226,6 +31903,8 @@ paths:
       callbacks: {}
       description: |
         This endpoint has been deprecated and will be removed, please migrate to the new [endpoint](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_by_strike_expiry_v2)
+        
+        For real time streaming of the same data, subscribe to the `gex_strike_expiry:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/gex](https://api.unusualwhales.com/docs/websocket/gex).
       operationId: PublicApi.TickerController.spot_exposures_by_strike_expiry
       parameters:
         - description: ''
@@ -34974,6 +32653,8 @@ paths:
       callbacks: {}
       description: |
         The average of the latest volatilities for the at the money call and put contracts for every expiry date.
+        
+        For real time streaming of the same data, subscribe to the `iv_term_structure:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/iv-term-structure](https://api.unusualwhales.com/docs/websocket/iv-term-structure).
       operationId: PublicApi.TickerController.implied_volatility_term_structure
       parameters:
         - description: ''
