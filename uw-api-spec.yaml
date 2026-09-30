@@ -1073,18 +1073,63 @@ components:
       example: '0000102909'
       title: CIK
       type: string
+    Call Charm Ask Side Exposure:
+      description: The call charm exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
+      example: '102382359.5786'
+      title: Call Charm Ask Side Exposure
+      type: string
+    Call Charm Bid Side Exposure:
+      description: The call charm exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
+      example: '102382359.5786'
+      title: Call Charm Bid Side Exposure
+      type: string
+    Call Charm Exposure:
+      description: The sum of the charm exposure values of all call transactions at a given strike.
+      example: '102382359.5786'
+      title: Call Charm Exposure
+      type: string
     Call Delta:
       description: |
           The total call delta obtained by multiplying the volume of all call options with their latest delta.
       example: '-21257.36'
       title: Call Delta
       type: number
+    Call Delta Ask Side Exposure:
+      description: The call delta exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
+      example: '227549667.4651'
+      title: Call Delta Ask Side Exposure
+      type: string
+    Call Delta Bid Side Exposure:
+      description: The call delta exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
+      example: '227549667.4651'
+      title: Call Delta Bid Side Exposure
+      type: string
+    Call Delta Exposure:
+      description: The sum of the delta exposure values of all call transactions at a given strike.
+      example: '227549667.4651'
+      title: Call Delta Exposure
+      type: string
     Call Fill Delta:
       description: |
           The total call delta obtained by summing up the size of each call trade multiplied by the delta at the time of the transaction.
       example: '-21257.36'
       title: Call Fill Delta
       type: number
+    Call Gamma Ask Side Exposure:
+      description: The call gamma exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
+      example: '-102382359.5786'
+      title: Call Gamma Ask Side Exposure
+      type: string
+    Call Gamma Bid Side Exposure:
+      description: The call gamma exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
+      example: '102382359.5786'
+      title: Call Gamma Bid Side Exposure
+      type: string
+    Call Gamma Exposure:
+      description: The sum of the gamma exposure values of all call transactions at a given strike.
+      example: '9356683.4241'
+      title: Call Gamma Exposure
+      type: string
     Call Holding Units:
       description: The number of call units in the institution's portfolio.
       example: '2394292.0'
@@ -1094,6 +1139,21 @@ components:
       description: The rounded total call value in the institution's portfolio.
       example: '2394292.0'
       title: Call Value
+      type: string
+    Call Vanna Ask Side Exposure:
+      description: The call vanna exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
+      example: '152099632406.9564'
+      title: Call Vanna Ask Side Exposure
+      type: string
+    Call Vanna Bid Side Exposure:
+      description: The call vanna exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
+      example: '102382359.5786'
+      title: Call Vanna Bid Side Exposure
+      type: string
+    Call Vanna Exposure:
+      description: The sum of the vanna exposure values of all call transactions at a given strike.
+      example: '152099632406.9564'
+      title: Call Vanna Exposure
       type: string
     Call Volume:
       description: |
@@ -5023,6 +5083,57 @@ components:
       example: vol
       title: GEX Source
       type: string
+    GEX exposures per 1min:
+      description: ''
+      example:
+        data:
+          - charm_per_one_percent_move_dir: '654769081.21'
+            charm_per_one_percent_move_oi: '5124108502049.17'
+            charm_per_one_percent_move_vol: '320909908341.10'
+            gamma_per_one_percent_move_dir: '475681.21'
+            gamma_per_one_percent_move_oi: '65476967081.41'
+            gamma_per_one_percent_move_vol: '12921519098.30'
+            price: '4650'
+            time: 2023-12-13T05:00:41.481000Z
+            vanna_per_one_percent_move_dir: '-342349081.21'
+            vanna_per_one_percent_move_oi: '-54622844772.90'
+            vanna_per_one_percent_move_vol: '-5559678859.12'
+          - charm_per_one_percent_move_dir: '654769081.21'
+            charm_per_one_percent_move_oi: '4736293042981.03'
+            charm_per_one_percent_move_vol: '308180334258.50'
+            gamma_per_one_percent_move_dir: '475681.21'
+            gamma_per_one_percent_move_oi: '64220497598.15'
+            gamma_per_one_percent_move_vol: '11924696599.44'
+            price: '4650'
+            time: 2023-12-13T11:29:41.501000Z
+            vanna_per_one_percent_move_dir: '-342349081.21'
+            vanna_per_one_percent_move_oi: '-52107741026.80'
+            vanna_per_one_percent_move_vol: '-5043673317.55'
+      properties:
+        charm_per_one_percent_move_dir:
+          $ref: '#/components/schemas/CEX Per One Percent Move Directionalized Volume'
+        charm_per_one_percent_move_oi:
+          $ref: '#/components/schemas/CEX Per One Percent Move OI'
+        charm_per_one_percent_move_vol:
+          $ref: '#/components/schemas/CEX Per One Percent Move Volume'
+        gamma_per_one_percent_move_dir:
+          $ref: '#/components/schemas/GEX Per One Percent Move Directionalized Volume'
+        gamma_per_one_percent_move_oi:
+          $ref: '#/components/schemas/Gex Gamma Per One Percent Move OI'
+        gamma_per_one_percent_move_vol:
+          $ref: '#/components/schemas/Gex Gamma Per One Percent Move Volume'
+        price:
+          $ref: '#/components/schemas/Gex Underlying Price'
+        time:
+          $ref: '#/components/schemas/Gex Calculation Time'
+        vanna_per_one_percent_move_dir:
+          $ref: '#/components/schemas/VEX Per One Percent Move Directionalized Volume'
+        vanna_per_one_percent_move_oi:
+          $ref: '#/components/schemas/VEX Per One Percent Move OI'
+        vanna_per_one_percent_move_vol:
+          $ref: '#/components/schemas/VEX Per One Percent Move Volume'
+      title: GEX exposures per 1min
+      type: object
     Gamma:
       description: The gamma of the option trade.
       example: '0.00775013889662635'
@@ -5389,6 +5500,117 @@ components:
         volume:
           $ref: '#/components/schemas/Volume'
       title: Greek Flow Expiry
+      type: object
+    Greek exposures by strike:
+      description: ''
+      example:
+        data:
+          - call_charm_ask: '2582359253.61'
+            call_charm_bid: '5820636.43'
+            call_charm_oi: '70827151575067.12'
+            call_charm_vol: '70827151575067.12'
+            call_delta_ask: '23452351.20'
+            call_delta_bid: '30499234235.52'
+            call_delta_oi: '227549667.4651'
+            call_delta_vol: '227549667.4651'
+            call_gamma_ask: '23452351.20'
+            call_gamma_bid: '30499234235.52'
+            call_gamma_oi: '5124108502049.17'
+            call_gamma_vol: '5124108502049.17'
+            call_vanna_ask: '22692351.20'
+            call_vanna_bid: '234235.52'
+            call_vanna_oi: '65476967081.41'
+            call_vanna_vol: '65476967081.41'
+            price: '4650'
+            put_charm_ask: '96836366.22'
+            put_charm_bid: '6100352354.34'
+            put_charm_oi: '2282895170748.09'
+            put_charm_vol: '2282895170748.09'
+            put_delta_ask: '9528523023.39'
+            put_delta_bid: '9342852354.34'
+            put_delta_oi: '-191893077.7193'
+            put_delta_vol: '-191893077.7193'
+            put_gamma_ask: '9528523023.39'
+            put_gamma_bid: '9342852354.34'
+            put_gamma_oi: '320909908341.10'
+            put_gamma_vol: '320909908341.10'
+            put_vanna_ask: '495803.39'
+            put_vanna_bid: '26934630.34'
+            put_vanna_oi: '12921519098.30'
+            put_vanna_vol: '12921519098.30'
+            time: 2023-12-13T05:00:41.481000Z
+      properties:
+        call_charm_ask:
+          $ref: '#/components/schemas/Call Charm Ask Side Exposure'
+        call_charm_bid:
+          $ref: '#/components/schemas/Call Charm Bid Side Exposure'
+        call_charm_oi:
+          $ref: '#/components/schemas/Call Charm Exposure'
+        call_charm_vol:
+          $ref: '#/components/schemas/Call Charm Exposure'
+        call_delta_ask:
+          $ref: '#/components/schemas/Call Delta Ask Side Exposure'
+        call_delta_bid:
+          $ref: '#/components/schemas/Call Delta Bid Side Exposure'
+        call_delta_oi:
+          $ref: '#/components/schemas/Call Delta Exposure'
+        call_delta_vol:
+          $ref: '#/components/schemas/Call Delta Exposure'
+        call_gamma_ask:
+          $ref: '#/components/schemas/Call Gamma Ask Side Exposure'
+        call_gamma_bid:
+          $ref: '#/components/schemas/Call Gamma Bid Side Exposure'
+        call_gamma_oi:
+          $ref: '#/components/schemas/Call Gamma Exposure'
+        call_gamma_vol:
+          $ref: '#/components/schemas/Call Gamma Exposure'
+        call_vanna_ask:
+          $ref: '#/components/schemas/Call Vanna Ask Side Exposure'
+        call_vanna_bid:
+          $ref: '#/components/schemas/Call Vanna Bid Side Exposure'
+        call_vanna_oi:
+          $ref: '#/components/schemas/Call Vanna Exposure'
+        call_vanna_vol:
+          $ref: '#/components/schemas/Call Vanna Exposure'
+        price:
+          $ref: '#/components/schemas/Gex Underlying Price'
+        put_charm_ask:
+          $ref: '#/components/schemas/Put Charm Ask Side Exposure'
+        put_charm_bid:
+          $ref: '#/components/schemas/Put Charm Bid Side Exposure'
+        put_charm_oi:
+          $ref: '#/components/schemas/Put Charm Exposure'
+        put_charm_vol:
+          $ref: '#/components/schemas/Put Charm Exposure'
+        put_delta_ask:
+          $ref: '#/components/schemas/Put Delta Ask Side Exposure'
+        put_delta_bid:
+          $ref: '#/components/schemas/Put Delta Bid Side Exposure'
+        put_delta_oi:
+          $ref: '#/components/schemas/Put Delta Exposure'
+        put_delta_vol:
+          $ref: '#/components/schemas/Put Delta Exposure'
+        put_gamma_ask:
+          $ref: '#/components/schemas/Put Gamma Ask Side Exposure'
+        put_gamma_bid:
+          $ref: '#/components/schemas/Put Gamma Bid Side Exposure'
+        put_gamma_oi:
+          $ref: '#/components/schemas/Put Gamma Exposure'
+        put_gamma_vol:
+          $ref: '#/components/schemas/Put Gamma Exposure'
+        put_vanna_ask:
+          $ref: '#/components/schemas/Put Vanna Ask Side Exposure'
+        put_vanna_bid:
+          $ref: '#/components/schemas/Put Charm Bid Side Exposure'
+        put_vanna_oi:
+          $ref: '#/components/schemas/Put Vanna Exposure'
+        put_vanna_vol:
+          $ref: '#/components/schemas/Put Vanna Exposure'
+        strike:
+          $ref: '#/components/schemas/Strike'
+        time:
+          $ref: '#/components/schemas/Gex Calculation Time'
+      title: Greek exposures by strike
       type: object
     Greeks:
       description: |
@@ -11540,18 +11762,63 @@ components:
           type: string
       title: Private Markets Search Hit (Investor)
       type: object
+    Put Charm Ask Side Exposure:
+      description: The put charm exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
+      example: '102382359.5786'
+      title: Put Charm Ask Side Exposure
+      type: string
+    Put Charm Bid Side Exposure:
+      description: The put charm exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
+      example: '102382359.5786'
+      title: Put Charm Bid Side Exposure
+      type: string
+    Put Charm Exposure:
+      description: The sum of the charm exposure values of all put transactions at a given strike.
+      example: '102382359.5786'
+      title: Put Charm Exposure
+      type: string
     Put Delta:
       description: |
           The total put delta obtained by multiplying the volume of all put options with their latest delta.
       example: '-43593.96'
       title: Put Delta
       type: number
+    Put Delta Ask Side Exposure:
+      description: The put delta exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
+      example: '-191893077.7193'
+      title: Put Delta Ask Side Exposure
+      type: string
+    Put Delta Bid Side Exposure:
+      description: The put delta exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
+      example: '-191893077.7193'
+      title: Put Delta Bid Side Exposure
+      type: string
+    Put Delta Exposure:
+      description: The sum of the delta exposure values of all put transactions at a given strike.
+      example: '-191893077.7193'
+      title: Put Delta Exposure
+      type: string
     Put Fill Delta:
       description: |
           The total put delta obtained by summing up the size of each put trade multiplied by the delta at the time of the transaction.
       example: '-43593.96'
       title: Put Fill Delta
       type: number
+    Put Gamma Ask Side Exposure:
+      description: The put gamma exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
+      example: '-102382359.5786'
+      title: Put Gamma Ask Side Exposure
+      type: string
+    Put Gamma Bid Side Exposure:
+      description: The put gamma exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
+      example: '102382359.5786'
+      title: Put Gamma Bid Side Exposure
+      type: string
+    Put Gamma Exposure:
+      description: The sum of the gamma exposure values of all put transactions at a given strike.
+      example: '9356683.4241'
+      title: Put Gamma Exposure
+      type: string
     Put Holding Units:
       description: The number of put units in the institution's portfolio.
       example: '2394292.0'
@@ -11561,6 +11828,16 @@ components:
       description: The rounded total put value in the institution's portfolio.
       example: '2394292.0'
       title: Put Value
+      type: string
+    Put Vanna Ask Side Exposure:
+      description: The put vanna exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
+      example: '102382359.5786'
+      title: Put Vanna Ask Side Exposure
+      type: string
+    Put Vanna Exposure:
+      description: The sum of the vanna exposure values of all put transactions at a given strike.
+      example: '152099632406.9564'
+      title: Put Vanna Exposure
       type: string
     Put Volume:
       description: |
@@ -12888,283 +13165,6 @@ components:
               type: string
           type: object
       title: Splits Response
-      type: object
-    Spot Call Charm Ask Side Exposure:
-      description: The call charm exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
-      example: '102382359.5786'
-      title: Spot Call Charm Ask Side Exposure
-      type: string
-    Spot Call Charm Bid Side Exposure:
-      description: The call charm exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
-      example: '102382359.5786'
-      title: Spot Call Charm Bid Side Exposure
-      type: string
-    Spot Call Charm Exposure:
-      description: The sum of the spot charm exposure values of all call transactions at a given strike.
-      example: '102382359.5786'
-      title: Spot Call Charm Exposure
-      type: string
-    Spot Call Delta Ask Side Exposure:
-      description: The call delta exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
-      example: '227549667.4651'
-      title: Spot Call Delta Ask Side Exposure
-      type: string
-    Spot Call Delta Bid Side Exposure:
-      description: The call delta exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
-      example: '227549667.4651'
-      title: Spot Call Delta Bid Side Exposure
-      type: string
-    Spot Call Delta Exposure:
-      description: The sum of the spot delta exposure values of all call transactions at a given strike.
-      example: '227549667.4651'
-      title: Spot Call Delta Exposure
-      type: string
-    Spot Call Gamma Ask Side Exposure:
-      description: The call gamma exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
-      example: '-102382359.5786'
-      title: Spot Call Gamma Ask Side Exposure
-      type: string
-    Spot Call Gamma Bid Side Exposure:
-      description: The call gamma exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
-      example: '102382359.5786'
-      title: Spot Call Gamma Bid Side Exposure
-      type: string
-    Spot Call Gamma Exposure:
-      description: The sum of the spot gamma exposure values of all call transactions at a given strike.
-      example: '9356683.4241'
-      title: Spot Call Gamma Exposure
-      type: string
-    Spot Call Vanna Ask Side Exposure:
-      description: The call vanna exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
-      example: '152099632406.9564'
-      title: Spot Call Vanna Ask Side Exposure
-      type: string
-    Spot Call Vanna Bid Side Exposure:
-      description: The call vanna exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
-      example: '102382359.5786'
-      title: Spot Call Vanna Bid Side Exposure
-      type: string
-    Spot Call Vanna Exposure:
-      description: The sum of the spot vanna exposure values of all call transactions at a given strike.
-      example: '152099632406.9564'
-      title: Spot Call Vanna Exposure
-      type: string
-    Spot GEX exposures per 1min:
-      description: ''
-      example:
-        data:
-          - charm_per_one_percent_move_dir: '654769081.21'
-            charm_per_one_percent_move_oi: '5124108502049.17'
-            charm_per_one_percent_move_vol: '320909908341.10'
-            gamma_per_one_percent_move_dir: '475681.21'
-            gamma_per_one_percent_move_oi: '65476967081.41'
-            gamma_per_one_percent_move_vol: '12921519098.30'
-            price: '4650'
-            time: 2023-12-13T05:00:41.481000Z
-            vanna_per_one_percent_move_dir: '-342349081.21'
-            vanna_per_one_percent_move_oi: '-54622844772.90'
-            vanna_per_one_percent_move_vol: '-5559678859.12'
-          - charm_per_one_percent_move_dir: '654769081.21'
-            charm_per_one_percent_move_oi: '4736293042981.03'
-            charm_per_one_percent_move_vol: '308180334258.50'
-            gamma_per_one_percent_move_dir: '475681.21'
-            gamma_per_one_percent_move_oi: '64220497598.15'
-            gamma_per_one_percent_move_vol: '11924696599.44'
-            price: '4650'
-            time: 2023-12-13T11:29:41.501000Z
-            vanna_per_one_percent_move_dir: '-342349081.21'
-            vanna_per_one_percent_move_oi: '-52107741026.80'
-            vanna_per_one_percent_move_vol: '-5043673317.55'
-      properties:
-        charm_per_one_percent_move_dir:
-          $ref: '#/components/schemas/CEX Per One Percent Move Directionalized Volume'
-        charm_per_one_percent_move_oi:
-          $ref: '#/components/schemas/CEX Per One Percent Move OI'
-        charm_per_one_percent_move_vol:
-          $ref: '#/components/schemas/CEX Per One Percent Move Volume'
-        gamma_per_one_percent_move_dir:
-          $ref: '#/components/schemas/GEX Per One Percent Move Directionalized Volume'
-        gamma_per_one_percent_move_oi:
-          $ref: '#/components/schemas/Gex Gamma Per One Percent Move OI'
-        gamma_per_one_percent_move_vol:
-          $ref: '#/components/schemas/Gex Gamma Per One Percent Move Volume'
-        price:
-          $ref: '#/components/schemas/Gex Underlying Price'
-        time:
-          $ref: '#/components/schemas/Gex Calculation Time'
-        vanna_per_one_percent_move_dir:
-          $ref: '#/components/schemas/VEX Per One Percent Move Directionalized Volume'
-        vanna_per_one_percent_move_oi:
-          $ref: '#/components/schemas/VEX Per One Percent Move OI'
-        vanna_per_one_percent_move_vol:
-          $ref: '#/components/schemas/VEX Per One Percent Move Volume'
-      title: Spot GEX exposures per 1min
-      type: object
-    Spot Put Charm Ask Side Exposure:
-      description: The put charm exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
-      example: '102382359.5786'
-      title: Spot Put Charm Ask Side Exposure
-      type: string
-    Spot Put Charm Bid Side Exposure:
-      description: The put charm exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
-      example: '102382359.5786'
-      title: Spot Put Charm Bid Side Exposure
-      type: string
-    Spot Put Charm Exposure:
-      description: The sum of the spot charm exposure values of all put transactions at a given strike.
-      example: '102382359.5786'
-      title: Spot Put Charm Exposure
-      type: string
-    Spot Put Delta Ask Side Exposure:
-      description: The put delta exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
-      example: '-191893077.7193'
-      title: Spot Put Delta Ask Side Exposure
-      type: string
-    Spot Put Delta Bid Side Exposure:
-      description: The put delta exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
-      example: '-191893077.7193'
-      title: Spot Put Delta Bid Side Exposure
-      type: string
-    Spot Put Delta Exposure:
-      description: The sum of the spot delta exposure values of all put transactions at a given strike.
-      example: '-191893077.7193'
-      title: Spot Put Delta Exposure
-      type: string
-    Spot Put Gamma Ask Side Exposure:
-      description: The put gamma exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
-      example: '-102382359.5786'
-      title: Spot Put Gamma Ask Side Exposure
-      type: string
-    Spot Put Gamma Bid Side Exposure:
-      description: The put gamma exposure when Market Makers are buying contracts when a transactions is closer to the bid side.
-      example: '102382359.5786'
-      title: Spot Put Gamma Bid Side Exposure
-      type: string
-    Spot Put Gamma Exposure:
-      description: The sum of the spot gamma exposure values of all put transactions at a given strike.
-      example: '9356683.4241'
-      title: Spot Put Gamma Exposure
-      type: string
-    Spot Put Vanna Ask Side Exposure:
-      description: The put vanna exposure when Market Makers are selling contracts when a transactions is closer to the ask side.
-      example: '102382359.5786'
-      title: Spot Put Vanna Ask Side Exposure
-      type: string
-    Spot Put Vanna Exposure:
-      description: The sum of the spot vanna exposure values of all put transactions at a given strike.
-      example: '152099632406.9564'
-      title: Spot Put Vanna Exposure
-      type: string
-    Spot greek exposures by strike:
-      description: ''
-      example:
-        data:
-          - call_charm_ask: '2582359253.61'
-            call_charm_bid: '5820636.43'
-            call_charm_oi: '70827151575067.12'
-            call_charm_vol: '70827151575067.12'
-            call_delta_ask: '23452351.20'
-            call_delta_bid: '30499234235.52'
-            call_delta_oi: '227549667.4651'
-            call_delta_vol: '227549667.4651'
-            call_gamma_ask: '23452351.20'
-            call_gamma_bid: '30499234235.52'
-            call_gamma_oi: '5124108502049.17'
-            call_gamma_vol: '5124108502049.17'
-            call_vanna_ask: '22692351.20'
-            call_vanna_bid: '234235.52'
-            call_vanna_oi: '65476967081.41'
-            call_vanna_vol: '65476967081.41'
-            price: '4650'
-            put_charm_ask: '96836366.22'
-            put_charm_bid: '6100352354.34'
-            put_charm_oi: '2282895170748.09'
-            put_charm_vol: '2282895170748.09'
-            put_delta_ask: '9528523023.39'
-            put_delta_bid: '9342852354.34'
-            put_delta_oi: '-191893077.7193'
-            put_delta_vol: '-191893077.7193'
-            put_gamma_ask: '9528523023.39'
-            put_gamma_bid: '9342852354.34'
-            put_gamma_oi: '320909908341.10'
-            put_gamma_vol: '320909908341.10'
-            put_vanna_ask: '495803.39'
-            put_vanna_bid: '26934630.34'
-            put_vanna_oi: '12921519098.30'
-            put_vanna_vol: '12921519098.30'
-            time: 2023-12-13T05:00:41.481000Z
-      properties:
-        call_charm_ask:
-          $ref: '#/components/schemas/Spot Call Charm Ask Side Exposure'
-        call_charm_bid:
-          $ref: '#/components/schemas/Spot Call Charm Bid Side Exposure'
-        call_charm_oi:
-          $ref: '#/components/schemas/Spot Call Charm Exposure'
-        call_charm_vol:
-          $ref: '#/components/schemas/Spot Call Charm Exposure'
-        call_delta_ask:
-          $ref: '#/components/schemas/Spot Call Delta Ask Side Exposure'
-        call_delta_bid:
-          $ref: '#/components/schemas/Spot Call Delta Bid Side Exposure'
-        call_delta_oi:
-          $ref: '#/components/schemas/Spot Call Delta Exposure'
-        call_delta_vol:
-          $ref: '#/components/schemas/Spot Call Delta Exposure'
-        call_gamma_ask:
-          $ref: '#/components/schemas/Spot Call Gamma Ask Side Exposure'
-        call_gamma_bid:
-          $ref: '#/components/schemas/Spot Call Gamma Bid Side Exposure'
-        call_gamma_oi:
-          $ref: '#/components/schemas/Spot Call Gamma Exposure'
-        call_gamma_vol:
-          $ref: '#/components/schemas/Spot Call Gamma Exposure'
-        call_vanna_ask:
-          $ref: '#/components/schemas/Spot Call Vanna Ask Side Exposure'
-        call_vanna_bid:
-          $ref: '#/components/schemas/Spot Call Vanna Bid Side Exposure'
-        call_vanna_oi:
-          $ref: '#/components/schemas/Spot Call Vanna Exposure'
-        call_vanna_vol:
-          $ref: '#/components/schemas/Spot Call Vanna Exposure'
-        price:
-          $ref: '#/components/schemas/Gex Underlying Price'
-        put_charm_ask:
-          $ref: '#/components/schemas/Spot Put Charm Ask Side Exposure'
-        put_charm_bid:
-          $ref: '#/components/schemas/Spot Put Charm Bid Side Exposure'
-        put_charm_oi:
-          $ref: '#/components/schemas/Spot Put Charm Exposure'
-        put_charm_vol:
-          $ref: '#/components/schemas/Spot Put Charm Exposure'
-        put_delta_ask:
-          $ref: '#/components/schemas/Spot Put Delta Ask Side Exposure'
-        put_delta_bid:
-          $ref: '#/components/schemas/Spot Put Delta Bid Side Exposure'
-        put_delta_oi:
-          $ref: '#/components/schemas/Spot Put Delta Exposure'
-        put_delta_vol:
-          $ref: '#/components/schemas/Spot Put Delta Exposure'
-        put_gamma_ask:
-          $ref: '#/components/schemas/Spot Put Gamma Ask Side Exposure'
-        put_gamma_bid:
-          $ref: '#/components/schemas/Spot Put Gamma Bid Side Exposure'
-        put_gamma_oi:
-          $ref: '#/components/schemas/Spot Put Gamma Exposure'
-        put_gamma_vol:
-          $ref: '#/components/schemas/Spot Put Gamma Exposure'
-        put_vanna_ask:
-          $ref: '#/components/schemas/Spot Put Vanna Ask Side Exposure'
-        put_vanna_bid:
-          $ref: '#/components/schemas/Spot Put Charm Bid Side Exposure'
-        put_vanna_oi:
-          $ref: '#/components/schemas/Spot Put Vanna Exposure'
-        put_vanna_vol:
-          $ref: '#/components/schemas/Spot Put Vanna Exposure'
-        strike:
-          $ref: '#/components/schemas/Strike'
-        time:
-          $ref: '#/components/schemas/Gex Calculation Time'
-      title: Spot greek exposures by strike
       type: object
     Stock Average 30 Day Volume:
       description: The avg stock volume for the stock last 30 days.
@@ -16125,7 +16125,7 @@ info:
     - Added a new websocket channel [`risk_reversal_skew`](https://api.unusualwhales.com/docs/websocket/risk-reversal-skew). The channel streams live 25- and 10-delta risk reversal skew (put implied volatility minus call implied volatility) per expiry across every ticker, the live counterpart of [`/stock/:ticker/historical-risk-reversal-skew`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.historical_risk_reversal_skew). The channel is global only; there is no per-ticker variant.
     
     # 2026.08.22
-    - Updated [`/stock/:ticker/gex-levels`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.gex_levels) to derive its levels from spot directionalized volume — instead of a cumulative total over the static open-interest snapshot.
+    - Updated [`/stock/:ticker/gex-levels`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.gex_levels) to derive its levels from directionalized volume instead of a cumulative total over the static open-interest snapshot.
     - Added `date`, `time`, `source`, and `nearby_flips` to the [`/stock/:ticker/gex-levels`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.gex_levels) response. `nearby_flips` lists the five zero-gamma crossings nearest spot, ordered by distance from it. `time` is when the underlying exposure snapshot was calculated.
     
     # 2026.08.21
@@ -31621,15 +31621,15 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returns the spot GEX exposures for the given ticker per minute.
+        Returns the GEX exposures for the given ticker per minute.
         
-        Spot GEX is the assumed $ value of the given greek (ie. gamma) exposure that market makers need to hedge per 1% change of the underlying stock's price movement. A positive value is long and a negative value is short.
+        GEX is the assumed $ value of the given greek (ie. gamma) exposure that market makers need to hedge per 1% change of the underlying stock's price movement. A positive value is long and a negative value is short.
         
         Investors and large funds lower risk and protect their money by selling calls and buying puts. Market makers provide the liquidity to facilitate these trades.
         
         GEX assumes that market makers are part of every transaction and that the bulk of their transactions are buying calls and selling puts to investors hedging their portfolios.
         
-        If a market maker has one contract open with a gamma value of 0.05, then if the underlying stock price moves by 1%, that market maker is exposed to $[0.05 * 100 shares * 0.01 * stock price * underlying parameter of the greek variable (for gamma this variable is the stock price)]. The total market maker spot exposure is calculated by summing up the spot exposure of all open contracts determined by the daily open interest or by volume.
+        If a market maker has one contract open with a gamma value of 0.05, then if the underlying stock price moves by 1%, that market maker is exposed to $[0.05 * 100 shares * 0.01 * stock price * underlying parameter of the greek variable (for gamma this variable is the stock price)]. The total market maker exposure is calculated by summing up the exposure of all open contracts determined by the daily open interest or by volume.
         
         Market makers profit from the bid-ask spreads and as such, they constantly gamma hedge (they buy and sell shares to keep their positions delta neutral).
         
@@ -31661,7 +31661,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Spot GEX exposures per 1min'
+                $ref: '#/components/schemas/GEX exposures per 1min'
           description: ''
         '401':
           content:
@@ -31687,18 +31687,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
-      summary: Spot GEX exposures per 1min
+      summary: GEX exposures per 1min
       tags:
         - Gex/Greeks
   /api/stock/{ticker}/spot-exposures/expiry-strike:
     get:
       callbacks: {}
       description: |
-        Returns the most recent spot GEX exposures across all strikes for the given ticker & expiration on a given date. Calculated either with open interest or with volume.
+        Returns the most recent GEX exposures across all strikes for the given ticker & expiration on a given date. Calculated either with open interest or with volume.
         
         Data is available since 2025-01-16.
         
-        [Click here for the spot docs](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_by_strike)
+        [GEX exposures by strike documentation](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_by_strike)
         
         For real time streaming of the same data, subscribe to the `gex_strike_expiry:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/gex](https://api.unusualwhales.com/docs/websocket/gex).
       operationId: PublicApi.TickerController.spot_exposures_by_strike_expiry_v2
@@ -31762,7 +31762,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Spot greek exposures by strike'
+                $ref: '#/components/schemas/Greek exposures by strike'
           description: ''
         '401':
           content:
@@ -31788,22 +31788,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
-      summary: Spot GEX exposures by strike & expiry
+      summary: GEX exposures by strike & expiry
       tags:
         - Gex/Greeks
   /api/stock/{ticker}/spot-exposures/strike:
     get:
       callbacks: {}
       description: |
-        Returns the most recent spot GEX exposures across all strikes for the given ticker on a given date. Calculated either with open interest or with volume.
+        Returns the most recent GEX exposures across all strikes for the given ticker on a given date. Calculated either with open interest or with volume.
         
-        Spot GEX is the assumed $ value of the given greek (ie. gamma) exposure that market makers need to hedge per 1% change of the underlying stock's price movement. A positive value is long and a negative value is short.
+        GEX is the assumed $ value of the given greek (ie. gamma) exposure that market makers need to hedge per 1% change of the underlying stock's price movement. A positive value is long and a negative value is short.
         
         Investors and large funds lower risk and protect their money by selling calls and buying puts. Market makers provide the liquidity to facilitate these trades.
         
         GEX assumes that market makers are part of every transaction and that the bulk of their transactions are buying calls and selling puts to investors hedging their portfolios.
         
-        If a market maker has one contract open with a gamma value of 0.05, then if the underlying stock price moves by 1%, that market maker is exposed to $[0.05 * 100 shares * 0.01 * stock price * underlying parameter of the greek variable (for gamma this variable is the stock price)]. The total market maker spot exposure is calculated by summing up the spot exposure of all open contracts determined by the daily open interest or by volume.
+        If a market maker has one contract open with a gamma value of 0.05, then if the underlying stock price moves by 1%, that market maker is exposed to $[0.05 * 100 shares * 0.01 * stock price * underlying parameter of the greek variable (for gamma this variable is the stock price)]. The total market maker exposure is calculated by summing up the exposure of all open contracts determined by the daily open interest or by volume.
         
         Market makers profit from the bid-ask spreads and as such, they constantly gamma hedge (they buy and sell shares to keep their positions delta neutral).
         
@@ -31819,7 +31819,7 @@ paths:
         
         To get the full directionalized exposure, just sum up the call ask, call bid, put ask and put bid of a greek and strike.
         
-        Summing every strike of a ticker reproduces the ticker level values of the [spot exposures per 1 min](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_one_minute) endpoint: `oi` = `call_oi + put_oi`, `vol` = `call_vol + put_vol` and directional = `call_bid + call_ask + put_bid + put_ask`.
+        Summing every strike of a ticker reproduces the ticker level values of the [GEX exposures per 1 min](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_one_minute) endpoint: `oi` = `call_oi + put_oi`, `vol` = `call_vol + put_vol` and directional = `call_bid + call_ask + put_bid + put_ask`.
         
         Strikes are returned in ascending order, up to 500 per request. A ticker with a wider chain than that needs every page collected before the sums line up, so walk `page` from 0 until a page comes back empty. Narrowing with `min_strike` or `max_strike` leaves out the exposure of the excluded strikes.
         
@@ -31869,7 +31869,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Spot greek exposures by strike'
+                $ref: '#/components/schemas/Greek exposures by strike'
           description: ''
         '401':
           content:
@@ -31895,7 +31895,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
-      summary: Spot GEX exposures by strike
+      summary: GEX exposures by strike
       tags:
         - Gex/Greeks
   /api/stock/{ticker}/spot-exposures/{expiry}/strike:
@@ -31942,7 +31942,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Spot greek exposures by strike'
+                $ref: '#/components/schemas/Greek exposures by strike'
           description: ''
         '401':
           content:
@@ -31968,7 +31968,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
-      summary: Spot GEX exposures by strike & expiry (Deprecated)
+      summary: GEX exposures by strike & expiry (Deprecated)
       tags:
         - Gex/Greeks
   /api/stock/{ticker}/stock-state:
