@@ -11970,6 +11970,16 @@ components:
       example: '0001548760'
       title: Reporter CIK
       type: string
+    Retry Later Error Message:
+      description: Returned with HTTP 503 and a `Retry-After` header while the requested data is still loading. Retry the same request after the `Retry-After` seconds.
+      example:
+        error: Exposure data for this date is still loading. Please retry shortly.
+      properties:
+        error:
+          description: A message stating that the data is still loading.
+          type: string
+      title: Retry Later Error Message
+      type: object
     Revenue Breakdown Row:
       description: A revenue figure split by product or geography.
       properties:
@@ -31696,7 +31706,7 @@ paths:
       description: |
         Returns the most recent GEX exposures across all strikes for the given ticker & expiration on a given date. Calculated either with open interest or with volume.
         
-        Data is available since 2025-01-16.
+        Data is available since 2025-01-16. A page can return 503 while the date's exposures are still loading. Retry that same page after the `Retry-After` seconds; a 503 does not end the walk.
         
         [GEX exposures by strike documentation](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_by_strike)
         
@@ -31788,6 +31798,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Retry Later Error Message'
+          description: Service Unavailable
       summary: GEX exposures by strike & expiry
       tags:
         - Gex/Greeks
@@ -31819,11 +31835,11 @@ paths:
         
         To get the full directionalized exposure, just sum up the call ask, call bid, put ask and put bid of a greek and strike.
         
-        Summing every strike of a ticker reproduces the ticker level values of the [GEX exposures per 1 min](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_one_minute) endpoint: `oi` = `call_oi + put_oi`, `vol` = `call_vol + put_vol` and directional = `call_bid + call_ask + put_bid + put_ask`.
+        Summing every strike of a ticker gives approximately the ticker level values of the [GEX exposures per 1 min](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_one_minute) endpoint: `oi` = `call_oi + put_oi`, `vol` = `call_vol + put_vol` and directional = `call_bid + call_ask + put_bid + put_ask`. The sums are not exact. Each strike uses the price at its own `time`, and a strike recalculation with a negative call gamma or a positive put gamma is discarded, so that strike keeps its previous values or is left out. A past date that is rebuilt from end-of-day data recalculates every strike at the close, while the per-minute values were recorded during the session.
         
-        Strikes are returned in ascending order, up to 500 per request. A ticker with a wider chain than that needs every page collected before the sums line up, so walk `page` from 0 until a page comes back empty. Narrowing with `min_strike` or `max_strike` leaves out the exposure of the excluded strikes.
+        Strikes are returned in ascending order, up to 500 per request. A ticker with a wider chain than that needs every page collected before the sums are complete, so walk `page` from 0 until a page comes back empty. A page can return 503 while the date's exposures are still loading. Retry that same page after the `Retry-After` seconds; a 503 does not end the walk. Narrowing with `min_strike` or `max_strike` leaves out the exposure of the excluded strikes.
         
-        Each strike carries its own `time` and `price`, recorded when the greek exposure is recalculated. Recalculation triggers on the daily open interest update, when a new transaction is observed on the strike, or the contract-level greeks change due to a significant move in price, volatility, or time. This occurs at most once every 30 seconds. Strikes within this response can differ in `time`, possibly by hours when a strike does not trade often and its greeks do not change much.
+        Each strike carries the `time` and `price` of its last recalculation. A strike is recalculated when one of its contracts gets new greeks or a new trade, or when the daily open interest loads, at most once per second per ticker. A price move alone does not recalculate a strike. Strikes within one response can differ in `time`, possibly by hours when a strike's contracts rarely trade or get new greeks. A book computed after the session, for example after a service restart or for a ticker first requested after the close, gives every strike the same `time`, no later than 15 minutes after the regular close, and the price at the moment of that computation, which can be an after-hours price. For a past date that is rebuilt from end-of-day data, every strike instead carries the regular session close as `time`, and as `price` the closing price for stocks and ETFs or, for index tickers such as SPX, the last at-the-money price estimate recorded that day.
         
         For real time streaming of the same data, subscribe to the `gex_strike:{TICKER}` websocket channel, see [https://api.unusualwhales.com/docs/websocket/gex](https://api.unusualwhales.com/docs/websocket/gex).
       operationId: PublicApi.TickerController.spot_exposures_by_strike
@@ -31895,6 +31911,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Retry Later Error Message'
+          description: Service Unavailable
       summary: GEX exposures by strike
       tags:
         - Gex/Greeks
