@@ -91,7 +91,24 @@ components:
                 - TGT241122C00177500
               symbols: all
             created_at: 2024-11-19T18:19:14Z
+            daily_fired_alert_counts:
+              - count: 0
+                date: 2024-11-19
+              - count: 1
+                date: 2024-11-20
+              - count: 0
+                date: 2024-11-21
+              - count: 0
+                date: 2024-11-22
+              - count: 0
+                date: 2024-11-23
+              - count: 0
+                date: 2024-11-24
+              - count: 0
+                date: 2024-11-25
+            dsl:
             id: ebe24953-a0bf-4b4d-98be-14f721a1199a
+            muted_tickers: []
             name: 'Chain OI Chg: TGT241122C00177500'
             noti_type: chain_oi_change
             status: active
@@ -100,7 +117,24 @@ components:
                 - berkshire
               symbols: all
             created_at: 2024-08-09T23:23:13Z
+            daily_fired_alert_counts:
+              - count: 0
+                date: 2024-11-19
+              - count: 0
+                date: 2024-11-20
+              - count: 2
+                date: 2024-11-21
+              - count: 0
+                date: 2024-11-22
+              - count: 0
+                date: 2024-11-23
+              - count: 0
+                date: 2024-11-24
+              - count: 0
+                date: 2024-11-25
+            dsl:
             id: 4457d60e-e7e5-4950-82e6-0ea010586f25
+            muted_tickers: []
             name: Berkshire
             noti_type: sec_filings
             status: active
@@ -109,8 +143,65 @@ components:
           $ref: '#/components/schemas/The configuration of an alert.'
         created_at:
           $ref: '#/components/schemas/The creation timestamp'
+        daily_fired_alert_counts:
+          description: Daily alert counts for today and the preceding six UTC calendar days, ordered from oldest to newest. Days without alerts have a count of zero. Today's count covers the day so far.
+          items:
+            properties:
+              count:
+                description: The number of alerts on this date.
+                format: int64
+                type: integer
+              date:
+                description: The UTC calendar date.
+                format: date
+                type: string
+            required:
+              - date
+              - count
+            type: object
+          maxItems: 7
+          minItems: 7
+          type: array
+        dsl:
+          description: The human-readable Query language expression for the alert filters. Null when the configuration cannot be represented in the Query language.
+          example: (calls or puts) and volume > 100
+          nullable: true
+          type: string
         id:
           $ref: '#/components/schemas/The alert id'
+        muted_tickers:
+          description: Active ticker mutes for this alert configuration. Expired mutes and global mutes are excluded. Empty when this configuration has no active ticker mutes.
+          items:
+            properties:
+              created_at:
+                description: When the mute was created, as an RFC 3339 UTC timestamp.
+                format: date-time
+                type: string
+              id:
+                description: The mute identifier.
+                format: uuid
+                type: string
+              muted_till:
+                description: When the mute expires, as an RFC 3339 UTC timestamp. Null means the mute has no expiration.
+                format: date-time
+                nullable: true
+                type: string
+              noti_id:
+                description: The alert configuration identifier, matching the parent configuration's id.
+                format: uuid
+                type: string
+              ticker:
+                description: The muted ticker symbol.
+                example: AAPL
+                type: string
+            required:
+              - id
+              - noti_id
+              - ticker
+              - created_at
+              - muted_till
+            type: object
+          type: array
         name:
           $ref: '#/components/schemas/The name of the alert'
         noti_type:
@@ -118,6 +209,107 @@ components:
         status:
           $ref: '#/components/schemas/The status of the alert'
       title: Alert config
+      type: object
+    Alert configurations:
+      description: Alert configurations and active global ticker mutes.
+      example:
+        data:
+          - config:
+              option_symbols:
+                - TGT241122C00177500
+              symbols: all
+            created_at: 2024-11-19T18:19:14Z
+            daily_fired_alert_counts:
+              - count: 0
+                date: 2024-11-19
+              - count: 1
+                date: 2024-11-20
+              - count: 0
+                date: 2024-11-21
+              - count: 0
+                date: 2024-11-22
+              - count: 0
+                date: 2024-11-23
+              - count: 0
+                date: 2024-11-24
+              - count: 0
+                date: 2024-11-25
+            dsl:
+            id: ebe24953-a0bf-4b4d-98be-14f721a1199a
+            muted_tickers: []
+            name: 'Chain OI Chg: TGT241122C00177500'
+            noti_type: chain_oi_change
+            status: active
+          - config:
+              name_contains:
+                - berkshire
+              symbols: all
+            created_at: 2024-08-09T23:23:13Z
+            daily_fired_alert_counts:
+              - count: 0
+                date: 2024-11-19
+              - count: 0
+                date: 2024-11-20
+              - count: 2
+                date: 2024-11-21
+              - count: 0
+                date: 2024-11-22
+              - count: 0
+                date: 2024-11-23
+              - count: 0
+                date: 2024-11-24
+              - count: 0
+                date: 2024-11-25
+            dsl:
+            id: 4457d60e-e7e5-4950-82e6-0ea010586f25
+            muted_tickers: []
+            name: Berkshire
+            noti_type: sec_filings
+            status: active
+        global_muted_tickers: []
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Alert config'
+          type: array
+        global_muted_tickers:
+          description: Active ticker mutes that apply across the user's alert configurations. Expired mutes are excluded. Empty when the user has no active global ticker mutes.
+          items:
+            properties:
+              created_at:
+                description: When the mute was created, as an RFC 3339 UTC timestamp.
+                format: date-time
+                type: string
+              id:
+                description: The mute identifier.
+                format: uuid
+                type: string
+              muted_till:
+                description: When the mute expires, as an RFC 3339 UTC timestamp. Null means the mute has no expiration.
+                format: date-time
+                nullable: true
+                type: string
+              noti_id:
+                description: Null because this mute applies across the user's alert configurations.
+                format: uuid
+                nullable: true
+                type: string
+              ticker:
+                description: The muted ticker symbol.
+                example: AAPL
+                type: string
+            required:
+              - id
+              - noti_id
+              - ticker
+              - created_at
+              - muted_till
+            type: object
+          type: array
+      required:
+        - data
+        - global_muted_tickers
+      title: Alert configurations
       type: object
     Alert filters:
       description: The available filters per alert type for creating alert configurations
@@ -3548,6 +3740,343 @@ components:
       pattern: ^\d{4}-(Q[1-4]|H[1-2]|MID|LATE|\d{2}-\d{2})$
       title: FDA Target Date
       type: string
+    FLEX Deliveries:
+      description: Return only contracts with one of these delivery types.
+      example:
+        - cash
+      items:
+        $ref: '#/components/schemas/FLEX Delivery'
+      title: FLEX Deliveries
+      type: array
+    FLEX Delivery:
+      description: A FLEX option delivery type.
+      enum:
+        - physical
+        - cash
+      example: cash
+      title: FLEX Delivery
+      type: string
+    FLEX Exercise Style:
+      description: A FLEX option exercise style.
+      enum:
+        - american
+        - european
+      example: european
+      title: FLEX Exercise Style
+      type: string
+    FLEX Exercise Styles:
+      description: Return only contracts with one of these exercise styles.
+      example:
+        - european
+      items:
+        $ref: '#/components/schemas/FLEX Exercise Style'
+      title: FLEX Exercise Styles
+      type: array
+    FLEX Market Day:
+      description: The market-wide FLEX and listed option open interest on `date`.
+      properties:
+        date:
+          example: 2026-09-29
+          format: date
+          type: string
+        flex_oi:
+          description: The summed open interest of all FLEX option contracts.
+          example: 9800000
+          type: integer
+        flex_option_chains:
+          description: The number of FLEX option contracts.
+          example: 14200
+          type: integer
+        flex_tickers:
+          description: The number of underlying tickers with at least one FLEX option contract.
+          example: 950
+          type: integer
+        option_chains:
+          description: The number of listed option contracts.
+          example: 1450000
+          type: integer
+        option_tickers:
+          description: The number of tickers with listed options.
+          example: 5900
+          type: integer
+        total_oi:
+          description: The total open interest of listed call and put options.
+          example: 420000000
+          type: integer
+      title: FLEX Market Day
+      type: object
+    FLEX Market Overview:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/FLEX Market Day'
+          type: array
+        date:
+          example: 2026-09-29
+          format: date
+          type: string
+        tickers:
+          items:
+            $ref: '#/components/schemas/FLEX Market Ticker'
+          type: array
+      title: FLEX Market Overview
+      type: object
+    FLEX Market Ticker:
+      description: The FLEX open interest of one ticker on the requested date and the previous trading day.
+      properties:
+        flex_oi:
+          example: 1250000
+          type: integer
+        flex_option_chains:
+          example: 830
+          type: integer
+        prev_flex_oi:
+          example: 1240000
+          nullable: true
+          type: integer
+        prev_flex_option_chains:
+          example: 826
+          nullable: true
+          type: integer
+        prev_total_open_interest:
+          example: 21300000
+          nullable: true
+          type: integer
+        ticker:
+          example: SPX
+          type: string
+        total_open_interest:
+          example: 21400000
+          nullable: true
+          type: integer
+      title: FLEX Market Ticker
+      type: object
+    FLEX Option Contract:
+      description: The open interest and mark of one FLEX option contract on `date`, with the values of the previous trading day.
+      properties:
+        date:
+          description: The trading date of the open interest and mark.
+          example: 2026-09-29
+          format: date
+          type: string
+        delivery:
+          enum:
+            - physical
+            - cash
+          example: cash
+          type: string
+        exercise_style:
+          enum:
+            - american
+            - european
+          example: european
+          type: string
+        expiry:
+          description: The expiry date.
+          example: 2026-12-18
+          format: date
+          type: string
+        flex_ticker:
+          description: The FLEX symbol. The leading digit, together with the product type, determines the settlement, exercise style and delivery.
+          example: 4SPX
+          type: string
+        mark:
+          description: The mark price of the contract.
+          example: '41.25'
+          type: string
+        open_interest:
+          description: The open interest of the contract.
+          example: 12500
+          type: integer
+        option_symbol:
+          description: The FLEX option symbol in the OSI format, built from `flex_ticker`.
+          example: 4SPX261218P05000000
+          type: string
+        option_type:
+          enum:
+            - call
+            - put
+          example: put
+          type: string
+        prev_mark:
+          description: The mark on the previous trading day. The value is `null` when the contract has no data for that day.
+          example: '39.80'
+          nullable: true
+          type: string
+        prev_oi:
+          description: The open interest on the previous trading day. The value is `null` when the contract has no data for that day.
+          example: 11000
+          nullable: true
+          type: integer
+        settlement:
+          enum:
+            - am
+            - pm
+            - asian
+            - cliquet
+          example: pm
+          type: string
+        strike:
+          description: The strike price.
+          example: '5000'
+          type: string
+        ticker:
+          description: The underlying ticker.
+          example: SPX
+          type: string
+      title: FLEX Option Contract
+      type: object
+    FLEX Option Contract Day:
+      description: The open interest and mark of one FLEX option contract on `date`.
+      properties:
+        date:
+          description: The trading date of the open interest and mark.
+          example: 2026-09-29
+          format: date
+          type: string
+        delivery:
+          enum:
+            - physical
+            - cash
+          example: cash
+          type: string
+        exercise_style:
+          enum:
+            - american
+            - european
+          example: european
+          type: string
+        expiry:
+          description: The expiry date.
+          example: 2026-12-18
+          format: date
+          type: string
+        flex_ticker:
+          description: The FLEX symbol. The leading digit, together with the product type, determines the settlement, exercise style and delivery.
+          example: 4SPX
+          type: string
+        mark:
+          description: The mark price of the contract.
+          example: '41.25'
+          type: string
+        open_interest:
+          description: The open interest of the contract.
+          example: 12500
+          type: integer
+        option_symbol:
+          description: The FLEX option symbol in the OSI format, built from `flex_ticker`.
+          example: 4SPX261218P05000000
+          type: string
+        option_type:
+          enum:
+            - call
+            - put
+          example: put
+          type: string
+        settlement:
+          enum:
+            - am
+            - pm
+            - asian
+            - cliquet
+          example: pm
+          type: string
+        strike:
+          description: The strike price.
+          example: '5000'
+          type: string
+        ticker:
+          description: The underlying ticker.
+          example: SPX
+          type: string
+      title: FLEX Option Contract Day
+      type: object
+    FLEX Option Contract History:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/FLEX Option Contract Day'
+          type: array
+      title: FLEX Option Contract History
+      type: object
+    FLEX Option Contracts:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/FLEX Option Contract'
+          type: array
+        date:
+          example: 2026-09-29
+          format: date
+          type: string
+      title: FLEX Option Contracts
+      type: object
+    FLEX Options Order By:
+      default: open_interest
+      description: |
+        The field to sort the FLEX option contracts by. `premium` is `mark * open_interest`, `oi_change` is the open interest change since the previous trading day and `oi_change_perc` is that change divided by the previous open interest. Sorting by `oi_change_perc` excludes contracts that had no open interest on the previous trading day.
+      enum:
+        - open_interest
+        - premium
+        - oi_change
+        - oi_change_perc
+        - mark
+        - strike
+        - expiry
+        - ticker
+        - option_symbol
+      example: premium
+      title: FLEX Options Order By
+      type: string
+    FLEX Settlement:
+      description: A FLEX option settlement type.
+      enum:
+        - am
+        - pm
+        - asian
+        - cliquet
+      example: pm
+      title: FLEX Settlement
+      type: string
+    FLEX Settlements:
+      description: Return only contracts with one of these settlement types.
+      example:
+        - am
+        - pm
+      items:
+        $ref: '#/components/schemas/FLEX Settlement'
+      title: FLEX Settlements
+      type: array
+    FLEX Ticker Day:
+      description: The FLEX and total option open interest of one ticker on `date`.
+      properties:
+        date:
+          example: 2026-09-29
+          format: date
+          type: string
+        flex_oi:
+          description: The summed open interest of all FLEX option contracts on the ticker.
+          example: 1250000
+          type: integer
+        flex_option_chains:
+          description: The number of FLEX option contracts on the ticker.
+          example: 830
+          type: integer
+        total_open_interest:
+          description: The total open interest of the ticker's listed options.
+          example: 21400000
+          nullable: true
+          type: integer
+      title: FLEX Ticker Day
+      type: object
+    FLEX Ticker History:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/FLEX Ticker Day'
+          type: array
+      title: FLEX Ticker History
+      type: object
     FX Rate Response:
       properties:
         data:
@@ -3669,6 +4198,12 @@ components:
       description: Only return trades reported more than 45 days after the transaction date.
       example: true
       title: Filter Late Reports Only
+      type: boolean
+    FlexOiChangesOnly:
+      default: false
+      description: Return only contracts whose open interest differs from the previous trading day.
+      example: true
+      title: FlexOiChangesOnly
       type: boolean
     Flow Alert:
       description: |
@@ -6462,6 +6997,31 @@ components:
           $ref: '#/components/schemas/Stock Ticker'
       title: Insider
       type: object
+    Insider 10b5-1 Premium:
+      description: The premium of the transactions that were part of a 10b5-1 plan.
+      example: '0'
+      title: Insider 10b5-1 Premium
+      type: string
+    Insider 10b5-1 Transactions:
+      description: The number of transactions that were part of a 10b5-1 plan.
+      example: 0
+      title: Insider 10b5-1 Transactions
+      type: integer
+    Insider 10b5-1 Unique Insiders:
+      description: The number of unique insiders with transactions that were part of a 10b5-1 plan.
+      example: 0
+      title: Insider 10b5-1 Unique Insiders
+      type: integer
+    Insider 10b5-1 Unique Tickers:
+      description: The number of unique tickers with transactions that were part of a 10b5-1 plan.
+      example: 0
+      title: Insider 10b5-1 Unique Tickers
+      type: integer
+    Insider 10b5-1 Volume:
+      description: The volume of the transactions that were part of a 10b5-1 plan.
+      example: 0
+      title: Insider 10b5-1 Volume
+      type: integer
     Insider Amount:
       description: The amount of the insider trade.
       example: 1000
@@ -6594,34 +7154,91 @@ components:
       type: string
     Insider Sector Flow:
       description: The total buy/sell insider flow for a given sector on a given date. If there have been buy & sells on the same day then there will be 2 rows for that day.
-      example:
-        data:
-          - avg_price: 162.32
-            buy_sell: sell
-            date: 2024-12-12
-            premium: '664386'
-            transactions: 54
-            uniq_insiders: 10
-            volume: 244331
-        has_more: false
       properties:
-        avg_price:
-          $ref: '#/components/schemas/Insider Average Price'
         buy_sell:
           $ref: '#/components/schemas/Transaction Side'
         date:
           $ref: '#/components/schemas/Market General Trading day'
-        has_more:
-          $ref: '#/components/schemas/Has More'
         premium:
           $ref: '#/components/schemas/Insider Premium'
+        premium_10b5:
+          $ref: '#/components/schemas/Insider 10b5-1 Premium'
+        sector:
+          $ref: '#/components/schemas/Sector'
         transactions:
           $ref: '#/components/schemas/Insider Transactions'
+        transactions_10b5:
+          $ref: '#/components/schemas/Insider 10b5-1 Transactions'
         uniq_insiders:
           $ref: '#/components/schemas/Insider Unique Insiders'
+        uniq_insiders_10b5:
+          $ref: '#/components/schemas/Insider 10b5-1 Unique Insiders'
+        uniq_tickers:
+          $ref: '#/components/schemas/Insider Unique Tickers'
+        uniq_tickers_10b5:
+          $ref: '#/components/schemas/Insider 10b5-1 Unique Tickers'
         volume:
           $ref: '#/components/schemas/Insider Volume'
+        volume_10b5:
+          $ref: '#/components/schemas/Insider 10b5-1 Volume'
       title: Insider Sector Flow
+      type: object
+    Insider Sector Flow Order By:
+      default: date
+      description: The field to order by. Defaults to date.
+      enum:
+        - date
+        - transactions
+        - volume
+        - premium
+        - uniq_tickers
+        - premium_10b5
+        - transactions_10b5
+        - uniq_insiders
+        - uniq_insiders_10b5
+        - volume_10b5
+        - uniq_tickers_10b5
+      example: premium
+      title: Insider Sector Flow Order By
+      type: string
+    Insider Sector Flow Response:
+      example:
+        data:
+          - buy_sell: buy
+            date: 2024-12-30
+            premium: '5409456.6287'
+            premium_10b5: '0'
+            sector: Technology
+            transactions: 3
+            transactions_10b5: 0
+            uniq_insiders: 1
+            uniq_insiders_10b5: 0
+            uniq_tickers: 1
+            uniq_tickers_10b5: 0
+            volume: 26471
+            volume_10b5: 0
+          - buy_sell: buy
+            date: 2024-12-27
+            premium: '6540748.3792'
+            premium_10b5: '0'
+            sector: Technology
+            transactions: 5
+            transactions_10b5: 0
+            uniq_insiders: 1
+            uniq_insiders_10b5: 0
+            uniq_tickers: 1
+            uniq_tickers_10b5: 0
+            volume: 32105
+            volume_10b5: 0
+        has_more: true
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Insider Sector Flow'
+          type: array
+        has_more:
+          $ref: '#/components/schemas/Has More'
+      title: Insider Sector Flow Response
       type: object
     Insider Security AD Code:
       description: The security AD code of the insider trade.
@@ -6868,6 +7485,11 @@ components:
       description: The number of unique insiders of the insider trade.
       example: 1
       title: Insider Unique Insiders
+      type: integer
+    Insider Unique Tickers:
+      description: The number of unique tickers traded by insiders.
+      example: 2
+      title: Insider Unique Tickers
       type: integer
     Insider Volume:
       description: The volume of the insider trade.
@@ -16113,6 +16735,16 @@ info:
     
     ## Changelog
     
+    # 2026.09.30
+    - Added FLEX option endpoints. FLEX option data always lags by one trading day:
+      - [`/flex-options`](https://api.unusualwhales.com/docs/operations/PublicApi.FlexOptionsController.contracts) returns the FLEX option contracts of a date with their open interest and mark, next to the values of the previous trading day.
+      - [`/flex-options/market`](https://api.unusualwhales.com/docs/operations/PublicApi.FlexOptionsController.market) returns the market-wide FLEX open interest per day and the FLEX open interest per ticker on a date.
+      - [`/flex-options/chain/:chain`](https://api.unusualwhales.com/docs/operations/PublicApi.FlexOptionsController.chain) returns the daily history of one FLEX option contract.
+      - [`/flex-options/:ticker`](https://api.unusualwhales.com/docs/operations/PublicApi.FlexOptionsController.ticker) returns the daily FLEX open interest history of a ticker.
+    
+    # 2026.09.29
+    - Added new [SEC filing websocket channels](https://api.unusualwhales.com/docs/websocket/sec-filings): `sec:filings` (every filing), `sec:insider_trades` (insider trades, aggregated per filing and transaction type), `sec:13f_alerts` and `sec:13f_filings` (13F reports), `sec:13dg_filings` (Schedule 13D and 13G), `sec:company_reports` (10-Q, 10-K, 20-F and 40-F financial statements) and `sec:497_filings` (Rule 497 prospectuses). Each channel streams one message type of the Kafka topic `sec-filings`, with the same fields as the Kafka message. The channels cover every ticker at once and have no per-ticker variant.
+    
     # 2026.09.28
     - The websocket documentation moved to [https://api.unusualwhales.com/docs/websocket](https://api.unusualwhales.com/docs/websocket), with one page per channel. REST endpoints that serve the same data as a websocket channel link to that channel's page.
     
@@ -16520,7 +17152,11 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returnst all alert configurations of the user.
+        Returns all alert configurations of the user.
+        
+        Each configuration includes a `dsl` field with its human-readable Query language expression,
+        including formulas created with the formula builder. The field is `null` when the configuration
+        cannot be represented in the Query language. The structured filters remain available in `config`.
         
         Users can create alerts for:
         - Market tide
@@ -16550,7 +17186,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Alert config'
+                $ref: '#/components/schemas/Alert configurations'
           description: ''
         '401':
           content:
@@ -19318,6 +19954,290 @@ paths:
       summary: Sector & Country weights
       tags:
         - etfs
+  /api/flex-options:
+    get:
+      callbacks: {}
+      description: |
+        Returns the FLEX option contracts of `date`, together with each contract's open interest and mark on the previous trading day.
+        
+        FLEX option data always lags by one trading day, so the latest `date` is the previous trading day. By default the contracts are sorted by `open_interest` descending.
+      operationId: PublicApi.FlexOptionsController.contracts
+      parameters:
+        - description: A trading date in the format of YYYY-MM-DD. Defaults to the latest date with FLEX option data.
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+        - description: ''
+          in: query
+          name: ticker_symbol
+          required: false
+          schema:
+            $ref: '#/components/schemas/Ticker'
+        - description: ''
+          in: query
+          name: min_dte
+          required: false
+          schema:
+            $ref: '#/components/schemas/Min DTE'
+        - description: ''
+          in: query
+          name: max_dte
+          required: false
+          schema:
+            $ref: '#/components/schemas/Max DTE'
+        - description: ''
+          in: query
+          name: option_type
+          required: false
+          schema:
+            $ref: '#/components/schemas/OptionType'
+        - description: ''
+          in: query
+          name: min_strike
+          required: false
+          schema:
+            $ref: '#/components/schemas/Min Strike'
+        - description: ''
+          in: query
+          name: max_strike
+          required: false
+          schema:
+            $ref: '#/components/schemas/Max Strike'
+        - description: ''
+          in: query
+          name: min_open_interest
+          required: false
+          schema:
+            $ref: '#/components/schemas/Min Open Interest'
+        - description: ''
+          in: query
+          name: max_open_interest
+          required: false
+          schema:
+            $ref: '#/components/schemas/Max Open Interest'
+        - description: ''
+          in: query
+          name: settlements[]
+          required: false
+          schema:
+            $ref: '#/components/schemas/FLEX Settlements'
+        - description: ''
+          in: query
+          name: exercise_styles[]
+          required: false
+          schema:
+            $ref: '#/components/schemas/FLEX Exercise Styles'
+        - description: ''
+          in: query
+          name: deliveries[]
+          required: false
+          schema:
+            $ref: '#/components/schemas/FLEX Deliveries'
+        - description: ''
+          in: query
+          name: oi_changes_only
+          required: false
+          schema:
+            $ref: '#/components/schemas/FlexOiChangesOnly'
+        - description: ''
+          in: query
+          name: order
+          required: false
+          schema:
+            $ref: '#/components/schemas/FLEX Options Order By'
+        - description: ''
+          in: query
+          name: order_direction
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderDirection'
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 100, Max 1000 Min 1'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FLEX Option Contracts'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: FLEX option contracts
+      tags:
+        - flex-options
+  /api/flex-options/chain/{chain}:
+    get:
+      callbacks: {}
+      description: |
+        Returns the daily open interest and mark of one FLEX option contract over the last two years, sorted by `date` ascending.
+      operationId: PublicApi.FlexOptionsController.chain
+      parameters:
+        - description: A FLEX option symbol as returned in `option_symbol`.
+          example: 4SPX261218P05000000
+          in: path
+          name: chain
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FLEX Option Contract History'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: FLEX option contract history
+      tags:
+        - flex-options
+  /api/flex-options/market:
+    get:
+      callbacks: {}
+      description: |
+        Returns two lists:
+        
+        - `data` contains one row per trading day over the last two years with the market-wide FLEX open interest next to the open interest of listed options.
+        - `tickers` contains every ticker with FLEX open interest on `date`, together with its values on the previous trading day, sorted by `flex_oi` descending.
+      operationId: PublicApi.FlexOptionsController.market
+      parameters:
+        - description: A trading date in the format of YYYY-MM-DD. Defaults to the latest date with FLEX option data.
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FLEX Market Overview'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: FLEX market overview
+      tags:
+        - flex-options
+  /api/flex-options/{ticker}:
+    get:
+      callbacks: {}
+      description: |
+        Returns the daily FLEX open interest and number of FLEX option contracts of a ticker over the last two years, sorted by `date` ascending. Days without FLEX open interest for the ticker are omitted.
+      operationId: PublicApi.FlexOptionsController.ticker
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/SingleTicker'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FLEX Ticker History'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: FLEX ticker history
+      tags:
+        - flex-options
   /api/forex/history:
     get:
       callbacks: {}
@@ -20340,7 +21260,12 @@ paths:
       description: |
         Returns an aggregated view of the insider flow for the given sector.
         
-        This can be used to quickly examine the buy & sell insider flow for a given trading date
+        This can be used to quickly examine the buy & sell insider flow for a given trading date.
+        
+        Rows are sorted by `date`, newest first. Use `order` and `order_direction` to sort by another field or direction.
+        
+        Sell rows have negative `volume` and `premium` (and negative `volume_10b5` and `premium_10b5`).
+        Sorting by `premium` descending ranks the largest buys first; sort ascending to rank the largest sells first.
       operationId: PublicApi.InsiderController.sector_flow
       parameters:
         - description: ''
@@ -20349,6 +21274,18 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/Sector'
+        - description: ''
+          in: query
+          name: order
+          required: false
+          schema:
+            $ref: '#/components/schemas/Insider Sector Flow Order By'
+        - description: ''
+          in: query
+          name: order_direction
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderDirection'
         - description: ''
           in: query
           name: limit
@@ -20366,7 +21303,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Insider Sector Flow'
+                $ref: '#/components/schemas/Insider Sector Flow Response'
           description: ''
         '401':
           content:
