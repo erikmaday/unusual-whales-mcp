@@ -16730,6 +16730,9 @@ info:
     
     Need Kafka streaming? Our Startup + Kafka tier at $3,000/mo adds real-time Kafka cluster access. Annual plan available at $30,000/yr (2 months free) with the same 1,000 req/min burst allowance. [Start building →](https://unusualwhales.com/checkout?plan=enterprise_startup_kafka&interval=monthly)
     
+    ## CBOE Index Prices
+    For CBOE index tickers such as SPX or VIX the index price is returned as `null` and the row is marked `missing_periscope`. If the request filters with `min_underlying_price`, `max_underlying_price`, `min_stock_price`, `max_stock_price`, `min_diff`, `max_diff`, `min_implied_move`, `max_implied_move`, `min_return_on_capital`, `max_return_on_capital`, `min_return_on_capital_perc` or `max_return_on_capital_perc`, rows for these index tickers are left out of the response. CBOE index prices require provisioned access and CBOE approval. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com to request access. This applies to every REST endpoint that can return an index price, not only the ones whose description repeats it.
+    
     ## Enterprise/Professional Subscribers
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com](mailto:oskar@unusualwhales.com?cc=enterprise@unusualwhales.com,nastja.petrovic@unusualwhales.com).
     
@@ -23410,6 +23413,8 @@ paths:
       description: |
         Returns the last 50 option trades for the given option chain. Optionally a min premium and a side can be supplied in the query for further filtering.
         If no date is specified data for the last trading day is being returned.
+        
+        For CBOE index tickers such as SPX or VIX the index price is returned as `null` and the row is marked `missing_periscope`. If the request filters with `min_underlying_price`, `max_underlying_price`, `min_stock_price`, `max_stock_price`, `min_diff`, `max_diff`, `min_implied_move`, `max_implied_move`, `min_return_on_capital`, `max_return_on_capital`, `min_return_on_capital_perc` or `max_return_on_capital_perc`, rows for these index tickers are left out of the response. CBOE index prices require provisioned access and CBOE approval. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com to request access.
       operationId: PublicApi.OptionContractController.flow
       parameters:
         - description: ''
@@ -23676,6 +23681,8 @@ paths:
         
         On this REST endpoint, `executed_at`, `nbbo_bid_time` and `nbbo_ask_time` are ISO 8601 timestamps in UTC.
         On the WebSocket [`option_trades`](https://api.unusualwhales.com/docs/websocket/option-trades) channel, the same fields are Unix epoch timestamps in milliseconds.
+        
+        For CBOE index tickers such as SPX or VIX the index price is returned as `null` and the row is marked `missing_periscope`. If the request filters with `min_underlying_price`, `max_underlying_price`, `min_stock_price`, `max_stock_price`, `min_diff`, `max_diff`, `min_implied_move`, `max_implied_move`, `min_return_on_capital`, `max_return_on_capital`, `min_return_on_capital_perc` or `max_return_on_capital_perc`, rows for these index tickers are left out of the response. CBOE index prices require provisioned access and CBOE approval. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com to request access.
       operationId: PublicApi.OptionTradeController.index
       parameters:
         - description: ''
@@ -24483,6 +24490,9 @@ paths:
         
         The full current options tape including trades that do not form a RepeatedHits alert can be accessed through the
         [Option Trades endpoint](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index).
+        
+        For CBOE index tickers such as SPX or VIX the index price is returned as `null` and the row is marked `missing_periscope`. If the request filters with `min_underlying_price`, `max_underlying_price`, `min_stock_price`, `max_stock_price`, `min_diff`, `max_diff`, `min_implied_move`, `max_implied_move`, `min_return_on_capital`, `max_return_on_capital`, `min_return_on_capital_perc` or `max_return_on_capital_perc`, rows for these index tickers are left out of the response. CBOE index prices require provisioned access and CBOE approval. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com to request access.
+        
         The difference between the 3 repeated hits alerts are:
         - DescendingFill: Each transaction that comes after another in chronological order has either the same fill price as or a lower fill price than the previous transaction. The last transaction must be lower than the first transaction.
         - AscendingFill: The opposite of DescendingFill. The fill prices increase instead of decreasing.
@@ -24914,6 +24924,8 @@ paths:
         Returns the trades that made up the specific alert. For multi leg flow alert trades it will
         return all the related multi leg trades.
         For alerts such as RepeatedHits it will return all the transactions that made up that alert.
+        
+        For CBOE index tickers such as SPX or VIX the index price is returned as `null` and the row is marked `missing_periscope`. If the request filters with `min_underlying_price`, `max_underlying_price`, `min_stock_price`, `max_stock_price`, `min_diff`, `max_diff`, `min_implied_move`, `max_implied_move`, `min_return_on_capital`, `max_return_on_capital`, `min_return_on_capital_perc` or `max_return_on_capital_perc`, rows for these index tickers are left out of the response. CBOE index prices require provisioned access and CBOE approval. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com to request access.
       operationId: PublicApi.OptionTradeController.flow_alert
       parameters:
         - description: The UUID of the flow alert
@@ -30206,6 +30218,8 @@ paths:
       description: |
         Deprecated. Use `/api/option-trades/flow-alerts`, which supports the full filter set:
         [https://api.unusualwhales.com/docs#/operations/PublicApi.OptionTradeController.flow_alerts](https://api.unusualwhales.com/docs#/operations/PublicApi.OptionTradeController.flow_alerts)
+        
+        For CBOE index tickers such as SPX or VIX the index price is returned as `null` and the row is marked `missing_periscope`. If the request filters with `min_underlying_price`, `max_underlying_price`, `min_stock_price`, `max_stock_price`, `min_diff`, `max_diff`, `min_implied_move`, `max_implied_move`, `min_return_on_capital`, `max_return_on_capital`, `min_return_on_capital_perc` or `max_return_on_capital_perc`, rows for these index tickers are left out of the response. CBOE index prices require provisioned access and CBOE approval. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com to request access.
       operationId: PublicApi.TickerController.flow_alerts
       parameters:
         - description: ''
@@ -30426,6 +30440,8 @@ paths:
         Returns the latest flows for the given ticker. Optionally a min premium and a side can be supplied in the query for further filtering.
         
         For real time streaming of option trades for a ticker, subscribe to the `option_trades:<TICKER>` websocket channel, see [https://api.unusualwhales.com/docs/websocket/option-trades](https://api.unusualwhales.com/docs/websocket/option-trades).
+        
+        For CBOE index tickers such as SPX or VIX the index price is returned as `null` and the row is marked `missing_periscope`. If the request filters with `min_underlying_price`, `max_underlying_price`, `min_stock_price`, `max_stock_price`, `min_diff`, `max_diff`, `min_implied_move`, `max_implied_move`, `min_return_on_capital`, `max_return_on_capital`, `min_return_on_capital_perc` or `max_return_on_capital_perc`, rows for these index tickers are left out of the response. CBOE index prices require provisioned access and CBOE approval. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com to request access.
       operationId: PublicApi.TickerController.flow_recent
       parameters:
         - description: ''
@@ -31428,6 +31444,8 @@ paths:
       callbacks: {}
       description: |
         Returns the max pain for all expirations for the given ticker for the last 120 days
+        
+        For CBOE index tickers such as SPX or VIX the index price is returned as `null` and the row is marked `missing_periscope`. If the request filters with `min_underlying_price`, `max_underlying_price`, `min_stock_price`, `max_stock_price`, `min_diff`, `max_diff`, `min_implied_move`, `max_implied_move`, `min_return_on_capital`, `max_return_on_capital`, `min_return_on_capital_perc` or `max_return_on_capital_perc`, rows for these index tickers are left out of the response. CBOE index prices require provisioned access and CBOE approval. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com to request access.
       operationId: PublicApi.TickerController.max_pain
       parameters:
         - description: ''
@@ -33432,6 +33450,8 @@ paths:
         
         A row's `date` is the implied volatility observation date. `unshifted_rv_date` is the date when the
         realized volatility window ends. Recent rows can have a `null` realized value until that window ends.
+        
+        For CBOE index tickers such as SPX or VIX the index price is returned as `null` and the row is marked `missing_periscope`. If the request filters with `min_underlying_price`, `max_underlying_price`, `min_stock_price`, `max_stock_price`, `min_diff`, `max_diff`, `min_implied_move`, `max_implied_move`, `min_return_on_capital`, `max_return_on_capital`, `min_return_on_capital_perc` or `max_return_on_capital_perc`, rows for these index tickers are left out of the response. CBOE index prices require provisioned access and CBOE approval. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com to request access.
       operationId: PublicApi.TickerController.realized_volatility
       parameters:
         - description: ''
