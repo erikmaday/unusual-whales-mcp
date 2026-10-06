@@ -3526,15 +3526,15 @@ components:
       example:
         data:
           - chains: 5000
-            expiry: 2023-09-07
+            expires: 2023-09-07
             open_interest: 554
             volume: 1566232
           - chains: 50
-            expiry: 2023-10-20
+            expires: 2023-10-20
             open_interest: 0
             volume: 1532
           - chains: 20
-            expiry: 2023-11-30
+            expires: 2023-11-30
             open_interest: 33112
             volume: 931
       properties:
@@ -3542,7 +3542,7 @@ components:
           description: The total amount of chains for that expiry
           example: 12223
           type: integer
-        expiry:
+        expires:
           $ref: '#/components/schemas/Option Contract Expiry'
         open_interest:
           description: The total open interest for that expiry
@@ -28994,6 +28994,262 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Optional Market Date'
+        - description: Return securities whose signed fractional distance from sma_10 is at least this value, inclusive. Calculated as (price - sma_10) / sma_10, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_sma_10
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from sma_10 is at most this value, inclusive. Calculated as (price - sma_10) / sma_10, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_sma_10
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from sma_14 is at least this value, inclusive. Calculated as (price - sma_14) / sma_14, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_sma_14
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from sma_14 is at most this value, inclusive. Calculated as (price - sma_14) / sma_14, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_sma_14
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from sma_20 is at least this value, inclusive. Calculated as (price - sma_20) / sma_20, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_sma_20
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from sma_20 is at most this value, inclusive. Calculated as (price - sma_20) / sma_20, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_sma_20
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from sma_50 is at least this value, inclusive. Calculated as (price - sma_50) / sma_50, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_sma_50
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from sma_50 is at most this value, inclusive. Calculated as (price - sma_50) / sma_50, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_sma_50
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from sma_200 is at least this value, inclusive. Calculated as (price - sma_200) / sma_200, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_sma_200
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from sma_200 is at most this value, inclusive. Calculated as (price - sma_200) / sma_200, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_sma_200
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from ema_9 is at least this value, inclusive. Calculated as (price - ema_9) / ema_9, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_ema_9
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from ema_9 is at most this value, inclusive. Calculated as (price - ema_9) / ema_9, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_ema_9
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from ema_14 is at least this value, inclusive. Calculated as (price - ema_14) / ema_14, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_ema_14
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from ema_14 is at most this value, inclusive. Calculated as (price - ema_14) / ema_14, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_ema_14
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from ema_20 is at least this value, inclusive. Calculated as (price - ema_20) / ema_20, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_ema_20
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from ema_20 is at most this value, inclusive. Calculated as (price - ema_20) / ema_20, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_ema_20
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from ema_21 is at least this value, inclusive. Calculated as (price - ema_21) / ema_21, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_ema_21
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from ema_21 is at most this value, inclusive. Calculated as (price - ema_21) / ema_21, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_ema_21
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from ema_50 is at least this value, inclusive. Calculated as (price - ema_50) / ema_50, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_ema_50
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from ema_50 is at most this value, inclusive. Calculated as (price - ema_50) / ema_50, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_ema_50
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_14_2_upper is at least this value, inclusive. Calculated as (price - bb_14_2_upper) / bb_14_2_upper, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_bb_14_2_upper
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_14_2_upper is at most this value, inclusive. Calculated as (price - bb_14_2_upper) / bb_14_2_upper, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_bb_14_2_upper
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_14_2_middle is at least this value, inclusive. Calculated as (price - bb_14_2_middle) / bb_14_2_middle, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_bb_14_2_middle
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_14_2_middle is at most this value, inclusive. Calculated as (price - bb_14_2_middle) / bb_14_2_middle, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_bb_14_2_middle
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_14_2_lower is at least this value, inclusive. Calculated as (price - bb_14_2_lower) / bb_14_2_lower, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_bb_14_2_lower
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_14_2_lower is at most this value, inclusive. Calculated as (price - bb_14_2_lower) / bb_14_2_lower, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_bb_14_2_lower
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_20_2_upper is at least this value, inclusive. Calculated as (price - bb_20_2_upper) / bb_20_2_upper, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_bb_20_2_upper
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_20_2_upper is at most this value, inclusive. Calculated as (price - bb_20_2_upper) / bb_20_2_upper, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_bb_20_2_upper
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_20_2_middle is at least this value, inclusive. Calculated as (price - bb_20_2_middle) / bb_20_2_middle, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_bb_20_2_middle
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_20_2_middle is at most this value, inclusive. Calculated as (price - bb_20_2_middle) / bb_20_2_middle, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_bb_20_2_middle
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_20_2_lower is at least this value, inclusive. Calculated as (price - bb_20_2_lower) / bb_20_2_lower, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: 0.01
+          in: query
+          name: min_distance_to_bb_20_2_lower
+          required: false
+          schema:
+            format: double
+            type: number
+        - description: Return securities whose signed fractional distance from bb_20_2_lower is at most this value, inclusive. Calculated as (price - bb_20_2_lower) / bb_20_2_lower, using the latest accepted price for the row and regular-session daily candles for the indicator. 0.01 means 1% above and -0.01 means 1% below. Rows with missing inputs or a zero indicator are excluded. Raw indicator values remain available in query formulas.
+          example: -0.01
+          in: query
+          name: max_distance_to_bb_20_2_lower
+          required: false
+          schema:
+            format: double
+            type: number
       responses:
         '200':
           content:
@@ -32659,7 +32915,9 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returns the most recent GEX exposures across all strikes for the given ticker & expiration on a given date. Calculated either with open interest or with volume.
+        Returns the most recent GEX exposures across all strikes for the given ticker and expirations on a given date, one row per strike and expiry. Calculated either with open interest or with volume.
+        
+        Pass `expirations[]` to limit the rows to those expiries. Without it, the response covers every expiry for the ticker. Rows are sorted by `expiry`, latest first. Use `limit` and `page` to walk the full set. A page with fewer than `limit` rows is the last one.
         
         Data is available since 2025-01-16. A page can return 503 while the date's exposures are still loading. Retry that same page after the `Retry-After` seconds; a 503 does not end the walk.
         
@@ -32674,10 +32932,10 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/SingleTicker'
-        - description: ''
+        - description: Return only these expiries. Omit it to return every expiry.
           in: query
           name: expirations[]
-          required: true
+          required: false
           schema:
             $ref: '#/components/schemas/Expiry dates'
         - description: ''
