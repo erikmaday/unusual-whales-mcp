@@ -12602,6 +12602,16 @@ components:
           type: string
       title: Retry Later Error Message
       type: object
+    Revenue Breakdown Period:
+      default: quarter
+      description: Return the `rev_breakdown` rows that cover this period. `quarter` returns rows whose `period_months` is 3 or `null`. When `annual_only` is true, `quarter` also returns the 12-month rows. `annual` returns only 12-month rows. A 10-K has a 12-month row for its fiscal year with the same `report_date` as its Q4 row. When the Q4 value can't be computed from the company's earlier reports for that fiscal year, for example because the company reports a breakdown only in its annual report, the 12-month row is the only row for that breakdown. `all` returns every row, including 6-month and 9-month rows.
+      enum:
+        - quarter
+        - annual
+        - all
+      example: annual
+      title: Revenue Breakdown Period
+      type: string
     Revenue Breakdown Row:
       description: A revenue figure split by product or geography.
       properties:
@@ -12620,6 +12630,16 @@ components:
           items:
             type: string
           type: array
+        period_months:
+          description: Number of months the value covers. 3 is a quarter, and a 10-K row with 3 holds the fiscal fourth quarter. 12 is the full fiscal year. 6 and 9 appear only with `period=all`. They come from a 20-F or 40-F transition report, which covers only part of a year after a company changes its fiscal year-end. They also come from a 10-Q or 10-K value whose period is too far from 6, 9 or 12 months to compute a quarter from it, such as a period measured from the company's inception or a shortened first fiscal period. `null` means the value is a count at a point in time, such as the number of stores, or that the row was stored before this field existed.
+          enum:
+            - 3
+            - 6
+            - 9
+            - 12
+          example: 3
+          nullable: true
+          type: integer
         report_date:
           example: 2024-09-30
           format: date
@@ -12630,6 +12650,8 @@ components:
             - rewards
             - locations
             - memberships
+            - country
+            - continent
             - product
           example: product
           type: string
@@ -30766,6 +30788,12 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: period
+          required: false
+          schema:
+            $ref: '#/components/schemas/Revenue Breakdown Period'
       responses:
         '200':
           content:
