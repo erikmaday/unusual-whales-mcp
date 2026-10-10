@@ -10533,6 +10533,7 @@ components:
             total_bid_changes: 28
             total_premium: '3613.00'
             trades: 244
+            underlying_close: '418.52'
             volume: 2655
       properties:
         ask_volume:
@@ -10587,6 +10588,8 @@ components:
           $ref: '#/components/schemas/Option Contract Premium'
         trades:
           $ref: '#/components/schemas/Option Contract Total Trades Count'
+        underlying_close:
+          $ref: '#/components/schemas/Underlying Close'
         volume:
           $ref: '#/components/schemas/Option Contract Volume'
       title: Option contract 
@@ -10715,6 +10718,70 @@ components:
         volume:
           $ref: '#/components/schemas/Option Contract Volume'
       title: Option contracts
+      type: object
+    Option watchlist:
+      description: An option watchlist of the user.
+      properties:
+        chains:
+          $ref: '#/components/schemas/Watchlist option symbols'
+        color:
+          $ref: '#/components/schemas/Watchlist color'
+        id:
+          $ref: '#/components/schemas/Watchlist id'
+        name:
+          $ref: '#/components/schemas/Watchlist name'
+      title: Option watchlist
+      type: object
+    Option watchlist request:
+      description: The name, option symbols and color of an option watchlist. Each new option symbol must have option data for the last trading day and must not be expired.
+      example:
+        chains:
+          - AAPL261218C00250000
+        color: green
+        name: Earnings plays
+      properties:
+        chains:
+          $ref: '#/components/schemas/Watchlist option symbols'
+        color:
+          $ref: '#/components/schemas/Watchlist color'
+        name:
+          $ref: '#/components/schemas/Watchlist name'
+      required:
+        - name
+        - chains
+      title: Option watchlist request
+      type: object
+    Option watchlist response:
+      description: The created or updated option watchlist.
+      example:
+        data:
+          chains:
+            - AAPL261218C00250000
+            - SPY261218P00500000
+          color: green
+          id: 0d6f7a52-3c41-4f0e-8a1b-7a2e9d4c6b11
+          name: Earnings plays
+      properties:
+        data:
+          $ref: '#/components/schemas/Option watchlist'
+      title: Option watchlist response
+      type: object
+    Option watchlists:
+      description: The option watchlists of the user, newest first.
+      example:
+        data:
+          - chains:
+              - AAPL261218C00250000
+              - SPY261218P00500000
+            color: green
+            id: 0d6f7a52-3c41-4f0e-8a1b-7a2e9d4c6b11
+            name: Earnings plays
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Option watchlist'
+          type: array
+      title: Option watchlists
       type: object
     OptionContract:
       description: An option contract in the OSI format.
@@ -15297,6 +15364,100 @@ components:
           $ref: '#/components/schemas/Stock Volume'
       title: Stock state
       type: object
+    Stock watchlist:
+      description: A stock watchlist of the user.
+      properties:
+        color:
+          $ref: '#/components/schemas/Watchlist color'
+        id:
+          $ref: '#/components/schemas/Watchlist id'
+        name:
+          $ref: '#/components/schemas/Watchlist name'
+        tickers:
+          $ref: '#/components/schemas/Watchlist tickers'
+      title: Stock watchlist
+      type: object
+    Stock watchlist request:
+      description: The name, tickers and color of a stock watchlist. Unknown tickers and tickers without recent stock prices are left out of the watchlist.
+      example:
+        color: blue
+        name: Semiconductors
+        tickers:
+          - NVDA
+          - AMD
+          - TSM
+      properties:
+        color:
+          $ref: '#/components/schemas/Watchlist color'
+        name:
+          $ref: '#/components/schemas/Watchlist name'
+        tickers:
+          $ref: '#/components/schemas/Watchlist tickers'
+      required:
+        - name
+        - tickers
+      title: Stock watchlist request
+      type: object
+    Stock watchlist response:
+      description: The created or updated stock watchlist.
+      example:
+        data:
+          color: blue
+          id: 6b3c1e8a-58f4-4a7e-9c55-0f3c2f7f5a10
+          name: Semiconductors
+          tickers:
+            - NVDA
+            - AMD
+            - TSM
+      properties:
+        data:
+          $ref: '#/components/schemas/Stock watchlist'
+      title: Stock watchlist response
+      type: object
+    Stock watchlist tickers request:
+      description: The tickers to add to or remove from a stock watchlist.
+      example:
+        tickers:
+          - NVDA
+          - AMD
+      properties:
+        tickers:
+          $ref: '#/components/schemas/Watchlist tickers'
+      required:
+        - tickers
+      title: Stock watchlist tickers request
+      type: object
+    Stock watchlists:
+      description: The stock watchlists of the user, newest first.
+      example:
+        data:
+          - color: blue
+            id: 6b3c1e8a-58f4-4a7e-9c55-0f3c2f7f5a10
+            is_default_view: false
+            name: Semiconductors
+            tickers:
+              - NVDA
+              - AMD
+              - TSM
+      properties:
+        data:
+          items:
+            properties:
+              color:
+                $ref: '#/components/schemas/Watchlist color'
+              id:
+                $ref: '#/components/schemas/Watchlist id'
+              is_default_view:
+                description: Whether the watchlist is a default view provided by Unusual Whales. Default views cannot be updated or deleted.
+                type: boolean
+              name:
+                $ref: '#/components/schemas/Watchlist name'
+              tickers:
+                $ref: '#/components/schemas/Watchlist tickers'
+            type: object
+          type: array
+      title: Stock watchlists
+      type: object
     StockScreenerQueryHelp:
       properties:
         fields:
@@ -15930,6 +16091,12 @@ components:
           type: string
       title: Transcript Statement
       type: object
+    Underlying Close:
+      description: The underlying stock's regular-session close on this trading day. Null when no regular-session close is recorded for the underlying on that date.
+      example: '116.94'
+      nullable: true
+      title: Underlying Close
+      type: string
     Underlying Price:
       description: The price of the underlying asset.
       example: '128.16'
@@ -16732,6 +16899,64 @@ components:
       example: '2394292.0'
       title: Warrant Value
       type: string
+    Watchlist color:
+      description: The watchlist color shown on unusualwhales.com.
+      enum:
+        - green
+        - red
+        - yellow
+        - blue
+        - purple
+        - pink
+        - orange
+        - gray
+      example: blue
+      nullable: true
+      title: Watchlist color
+      type: string
+    Watchlist delete response:
+      description: Confirms that the watchlist was deleted.
+      example:
+        data:
+          id: 6b3c1e8a-58f4-4a7e-9c55-0f3c2f7f5a10
+      properties:
+        data:
+          properties:
+            id:
+              $ref: '#/components/schemas/Watchlist id'
+          type: object
+      title: Watchlist delete response
+      type: object
+    Watchlist id:
+      description: The watchlist identifier.
+      example: 6b3c1e8a-58f4-4a7e-9c55-0f3c2f7f5a10
+      format: uuid
+      title: Watchlist id
+      type: string
+    Watchlist name:
+      description: The watchlist name. Names are unique per user and watchlist type.
+      example: Semiconductors
+      title: Watchlist name
+      type: string
+    Watchlist option symbols:
+      description: The option symbols on the watchlist.
+      example:
+        - AAPL261218C00250000
+        - SPY261218P00500000
+      items:
+        type: string
+      title: Watchlist option symbols
+      type: array
+    Watchlist tickers:
+      description: The ticker symbols on the watchlist.
+      example:
+        - NVDA
+        - AMD
+        - TSM
+      items:
+        type: string
+      title: Watchlist tickers
+      type: array
     Website:
       description: The institution's website.
       example: https://www.elliottmgmt.com/
@@ -16759,6 +16984,14 @@ info:
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com](mailto:oskar@unusualwhales.com?cc=enterprise@unusualwhales.com,nastja.petrovic@unusualwhales.com).
     
     ## Changelog
+    
+    # 2026.10.09
+    - Added endpoints to manage the stock and option watchlists of the user. These are the same watchlists as on unusualwhales.com, so changes made through the API show up on the website.
+      - [`GET /watchlists/stocks`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.stock_index) and [`GET /watchlists/options`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.option_index) list the watchlists.
+      - [`POST /watchlists/stocks`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.stock_create) and [`POST /watchlists/options`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.option_create) create a watchlist.
+      - [`PUT /watchlists/stocks/:id`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.stock_update) and [`PUT /watchlists/options/:id`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.option_update) replace the name, contents and color of a watchlist. WARNING: Tickers or option symbols missing from the request are removed from the watchlist.
+      - [`POST /watchlists/stocks/:id/add-tickers`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.stock_add_tickers) and [`POST /watchlists/stocks/:id/remove-tickers`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.stock_remove_tickers) add or remove tickers on a stock watchlist and keep the other tickers.
+      - [`DELETE /watchlists/stocks/:id`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.stock_delete) and [`DELETE /watchlists/options/:id`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.option_delete) delete a watchlist.
     
     # 2026.09.30
     - Added FLEX option endpoints. FLEX option data always lags by one trading day:
@@ -34389,6 +34622,572 @@ paths:
       summary: VIX Term Structure
       tags:
         - volatility
+  /api/watchlists/options:
+    get:
+      callbacks: {}
+      description: |
+        Returns the option watchlists of the user, newest first, with the option symbols on each watchlist.
+      operationId: PublicApi.WatchlistController.option_index
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Option watchlists'
+          description: The option watchlists
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Option watchlists
+      tags:
+        - watchlists
+    post:
+      callbacks: {}
+      description: |
+        Creates an option watchlist with the given name, option symbols and color.
+        
+        Each option symbol must have option data for the last trading day and must not be expired.
+        The number of watchlists and the number of option symbols per watchlist are limited by the plan of the user.
+      operationId: PublicApi.WatchlistController.option_create
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Option watchlist request'
+        description: Option watchlist
+        required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Option watchlist response'
+          description: The created option watchlist
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid watchlist
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Watchlist not found
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Create option watchlist
+      tags:
+        - watchlists
+  /api/watchlists/options/{id}:
+    delete:
+      callbacks: {}
+      description: |
+        Deletes an option watchlist of the user. The `Bookmarks` watchlist cannot be deleted.
+      operationId: PublicApi.WatchlistController.option_delete
+      parameters:
+        - description: The watchlist identifier.
+          in: path
+          name: id
+          required: true
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Watchlist delete response'
+          description: The deleted option watchlist
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid watchlist
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Watchlist not found
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Delete option watchlist
+      tags:
+        - watchlists
+    put:
+      callbacks: {}
+      description: |
+        Replaces the name, option symbols and color of an option watchlist.
+        
+        WARNING: This endpoint replaces the whole watchlist. Option symbols missing from `chains` are removed from the watchlist.
+        To keep the current option symbols, include them in `chains`. You can get them from `GET /api/watchlists/options`.
+        
+        When `color` is left out, the watchlist keeps its color.
+        
+        Each added option symbol must have option data for the last trading day and must not be expired.
+        The name of the `Bookmarks` watchlist cannot be changed.
+      operationId: PublicApi.WatchlistController.option_update
+      parameters:
+        - description: The watchlist identifier.
+          in: path
+          name: id
+          required: true
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Option watchlist request'
+        description: Option watchlist
+        required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Option watchlist response'
+          description: The updated option watchlist
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid watchlist
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Watchlist not found
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Update option watchlist
+      tags:
+        - watchlists
+  /api/watchlists/stocks:
+    get:
+      callbacks: {}
+      description: |
+        Returns the stock watchlists of the user, newest first, with the tickers on each watchlist.
+      operationId: PublicApi.WatchlistController.stock_index
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock watchlists'
+          description: The stock watchlists
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Stock watchlists
+      tags:
+        - watchlists
+    post:
+      callbacks: {}
+      description: |
+        Creates a stock watchlist with the given name, tickers and color.
+        
+        Unknown tickers and tickers without recent stock prices are left out of the watchlist. The request fails when none of the tickers remain.
+        The number of watchlists and the number of tickers per watchlist are limited by the plan of the user.
+      operationId: PublicApi.WatchlistController.stock_create
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Stock watchlist request'
+        description: Stock watchlist
+        required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock watchlist response'
+          description: The created stock watchlist
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid watchlist
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Watchlist not found
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Create stock watchlist
+      tags:
+        - watchlists
+  /api/watchlists/stocks/{id}:
+    delete:
+      callbacks: {}
+      description: |
+        Deletes a stock watchlist of the user. Default views provided by Unusual Whales cannot be deleted and return 404.
+      operationId: PublicApi.WatchlistController.stock_delete
+      parameters:
+        - description: The watchlist identifier.
+          in: path
+          name: id
+          required: true
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Watchlist delete response'
+          description: The deleted stock watchlist
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid watchlist
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Watchlist not found
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Delete stock watchlist
+      tags:
+        - watchlists
+    put:
+      callbacks: {}
+      description: |
+        Replaces the name, tickers and color of a stock watchlist.
+        
+        WARNING: This endpoint replaces the whole watchlist. Tickers missing from `tickers` are removed from the watchlist.
+        To add or remove single tickers without sending the full list, use `POST /api/watchlists/stocks/{id}/add-tickers` or `POST /api/watchlists/stocks/{id}/remove-tickers`.
+        
+        When `color` is left out, the watchlist keeps its color.
+        
+        Unknown tickers and tickers without recent stock prices are left out of the watchlist. The request fails when none of the tickers remain.
+        Default views provided by Unusual Whales cannot be updated and return 404.
+      operationId: PublicApi.WatchlistController.stock_update
+      parameters:
+        - description: The watchlist identifier.
+          in: path
+          name: id
+          required: true
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Stock watchlist request'
+        description: Stock watchlist
+        required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock watchlist response'
+          description: The updated stock watchlist
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid watchlist
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Watchlist not found
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Update stock watchlist
+      tags:
+        - watchlists
+  /api/watchlists/stocks/{id}/add-tickers:
+    post:
+      callbacks: {}
+      description: |
+        Adds tickers to a stock watchlist and keeps the tickers that are already on it. Tickers already on the watchlist are not added twice.
+        
+        Unknown tickers and tickers without recent stock prices are left out. The request fails when none of the tickers remain.
+        The number of tickers per watchlist is limited by the plan of the user.
+        Default views provided by Unusual Whales cannot be changed and return 404.
+      operationId: PublicApi.WatchlistController.stock_add_tickers
+      parameters:
+        - description: The watchlist identifier.
+          in: path
+          name: id
+          required: true
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Stock watchlist tickers request'
+        description: Tickers
+        required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock watchlist response'
+          description: The updated stock watchlist
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid watchlist
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Watchlist not found
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Add tickers to stock watchlist
+      tags:
+        - watchlists
+  /api/watchlists/stocks/{id}/remove-tickers:
+    post:
+      callbacks: {}
+      description: |
+        Removes tickers from a stock watchlist and keeps all other tickers on it. Tickers that are not on the watchlist are ignored.
+        
+        Default views provided by Unusual Whales cannot be changed and return 404.
+      operationId: PublicApi.WatchlistController.stock_remove_tickers
+      parameters:
+        - description: The watchlist identifier.
+          in: path
+          name: id
+          required: true
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Stock watchlist tickers request'
+        description: Tickers
+        required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock watchlist response'
+          description: The updated stock watchlist
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid watchlist
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Watchlist not found
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Remove tickers from stock watchlist
+      tags:
+        - watchlists
 security:
   - authorization: []
 servers:
