@@ -7772,6 +7772,103 @@ components:
       example: name
       title: Institutional List Order By
       type: string
+    Institutional Option Holder:
+      description: One institution's call and put positions in a ticker from its latest 13F report in the date range.
+      properties:
+        call_value:
+          description: The reported value of the call positions in dollars.
+          example: '6271324836'
+          type: string
+        calls:
+          description: The units held in calls.
+          example: 177492
+          type: integer
+        calls_changed:
+          description: The change in units held in calls since the previous report.
+          example: 8507
+          type: integer
+        cik:
+          $ref: '#/components/schemas/CIK'
+        filing_date:
+          $ref: '#/components/schemas/General ISO Date'
+        name:
+          $ref: '#/components/schemas/Name'
+        put_value:
+          description: The reported value of the put positions in dollars.
+          example: '5073995465'
+          type: string
+        puts:
+          description: The units held in puts.
+          example: 143605
+          type: integer
+        puts_changed:
+          description: The change in units held in puts since the previous report.
+          example: 46017
+          type: integer
+        report_date:
+          $ref: '#/components/schemas/General ISO Date'
+        short_name:
+          $ref: '#/components/schemas/Short Name'
+        tags:
+          $ref: '#/components/schemas/Tags'
+        units:
+          description: The units held in calls and puts combined.
+          example: 321097
+          type: integer
+      title: Institutional Option Holder
+      type: object
+    Institutional Option Holders:
+      description: The institutions that reported option positions in a given ticker.
+      example:
+        call_oi: 2150342
+        data:
+          - call_value: '6271324836'
+            calls: 177492
+            calls_changed: 8507
+            cik: '0001446194'
+            filing_date: 2026-08-14
+            name: SUSQUEHANNA INTERNATIONAL GROUP, LLP
+            put_value: '5073995465'
+            puts: 143605
+            puts_changed: 46017
+            report_date: 2026-06-30
+            short_name:
+            tags: []
+            units: 321097
+        date: 2026-06-30
+        put_oi: 1873120
+      properties:
+        call_oi:
+          description: The ticker's call open interest on the last trading day at or before `date`. `null` when none is recorded.
+          example: 2150342
+          nullable: true
+          type: integer
+        data:
+          items:
+            $ref: '#/components/schemas/Institutional Option Holder'
+          type: array
+        date:
+          $ref: '#/components/schemas/General ISO Date'
+        put_oi:
+          description: The ticker's put open interest on the last trading day at or before `date`. `null` when none is recorded.
+          example: 1873120
+          nullable: true
+          type: integer
+      title: Institutional Option Holders
+      type: object
+    Institutional Option Holders Order By:
+      description: Optional column to order the result by. Defaults to `units`.
+      enum:
+        - units
+        - calls
+        - puts
+        - calls_changed
+        - puts_changed
+        - call_value
+        - put_value
+      example: calls
+      title: Institutional Option Holders Order By
+      type: string
     Institutional Ownership:
       description: The institutional ownership of a given ticker.
       example:
@@ -14026,6 +14123,18 @@ components:
       example: '2965813810400'
       title: Stock Marketcap AUM
       type: string
+    Stock Marketcap Size:
+      description: 'The size category of the marketcap: `micro` (below $300M), `small` ($300M to $2B), `mid` ($2B to $10B), `large` ($10B to $50B) or `big` ($50B and above). Null when the marketcap is unknown or zero.'
+      enum:
+        - micro
+        - small
+        - mid
+        - large
+        - big
+      example: big
+      nullable: true
+      title: Stock Marketcap Size
+      type: string
     Stock Next Earnings Date:
       description: The next earnings date of the ticker. Null if either unknown as of now or if the ticker does not have any earnings such as an ETF
       example: 2023-10-26
@@ -15284,10 +15393,20 @@ components:
         - data
       title: Stock Screener response
       type: object
+    Stock Shares Outstanding:
+      description: The number of shares outstanding for the ticker.
+      example: '14687356000'
+      title: Stock Shares Outstanding
+      type: string
     Stock Short Description:
       description: Short description about what the stock does.
       example: Apple Inc. is an American multinational technology company headquartered in Cupertino, California. Apple is the worlds largest technology company by ...
       title: Stock Short Description
+      type: string
+    Stock Short Name:
+      description: Short name of the ticker.
+      example: APPLE
+      title: Stock Short Name
       type: string
     Stock Split Event:
       properties:
@@ -15309,6 +15428,14 @@ components:
       description: The total amount of options volume for the given ticker.
       title: Stock Total Volume
       type: integer
+    Stock UW Tags:
+      description: Tags that Unusual Whales assigns to the ticker, such as `index`. The list is empty when the ticker has no tags.
+      example:
+        - index
+      items:
+        type: string
+      title: Stock UW Tags
+      type: array
     Stock Volatility:
       description: The implied volatility average of the at the money put and call option contracts. If no expiry date is included, then the volatility is of the nearest end of the week expiration (the nearest monthly expiration if there are no weekly contracts).
       example: '0.18338055163621902'
@@ -15836,11 +15963,14 @@ components:
           has_investment_arm: false
           has_options: true
           issue_type: Common Stock
+          logo: https://storage.googleapis.com/uwassets/logos/AAPL.png
           marketcap: '2776014233920'
           marketcap_size: big
           next_earnings_date: 2023-10-26
+          outstanding: '15634232000'
           sector: Technology
           short_description: Apple Inc. is an American multinational technology company headquartered in Cupertino, California. Apple is the worlds largest technology company by ...
+          short_name: APPLE
           symbol: AAPL
           uw_tags: []
       properties:
@@ -15866,12 +15996,22 @@ components:
           $ref: '#/components/schemas/Logo'
         marketcap:
           $ref: '#/components/schemas/Stock Marketcap AUM'
+        marketcap_size:
+          $ref: '#/components/schemas/Stock Marketcap Size'
         next_earnings_date:
           $ref: '#/components/schemas/Stock Next Earnings Date'
+        outstanding:
+          $ref: '#/components/schemas/Stock Shares Outstanding'
         sector:
           $ref: '#/components/schemas/Market General Sector'
         short_description:
           $ref: '#/components/schemas/Stock Short Description'
+        short_name:
+          $ref: '#/components/schemas/Stock Short Name'
+        symbol:
+          $ref: '#/components/schemas/Stock Ticker'
+        uw_tags:
+          $ref: '#/components/schemas/Stock UW Tags'
       title: Ticker Info
       type: object
     Ticker Options Volume:
@@ -22027,6 +22167,105 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Sector Exposure
+      tags:
+        - institution
+  /api/institution/{ticker}/option-holders:
+    get:
+      callbacks: {}
+      description: |
+        The institutions that reported call or put positions in a given ticker in their 13F filings.
+        
+        Each row holds one institution's latest report in the date range, with its calls and puts summed across all contracts. `call_oi` and `put_oi` are the ticker's call and put open interest on the last trading day at or before `date`. They are `null` when no open interest is recorded for that day.
+        
+        If you are looking to build a database of insitutional positions use https://unusualwhales.com/skills/institutional.md
+      operationId: PublicApi.InstitutionController.option_holders
+      parameters:
+        - description: ''
+          in: path
+          name: ticker
+          required: true
+          schema:
+            $ref: '#/components/schemas/Ticker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Report Date'
+        - description: ''
+          in: query
+          name: start_date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Institutional Report Start Date'
+        - description: ''
+          in: query
+          name: end_date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Institutional Report End Date'
+        - description: ''
+          in: query
+          name: tags[]
+          required: false
+          schema:
+            $ref: '#/components/schemas/Institution Tags'
+        - description: ''
+          in: query
+          name: order
+          required: false
+          schema:
+            $ref: '#/components/schemas/Institutional Option Holders Order By'
+        - description: ''
+          in: query
+          name: order_direction
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderDirection'
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+        - description: ''
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institutional Option Holders'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Institutional Option Holders
       tags:
         - institution
   /api/institution/{ticker}/ownership:
