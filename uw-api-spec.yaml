@@ -12785,6 +12785,19 @@ components:
           items:
             type: string
           type: array
+        chart:
+          description: "The chart this row belongs to: `product` for revenue by product or segment, `region` for revenue by country or region. A filing often reports several breakdowns of the same revenue, and subtotals next to their parts. Each chart uses one breakdown (one field on one axis). For each report and period, it keeps the members whose values add up to the breakdown's own total for that period within 0.5%, or, when the breakdown has no total, to the report's revenue if it covers the same period. When no combination adds up, the chart keeps the members it can't identify as subtotals, so their sum can differ from revenue. With `period=all`, a report can have chart rows for several periods, so group chart rows by `report_date` and `period_months`. `null` marks the rows of other breakdowns, subtotals and overlapping members."
+          enum:
+            - product
+            - region
+          example: product
+          nullable: true
+          type: string
+        chart_member:
+          description: The member to label the row with in its chart. For segment rows reported together with `OperatingSegmentsMember`, this is the segment. `null` when `chart` is `null`.
+          example: aapl:IPhoneMember
+          nullable: true
+          type: string
         field:
           example: RevenueFromContractWithCustomerExcludingAssessedTax
           type: string
@@ -17125,6 +17138,10 @@ info:
     
     ## Changelog
     
+    # 2026.10.12
+    - Whale Bundle Basic monthly and annual plans now include unlimited API requests.
+    - Added `chart` and `chart_member` to each `rev_breakdown` row of [`/stock/:ticker/fundamental-breakdown`](https://api.unusualwhales.com/docs/operations/PublicApi.FundamentalController.show). A filing often reports the same revenue in several breakdowns, and subtotals next to their parts. `chart` is `product` or `region` for the rows of the one breakdown picked for that chart, whose members add up to the report's revenue where possible, and `null` for every other row. With `period=all`, each period of a report has its own chart rows. `chart_member` is the member to label the row with.
+    
     # 2026.10.09
     - Added endpoints to manage the stock and option watchlists of the user. These are the same watchlists as on unusualwhales.com, so changes made through the API show up on the website.
       - [`GET /watchlists/stocks`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.stock_index) and [`GET /watchlists/options`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.option_index) list the watchlists.
@@ -17132,6 +17149,11 @@ info:
       - [`PUT /watchlists/stocks/:id`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.stock_update) and [`PUT /watchlists/options/:id`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.option_update) replace the name, contents and color of a watchlist. WARNING: Tickers or option symbols missing from the request are removed from the watchlist.
       - [`POST /watchlists/stocks/:id/add-tickers`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.stock_add_tickers) and [`POST /watchlists/stocks/:id/remove-tickers`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.stock_remove_tickers) add or remove tickers on a stock watchlist and keep the other tickers.
       - [`DELETE /watchlists/stocks/:id`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.stock_delete) and [`DELETE /watchlists/options/:id`](https://api.unusualwhales.com/docs/operations/PublicApi.WatchlistController.option_delete) delete a watchlist.
+    
+    # 2026.10.08
+    - Added the `period` query parameter to [`/stock/:ticker/fundamental-breakdown`](https://api.unusualwhales.com/docs/operations/PublicApi.FundamentalController.show). `quarter`, the default, returns the quarterly `rev_breakdown` rows and the rows without a period, plus the 12-month rows of `annual_only` tickers. `annual` returns only 12-month rows, including breakdowns that a company reports only in its annual report. `all` returns every row.
+    - Added `period_months` to each `rev_breakdown` row of the same endpoint. It is the number of months the value covers, such as 3 for a quarter and 12 for a full fiscal year. `null` marks a count at a point in time, such as the number of stores, or a row stored before this field existed.
+    - The `rev_group` documentation now lists `country` and `continent`, which the endpoint already returned.
     
     # 2026.09.30
     - Added FLEX option endpoints. FLEX option data always lags by one trading day:
