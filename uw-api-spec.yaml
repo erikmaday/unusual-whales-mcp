@@ -11856,9 +11856,14 @@ components:
             $ref: '#/components/schemas/Prediction Market User Category Score'
           type: array
         positions:
+          description: Positions with a non-zero `total_invested_usd`, ordered by `total_invested_usd` descending. Contains at most 20,000 positions.
           items:
             $ref: '#/components/schemas/Prediction Market User Position'
           type: array
+        positions_truncated:
+          description: True when the user has more than 20,000 positions. `positions` then contains only the 20,000 with the highest `total_invested_usd`.
+          example: false
+          type: boolean
         score:
           description: Aggregate score across all categories, or null if not yet scored.
           nullable: true
@@ -16722,6 +16727,11 @@ components:
           format: date
           nullable: true
           type: string
+        earnings_report_time:
+          description: 'When `earnings_date` reports: `premarket`, `postmarket` or `unknown`. Null when no report is scheduled.'
+          example: postmarket
+          nullable: true
+          type: string
         expiry:
           description: |
             The requested expiry, or the listed expiry closest to 30 days out when none is requested. The object is null
@@ -17138,7 +17148,11 @@ info:
     
     ## Changelog
     
+    # 2026.10.13
+    - [`/predictions/user/:user_id`](https://api.unusualwhales.com/docs/operations/PublicApi.PredictionController.user) now returns at most 20,000 `positions`, the ones with the highest `total_invested_usd`. The new `positions_truncated` field is true when the user has more positions than that.
+    
     # 2026.10.12
+    - Added `earnings_report_time` to [`/stock/:ticker/volatility/context`](https://api.unusualwhales.com/docs/operations/PublicApi.VolatilityController.context). It is `premarket`, `postmarket` or `unknown`, or null when no report is scheduled or its time is not recorded. `expiry.earnings_in_expiry` is now false when the report is `postmarket` on the expiry date.
     - Whale Bundle Basic monthly and annual plans now include unlimited API requests.
     - Added `chart` and `chart_member` to each `rev_breakdown` row of [`/stock/:ticker/fundamental-breakdown`](https://api.unusualwhales.com/docs/operations/PublicApi.FundamentalController.show). A filing often reports the same revenue in several breakdowns, and subtotals next to their parts. `chart` is `product` or `region` for the rows of the one breakdown picked for that chart, whose members add up to the report's revenue where possible, and `null` for every other row. With `period=all`, each period of a report has its own chart rows. `chart_member` is the member to label the row with.
     
