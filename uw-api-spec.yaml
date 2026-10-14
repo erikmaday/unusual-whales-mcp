@@ -17149,6 +17149,8 @@ info:
     ## Changelog
     
     # 2026.10.13
+    - Added the `query` parameter to [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index). It takes a Query language expression, such as `where premium > 100k and strike > spot`, and combines it with the other filters using `and`. The fields, operators and functions are listed by [`/alerts/query/grammar?target=option_trade`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.dsl_grammar).
+    - [`/option-trades/flow-alerts`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alerts): Default lookback is 7 days without a specified `newer_than`.
     - [`/predictions/user/:user_id`](https://api.unusualwhales.com/docs/operations/PublicApi.PredictionController.user) now returns at most 20,000 `positions`, the ones with the highest `total_invested_usd`. The new `positions_truncated` field is true when the user has more positions than that.
     
     # 2026.10.12
@@ -17489,10 +17491,10 @@ paths:
         For real time streaming of triggered alerts, subscribe to the `custom_alerts` websocket channel, see [https://api.unusualwhales.com/docs/websocket/custom-alerts](https://api.unusualwhales.com/docs/websocket/custom-alerts).
         
         Time filtering is available using the `newer_than` and `older_than` parameters:
-        - The maximum lookback period is 14 days
-        - If no time range is specified, defaults to the last 14 days
-        - If only one time parameter is provided, the other is automatically calculated to maintain the 14-day limit
-        - If both parameters are provided but exceed 14 days, the range is adjusted to 14 days from the `older_than` timestamp
+        - The maximum lookback period is 7 days
+        - If no time range is specified, defaults to the last 7 days
+        - If only one time parameter is provided, the other is automatically calculated to maintain the 7-day limit
+        - If both parameters are provided but exceed 7 days, the range is adjusted to 7 days from the `older_than` timestamp
         
         The alerts are the same alerts as the user created on [https://unusualwhales.com/custom-alerts](https://unusualwhales.com/custom-alerts)
       operationId: PublicApi.AlertsController.alerts
@@ -17535,7 +17537,7 @@ paths:
           name: newer_than
           required: false
           schema:
-            description: Filter alerts created after this timestamp. When used alone, the time range is limited to 14 days forward from this timestamp. The format can either be a timestamp in unix seconds or milliseconds or a string in ISO format.
+            description: Filter alerts created after this timestamp. When used alone, the time range is limited to 7 days forward from this timestamp. The format can either be a timestamp in unix seconds or milliseconds or a string in ISO format.
             example: 2024-01-01T00:00:00Z
             format: datetime
             type: string
@@ -17544,7 +17546,7 @@ paths:
           name: older_than
           required: false
           schema:
-            description: Filter alerts created before this timestamp. When used alone, the time range is limited to 14 days backward from this timestamp. The format can either be a timestamp in unix seconds or milliseconds or a string in ISO format
+            description: Filter alerts created before this timestamp. When used alone, the time range is limited to 7 days backward from this timestamp. The format can either be a timestamp in unix seconds or milliseconds or a string in ISO format
             example: 2024-01-15T23:59:59Z
             format: datetime
             type: string
@@ -24275,6 +24277,14 @@ paths:
             $ref: '#/components/schemas/OlderThan'
         - description: ''
           in: query
+          name: query
+          required: false
+          schema:
+            description: Query language expression combined with the other filters using `and`. Use it to compare fields with each other and to filter on calculations, such as `strike > spot`. Get the supported fields, operators and functions from [`/api/alerts/query/grammar?target=option_trade`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.dsl_grammar). An expression that does not parse, or that uses `prev_iv`, `iv_change`, `ticker_vol` or `ticker_vol_mult`, returns HTTP 400.
+            example: where premium > 100k and strike > spot
+            type: string
+        - description: ''
+          in: query
           name: canceled
           required: false
           schema:
@@ -25006,16 +25016,16 @@ paths:
     get:
       callbacks: {}
       description: |
-        Flow alerts are rule based aggregations on the full tape of option trades. 
+        Flow alerts are rule based aggregations on the full tape of option trades.
         
         While there are quite a few different rules and alerts the most used one is the repeated hit family:
         RepeatedHits, RepeatedHitsAscendingFill, RepeatedHitsDescendingFill
         
         Each of those represent an alert when there have been multiple transactions on the same option contract
         within a few milliseconds. This can be mean that a single order is being matched across multiple other orders
-        and creating multiple transactions. It can also just mean that there are multiple buyers/sellers at the same time. 
+        and creating multiple transactions. It can also just mean that there are multiple buyers/sellers at the same time.
         
-        Trades usually use the repeated hits with other data points to form a picture on whether there is some urgency 
+        Trades usually use the repeated hits with other data points to form a picture on whether there is some urgency
         in entering/exiting a position in a contract/ticker.
         
         The full current options tape including trades that do not form a RepeatedHits alert can be accessed through the
@@ -25041,7 +25051,7 @@ paths:
         
         For real time streaming of flow alerts, subscribe to the `flow-alerts` websocket channel, see [https://api.unusualwhales.com/docs/websocket/flow-alerts](https://api.unusualwhales.com/docs/websocket/flow-alerts).
         
-        The 14-day lookback limit on the custom alerts endpoint (`/api/alerts`) does not apply to this endpoint.
+        Without `newer_than`, the endpoint returns alerts from the 7 days before `older_than` (default: now).
       operationId: PublicApi.OptionTradeController.flow_alerts
       parameters:
         - description: ''
