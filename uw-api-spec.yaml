@@ -17148,6 +17148,9 @@ info:
     
     ## Changelog
     
+    # 2026.10.14
+    - Added `min_profit`, `max_profit`, `min_loss` and `max_loss` to [`/option-trades/multi-leg`](https://api.unusualwhales.com/docs/operations/PublicApi.MultiLegController.index). They filter on the `max_profit` and `max_loss` fields and accept `abs()`. `max_loss` is negative, so `min_loss=abs(100000)` returns strategies that can lose at least $100,000. Strategies with an unbounded profit or loss are excluded by the matching filter.
+    
     # 2026.10.13
     - Added the `query` parameter to [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index). It takes a Query language expression, such as `where premium > 100k and strike > spot`, and combines it with the other filters using `and`. The fields, operators and functions are listed by [`/alerts/query/grammar?target=option_trade`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.dsl_grammar).
     - [`/option-trades/flow-alerts`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alerts): Default lookback is 7 days without a specified `newer_than`.
@@ -25681,6 +25684,30 @@ paths:
         - description: Maximum net premium (supports abs()).
           in: query
           name: max_premium
+          required: false
+          schema:
+            type: string
+        - description: Minimum `max_profit` in dollars (supports abs()). Strategies with unbounded profit have a null `max_profit` and are excluded.
+          in: query
+          name: min_profit
+          required: false
+          schema:
+            type: string
+        - description: Maximum `max_profit` in dollars (supports abs()). Strategies with unbounded profit have a null `max_profit` and are excluded.
+          in: query
+          name: max_profit
+          required: false
+          schema:
+            type: string
+        - description: Minimum `max_loss` in dollars (supports abs()). `max_loss` is negative, so use `min_loss=abs(100000)` for strategies that can lose at least $100,000. Strategies with unbounded loss have a null `max_loss` and are excluded.
+          in: query
+          name: min_loss
+          required: false
+          schema:
+            type: string
+        - description: Maximum `max_loss` in dollars (supports abs()). `max_loss` is negative, so use `max_loss=abs(10000)` for strategies that can lose at most $10,000. Strategies with unbounded loss have a null `max_loss` and are excluded.
+          in: query
+          name: max_loss
           required: false
           schema:
             type: string
