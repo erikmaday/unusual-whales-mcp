@@ -2789,14 +2789,6 @@ components:
       minimum: 1
       title: Default 50 Max 100 Min 1
       type: integer
-    Default 50, Max 250 Min 1:
-      default: 1
-      description: 'How many items to return. Default: 50. Max: 250. Min: 1.'
-      example: 10
-      maximum: 250
-      minimum: 1
-      title: Default 50, Max 250 Min 1
-      type: integer
     Default 50, Max 500 Min 1:
       default: 50
       description: 'How many items to return. Default: 50. Max: 500. Min: 1.'
@@ -9401,6 +9393,7 @@ components:
         - flow_alerts
         - chain_oi_change
         - gex
+        - futures_price
       example: flow_alerts
       title: Notification Type
       type: string
@@ -11855,6 +11848,23 @@ components:
           items:
             $ref: '#/components/schemas/Prediction Market User Category Score'
           type: array
+        combos:
+          description: The user's Polymarket Combos (multi-leg RFQ positions), which `positions` leaves out. Null when the user holds more than 20,000 Combo positions or they could not be valued.
+          nullable: true
+          properties:
+            count:
+              description: Combo positions the user holds or has held.
+              example: 166
+              type: integer
+            pnl:
+              description: PnL in USD before fees. It adds realized PnL from sales and payout minus cost on settled Combos. Unsettled Combos count at cost.
+              example: '66501.90'
+              type: string
+            settled_count:
+              description: Combos whose payout is known because every leg resolved or a lost leg settled them early.
+              example: 165
+              type: integer
+          type: object
         positions:
           description: Positions with a non-zero `total_invested_usd`, ordered by `total_invested_usd` descending. Contains at most 20,000 positions.
           items:
@@ -17148,6 +17158,10 @@ info:
     
     ## Changelog
     
+    # 2026.10.15
+    - Added `combos` to [`/predictions/user/:user_id`](https://api.unusualwhales.com/docs/operations/PublicApi.PredictionController.user). It values the user's Polymarket Combos, which `positions` leaves out: `count`, `settled_count` and `pnl`, the PnL in USD before fees. Combos that have not settled yet count at cost. It is null for users with more than 20,000 Combo positions.
+    - Added the `futures_price` alert type to [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config). The `config` names either one CME futures contract, `"contract": "ESZ6"`, or a product, `"product": "ES"`, plus `price_target_upper`, `price_target_lower` or both, in the contract's display price. A product alert follows the product's current lead contract, which is the outright contract with the highest 5-day rolling volume, so it rolls on its own. The alert fires on the first print at or through a target and the configuration is then paused. Triggered alerts carry the product or contract in `symbol` and the contract that traded in `meta.sym`, and `noti_types[]=futures_price` selects them on [`/alerts`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.alerts).
+    
     # 2026.10.14
     - Added `min_profit`, `max_profit`, `min_loss` and `max_loss` to [`/option-trades/multi-leg`](https://api.unusualwhales.com/docs/operations/PublicApi.MultiLegController.index). They filter on the `max_profit` and `max_loss` fields and accept `abs()`. `max_loss` is negative, so `min_loss=abs(100000)` returns strategies that can lose at least $100,000. Strategies with an unbounded profit or loss are excluded by the matching filter.
     
@@ -17602,6 +17616,7 @@ paths:
         - Gamma exposure (GEX), Vanna exposure (VEX), Charm exposure (CEX)
         - Interval Contract screeners (replicates and alerts on the Flow Feed)
         - Analyst ratings, price targets, and actions
+        - Futures price targets, on one contract or on the lead contract of a product
         - Politician trades
         - Insider trades
         - OI changes for contract in premarket
@@ -28806,7 +28821,7 @@ paths:
           name: limit
           required: false
           schema:
-            $ref: '#/components/schemas/Default 50, Max 250 Min 1'
+            $ref: '#/components/schemas/Default 50, Max 500 Min 1'
         - description: ''
           in: query
           name: page
