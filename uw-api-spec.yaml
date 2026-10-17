@@ -17158,6 +17158,9 @@ info:
     
     ## Changelog
     
+    # 2026.10.16
+    - [Full Tape](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.full_tape) now returns HTTP 403 for dates more than 30 calendar days old while an API subscription has status `trialing`.
+    
     # 2026.10.15
     - Added `combos` to [`/predictions/user/:user_id`](https://api.unusualwhales.com/docs/operations/PublicApi.PredictionController.user). It values the user's Polymarket Combos, which `positions` leaves out: `count`, `settled_count` and `pnl`, the PnL in USD before fees. Combos that have not settled yet count at cost. It is null for users with more than 20,000 Combo positions.
     - Added the `futures_price` alert type to [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config). The `config` names either one CME futures contract, `"contract": "ESZ6"`, or a product, `"product": "ES"`, plus `price_target_upper`, `price_target_lower` or both, in the contract's display price. A product alert follows the product's current lead contract, which is the outright contract with the highest 5-day rolling volume, so it rolls on its own. The alert fires on the first print at or through a target and the configuration is then paused. Triggered alerts carry the product or contract in `symbol` and the contract that traded in `meta.sym`, and `noti_types[]=futures_price` selects them on [`/alerts`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.alerts).
@@ -25545,6 +25548,8 @@ paths:
         
         How far back you can download is determined by your plan's historical lookback window with data available since 2022-01-01.
         
+        Dates more than 30 calendar days before today (America/New_York) return HTTP 403 while your API subscription has status `trialing`.
+        
         If you are looking to build a data lake with the full tape use this skill with your agent: https://unusualwhales.com/skills/uw-options-data-lake-skill.md
         
         You can download the data as a zip file using wget. For example, to download data for Fri Jul 25th, 2025, if your API key is "abc123":
@@ -25753,6 +25758,12 @@ paths:
         - description: Only strategies where every leg is out-of-the-money.
           in: query
           name: all_otm
+          required: false
+          schema:
+            type: boolean
+        - description: Filter on the `all_opening_legs` field. `true` returns only strategies where every leg is opening, `false` only strategies with at least one leg that is not.
+          in: query
+          name: all_opening_legs
           required: false
           schema:
             type: boolean
@@ -28206,6 +28217,12 @@ paths:
           required: false
           schema:
             type: boolean
+        - description: When set to true, contracts that are in the money or at the money are excluded, as are contracts whose underlying price is unknown. In the money is judged on the real underlying price, even when the response shows a rounded `stock_price` for index tickers you may not have entitlement for like SPX or VIX.
+          in: query
+          name: exclude_itm
+          required: false
+          schema:
+            type: boolean
         - description: When set to true, all tickers that trade ex-dividend today will be excluded. This is useful since on the day prior to the ex-dividend date, there will be above-average ITM call flow due to dividend arbitrage traders.
           in: query
           name: exclude_ex_div_ticker
@@ -28404,6 +28421,12 @@ paths:
           required: false
           schema:
             type: string
+        - description: Only include contracts where the last price (`close`) is greater than the average price (`avg_price`).
+          in: query
+          name: close_greater_avg
+          required: false
+          schema:
+            type: boolean
         - description: The minimum contract volume to open interest ratio.
           example: '0.32'
           in: query
@@ -28584,14 +28607,14 @@ paths:
           required: false
           schema:
             type: integer
-        - description: The minimum implied volatility percentage.
+        - description: The minimum implied volatility as a decimal (0.19 = 19%).
           example: '0.19'
           in: query
           name: min_iv_perc
           required: false
           schema:
             type: string
-        - description: The maximum implied volatility percentage.
+        - description: The maximum implied volatility as a decimal (0.45 = 45%).
           example: '0.45'
           in: query
           name: max_iv_perc
