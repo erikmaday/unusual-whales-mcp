@@ -17158,6 +17158,9 @@ info:
     
     ## Changelog
     
+    # 2026.10.19
+    - Request-limit errors now describe both daily and billing-month resets instead of assuming every allowance resets daily.
+    
     # 2026.10.16
     - [Full Tape](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.full_tape) now returns HTTP 403 for dates more than 30 calendar days old while an API subscription has status `trialing`.
     
