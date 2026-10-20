@@ -17159,6 +17159,7 @@ info:
     ## Changelog
     
     # 2026.10.19
+    - Starter-only accounts cannot create GEX, futures-price or prediction alerts through [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config). Independent qualifying subscriptions or permissions retain access.
     - Request-limit errors now describe both daily and billing-month resets instead of assuming every allowance resets daily.
     
     # 2026.10.16
