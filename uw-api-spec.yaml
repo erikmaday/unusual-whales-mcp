@@ -5210,7 +5210,7 @@ components:
                 nullable: true
                 type: string
               multiplier:
-                description: Cash per 1.0 of price movement (tick_value / tick_size). Use this for notional.
+                description: Cash per 1.0 of price movement, for example 50 for ES, 1000 for ZN and 50 for ZC. Use this for notional. Null when the CME file carries no usable tick value and the derived value failed its sanity check.
                 nullable: true
                 type: string
               name:
@@ -5271,7 +5271,7 @@ components:
           description: Exchange MIC, e.g. XCME.
           type: string
         multiplier:
-          description: Cash per 1.0 of price movement (tick_value / tick_size). Use this for notional.
+          description: Cash per 1.0 of price movement, for example 50 for ES, 1000 for ZN and 50 for ZC. Use this for notional. Null when the CME file carries no usable tick value and the derived value failed its sanity check.
           nullable: true
           type: string
         security_group:
@@ -5303,12 +5303,21 @@ components:
         updated_at:
           format: date-time
           type: string
+        valid_from:
+          description: When this definition was first loaded from the CME security definitions.
+          format: date-time
+          type: string
+        valid_to:
+          description: When the security_id moved to another contract. Null for the current definition.
+          format: date-time
+          nullable: true
+          type: string
       title: Futures Display Factor Item
       type: object
     Futures Display Factors:
       description: |
         CME per-instrument display factors, paginated by `security_id`.
-        Pass the last `security_id` in the response as `after_id` to fetch the next page.
+        Pass the last `security_id` in the response as `after_id` to fetch the next page, and its `symbol` as `after_symbol` when the request includes history.
       properties:
         data:
           items:
@@ -5337,6 +5346,18 @@ components:
               crossed:
                 nullable: true
                 type: boolean
+              event_levels:
+                description: Distinct price levels the print's match event filled. Null until the event is complete.
+                nullable: true
+                type: integer
+              event_size:
+                description: Contracts the print's match event filled. Null until the event is complete.
+                nullable: true
+                type: integer
+              event_ts_ns:
+                description: Event time in unix nanoseconds. Prints that share it with the symbol and side were filled in one CME match event.
+                nullable: true
+                type: integer
               executed_at:
                 format: date-time
                 type: string
@@ -9394,6 +9415,7 @@ components:
         - chain_oi_change
         - gex
         - futures_price
+        - futures_print
       example: flow_alerts
       title: Notification Type
       type: string
@@ -17158,6 +17180,17 @@ info:
     
     ## Changelog
     
+    # 2026.10.20
+    - Added `2m` and `3m` to `candle_size` on [`/stock/:ticker/ohlc/:candle_size`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.ohlc). The MCP tools `get_ticker_candles_by_range`, `get_ticker_indicator_series` and `get_ticker_indicator_events` accept the same values in `range`.
+    - Added `repeat` and `rearm_ticks` to `price_target` and `futures_price` alert configurations on [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config). With `"repeat": true` the configuration is not paused after a trigger. Each target re-arms once the price has come back inside it by `rearm_ticks` ticks, 2 by default and at least 1, never less than 0.1% of the target, and the next crossing triggers again, at most once a minute per target. After a restart, a target the price already sits beyond waits for the price to come back inside before it can trigger.
+    - Added the `futures_print` alert type to [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config). The `config` names one contract, `"contract": "ESZ6"`, or a product, `"product": "ES"`, which matches every contract of the product, plus `min_size` in contracts. `side` limits it to `buy`, `sell` or `none` prints and `contracts` to `outrights`, `spreads` or `all`, outrights by default. The alert fires on every matching print, at most once per minute per configuration and scope, and is never paused. Triggered alerts carry `price`, `size` and `side` in `meta`. Like `futures_price`, it needs the Advanced API tier or the futures add-on.
+    - Futures display factors are versioned per contract symbol, because CME reuses a `security_id` for a new contract once the previous one expires.
+      - [`/futures/display_factors`](https://api.unusualwhales.com/docs/operations/PublicApi.FuturesController.display_factors) returns the current definition of each `security_id`. It takes `history=true` to include closed definitions and `after_symbol` next to `after_id` as the cursor.
+      - [`/futures/display_factors/:security_id`](https://api.unusualwhales.com/docs/operations/PublicApi.FuturesController.display_factor) returns the current definition and takes `symbol` for another one.
+      - Added [`/futures/display_factors/:security_id/history`](https://api.unusualwhales.com/docs/operations/PublicApi.FuturesController.display_factor_history), every definition of a `security_id`, oldest first.
+      - Display factor items carry `valid_from` and `valid_to`. `valid_to` is null on the current definition.
+    - [`/futures/flow`](https://api.unusualwhales.com/docs/operations/PublicApi.FuturesController.flow) prints carry `event_ts_ns`, `event_levels` and `event_size` once their CME match event is complete, and `sweeps_only=true` returns only prints of events that filled at least two price levels.
+    
     # 2026.10.19
     - Starter-only accounts cannot create GEX, futures-price or prediction alerts through [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config). Independent qualifying subscriptions or permissions retain access.
     - Request-limit errors now describe both daily and billing-month resets instead of assuming every allowance resets daily.
@@ -17624,6 +17657,7 @@ paths:
         - Interval Contract screeners (replicates and alerts on the Flow Feed)
         - Analyst ratings, price targets, and actions
         - Futures price targets, on one contract or on the lead contract of a product
+        - Futures prints at or above a size floor, on one contract or on every contract of a product
         - Politician trades
         - Insider trades
         - OI changes for contract in premarket
@@ -20940,7 +20974,8 @@ paths:
       callbacks: {}
       description: |
         CME per-instrument display factors, used to convert raw integer prices to their displayed decimal values.
-        Filter by `asset` (e.g. HO, ES, CL) or `subtype`. Paginate with `after_id` + `limit` across the full ~158k contract table.
+        Returns the current definition of each `security_id`. CME reuses a `security_id` for a new contract once the previous one expires, so one `security_id` can have several definitions over time. Pass `history=true` to include closed definitions, which have `valid_to` set.
+        Filter by `asset` (e.g. HO, ES, CL) or `subtype`. Paginate with `after_id` + `limit` across the full ~158k contract table. With `history=true` a page can end inside one `security_id`, so also pass the last row's `symbol` as `after_symbol`.
         Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.display_factors
       parameters:
@@ -20962,6 +20997,18 @@ paths:
           required: false
           schema:
             type: integer
+        - description: 'Cursor: with after_id, return rows after the (security_id, symbol) pair. Needed with history=true.'
+          in: query
+          name: after_symbol
+          required: false
+          schema:
+            type: string
+        - description: Set to true to include closed definitions. Defaults to current definitions only.
+          in: query
+          name: history
+          required: false
+          schema:
+            type: boolean
         - description: Max rows per page (default 1000, max 5000).
           in: query
           name: limit
@@ -21007,6 +21054,7 @@ paths:
       callbacks: {}
       description: |
         Display factor for a single CME contract identified by its numeric `security_id`.
+        Returns the current definition of the `security_id`. Pass `symbol` to get the definition for that contract symbol, including one the `security_id` no longer carries.
         Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.display_factor
       parameters:
@@ -21016,6 +21064,12 @@ paths:
           required: true
           schema:
             type: integer
+        - description: Contract symbol, e.g. ESU6. Returns that definition instead of the current one.
+          in: query
+          name: symbol
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           content:
@@ -21050,12 +21104,61 @@ paths:
       summary: Futures Display Factor
       tags:
         - Futures
+  /api/futures/display_factors/{security_id}/history:
+    get:
+      callbacks: {}
+      description: |
+        Every definition a `security_id` has carried, oldest first. `valid_to` is null on the current definition.
+        Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
+      operationId: PublicApi.FuturesController.display_factor_history
+      parameters:
+        - description: CME numeric security ID.
+          in: path
+          name: security_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Futures Display Factors'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Futures Display Factor History
+      tags:
+        - Futures
   /api/futures/flow:
     get:
       callbacks: {}
       description: |
         Newest-first trade prints across ALL contracts, block trades included by default.
         Each row carries `is_block` and `is_spread`. Optional server-side filters narrow the feed.
+        A print carries `event_ts_ns`, `event_levels` and `event_size` once its CME match event is complete. Prints that share `event_ts_ns` with the symbol and side were filled in one match event.
         For real time streaming of block trades, subscribe to the `futures_blocks` websocket channel, see [https://api.unusualwhales.com/docs/websocket/futures-block-trades](https://api.unusualwhales.com/docs/websocket/futures-block-trades).
         Available on the Advanced API tier, or with the `futures` add-on — contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com for access.
       operationId: PublicApi.FuturesController.flow
@@ -21138,6 +21241,12 @@ paths:
         - description: Set to true to return only CME block trades.
           in: query
           name: blocks_only
+          required: false
+          schema:
+            type: boolean
+        - description: Set to true to return only prints of match events that filled at least two price levels. Excludes block trades.
+          in: query
+          name: sweeps_only
           required: false
           schema:
             type: boolean
@@ -32550,6 +32659,8 @@ paths:
           schema:
             enum:
               - 1m
+              - 2m
+              - 3m
               - 5m
               - 10m
               - 15m
