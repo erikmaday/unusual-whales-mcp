@@ -5181,6 +5181,35 @@ components:
           type: array
       title: Futures Candles
       type: object
+    Futures Contract Strategy:
+      description: |
+        CME strategy of a spread contract, from its CME `SecuritySubType` (FIX tag 762) and its symbol.
+        Null for outright contracts and for contracts without a security definition.
+      nullable: true
+      properties:
+        details:
+          additionalProperties: true
+          description: |
+            Groups, products, contracts and maturities parsed from the symbol. `kind` names the layout, such as `outright_pair` with `first` and `second`, or `maturity_triple` with `group` and `maturities`.
+            Each maturity has `encoded`, `month`, `year_suffix` and `year_digits`.
+            Null when the subtype is unknown or the symbol does not follow its format.
+          example:
+            first: ESZ6
+            kind: outright_pair
+            second: ESH7
+          nullable: true
+          type: object
+        name:
+          description: CME's name for the subtype. Null for a subtype CME does not document.
+          example: Standard Calendar
+          nullable: true
+          type: string
+        subtype:
+          description: CME `SecuritySubType` code.
+          example: SP
+          type: string
+      title: Futures Contract Strategy
+      type: object
     Futures Contracts:
       description: Active CME futures contracts with recent trading activity, most active first.
       properties:
@@ -5427,6 +5456,8 @@ components:
               size:
                 nullable: true
                 type: integer
+              strategy:
+                $ref: '#/components/schemas/Futures Contract Strategy'
               strategy_link_id:
                 description: Block rows only.
                 nullable: true
@@ -5569,6 +5600,8 @@ components:
                 description: Regular prints only.
                 nullable: true
                 type: integer
+              strategy:
+                $ref: '#/components/schemas/Futures Contract Strategy'
               strategy_link_id:
                 description: Block trades only.
                 nullable: true
