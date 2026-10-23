@@ -17213,6 +17213,10 @@ info:
     
     ## Changelog
     
+    # 2026.10.23
+    - Added the `call_spread_collar` and `put_spread_collar` strategies to [`/option-trades/multi-leg`](https://api.unusualwhales.com/docs/operations/PublicApi.MultiLegController.index), in the `strategy` field and the `strategy` filter. A short put with a long call spread is a `call_spread_collar`, and a long put spread with a short call is a `put_spread_collar`. These three-leg structures were returned as `risk_reversal` before, and earlier trades keep that strategy.
+    - Stock-tied multi-leg trades (trade codes `tlat`, `tlet`, `tlct` and `tlft`) are now grouped into strategies on [`/option-trades/multi-leg`](https://api.unusualwhales.com/docs/operations/PublicApi.MultiLegController.index) when two or more option legs trade together. Their `code` field holds the stock-tied trade code.
+    
     # 2026.10.20
     - Added `2m` and `3m` to `candle_size` on [`/stock/:ticker/ohlc/:candle_size`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.ohlc). The MCP tools `get_ticker_candles_by_range`, `get_ticker_indicator_series` and `get_ticker_indicator_events` accept the same values in `range`.
     - Added `repeat` and `rearm_ticks` to `price_target` and `futures_price` alert configurations on [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config). With `"repeat": true` the configuration is not paused after a trigger. Each target re-arms once the price has come back inside it by `rearm_ticks` ticks, 2 by default and at least 1, never less than 0.1% of the target, and the next crossing triggers again, at most once a minute per target. After a restart, a target the price already sits beyond waits for the price to come back inside before it can trigger.
@@ -25786,6 +25790,7 @@ paths:
                 - call_condor
                 - call_diagonal_spread
                 - call_ratio_spread
+                - call_spread_collar
                 - call_vertical_spread
                 - iron_butterfly
                 - iron_condor
@@ -25796,6 +25801,7 @@ paths:
                 - put_condor
                 - put_diagonal_spread
                 - put_frontspread
+                - put_spread_collar
                 - put_vertical_spread
                 - risk_reversal
                 - straddle
