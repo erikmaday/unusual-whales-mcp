@@ -12992,7 +12992,7 @@ components:
       title: Search Prediction Market Users Response
       type: object
     Seasonality Average Change:
-      description: The average relative price change per day for the month.
+      description: The average relative price change of the month over all counted years. A month's change runs from the previous month's last close to the month's last close.
       example: 0.09494354167379757
       title: Seasonality Average Change
       type: number
@@ -13078,17 +13078,17 @@ components:
       title: Seasonality Market
       type: object
     Seasonality Max Change:
-      description: The maximum relative price change per day for the month.
+      description: The maximum relative price change of the month over all counted years. A month's change runs from the previous month's last close to the month's last close.
       example: 0.14970489711277724
       title: Seasonality Max Change
       type: number
     Seasonality Median Change:
-      description: The median relative price change per day for the month.
+      description: The median relative price change of the month over all counted years. A month's change runs from the previous month's last close to the month's last close.
       example: 0.09494354167379757
       title: Seasonality Median Change
       type: number
     Seasonality Min Change:
-      description: The minimum relative price change per day for the month.
+      description: The minimum relative price change of the month over all counted years. A month's change runs from the previous month's last close to the month's last close.
       example: 0.0401821862348179
       title: Seasonality Min Change
       type: number
@@ -13183,8 +13183,8 @@ components:
             median_change: '0.0639'
             min_change: '0.0091'
             month: 5
-            positive_closes: 11
-            positive_months_perc: '1.1'
+            positive_closes: 10
+            positive_months_perc: '1'
             sector: Healthcare
             ticker: ICLR
             years: 10
@@ -13254,7 +13254,7 @@ components:
       title: Seasonality Performers Limit
       type: integer
     Seasonality Positive Closes Count:
-      description: The number of years, the month had a positive close.
+      description: The number of counted years in which the month closed above the previous month's close.
       example: 2
       title: Seasonality Positive Closes Count
       type: integer
@@ -13269,7 +13269,7 @@ components:
       title: Seasonality Year
       type: integer
     Seasonality Year Count:
-      description: The number of years used to calculate the data.
+      description: The number of years used to calculate the data. Only completed months that have the previous month's close are counted, so the current month is left out.
       example: 3
       title: Seasonality Year Count
       type: number
@@ -17212,6 +17212,9 @@ info:
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com](mailto:oskar@unusualwhales.com?cc=enterprise@unusualwhales.com,nastja.petrovic@unusualwhales.com).
     
     ## Changelog
+    
+    # 2026.10.24
+    - Added `min_capped_pnl` and `max_capped_pnl` to [`/option-trades/multi-leg`](https://api.unusualwhales.com/docs/operations/PublicApi.MultiLegController.index). They filter on the larger absolute value of `max_loss` and `max_profit`, so a long and a short strangle of the same size match the same filter. Both accept `abs()` like the other multi-leg filters, e.g. `min_capped_pnl=abs(100000)` is the same as `min_capped_pnl=100000`. Multi-expiration strategies such as calendars and diagonals have no computed `max_loss` or `max_profit` and are excluded. The MCP tool `get_multi_trades` accepts both filters.
     
     # 2026.10.23
     - Added the `call_spread_collar` and `put_spread_collar` strategies to [`/option-trades/multi-leg`](https://api.unusualwhales.com/docs/operations/PublicApi.MultiLegController.index), in the `strategy` field and the `strategy` filter. A short put with a long call spread is a `call_spread_collar`, and a long put spread with a short call is a `put_spread_collar`. These three-leg structures were returned as `risk_reversal` before, and earlier trades keep that strategy.
@@ -25836,72 +25839,98 @@ paths:
               type: string
             type: array
         - description: Minimum total contracts across legs.
+          example: 100
           in: query
           name: min_size
           required: false
           schema:
             type: integer
         - description: Maximum total contracts across legs.
+          example: 10000
           in: query
           name: max_size
           required: false
           schema:
             type: integer
         - description: Minimum net premium (supports abs()).
+          example: '100000'
           in: query
           name: min_premium
           required: false
           schema:
             type: string
         - description: Maximum net premium (supports abs()).
+          example: '1000000'
           in: query
           name: max_premium
           required: false
           schema:
             type: string
         - description: Minimum `max_profit` in dollars (supports abs()). Strategies with unbounded profit have a null `max_profit` and are excluded.
+          example: '50000'
           in: query
           name: min_profit
           required: false
           schema:
             type: string
         - description: Maximum `max_profit` in dollars (supports abs()). Strategies with unbounded profit have a null `max_profit` and are excluded.
+          example: '500000'
           in: query
           name: max_profit
           required: false
           schema:
             type: string
         - description: Minimum `max_loss` in dollars (supports abs()). `max_loss` is negative, so use `min_loss=abs(100000)` for strategies that can lose at least $100,000. Strategies with unbounded loss have a null `max_loss` and are excluded.
+          example: abs(100000)
           in: query
           name: min_loss
           required: false
           schema:
             type: string
         - description: Maximum `max_loss` in dollars (supports abs()). `max_loss` is negative, so use `max_loss=abs(10000)` for strategies that can lose at most $10,000. Strategies with unbounded loss have a null `max_loss` and are excluded.
+          example: abs(10000)
           in: query
           name: max_loss
           required: false
           schema:
             type: string
+        - description: Minimum absolute value dollar amount of the strategy's capped side (either `max_loss` or `max_profit`), whichever has a limit (supports abs()). Multi-expiration strategies such as calendars and diagonals have no computed `max_loss` or `max_profit` and are excluded.
+          example: '100000'
+          in: query
+          name: min_capped_pnl
+          required: false
+          schema:
+            type: string
+        - description: Maximum absolute value dollar amount of the strategy's capped side (either `max_loss` or `max_profit`), whichever has a limit (supports abs()). Multi-expiration strategies such as calendars and diagonals have no computed `max_loss` or `max_profit` and are excluded.
+          example: '750000'
+          in: query
+          name: max_capped_pnl
+          required: false
+          schema:
+            type: string
         - description: Minimum days-to-expiry.
+          example: 7
           in: query
           name: min_dte
           required: false
           schema:
             type: integer
         - description: Maximum days-to-expiry.
+          example: 60
           in: query
           name: max_dte
           required: false
           schema:
             type: integer
         - description: Minimum number of legs.
+          example: 2
           in: query
           name: min_leg_count
           required: false
           schema:
             type: integer
         - description: Maximum number of legs.
+          example: 4
           in: query
           name: max_leg_count
           required: false
