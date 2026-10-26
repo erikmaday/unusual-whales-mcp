@@ -9124,8 +9124,8 @@ components:
           description: Total contracts across all legs.
           type: integer
         strategy:
-          description: Detected strategy name, e.g. vertical, iron_condor, calendar.
-          example: vertical
+          description: Detected strategy name. One of the values of the `strategy[]` query parameter, which lists each strategy's legs.
+          example: call_vertical_spread
           nullable: true
           type: string
         strikes:
@@ -9449,6 +9449,10 @@ components:
         - gex
         - futures_price
         - futures_print
+        - futures_sweep
+        - futures_block
+        - futures_roll
+        - futures_expiry
       example: flow_alerts
       title: Notification Type
       type: string
@@ -17219,6 +17223,12 @@ info:
     # 2026.10.23
     - Added the `call_spread_collar` and `put_spread_collar` strategies to [`/option-trades/multi-leg`](https://api.unusualwhales.com/docs/operations/PublicApi.MultiLegController.index), in the `strategy` field and the `strategy` filter. A short put with a long call spread is a `call_spread_collar`, and a long put spread with a short call is a `put_spread_collar`. These three-leg structures were returned as `risk_reversal` before, and earlier trades keep that strategy.
     - Stock-tied multi-leg trades (trade codes `tlat`, `tlet`, `tlct` and `tlft`) are now grouped into strategies on [`/option-trades/multi-leg`](https://api.unusualwhales.com/docs/operations/PublicApi.MultiLegController.index) when two or more option legs trade together. Their `code` field holds the stock-tied trade code.
+    - Added `min_notional` to `futures_print` alert configurations on [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config), the smallest notional in USD a print must reach, price × size × multiplier. It combines with `min_size`, and one of the two is required. A print of a contract without a usable multiplier carries no notional and never satisfies a notional floor. Triggered alerts carry `notional` and `multiplier` in `meta`. Rates and grains notionals use the corrected multipliers from the first security definition sync after the 2026-10-21 release.
+    - Added the `futures_sweep` alert type to [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config): a CME match event that filled several price levels on one contract, `"contract": "NQZ6"`, or on every contract of a product, `"product": "NQ"`. `min_levels` is 2 by default and at least 2, `min_size` and `min_notional` are optional floors, `side` limits it to `buy`, `sell` or `none` and `contracts` to `outrights`, `spreads` or `all`, outrights by default. An event alerts each configuration once, at most once per minute per configuration and scope, and the alert is never paused. Triggered alerts carry `side`, `levels`, `size`, `prints`, `low`, `high`, `notional` and `executed_at` in `meta`. Needs the Advanced API tier or the futures add-on.
+    - Added the `futures_block` alert type to [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config): a new CME block trade on one contract, `"contract": "ESZ6"`, or on every contract of a product, `"product": "ES"`, with `min_qty` and `min_notional` as optional floors. Multi-leg blocks are left out unless `"multi_leg": true`, and they carry no notional, so a notional floor never matches one. Updates and deletes of a block never alert. Each block alerts once, at most once per minute per configuration and scope, and the alert is never paused. Triggered alerts carry `price`, `qty`, `notional`, `legs`, `quote_bid`, `quote_ask`, `reported_at` and `trade_date` in `meta`. Needs the Advanced API tier or the futures add-on.
+    - Added the `futures_roll` alert type to [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config): the lead contract of a product changed, for one product, `"product": "ES"`, or for every product, `"product": "all"`. The lead is the contract with the highest 5-day rolling volume, so it can flip back, which alerts again. One alert per roll per configuration, never paused. Triggered alerts carry `product`, `from`, `to` and `trading_date` in `meta`. Needs the Advanced API tier or the futures add-on.
+    - Added the `futures_expiry` alert type to [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config): one contract, `"contract": "ESZ6"`, or the nearest unexpired contract of a product, `"product": "ES"`. `days_before` lists the days before expiry that alert, 1, 3 and 7 by default and each once per contract, with a day the check missed alerting on its next run, and `"settlement": true` also alerts once the final settlement price is published. Checked hourly. Triggered alerts carry `expiry`, `trigger`, `days` and `settlement` in `meta`. Needs the Advanced API tier or the futures add-on.
+    - The alert listing and configuration endpoints filter all futures alert types with `noti_types[]=futures_price,futures_print,futures_sweep,futures_block,futures_roll,futures_expiry`.
     
     # 2026.10.20
     - Added `2m` and `3m` to `candle_size` on [`/stock/:ticker/ohlc/:candle_size`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.ohlc). The MCP tools `get_ticker_candles_by_range`, `get_ticker_indicator_series` and `get_ticker_indicator_events` accept the same values in `range`.
@@ -17697,7 +17707,11 @@ paths:
         - Interval Contract screeners (replicates and alerts on the Flow Feed)
         - Analyst ratings, price targets, and actions
         - Futures price targets, on one contract or on the lead contract of a product
-        - Futures prints at or above a size floor, on one contract or on every contract of a product
+        - Futures prints at or above a size or notional floor, on one contract or on every contract of a product
+        - Futures sweeps, CME match events that filled several price levels, with floors on levels, size and notional
+        - Futures block trades, with floors on quantity and notional
+        - Futures rolls, when the lead contract of a product changes
+        - Futures expiries, days before a contract expires and on its final settlement
         - Politician trades
         - Insider trades
         - OI changes for contract in premarket
@@ -25781,35 +25795,89 @@ paths:
           required: false
           schema:
             type: string
-        - description: Filter by detected strategy name(s). Repeatable array param (e.g. `strategy[]=iron_condor&strategy[]=call_vertical_spread`).
+        - description: |
+            Filter by detected strategy name(s). Repeatable array param (e.g. `strategy[]=iron_condor&strategy[]=call_vertical_spread`). An unknown value returns HTTP 422 with the valid values. The descriptions below give the leg sides each strategy matches. When the sides of the legs are unknown or fit none of these patterns, the strategy is named from the leg types, strikes, expiries and sizes alone and `direction` is `unknown`.
+            
+            - `1_1_2`: One by one by two: puts in one expiry, buying one at the highest strike, selling one at the middle strike and selling two at the lowest strike.
+            - `box_spread`: Four equal-size legs in one expiry: a call and a put at each of two strikes, with the two calls on opposite sides, the two puts on opposite sides and the call and put at each strike on opposite sides.
+            - `call_backspread`: Two calls in one expiry: sell lower-strike calls and buy at least 1.5 times as many higher-strike calls.
+            - `call_butterfly_spread`: Calls at three strikes in one expiry with more contracts at the middle strike than at either wing, the wings on one side and the middle on the other.
+            - `call_calendar`: Equal-size calls at one strike in two expiries, one bought and the other sold.
+            - `call_condor`: Equal-size calls at four strikes in one expiry, the two outer strikes on one side and the two inner strikes on the other.
+            - `call_diagonal_spread`: Equal-size calls at different strikes in two expiries, one bought and the other sold.
+            - `call_frontspread`: Two calls in one expiry: sell lower-strike calls and buy a different number of higher-strike calls, less than 1.5 times as many.
+            - `call_ladder`: Calls at three strikes in one expiry, the lowest strike on one side and the two higher strikes on the other. Three calls, or five or more, in one expiry whose sides fit no other strategy and that form no butterfly also get this name.
+            - `call_ratio_spread`: Two calls in one expiry: buy lower-strike calls and sell at least 1.5 times as many higher-strike calls. Other unequal-size call pairs in one expiry whose sides fit no other strategy also get this name.
+            - `call_spread_collar`: Equal-size legs in one expiry: sell a put, buy a higher-strike call and sell a call at a strike above both.
+            - `call_vertical_spread`: Two equal-size calls at different strikes in one expiry.
+            - `iron_butterfly`: Four equal-size legs in one expiry: a put at the lowest strike, a put and a call at the middle strike and a call at the highest strike, the middle legs on the opposite side of the wings.
+            - `iron_condor`: Four equal-size legs at four strikes in one expiry: puts at the two lower strikes and calls at the two higher strikes, the inner legs on the opposite side of the outer legs.
+            - `jade_lizard`: Equal-size legs in one expiry: sell a put, sell a higher-strike call and buy a call at a strike above both, or buy a put, sell a higher-strike put and sell a call at a strike above both.
+            - `jelly_roll`: Four equal-size legs at one strike: a call and a put in each of two expiries, with the call and put in each expiry on opposite sides and the two calls on opposite sides.
+            - `other`: The legs match no other strategy.
+            - `put_backspread`: Two puts in one expiry: sell lower-strike puts and buy at least 1.5 times as many higher-strike puts.
+            - `put_butterfly_spread`: Puts at three strikes in one expiry with more contracts at the middle strike than at either wing, the wings on one side and the middle on the other.
+            - `put_calendar`: Equal-size puts at one strike in two expiries, one bought and the other sold.
+            - `put_condor`: Equal-size puts at four strikes in one expiry, the two outer strikes on one side and the two inner strikes on the other.
+            - `put_diagonal_spread`: Equal-size puts at different strikes in two expiries, one bought and the other sold.
+            - `put_frontspread`: Two puts in one expiry: sell lower-strike puts and buy a different number of higher-strike puts, less than 1.5 times as many.
+            - `put_ladder`: Puts at three strikes in one expiry, the lowest strike on one side and the two higher strikes on the other. Three puts, or five or more, in one expiry whose sides fit no other strategy and that form no butterfly or 1_1_2 also get this name.
+            - `put_ratio_spread`: Two puts in one expiry: buy lower-strike puts and sell at least 1.5 times as many higher-strike puts. Other unequal-size put pairs in one expiry whose sides fit no other strategy also get this name.
+            - `put_spread_collar`: Equal-size legs in one expiry: sell a put, buy a higher-strike put and sell a call at a strike above both.
+            - `put_vertical_spread`: Two equal-size puts at different strikes in one expiry.
+            - `ratio_risk_reversal`: A put and a call of different sizes at different strikes in one expiry.
+            - `risk_reversal`: Equal-size legs in one expiry: sell a put and buy a higher-strike call, or buy a put and sell a higher-strike call. Older trades also carry this name for the shapes now classified as call_spread_collar and put_spread_collar.
+            - `straddle`: A call and a put of equal size at one strike in one expiry, both bought or both sold.
+            - `straddle_swap`: Four equal-size legs: buy a call and a put at one strike in one expiry and sell a call and a put at one strike in another expiry.
+            - `strangle`: A call and a put of equal size at different strikes in one expiry, both bought or both sold.
+            - `strangle_swap`: Four equal-size legs: buy a call and a put at different strikes in one expiry and sell a call and a put at different strikes in another expiry.
+            - `strap`: Buy calls and puts at one strike in one expiry, with twice as many calls as puts.
+            - `strip`: Buy calls and puts at one strike in one expiry, with twice as many puts as calls.
+            - `synthetic`: A call and a put at one strike in one expiry, one bought and the other sold.
+            - `time_butterfly`: Three legs of one option type across two expiries with more contracts in the middle leg than in either wing, the wings on one side and the middle on the other.
           in: query
           name: strategy
           required: false
           schema:
             items:
               enum:
+                - 1_1_2
+                - box_spread
+                - call_backspread
                 - call_butterfly_spread
                 - call_calendar
                 - call_condor
                 - call_diagonal_spread
+                - call_frontspread
+                - call_ladder
                 - call_ratio_spread
                 - call_spread_collar
                 - call_vertical_spread
                 - iron_butterfly
                 - iron_condor
                 - jade_lizard
+                - jelly_roll
                 - other
+                - put_backspread
                 - put_butterfly_spread
                 - put_calendar
                 - put_condor
                 - put_diagonal_spread
                 - put_frontspread
+                - put_ladder
+                - put_ratio_spread
                 - put_spread_collar
                 - put_vertical_spread
+                - ratio_risk_reversal
                 - risk_reversal
                 - straddle
+                - straddle_swap
                 - strangle
+                - strangle_swap
+                - strap
+                - strip
                 - synthetic
+                - time_butterfly
               type: string
             type: array
         - description: Exclude strategies classified as `other` (unrecognized structures).
