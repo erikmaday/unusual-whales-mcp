@@ -17223,6 +17223,12 @@ info:
     
     ## Changelog
     
+    # 2026.10.27
+    - [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index) and the MCP tool `get_option_trades` now support ordering by premium and size. Set `order` to `premium` or `size`, and `order_direction` to `asc` or `desc`.
+    
+    # 2026.10.26
+    - [`/crypto/token/:token`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.get_token) and [`/crypto/list_tokens`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.list_tokens) now compute `price`, `price_change_24h` and `volume_24h` from every pool the token trades in, not only its USDT pool. `volume_24h` is in USD, and `price_change_24h` is a percent change over the last 24 hours, or `null` when the price 24 hours ago is unknown. On `/crypto/list_tokens`, `market_cap` and `fdv` are now the circulating and total supply times `price`, as on `/crypto/token/:token`, and tokens that traded in the last 24 hours are listed even without a USDT pool.
+    
     # 2026.10.24
     - Added `min_capped_pnl` and `max_capped_pnl` to [`/option-trades/multi-leg`](https://api.unusualwhales.com/docs/operations/PublicApi.MultiLegController.index). They filter on the larger absolute value of `max_loss` and `max_profit`, so a long and a short strangle of the same size match the same filter. Both accept `abs()` like the other multi-leg filters, e.g. `min_capped_pnl=abs(100000)` is the same as `min_capped_pnl=100000`. Multi-expiration strategies such as calendars and diagonals have no computed `max_loss` or `max_profit` and are excluded. The MCP tool `get_multi_trades` accepts both filters.
     
@@ -24469,6 +24475,28 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/OlderThan'
+        - description: ''
+          in: query
+          name: order
+          required: false
+          schema:
+            description: Order the trades by `premium` or `size` instead of execution time. Without it, the newest trades come first.
+            enum:
+              - premium
+              - size
+            example: premium
+            type: string
+        - description: ''
+          in: query
+          name: order_direction
+          required: false
+          schema:
+            description: Direction of `order`. `desc`, the default, returns the largest trades first and `asc` the smallest first. It has no effect without `order`.
+            enum:
+              - asc
+              - desc
+            example: desc
+            type: string
         - description: ''
           in: query
           name: query
