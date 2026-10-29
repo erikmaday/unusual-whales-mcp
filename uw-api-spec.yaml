@@ -2139,6 +2139,12 @@ components:
         circulating_supply:
           example: '94321.00'
           type: string
+        created_at:
+          description: Time the token was created on chain, from Birdeye. Null when Birdeye has no creation time for it or it has not been looked up yet.
+          example: 2024-01-05T00:30:00Z
+          format: date-time
+          nullable: true
+          type: string
         decimals:
           example: 9
           type: integer
@@ -2148,6 +2154,10 @@ components:
         holder:
           example: 93210
           type: integer
+        is_low_quality:
+          description: 'True for a token that is likely a fake or spam: fewer than 50 holders, a market cap of zero, or a market cap above $10,000,000 per holder.'
+          example: false
+          type: boolean
         liquidity:
           example: '12345.67'
           type: string
@@ -2189,6 +2199,10 @@ components:
         interacted_program_id:
           example: LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo
           type: string
+        is_large_swap:
+          description: True for a swap of $50,000 or more in USD. Always false for liquidity adds and removes.
+          example: false
+          type: boolean
         owner:
           example: 5sENFdd4BUfxKF3MLYCzVNxK83n7DTwogVJxzkzuL53F
           type: string
@@ -2489,6 +2503,11 @@ components:
       example: 2024-01-25T18:30:00Z
       title: CryptoDateTime
       type: string
+    CryptoHideLowQuality:
+      description: 'Leave out tokens with `is_low_quality` set: fewer than 50 holders, a market cap of zero, or a market cap above $10,000,000 per holder. Setting this to false has no effect.'
+      example: true
+      title: CryptoHideLowQuality
+      type: boolean
     Cumulative Volume:
       description: The cumulative stock volume through the trading day.
       example: 23132119
@@ -17223,6 +17242,11 @@ info:
     
     ## Changelog
     
+    # 2026.10.28
+    - Added `created_at` to [`/crypto/list_tokens`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.list_tokens) and [`/crypto/token/:token`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.get_token), the time the token was created on chain in RFC 3339. It is `null` when the creation time is not known.
+    - Added `is_low_quality` to [`/crypto/list_tokens`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.list_tokens) and [`/crypto/token/:token`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.get_token). It is `true` for a token with fewer than 50 holders, a market cap of zero, or a market cap above $10,000,000 per holder, which is often a fake or spam token. `/crypto/list_tokens` takes `hide_low_quality=true` to leave these tokens out.
+    - Added `is_large_swap` to [`/crypto/trades`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.list_trades). It is `true` for a swap of $50,000 or more in USD, and always `false` for liquidity adds and removes.
+    
     # 2026.10.27
     - [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index) and the MCP tool `get_option_trades` now support ordering by premium and size. Set `order` to `premium` or `size`, and `order_direction` to `asc` or `desc`.
     
@@ -19247,6 +19271,12 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/CryptoApiNumberArg'
+        - description: ''
+          in: query
+          name: hide_low_quality
+          required: false
+          schema:
+            $ref: '#/components/schemas/CryptoHideLowQuality'
         - description: ''
           in: query
           name: limit
