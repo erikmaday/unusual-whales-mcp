@@ -353,10 +353,10 @@ components:
             - accepted_values: bool
               filter: is_otm
             - accepted_values: bool
-              description: Trade size exceeds total open interest
+              description: Trade size exceeds the open interest of this contract
               filter: size_greater_oi
             - accepted_values: bool
-              description: Daily volume exceeds total open interest
+              description: Daily volume exceeds the open interest of this contract
               filter: volume_greater_oi
             - accepted_values: bool
               description: Filter for opening transactions only (new positions)
@@ -12971,6 +12971,105 @@ components:
       example: true
       title: S&P 500/Nasdaq Only
       type: boolean
+    SEC Filing:
+      description: A filing published on SEC EDGAR.
+      properties:
+        accession_no:
+          $ref: '#/components/schemas/SEC Filing Accession Number'
+        created_at:
+          $ref: '#/components/schemas/SEC Filing Created At'
+        document_url:
+          $ref: '#/components/schemas/SEC Filing Document URL'
+        filing_date:
+          $ref: '#/components/schemas/SEC Filing Date'
+        filing_url:
+          $ref: '#/components/schemas/SEC Filing URL'
+        form:
+          $ref: '#/components/schemas/SEC Filing Form'
+        ticker:
+          $ref: '#/components/schemas/SEC Filing Ticker'
+      title: SEC Filing
+      type: object
+    SEC Filing Accession Number:
+      description: The SEC EDGAR accession number. It identifies the filing uniquely.
+      example: 0000320193-26-000123
+      title: SEC Filing Accession Number
+      type: string
+    SEC Filing Created At:
+      description: The UTC time Unusual Whales recorded the filing, in ISO 8601.
+      example: 2026-10-30T20:31:04.512893Z
+      title: SEC Filing Created At
+      type: string
+    SEC Filing Date:
+      description: The date the filing was published on SEC EDGAR, in the format YYYY-MM-DD.
+      example: 2026-10-30
+      title: SEC Filing Date
+      type: string
+    SEC Filing Document URL:
+      description: URL of the primary document of the filing on SEC EDGAR.
+      example: https://www.sec.gov/Archives/edgar/data/320193/000032019326000123/aapl-20261030.htm
+      nullable: true
+      title: SEC Filing Document URL
+      type: string
+    SEC Filing Form:
+      description: The SEC form type of the filing.
+      example: 8-K
+      title: SEC Filing Form
+      type: string
+    SEC Filing Ticker:
+      description: The ticker of the filing company, or null when the filer has no listed ticker.
+      example: AAPL
+      nullable: true
+      title: SEC Filing Ticker
+      type: string
+    SEC Filing URL:
+      description: URL of the filing index page on SEC EDGAR.
+      example: https://www.sec.gov/Archives/edgar/data/320193/000032019326000123/0000320193-26-000123-index.htm
+      title: SEC Filing URL
+      type: string
+    SEC Filings Cursor:
+      description: Return the page after this cursor. Pass the `next_cursor` value of the previous response unchanged and keep the other parameters the same.
+      example: 2026-10-30_0000320193-26-000123
+      title: SEC Filings Cursor
+      type: string
+    SEC Filings End Date:
+      description: Return filings with a `filing_date` on or before this date, in the format YYYY-MM-DD.
+      example: 2026-10-30
+      title: SEC Filings End Date
+      type: string
+    SEC Filings Response:
+      description: A page of SEC filings.
+      example:
+        data:
+          - accession_no: 0000320193-26-000123
+            created_at: 2026-10-30T20:31:04.512893Z
+            document_url: https://www.sec.gov/Archives/edgar/data/320193/000032019326000123/aapl-20261030.htm
+            filing_date: 2026-10-30
+            filing_url: https://www.sec.gov/Archives/edgar/data/320193/000032019326000123/0000320193-26-000123-index.htm
+            form: 8-K
+            ticker: AAPL
+        next_cursor: 2026-10-30_0000320193-26-000123
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/SEC Filing'
+          type: array
+        next_cursor:
+          description: Pass this as `cursor` to fetch the next page. It is null on the last page.
+          nullable: true
+          type: string
+      title: SEC Filings Response
+      type: object
+    SEC Filings Start Date:
+      description: Return filings with a `filing_date` on or after this date, in the format YYYY-MM-DD.
+      example: 2026-10-01
+      title: SEC Filings Start Date
+      type: string
+    SEC Form Type:
+      description: Return only filings of this SEC form type, matched exactly as it appears in `form`, for example `8-K`, `10-Q/A` or `SC 13D`. An unknown form type returns no rows.
+      example: 8-K
+      title: SEC Form Type
+      type: string
     SPY Daily Close:
       properties:
         close:
@@ -17241,6 +17340,9 @@ info:
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com](mailto:oskar@unusualwhales.com?cc=enterprise@unusualwhales.com,nastja.petrovic@unusualwhales.com).
     
     ## Changelog
+    
+    # 2026.10.31
+    - Added [`/sec-filings`](https://api.unusualwhales.com/docs/operations/PublicApi.SecFilingsController.index), the REST counterpart of the `sec:filings` websocket channel. It returns SEC EDGAR filings newest first and filters by `ticker`, `form`, `start_date` and `end_date`. Pages use a cursor: pass `next_cursor` from a response as `cursor` to get the next page.
     
     # 2026.10.29
     - Added `min_created_at` and `max_created_at` to [`/crypto/list_tokens`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.list_tokens). Both take an RFC 3339 time and include tokens created exactly at that time. Tokens whose `created_at` is `null` are left out when either filter is set.
@@ -30476,6 +30578,76 @@ paths:
       summary: Price change per month per year
       tags:
         - seasonality
+  /api/sec-filings:
+    get:
+      callbacks: {}
+      description: |
+        Returns SEC EDGAR filings, newest first. This is the REST counterpart of the `sec:filings` websocket channel.
+        
+        Rows are sorted by `filing_date` descending, then by `accession_no` descending. Each response holds up to `limit` rows.
+        When more rows match, `next_cursor` holds a cursor for the next page. Pass it as `cursor` with the same filters to continue. `next_cursor` is null on the last page.
+        
+        All filters are optional and combine with each other. `start_date` and `end_date` filter on `filing_date` and include both ends.
+      operationId: PublicApi.SecFilingsController.index
+      parameters:
+        - description: ''
+          in: query
+          name: ticker
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Ticker'
+        - description: ''
+          in: query
+          name: form
+          required: false
+          schema:
+            $ref: '#/components/schemas/SEC Form Type'
+        - description: ''
+          in: query
+          name: start_date
+          required: false
+          schema:
+            $ref: '#/components/schemas/SEC Filings Start Date'
+        - description: ''
+          in: query
+          name: end_date
+          required: false
+          schema:
+            $ref: '#/components/schemas/SEC Filings End Date'
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            $ref: '#/components/schemas/Default 500 Max 500 Min 1'
+        - description: ''
+          in: query
+          name: cursor
+          required: false
+          schema:
+            $ref: '#/components/schemas/SEC Filings Cursor'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SEC Filings Response'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+      summary: SEC Filings
+      tags:
+        - sec-filings
   /api/short_screener:
     get:
       callbacks: {}
