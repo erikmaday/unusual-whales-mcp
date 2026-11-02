@@ -17329,9 +17329,9 @@ info:
     Documentation for the official [UnusualWhales](https://unusualwhales.com) api
     
     ## Startup Tier
-    Building a product on our data? Get started immediately with our self-serve Startup tier at $750/mo — 500 req/min, 80K daily requests, 90-day lookback, and commercial use included. Annual plan available at $7,500/yr (2 months free) with 1,000 req/min and 10 concurrent requests for market-open bursts. [Start building →](https://unusualwhales.com/checkout?plan=enterprise_startup&interval=monthly)
+    Building a product on our data? Get started immediately with our self-serve Startup tier at $750/mo: 160K daily requests, 5 concurrent requests, 2-year lookback, and commercial use included. Annual plan available at $7,500/yr (2 months free) with 10 concurrent requests for market-open bursts. [Start building →](https://unusualwhales.com/checkout?plan=enterprise_startup&interval=monthly)
     
-    Need Kafka streaming? Our Startup + Kafka tier at $3,000/mo adds real-time Kafka cluster access. Annual plan available at $30,000/yr (2 months free) with the same 1,000 req/min burst allowance. [Start building →](https://unusualwhales.com/checkout?plan=enterprise_startup_kafka&interval=monthly)
+    Need Kafka streaming? Our Startup + Kafka tier at $3,000/mo adds real-time Kafka cluster access. Annual plan available at $30,000/yr (2 months free) with the same 10 concurrent requests. [Start building →](https://unusualwhales.com/checkout?plan=enterprise_startup_kafka&interval=monthly)
     
     ## CBOE Index Prices
     For CBOE index tickers such as SPX or VIX the index price is returned as `null` and the row is marked `missing_periscope`. If the request filters with `min_underlying_price`, `max_underlying_price`, `min_stock_price`, `max_stock_price`, `min_diff`, `max_diff`, `min_implied_move`, `max_implied_move`, `min_return_on_capital`, `max_return_on_capital`, `min_return_on_capital_perc` or `max_return_on_capital_perc`, rows for these index tickers are left out of the response. CBOE index prices require provisioned access and CBOE approval. Contact oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com to request access. This applies to every REST endpoint that can return an index price, not only the ones whose description repeats it.
@@ -17341,8 +17341,21 @@ info:
     
     ## Changelog
     
+    # 2026.11.01
+    - A `limit` that is not a whole number from 1 to 500 now returns HTTP 400 with the code `invalid_query_parameters` on three endpoints. These requests used to return a different number of rows than requested, or an HTTP 500. On Flow Alerts the default is 50 and the maximum is 500, which is what the endpoint already served.
+      - [`/option-trades/flow-alerts`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alerts)
+      - [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index)
+      - [`/screener/option-contracts`](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.contract_screener)
+    
     # 2026.10.31
     - Added [`/sec-filings`](https://api.unusualwhales.com/docs/operations/PublicApi.SecFilingsController.index), the REST counterpart of the `sec:filings` websocket channel. It returns SEC EDGAR filings newest first and filters by `ticker`, `form`, `start_date` and `end_date`. Pages use a cursor: pass `next_cursor` from a response as `cursor` to get the next page.
+    - Added `ticker_open_int`, alias `ticker_oi`, to the query language in `input` on [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config) for the `option_trade`, `option_contract`, `option_contract_interval`, `flow_alert` and `multi_leg_trade` alert types, and to [`/alerts/query/grammar`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.dsl_grammar) for these targets. It is the open interest of every option contract on the underlying, calls plus puts, from the latest published open interest. This is `call_open_interest` plus `put_open_interest` from [`/stock/:ticker/options-volume`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.options_volume). It works in comparisons and arithmetic, e.g. `where ticker_open_int < 50000` or `where size > ticker_open_int * 0.02`. A comparison with it does not match while the underlying has no published open interest.
+    - Added `ticker_avg_7_day_volume` (alias `ticker_avg_7d_vol`) and `ticker_avg_30_day_volume` (alias `ticker_avg_30d_vol`) to the query language for the `option_trade` alert type and to [`/alerts/query/grammar?target=option_trade`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.dsl_grammar). They are the average daily option volume of the underlying over the previous 7 and 30 trading days, calls plus puts, from the latest open interest update.
+    - The `query` parameter of [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index) accepts `ticker_open_int`, `ticker_avg_7_day_volume` and `ticker_avg_30_day_volume`. Each trade carries the values of its underlying at the time it was published, so a comparison with them does not match trades published before this release.
+    - The Kafka topic `all-option-trades` carries `ticker_open_interest`, `ticker_avg_7_day_volume` and `ticker_avg_30_day_volume` with the same values, each absent while unknown. `ticker-oi-stats` carries `avg_30_day_call_volume` and `avg_30_day_put_volume`.
+    
+    # 2026.10.30
+    - The `x-uw-req-per-minute-remaining` and `x-uw-req-per-minute-reset` response headers are deprecated and will be removed after 2026-12-31. They always hold `1000000` and `60000` and do not reflect a limit, because the API has no per-minute cap. The limits that apply are described under [Rate limits](https://api.unusualwhales.com/docs/conventions#rate-limits).
     
     # 2026.10.29
     - Added `min_created_at` and `max_created_at` to [`/crypto/list_tokens`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.list_tokens). Both take an RFC 3339 time and include tokens created exactly at that time. Tokens whose `created_at` is `null` are left out when either filter is set.
@@ -25227,6 +25240,124 @@ paths:
             description: Maximum underlying price at execution.
             example: '195.50'
             type: string
+        - description: ''
+          in: query
+          name: min_ticker_open_int
+          required: false
+          schema:
+            description: Minimum open interest of every option contract on the underlying, calls plus puts, on that trading day.
+            example: 100000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: max_ticker_open_int
+          required: false
+          schema:
+            description: Maximum open interest of every option contract on the underlying, calls plus puts, on that trading day.
+            example: 100000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: min_ticker_avg_7_day_volume
+          required: false
+          schema:
+            description: Minimum average daily option volume of the underlying over the previous 7 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: max_ticker_avg_7_day_volume
+          required: false
+          schema:
+            description: Maximum average daily option volume of the underlying over the previous 7 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: min_ticker_avg_30_day_volume
+          required: false
+          schema:
+            description: Minimum average daily option volume of the underlying over the previous 30 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: max_ticker_avg_30_day_volume
+          required: false
+          schema:
+            description: Maximum average daily option volume of the underlying over the previous 30 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: min_size_ticker_oi_ratio
+          required: false
+          schema:
+            description: Minimum trade size in contracts divided by the underlying's total open interest (0.02 = 2%).
+            example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: max_size_ticker_oi_ratio
+          required: false
+          schema:
+            description: Maximum trade size in contracts divided by the underlying's total open interest (0.02 = 2%).
+            example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: min_volume_ticker_oi_ratio
+          required: false
+          schema:
+            description: Minimum contract volume divided by the underlying's total open interest (0.02 = 2%).
+            example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: max_volume_ticker_oi_ratio
+          required: false
+          schema:
+            description: Maximum contract volume divided by the underlying's total open interest (0.02 = 2%).
+            example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: min_size_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum trade size in contracts divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.1'
+            type: string
+        - description: ''
+          in: query
+          name: max_size_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum trade size in contracts divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.1'
+            type: string
+        - description: ''
+          in: query
+          name: min_size_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum trade size in contracts divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.1'
+            type: string
+        - description: ''
+          in: query
+          name: max_size_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum trade size in contracts divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.1'
+            type: string
       responses:
         '200':
           content:
@@ -25791,7 +25922,125 @@ paths:
           name: limit
           required: false
           schema:
-            $ref: '#/components/schemas/Default 100 Max 200 Min 1'
+            $ref: '#/components/schemas/Default 50, Max 500 Min 1'
+        - description: ''
+          in: query
+          name: min_ticker_open_int
+          required: false
+          schema:
+            description: Minimum open interest of every option contract on the underlying, calls plus puts, on that trading day.
+            example: 100000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: max_ticker_open_int
+          required: false
+          schema:
+            description: Maximum open interest of every option contract on the underlying, calls plus puts, on that trading day.
+            example: 100000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: min_ticker_avg_7_day_volume
+          required: false
+          schema:
+            description: Minimum average daily option volume of the underlying over the previous 7 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: max_ticker_avg_7_day_volume
+          required: false
+          schema:
+            description: Maximum average daily option volume of the underlying over the previous 7 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: min_ticker_avg_30_day_volume
+          required: false
+          schema:
+            description: Minimum average daily option volume of the underlying over the previous 30 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: max_ticker_avg_30_day_volume
+          required: false
+          schema:
+            description: Maximum average daily option volume of the underlying over the previous 30 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: min_size_ticker_oi_ratio
+          required: false
+          schema:
+            description: Minimum total size of the alert in contracts divided by the underlying's total open interest (0.02 = 2%).
+            example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: max_size_ticker_oi_ratio
+          required: false
+          schema:
+            description: Maximum total size of the alert in contracts divided by the underlying's total open interest (0.02 = 2%).
+            example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: min_volume_ticker_oi_ratio
+          required: false
+          schema:
+            description: Minimum contract volume divided by the underlying's total open interest (0.02 = 2%).
+            example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: max_volume_ticker_oi_ratio
+          required: false
+          schema:
+            description: Maximum contract volume divided by the underlying's total open interest (0.02 = 2%).
+            example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: min_size_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum total size of the alert in contracts divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.1'
+            type: string
+        - description: ''
+          in: query
+          name: max_size_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum total size of the alert in contracts divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.1'
+            type: string
+        - description: ''
+          in: query
+          name: min_size_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum total size of the alert in contracts divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.1'
+            type: string
+        - description: ''
+          in: query
+          name: max_size_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum total size of the alert in contracts divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.1'
+            type: string
       responses:
         '200':
           content:
@@ -29301,6 +29550,108 @@ paths:
           required: false
           schema:
             type: boolean
+        - description: ''
+          in: query
+          name: min_ticker_open_int
+          required: false
+          schema:
+            description: Minimum open interest of every option contract on the underlying, calls plus puts, on that trading day.
+            example: 100000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: max_ticker_open_int
+          required: false
+          schema:
+            description: Maximum open interest of every option contract on the underlying, calls plus puts, on that trading day.
+            example: 100000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: min_ticker_avg_7_day_volume
+          required: false
+          schema:
+            description: Minimum average daily option volume of the underlying over the previous 7 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: max_ticker_avg_7_day_volume
+          required: false
+          schema:
+            description: Maximum average daily option volume of the underlying over the previous 7 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: min_ticker_avg_30_day_volume
+          required: false
+          schema:
+            description: Minimum average daily option volume of the underlying over the previous 30 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: max_ticker_avg_30_day_volume
+          required: false
+          schema:
+            description: Maximum average daily option volume of the underlying over the previous 30 trading days, calls plus puts, rounded down to whole contracts.
+            example: 20000
+            format: int64
+            type: integer
+        - description: ''
+          in: query
+          name: min_volume_ticker_oi_ratio
+          required: false
+          schema:
+            description: Minimum contract volume divided by the underlying's total open interest (0.02 = 2%).
+            example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: max_volume_ticker_oi_ratio
+          required: false
+          schema:
+            description: Maximum contract volume divided by the underlying's total open interest (0.02 = 2%).
+            example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: min_size_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum contract volume divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.1'
+            type: string
+        - description: ''
+          in: query
+          name: max_size_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum contract volume divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.1'
+            type: string
+        - description: ''
+          in: query
+          name: min_size_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum contract volume divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.1'
+            type: string
+        - description: ''
+          in: query
+          name: max_size_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum contract volume divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.1'
+            type: string
       responses:
         '200':
           content:
