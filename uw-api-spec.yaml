@@ -7371,6 +7371,9 @@ components:
     Insider Trade Agg:
       description: An aggregated insider trade
       example:
+        cursor:
+          has_more: true
+          next: WyIyMDI0LTEyLTEyIiwiMjAyNC0xMi0xMiIsIjI2NjJiNzNkLTBhZDYtNDU2OC1hZGIwLTczOWI5NmMxODA5MCJd
         data:
           - amount: -35921
             date_excercisable:
@@ -7403,6 +7406,7 @@ components:
             transaction_code: S
             transaction_date: 2024-12-12
             transactions: 1
+        has_more: true
       properties:
         accession_no:
           $ref: '#/components/schemas/Accession Number'
@@ -7410,6 +7414,8 @@ components:
           $ref: '#/components/schemas/Amended Original Accession Number'
         amount:
           $ref: '#/components/schemas/Insider Amount'
+        cursor:
+          $ref: '#/components/schemas/Pagination Cursor'
         date_excercisable:
           $ref: '#/components/schemas/Insider Date Excercisable'
         director_indirect:
@@ -7420,6 +7426,8 @@ components:
           $ref: '#/components/schemas/Insider Filing Date'
         formtype:
           $ref: '#/components/schemas/Insider Form Type'
+        has_more:
+          $ref: '#/components/schemas/Has More'
         ids:
           $ref: '#/components/schemas/Insider IDs'
         is_10b5_1:
@@ -11201,6 +11209,20 @@ components:
       example: 1
       title: Page
       type: integer
+    Pagination Cursor:
+      description: Where the next page starts. Pass `next` as the `cursor` parameter to fetch it.
+      properties:
+        has_more:
+          description: Whether more rows follow this page.
+          example: true
+          type: boolean
+        next:
+          description: Pass this value as `cursor` to fetch the next page. It is null on the last page.
+          example: WyIyMDI2LTEwLTE0IiwiMjAyNi0xMC0xMCIsIjNmMmI4YzFlLTZhNGQtNGU3Yi05YzFhLTJkNWU4ZjBhN2IzYyJd
+          nullable: true
+          type: string
+      title: Pagination Cursor
+      type: object
     People:
       description: Persons of interest in the institution.
       example:
@@ -11534,6 +11556,52 @@ components:
           example: '3.15'
           type: string
       title: Prediction Asset Tag Score
+      type: object
+    Prediction Event for a Ticker:
+      properties:
+        category:
+          example: Finance
+          nullable: true
+          type: string
+        event_slug:
+          example: aapl-above-on-october-30
+          type: string
+        event_title:
+          example: Apple (AAPL) above ___ on October 30?
+          nullable: true
+          type: string
+        event_types:
+          description: Event types of the event's markets about the ticker.
+          example:
+            - price
+          items:
+            enum:
+              - price
+              - market_cap
+              - earnings
+              - product_release
+              - corporate
+              - other
+            type: string
+          type: array
+        image:
+          nullable: true
+          type: string
+        markets:
+          description: Number of the event's markets about the ticker that match the filters.
+          example: 12
+          type: integer
+        resolves_at:
+          description: Earliest resolution time of these markets.
+          format: date-time
+          nullable: true
+          type: string
+        volume:
+          description: Today's USD volume of the first outcomes of these markets. `null` when none has activity today.
+          example: 4.89e4
+          nullable: true
+          type: number
+      title: Prediction Event for a Ticker
       type: object
     Prediction Insider Detail:
       properties:
@@ -12257,6 +12325,93 @@ components:
         data:
           $ref: '#/components/schemas/Prediction Market Whales Data'
       title: Prediction Market Whales Response
+      type: object
+    Prediction Market for a Ticker:
+      properties:
+        category:
+          example: Finance
+          nullable: true
+          type: string
+        closed:
+          example: false
+          type: boolean
+        event_slug:
+          example: aapl-above-on-october-30
+          nullable: true
+          type: string
+        event_title:
+          example: Apple (AAPL) above ___ on October 30?
+          nullable: true
+          type: string
+        event_type:
+          description: What the market asks about the ticker.
+          enum:
+            - price
+            - market_cap
+            - earnings
+            - product_release
+            - corporate
+            - other
+          example: price
+          type: string
+        image:
+          nullable: true
+          type: string
+        implied_probability:
+          description: Latest price of the first outcome, 0-1. `null` when no price data exists yet.
+          example: 0.62
+          nullable: true
+          type: number
+        market:
+          example: Will Apple (AAPL) close above $270 on Friday?
+          type: string
+        outcomes:
+          example:
+            - Yes
+            - No
+          items:
+            type: string
+          type: array
+        primary_asset_id:
+          description: Asset ID of the first outcome, for the market detail endpoints.
+          example: '78699665722135183571140787397681621204678465342167575193369860798796866652931'
+          nullable: true
+          type: string
+        question_id:
+          example: 3120544
+          type: integer
+        resolves_at:
+          format: date-time
+          nullable: true
+          type: string
+        volume:
+          description: Today's USD volume of the first outcome. `null` when the market has no activity today.
+          example: 15230.5
+          nullable: true
+          type: number
+      title: Prediction Market for a Ticker
+      type: object
+    Prediction Markets for a Ticker:
+      description: Holds `markets` with `view=markets` and `events` with `view=events`.
+      properties:
+        events:
+          items:
+            $ref: '#/components/schemas/Prediction Event for a Ticker'
+          type: array
+        markets:
+          items:
+            $ref: '#/components/schemas/Prediction Market for a Ticker'
+          type: array
+        ticker:
+          example: AAPL
+          type: string
+      title: Prediction Markets for a Ticker
+      type: object
+    Prediction Markets for a Ticker Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/Prediction Markets for a Ticker'
+      title: Prediction Markets for a Ticker Response
       type: object
     Prediction Order Book Level:
       properties:
@@ -17341,6 +17496,15 @@ info:
     
     ## Changelog
     
+    # 2026.11.02
+    - Added cursor pagination to [`/insider/transactions`](https://api.unusualwhales.com/docs/operations/PublicApi.InsiderController.transactions). Each response includes `cursor.next`, which is null on the last page. Pass it as `cursor` to fetch the next page. `page` is deprecated on this endpoint and will be removed.
+    - Added `min_volume_avg_7_day_volume_ratio`, `max_volume_avg_7_day_volume_ratio`, `min_volume_avg_30_day_volume_ratio` and `max_volume_avg_30_day_volume_ratio` to three endpoints. They filter on the contract's volume for the day divided by the underlying's average daily option volume over the previous 7 or 30 trading days, calls plus puts, as of the row's trading date. For example, `min_volume_avg_30_day_volume_ratio=0.5` returns contracts whose volume is at least half of the underlying's average daily option volume. A row does not match while the underlying has no average volume for that date.
+      - [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index)
+      - [`/option-trades/flow-alerts`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alerts)
+      - [`/screener/option-contracts`](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.contract_screener)
+    - Added `volume_avg_7_day_volume_ratio` and `volume_avg_30_day_volume_ratio` to the query language for the `option_trade` alert type, to [`/alerts/query/grammar?target=option_trade`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.dsl_grammar) and to the `query` parameter of [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index). Option trade alert configurations on [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config) accept the same `min_` and `max_` filters.
+    - Added [`/predictions/ticker/:ticker`](https://api.unusualwhales.com/docs/operations/PublicApi.PredictionController.ticker), the open prediction markets about a stock ticker, such as "Will Apple (AAPL) close above $270?" or "Apple Vision Pro 2 released before 2027?" for AAPL. Each market has an `event_type` (`price`, `market_cap`, `earnings`, `product_release`, `corporate` or `other`), and `event_types=price,earnings` filters on it. `view=events` returns one row per event with the number of its matching markets, and `include_closed=true` includes closed markets.
+    
     # 2026.11.01
     - A `limit` that is not a whole number from 1 to 500 now returns HTTP 400 with the code `invalid_query_parameters` on three endpoints. These requests used to return a different number of rows than requested, or an HTTP 500. On Flow Alerts the default is 50 and the maximum is 500, which is what the endpoint already served.
       - [`/option-trades/flow-alerts`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alerts)
@@ -21825,6 +21989,10 @@ paths:
         of transactions that were aggregated.
         
         If you want to disable this behaviour you can set the `group` parameter to false to receive the single transacations as they have been filled.
+        
+        Results are sorted by `filing_date`, then `transaction_date`, newest first. To fetch the next page, pass `cursor.next` from the
+        response as `cursor`. `cursor.next` is null on the last page. A `cursor` takes precedence over `page`, which skips
+        `page` × `limit` rows and gets slower as `page` grows. A `cursor` that is not a `cursor.next` value gets a 422 response.
       operationId: PublicApi.InsiderController.transactions
       parameters:
         - description: ''
@@ -21999,12 +22167,20 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Default 500 Max 500 Min 1'
-        - description: ''
+        - deprecated: true
+          description: ''
           in: query
           name: page
           required: false
           schema:
             $ref: '#/components/schemas/Page'
+        - description: The `cursor.next` value from the previous response. Returns the rows that follow it and ignores `page`.
+          example: WyIyMDI2LTEwLTE0IiwiMjAyNi0xMC0xMCIsIjNmMmI4YzFlLTZhNGQtNGU3Yi05YzFhLTJkNWU4ZjBhN2IzYyJd
+          in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
         - description: Group insider transactions with same person and trade code on the same day into a single row
           example: true
           in: query
@@ -22047,6 +22223,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Forbidden Error'
           description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
       summary: Transactions
       tags:
         - insiders
@@ -25328,6 +25510,38 @@ paths:
             type: string
         - description: ''
           in: query
+          name: min_volume_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum contract volume divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.5'
+            type: string
+        - description: ''
+          in: query
+          name: max_volume_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum contract volume divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.5'
+            type: string
+        - description: ''
+          in: query
+          name: min_volume_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum contract volume divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.5'
+            type: string
+        - description: ''
+          in: query
+          name: max_volume_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum contract volume divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.5'
+            type: string
+        - description: ''
+          in: query
           name: min_size_avg_7_day_volume_ratio
           required: false
           schema:
@@ -26008,6 +26222,38 @@ paths:
           schema:
             description: Maximum contract volume divided by the underlying's total open interest (0.02 = 2%).
             example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: min_volume_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum contract volume divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.5'
+            type: string
+        - description: ''
+          in: query
+          name: max_volume_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum contract volume divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.5'
+            type: string
+        - description: ''
+          in: query
+          name: min_volume_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum contract volume divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.5'
+            type: string
+        - description: ''
+          in: query
+          name: max_volume_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum contract volume divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.5'
             type: string
         - description: ''
           in: query
@@ -28053,6 +28299,95 @@ paths:
       summary: Prediction Smart Money
       tags:
         - predictions
+  /api/predictions/ticker/{ticker}:
+    get:
+      callbacks: {}
+      description: |
+        Returns the prediction markets about a stock ticker, or with `view=events` their events.
+        Finance markets that write out the ticker, like "Will Apple (AAPL) close above $270?", are tagged from their text.
+        Other markets are tagged by an AI model, like "Apple Vision Pro 2 released before 2027?" with AAPL.
+        Markets are sorted by resolution date and events by the earliest resolution date of their markets, soonest first.
+        Only open markets are included unless `include_closed=true`.
+      operationId: PublicApi.PredictionController.ticker
+      parameters:
+        - description: Stock ticker symbol, case-insensitive (e.g. AAPL).
+          in: path
+          name: ticker
+          required: true
+          schema:
+            type: string
+        - description: Return one row per market, or one row per event with the number of its markets about the ticker.
+          in: query
+          name: view
+          required: false
+          schema:
+            default: markets
+            enum:
+              - markets
+              - events
+            type: string
+        - description: Only markets with these event types, comma-separated (e.g. `price,earnings`). One of price, market_cap, earnings, product_release, corporate, other.
+          in: query
+          name: event_types
+          required: false
+          schema:
+            type: string
+        - description: Include closed markets.
+          in: query
+          name: include_closed
+          required: false
+          schema:
+            default: false
+            type: boolean
+        - description: ''
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 50
+            maximum: 500
+            type: integer
+        - description: ''
+          in: query
+          name: offset
+          required: false
+          schema:
+            default: 0
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prediction Markets for a Ticker Response'
+          description: Prediction Markets for a Ticker
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Prediction Markets for a Ticker
+      tags:
+        - predictions
   /api/predictions/unusual:
     get:
       callbacks: {}
@@ -29619,6 +29954,38 @@ paths:
           schema:
             description: Maximum contract volume divided by the underlying's total open interest (0.02 = 2%).
             example: '0.02'
+            type: string
+        - description: ''
+          in: query
+          name: min_volume_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum contract volume divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.5'
+            type: string
+        - description: ''
+          in: query
+          name: max_volume_avg_7_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum contract volume divided by the underlying's average daily option volume over the previous 7 trading days.
+            example: '0.5'
+            type: string
+        - description: ''
+          in: query
+          name: min_volume_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Minimum contract volume divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.5'
+            type: string
+        - description: ''
+          in: query
+          name: max_volume_avg_30_day_volume_ratio
+          required: false
+          schema:
+            description: Maximum contract volume divided by the underlying's average daily option volume over the previous 30 trading days.
+            example: '0.5'
             type: string
         - description: ''
           in: query
