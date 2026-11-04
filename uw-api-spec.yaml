@@ -8382,6 +8382,16 @@ components:
           $ref: '#/components/schemas/Stock Day Stock Volume'
       title: Lit Trade
       type: object
+    Live NBBO Ask:
+      description: The National Best Bid and Offer (NBBO) ask price. For the current trading day it updates live as new quotes arrive. For a past `date` it is the last NBBO of that day.
+      example: '0.03'
+      title: Live NBBO Ask
+      type: string
+    Live NBBO Bid:
+      description: The National Best Bid and Offer (NBBO) bid price. For the current trading day it updates live as new quotes arrive. For a past `date` it is the last NBBO of that day.
+      example: '0.03'
+      title: Live NBBO Bid
+      type: string
     Logo:
       description: A link to a logo
       title: Logo
@@ -9197,8 +9207,8 @@ components:
       title: Multi-Leg Trades Response
       type: object
     NBBO Ask:
-      description: The National Best Bid and Offer (NBBO) ask price.
-      example: '0.03'
+      description: The National Best Bid and Offer (NBBO) ask price at the time of the trade.
+      example: '21.60'
       title: NBBO Ask
       type: string
     NBBO Ask Size:
@@ -9216,8 +9226,8 @@ components:
       title: NBBO Ask Time
       type: string
     NBBO Bid:
-      description: The National Best Bid and Offer (NBBO) bid price.
-      example: '0.03'
+      description: The National Best Bid and Offer (NBBO) bid price at the time of the trade.
+      example: '21.45'
       title: NBBO Bid
       type: string
     NBBO Bid Size:
@@ -10777,7 +10787,7 @@ components:
       title: Option contract 
       type: object
     Option contracts:
-      description: All option contracts for a ticker
+      description: All option contracts for a ticker with their live NBBO
       example:
         data:
           - ask_volume: 56916
@@ -10865,9 +10875,15 @@ components:
         multi_leg_volume:
           $ref: '#/components/schemas/Option Contract Multi Leg Volume'
         nbbo_ask:
-          $ref: '#/components/schemas/NBBO Ask'
+          description: The National Best Bid and Offer (NBBO) ask price. For the current trading day it updates live as new quotes arrive. For a past `date` it is the last NBBO of that day.
+          example: '0.03'
+          title: Live NBBO Ask
+          type: string
         nbbo_bid:
-          $ref: '#/components/schemas/NBBO Bid'
+          description: The National Best Bid and Offer (NBBO) bid price. For the current trading day it updates live as new quotes arrive. For a past `date` it is the last NBBO of that day.
+          example: '0.03'
+          title: Live NBBO Bid
+          type: string
         no_side_volume:
           $ref: '#/components/schemas/Option Contract No Side Volume'
         open_interest:
@@ -16290,6 +16306,7 @@ components:
             - nyse
             - bats
             - investors_exchange
+            - texas_stock_exchange
           type: string
         ticker:
           description: The ticker symbol.
@@ -17496,6 +17513,13 @@ info:
     
     ## Changelog
     
+    # 2026.11.03
+    - `exchange` in [`/stock-directory/ticker-exchanges`](https://api.unusualwhales.com/docs/operations/PublicApi.StockDirectoryController.ticker_exchanges) can be `texas_stock_exchange` for tickers whose primary listing is on the Texas Stock Exchange.
+    - Added the `@equity` scope to the query language, also spelled `@equities`. It selects common stocks and ADRs, the same as `@stock+adr`, while `@stock` still selects common stocks only. It works in:
+      - `input` on [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config)
+      - the `query` parameter of [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index)
+      - the `query` parameter of [`/screener/stocks`](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.stock_screener)
+    
     # 2026.11.02
     - Added cursor pagination to [`/insider/transactions`](https://api.unusualwhales.com/docs/operations/PublicApi.InsiderController.transactions). Each response includes `cursor.next`, which is null on the last page. Pass it as `cursor` to fetch the next page. `page` is deprecated on this endpoint and will be removed.
     - Added `min_volume_avg_7_day_volume_ratio`, `max_volume_avg_7_day_volume_ratio`, `min_volume_avg_30_day_volume_ratio` and `max_volume_avg_30_day_volume_ratio` to three endpoints. They filter on the contract's volume for the day divided by the underlying's average daily option volume over the previous 7 or 30 trading days, calls plus puts, as of the row's trading date. For example, `min_volume_avg_30_day_volume_ratio=0.5` returns contracts whose volume is at least half of the underlying's average daily option volume. A row does not match while the underlying has no average volume for that date.
@@ -17504,6 +17528,7 @@ info:
       - [`/screener/option-contracts`](https://api.unusualwhales.com/docs/operations/PublicApi.ScreenerController.contract_screener)
     - Added `volume_avg_7_day_volume_ratio` and `volume_avg_30_day_volume_ratio` to the query language for the `option_trade` alert type, to [`/alerts/query/grammar?target=option_trade`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.dsl_grammar) and to the `query` parameter of [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index). Option trade alert configurations on [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config) accept the same `min_` and `max_` filters.
     - Added [`/predictions/ticker/:ticker`](https://api.unusualwhales.com/docs/operations/PublicApi.PredictionController.ticker), the open prediction markets about a stock ticker, such as "Will Apple (AAPL) close above $270?" or "Apple Vision Pro 2 released before 2027?" for AAPL. Each market has an `event_type` (`price`, `market_cap`, `earnings`, `product_release`, `corporate` or `other`), and `event_types=price,earnings` filters on it. `view=events` returns one row per event with the number of its matching markets, and `include_closed=true` includes closed markets.
+    - Added `avg30d_volume`, with the aliases `avg30d_stock_volume` and `avg30d_share_volume`, to the query language in `input` on [`POST /alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.create_config) for the `option_trade`, `option_contract`, `option_contract_interval`, `flow_alert` and `multi_leg_trade` alert types, and to [`/alerts/query/grammar`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.dsl_grammar) for these targets. It is the 30-day average daily stock volume of the underlying in shares, rounded down and fixed for the trade's trading date, from the same source as `avg30d_volume` on `stock_trade`. It works in comparisons and arithmetic, e.g. `where abs(delta_impact) * 20 > avg30d_stock_volume`. The `query` parameter of [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index) accepts it as well. A comparison with it does not match while the underlying has no 30-day average volume for the trading date.
     
     # 2026.11.01
     - A `limit` that is not a whole number from 1 to 500 now returns HTTP 400 with the code `invalid_query_parameters` on three endpoints. These requests used to return a different number of rows than requested, or an HTTP 500. On Flow Alerts the default is 50 and the maximum is 500, which is what the endpoint already served.
@@ -17520,6 +17545,7 @@ info:
     
     # 2026.10.30
     - The `x-uw-req-per-minute-remaining` and `x-uw-req-per-minute-reset` response headers are deprecated and will be removed after 2026-12-31. They always hold `1000000` and `60000` and do not reflect a limit, because the API has no per-minute cap. The limits that apply are described under [Rate limits](https://api.unusualwhales.com/docs/conventions#rate-limits).
+    - With `include_agg_trades=true`, [`/option-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index) now returns a rolled up transaction for the `report_flag[]` values `intermarket_sweep`, `cross_trade` and `futures_floor` when any of the transactions it rolls up carries that flag, and leaves those transactions out of the response. Before, every one of them had to carry the flag, so a rolled up transaction that mixed sweeps with other transactions did not match `report_flag[]=intermarket_sweep` and its sweeps were returned one by one. For `normal`, a rolled up transaction matches when any of its trade codes is a `trade_codes[]` value other than a floor, cross or sweep code. The MCP tool `get_option_trades` matches rolled up transactions the same way when `add_agg_trades` is true.
     
     # 2026.10.29
     - Added `min_created_at` and `max_created_at` to [`/crypto/list_tokens`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.list_tokens). Both take an RFC 3339 time and include tokens created exactly at that time. Tokens whose `created_at` is `null` are left out when either filter is set.
@@ -33127,6 +33153,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Retry Later Error Message'
+          description: Service Unavailable
       summary: Greeks
       tags:
         - stock
@@ -34096,12 +34128,20 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returns all option contracts for the given ticker.
+        Returns all option contracts for the given ticker with their live NBBO.
         
         Each row includes the NBBO bid and ask, implied volatility and per-contract delta, gamma, theta, vega
         and rho, so quotes and greeks are available in one call. Charm and vanna are not included. Use
         `/api/stock/{ticker}/greeks` and join this response's `option_symbol` to `call_option_symbol` or
         `put_option_symbol` for those values.
+        
+        For the current trading day, `nbbo_bid` and `nbbo_ask` are the live NBBO of each contract: they update
+        as new quotes arrive, so each call returns the latest quote. For a past `date` they are the last NBBO
+        of that day. To fetch a single contract, pass its symbol in `option_symbol[]`, for example
+        `option_symbol[]=AAPL261218C00250000`.
+        
+        To receive every NBBO change as it happens instead of calling this endpoint repeatedly, subscribe to
+        the [`option-quotes`](https://api.unusualwhales.com/docs/kafka/topics/option-quotes) Kafka topic.
       operationId: PublicApi.OptionContractController.option_contracts
       parameters:
         - description: ''
@@ -34179,7 +34219,7 @@ paths:
           required: false
           schema:
             type: integer
-        - description: Options symbols to filter by
+        - description: Return only these option contracts. Pass one symbol to fetch a single contract.
           in: query
           name: option_symbol[]
           required: false
@@ -34439,6 +34479,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Retry Later Error Message'
+          description: Service Unavailable
       summary: Volume & OI per Expiry
       tags:
         - stock
