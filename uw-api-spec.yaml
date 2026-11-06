@@ -1021,11 +1021,12 @@ components:
           description: A plain description of the failure, written for a person.
           type: string
         reason:
-          description: Which authentication failure occurred. `missing_token` means the request carried no token. `malformed_token` means a token was supplied but is not a UUID. `unrecognized_token` means the token is a UUID that no active token matches, which happens after a token is revoked or regenerated, or when it belongs to a different account.
+          description: Which authentication failure occurred. `missing_token` means the request carried no token. `malformed_token` means a token was supplied but is not a UUID. `unrecognized_token` means the token is a UUID that no active token matches, which happens after a token is revoked or regenerated, or when it belongs to a different account. `payment_failed` means the token was deactivated because the last payment for the API subscription failed. A successful payment restores access, and the active token is listed in the Unusual Whales dashboard.
           enum:
             - missing_token
             - malformed_token
             - unrecognized_token
+            - payment_failed
           type: string
         request_id:
           description: Identifies this request in Unusual Whales logs. Quote it when contacting support. It matches the `x-request-id` response header, and is absent when no request id was assigned.
