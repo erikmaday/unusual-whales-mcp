@@ -8384,12 +8384,12 @@ components:
       title: Lit Trade
       type: object
     Live NBBO Ask:
-      description: The National Best Bid and Offer (NBBO) ask price. For the current trading day it updates live as new quotes arrive. For a past `date` it is the last NBBO of that day.
+      description: The National Best Bid and Offer (NBBO) ask price. For the current trading day it is the latest NBBO, which updates at most once a second per contract and only after the NBBO changed. For a past `date` it is the NBBO at the end of that day, not the NBBO at the day's last trade. For the NBBO at a contract's last trade, use [Option contract flow](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.flow).
       example: '0.03'
       title: Live NBBO Ask
       type: string
     Live NBBO Bid:
-      description: The National Best Bid and Offer (NBBO) bid price. For the current trading day it updates live as new quotes arrive. For a past `date` it is the last NBBO of that day.
+      description: The National Best Bid and Offer (NBBO) bid price. For the current trading day it is the latest NBBO, which updates at most once a second per contract and only after the NBBO changed. For a past `date` it is the NBBO at the end of that day, not the NBBO at the day's last trade. For the NBBO at a contract's last trade, use [Option contract flow](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.flow).
       example: '0.03'
       title: Live NBBO Bid
       type: string
@@ -10794,9 +10794,9 @@ components:
           - ask_volume: 56916
             avg_price: '0.77927817593516586531'
             bid_volume: 68967
-            delta: '-0.187'
+            delta: -0.187
             floor_volume: 1815
-            gamma: '0.021'
+            gamma: 0.021
             high_price: '5.75'
             implied_volatility: '0.542805337797143'
             last_price: '0.01'
@@ -10810,12 +10810,12 @@ components:
             open_interest: 22868
             option_symbol: AAPL240202P00185000
             prev_oi: 20217
-            rho: '-0.015'
+            rho: -0.015
             stock_multi_leg_volume: 13
             sweep_volume: 12893
-            theta: '-0.043'
+            theta: -0.043
             total_premium: '10307980.00'
-            vega: '0.089'
+            vega: 0.089
             volume: 132276
           - ask_volume: 54820
             avg_price: '0.19195350495251190385'
@@ -10847,25 +10847,27 @@ components:
         cross_volume:
           $ref: '#/components/schemas/Option Contract Cross Volume'
         delta:
-          description: 'First-order greek: delta.'
-          example: '0.42'
+          description: The contract's delta. For the current trading day it is the latest delta, and for a past `date` the last delta of that day. The greeks update separately from the NBBO, so they were not calculated from `nbbo_bid` and `nbbo_ask` or with `implied_volatility`. It is `null` when no greeks are available for the contract on that day.
+          example: 0.42
           nullable: true
-          type: string
+          type: number
         floor_volume:
           $ref: '#/components/schemas/Option Contract Floor Volume'
         gamma:
-          description: 'First-order greek: gamma.'
-          example: '0.031'
+          description: The contract's gamma. For the current trading day it is the latest gamma, and for a past `date` the last gamma of that day. The greeks update separately from the NBBO, so they were not calculated from `nbbo_bid` and `nbbo_ask` or with `implied_volatility`. It is `null` when no greeks are available for the contract on that day.
+          example: 0.031
           nullable: true
-          type: string
+          type: number
         high_price:
           $ref: '#/components/schemas/Option Contract High'
         implied_volatility:
-          $ref: '#/components/schemas/Option Contract Last Transaction IV'
+          description: The implied volatility of the contract's last trade, calculated from that trade's price. For a past `date` it is the implied volatility of that day's last trade. It is not the implied volatility the greeks were calculated with, and it does not change when the NBBO changes.
+          example: '0.675815680048166'
+          type: string
         last_price:
           $ref: '#/components/schemas/Option Contract Close'
         last_tape_time:
-          description: As-of timestamp anchoring row freshness — the contract's last trade (tape) time. Approximate for NBBO freshness (it is trade time, not a dedicated quote timestamp).
+          description: For the current trading day, the UTC time of the contract's last trade, trade cancellation or open interest update. For a past `date`, a time after that day's close, not the time of the last trade. It does not show how fresh the NBBO or the greeks are, since they update separately.
           format: date-time
           nullable: true
           type: string
@@ -10876,12 +10878,12 @@ components:
         multi_leg_volume:
           $ref: '#/components/schemas/Option Contract Multi Leg Volume'
         nbbo_ask:
-          description: The National Best Bid and Offer (NBBO) ask price. For the current trading day it updates live as new quotes arrive. For a past `date` it is the last NBBO of that day.
+          description: The National Best Bid and Offer (NBBO) ask price. For the current trading day it is the latest NBBO, which updates at most once a second per contract and only after the NBBO changed. For a past `date` it is the NBBO at the end of that day, not the NBBO at the day's last trade. For the NBBO at a contract's last trade, use [Option contract flow](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.flow).
           example: '0.03'
           title: Live NBBO Ask
           type: string
         nbbo_bid:
-          description: The National Best Bid and Offer (NBBO) bid price. For the current trading day it updates live as new quotes arrive. For a past `date` it is the last NBBO of that day.
+          description: The National Best Bid and Offer (NBBO) bid price. For the current trading day it is the latest NBBO, which updates at most once a second per contract and only after the NBBO changed. For a past `date` it is the NBBO at the end of that day, not the NBBO at the day's last trade. For the NBBO at a contract's last trade, use [Option contract flow](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.flow).
           example: '0.03'
           title: Live NBBO Bid
           type: string
@@ -10894,26 +10896,26 @@ components:
         prev_oi:
           $ref: '#/components/schemas/Option Contract Previous Open Interest'
         rho:
-          description: 'First-order greek: rho.'
-          example: '0.027'
+          description: The contract's rho. For the current trading day it is the latest rho, and for a past `date` the last rho of that day. The greeks update separately from the NBBO, so they were not calculated from `nbbo_bid` and `nbbo_ask` or with `implied_volatility`. It is `null` when no greeks are available for the contract on that day.
+          example: 0.027
           nullable: true
-          type: string
+          type: number
         stock_multi_leg_volume:
           $ref: '#/components/schemas/Option Contract Stock Multi Leg Volume'
         sweep_volume:
           $ref: '#/components/schemas/Option Contract Sweep Volume'
         theta:
-          description: 'First-order greek: theta.'
-          example: '-0.058'
+          description: The contract's theta. For the current trading day it is the latest theta, and for a past `date` the last theta of that day. The greeks update separately from the NBBO, so they were not calculated from `nbbo_bid` and `nbbo_ask` or with `implied_volatility`. It is `null` when no greeks are available for the contract on that day.
+          example: -0.058
           nullable: true
-          type: string
+          type: number
         total_premium:
           $ref: '#/components/schemas/Option Contract Premium'
         vega:
-          description: 'First-order greek: vega.'
-          example: '0.112'
+          description: The contract's vega. For the current trading day it is the latest vega, and for a past `date` the last vega of that day. The greeks update separately from the NBBO, so they were not calculated from `nbbo_bid` and `nbbo_ask` or with `implied_volatility`. It is `null` when no greeks are available for the contract on that day.
+          example: 0.112
           nullable: true
-          type: string
+          type: number
         volume:
           $ref: '#/components/schemas/Option Contract Volume'
       title: Option contracts
@@ -17513,6 +17515,9 @@ info:
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com](mailto:oskar@unusualwhales.com?cc=enterprise@unusualwhales.com,nastja.petrovic@unusualwhales.com).
     
     ## Changelog
+    
+    # 2026.11.04
+    - [`/stock/{ticker}/option-contracts`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.option_contracts) returns `delta`, `gamma`, `theta`, `vega` and `rho` as numbers instead of strings, for every `date`.
     
     # 2026.11.03
     - `exchange` in [`/stock-directory/ticker-exchanges`](https://api.unusualwhales.com/docs/operations/PublicApi.StockDirectoryController.ticker_exchanges) can be `texas_stock_exchange` for tickers whose primary listing is on the Texas Stock Exchange.
@@ -34136,9 +34141,22 @@ paths:
         `/api/stock/{ticker}/greeks` and join this response's `option_symbol` to `call_option_symbol` or
         `put_option_symbol` for those values.
         
-        For the current trading day, `nbbo_bid` and `nbbo_ask` are the live NBBO of each contract: they update
-        as new quotes arrive, so each call returns the latest quote. For a past `date` they are the last NBBO
-        of that day. To fetch a single contract, pass its symbol in `option_symbol[]`, for example
+        Most fields, such as `implied_volatility`, `volume` and `open_interest`, are up to date as of
+        `last_tape_time`. The NBBO and the greeks update separately from those fields and from each other, so
+        they can be older or more recent than `last_tape_time`:
+        
+        - `nbbo_bid` and `nbbo_ask`: for the current trading day, the latest NBBO of each contract. It updates
+          at most once a second per contract, and only after the NBBO changed. For a past `date`, the NBBO at
+          the end of that day, which is not the NBBO at the day's last trade. For the NBBO at a contract's last
+          trade, use [Option contract flow](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.flow).
+        - `delta`, `gamma`, `theta`, `vega` and `rho`: the latest greeks of each contract. They update
+          separately from the NBBO, so they were not calculated from the row's `nbbo_bid` and `nbbo_ask`. For
+          a past `date`, the last greeks of that day.
+        - `implied_volatility` and the other fields: as of `last_tape_time`. `implied_volatility` is the
+          implied volatility of the contract's last trade, which is not the implied volatility the greeks
+          were calculated with.
+        
+        To fetch a single contract, pass its symbol in `option_symbol[]`, for example
         `option_symbol[]=AAPL261218C00250000`.
         
         To receive every NBBO change as it happens instead of calling this endpoint repeatedly, subscribe to
