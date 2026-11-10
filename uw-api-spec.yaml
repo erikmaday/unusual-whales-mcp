@@ -11431,6 +11431,790 @@ components:
           type: array
       title: Portfolio Holders
       type: object
+    Portfolio Trade Rank:
+      description: The Trade Rank of the user per period.
+      example:
+        data:
+          eligible: true
+          periods:
+            ytd:
+              sharpe: 1.4
+              twr: 0.162
+      properties:
+        data:
+          properties:
+            computed_at:
+              format: date-time
+              nullable: true
+              type: string
+            criteria:
+              description: '`min_days`, `min_value` and `min_cohort` for ranking.'
+              type: object
+            eligible:
+              description: Whether the user is ranked in at least one period.
+              type: boolean
+            has_broker_account:
+              type: boolean
+            periods:
+              description: Keyed by `3m`, `ytd` and `1y`. Each has `twr`, `sharpe`, `days_tracked`, `reason` when not ranked, and `cohorts` with the rank in each cohort.
+              type: object
+          type: object
+      title: Portfolio Trade Rank
+      type: object
+    Portfolio accounts:
+      description: The Trading Journal accounts of the user.
+      example:
+        data:
+          accounts:
+            - broker: schwab
+              data_through: 2026-10-23
+              id: 560f0879-721c-4fbc-83b1-a9966df49dff
+              last_synced: 2026-10-23
+              name: Individual
+              stale: false
+              status: automated
+              total_value: 125400.12
+              verification: broker
+          data_through: 2026-10-23
+      properties:
+        data:
+          properties:
+            accounts:
+              items:
+                properties:
+                  broker:
+                    type: string
+                  data_through:
+                    format: date
+                    nullable: true
+                    type: string
+                  id:
+                    format: uuid
+                    type: string
+                  last_synced:
+                    format: date
+                    nullable: true
+                    type: string
+                  name:
+                    type: string
+                  stale:
+                    type: boolean
+                  status:
+                    type: string
+                  total_value:
+                    description: The latest total value in USD.
+                    nullable: true
+                    type: number
+                  verification:
+                    description: '`broker` for accounts synced from the broker, `self_reported` for uploaded statements and CSV files.'
+                    enum:
+                      - broker
+                      - self_reported
+                    type: string
+                type: object
+              type: array
+            data_through:
+              format: date
+              nullable: true
+              type: string
+          type: object
+      title: Portfolio accounts
+      type: object
+    Portfolio catalysts:
+      description: Earnings reports and ex-dividend dates in the next 30 days for the holdings of the selected accounts.
+      example:
+        data:
+          account: all accounts
+          days: 30
+          dividends: []
+          earnings: []
+      properties:
+        data:
+          properties:
+            account:
+              description: The account name, or `all accounts` when no `account` was given.
+              type: string
+            data_through:
+              description: The last date with synced data in the selected accounts.
+              format: date
+              nullable: true
+              type: string
+            days:
+              type: integer
+            dividends:
+              description: '`ticker`, `ex_date`, `payment_date`, `dividend`, `shares` and `income` in USD.'
+              items:
+                type: object
+              type: array
+            earnings:
+              description: '`ticker`, `report_date`, `report_time`, `expected_move_perc`, `shares` and `has_options`.'
+              items:
+                type: object
+              type: array
+            stale_accounts:
+              description: Accounts whose data is more than 3 days older than today.
+              items:
+                properties:
+                  data_through:
+                    format: date
+                    nullable: true
+                    type: string
+                  id:
+                    format: uuid
+                    type: string
+                  name:
+                    type: string
+                type: object
+              type: array
+          type: object
+      title: Portfolio catalysts
+      type: object
+    Portfolio edge:
+      description: Closed-trade results of the selected accounts, overall and per group.
+      example:
+        data:
+          account: all accounts
+          from: 2026-01-01
+          groups:
+            by_type:
+              - key: puts
+                pnl: -3150.0
+                trades: 120
+                win_rate: 0.41
+          overall:
+            expectancy: 44.3
+            profit_factor: 1.42
+            trades: 412
+            win_rate: 0.58
+          to: 2026-10-23
+      properties:
+        data:
+          properties:
+            account:
+              description: The account name, or `all accounts` when no `account` was given.
+              type: string
+            data_through:
+              description: The last date with synced data in the selected accounts.
+              format: date
+              nullable: true
+              type: string
+            from:
+              format: date
+              type: string
+            groups:
+              additionalProperties:
+                items:
+                  description: Closed-trade results of one group. Amounts are in USD and rates are fractions.
+                  properties:
+                    avg_loss:
+                      nullable: true
+                      type: number
+                    avg_win:
+                      nullable: true
+                      type: number
+                    expectancy:
+                      description: '`pnl / trades`, the average P&L per trade.'
+                      nullable: true
+                      type: number
+                    gross_loss:
+                      description: The sum of losing trades, zero or negative.
+                      type: number
+                    gross_profit:
+                      type: number
+                    key:
+                      description: The group, such as `calls`, `NVDA` or `0DTE`.
+                      type: string
+                    losers:
+                      type: integer
+                    pnl:
+                      description: Realized P&L in USD.
+                      type: number
+                    profit_factor:
+                      description: '`gross_profit / abs(gross_loss)`. Null without losing trades.'
+                      nullable: true
+                      type: number
+                    trades:
+                      type: integer
+                    win_rate:
+                      description: '`winners / (winners + losers)`. Trades with zero P&L are left out. Null without decided trades.'
+                      nullable: true
+                      type: number
+                    winners:
+                      type: integer
+                  type: object
+                type: array
+              description: Arrays of groups keyed by `by_type`, `by_side`, `by_ticker` (best and worst 10), `by_strategy`, `by_hold`, `by_entry_dte`, `by_entry_delta`, `by_entry_iv`, `by_moneyness`, `by_bias`, `by_vix`, `by_trend`, `by_rsi`, `by_range`, `by_prior_move`, `by_hour` and `by_weekday`. `by_type`, `by_side` and `by_ticker` cover stock and option trades. The other groups cover option strategies, keyed by their open time in ET. `by_vix`, `by_trend` (against the 50-day and 200-day averages), `by_rsi` (RSI over 14 days), `by_range` (place in the 52-week range) and `by_prior_move` (change over the 5 trading days before entry) use the last daily close on or before the open date. Groups without trades are left out.
+              type: object
+            overall:
+              description: Closed-trade results of one group. Amounts are in USD and rates are fractions.
+              properties:
+                avg_loss:
+                  nullable: true
+                  type: number
+                avg_win:
+                  nullable: true
+                  type: number
+                expectancy:
+                  description: '`pnl / trades`, the average P&L per trade.'
+                  nullable: true
+                  type: number
+                gross_loss:
+                  description: The sum of losing trades, zero or negative.
+                  type: number
+                gross_profit:
+                  type: number
+                key:
+                  description: The group, such as `calls`, `NVDA` or `0DTE`.
+                  type: string
+                losers:
+                  type: integer
+                pnl:
+                  description: Realized P&L in USD.
+                  type: number
+                profit_factor:
+                  description: '`gross_profit / abs(gross_loss)`. Null without losing trades.'
+                  nullable: true
+                  type: number
+                trades:
+                  type: integer
+                win_rate:
+                  description: '`winners / (winners + losers)`. Trades with zero P&L are left out. Null without decided trades.'
+                  nullable: true
+                  type: number
+                winners:
+                  type: integer
+              type: object
+            r_multiples:
+              description: '`trades`, `avg_r`, `total_r`, `best_r`, `worst_r` and `win_rate` of trades with a stop and target plan.'
+              type: object
+            rolling_30d:
+              description: 'The last 12 days with at least 10 trades in the trailing 30 days: `date`, `trades`, `win_rate` and `profit_factor`.'
+              items:
+                type: object
+              type: array
+            stale_accounts:
+              description: Accounts whose data is more than 3 days older than today.
+              items:
+                properties:
+                  data_through:
+                    format: date
+                    nullable: true
+                    type: string
+                  id:
+                    format: uuid
+                    type: string
+                  name:
+                    type: string
+                type: object
+              type: array
+            ticker:
+              nullable: true
+              type: string
+            to:
+              format: date
+              type: string
+            untimed_strategies:
+              description: Option strategies without an open time.
+              type: integer
+          type: object
+      title: Portfolio edge
+      type: object
+    Portfolio holdings:
+      description: The open positions of the selected accounts.
+      example:
+        data:
+          account: all accounts
+          as_of: 2026-10-23
+          data_through: 2026-10-23
+          holdings:
+            - kind: stock
+              size: 100
+              ticker: NVDA
+              value: 18003.0
+              weight: 0.1436
+          holdings_count: 23
+          stale_accounts: []
+          summary:
+            cash: 8.2e3
+            top5_weight: 0.41
+            total_value: 125400.12
+      properties:
+        data:
+          properties:
+            account:
+              description: The account name, or `all accounts` when no `account` was given.
+              type: string
+            as_of:
+              format: date
+              type: string
+            data_through:
+              description: The last date with synced data in the selected accounts.
+              format: date
+              nullable: true
+              type: string
+            holdings:
+              description: Open positions sorted by absolute exposure, at most `limit`. Each has `kind`, `ticker`, `size`, `price`, `value`, `cost`, `unrealized`, `unrealized_pct`, `day_change`, `weight`, `sector` and `beta`. Options also have `option_symbol`, `option_type`, `strike`, `expiry`, `delta_dollars` and `theta`.
+              items:
+                type: object
+              type: array
+            holdings_count:
+              description: The number of open positions before `limit`.
+              type: integer
+            risk:
+              description: Options and stock risk totals (`totals`), buckets by days to expiry (`by_expiry`) and `net_liq`.
+              type: object
+            sectors:
+              description: The 10 largest sectors by value.
+              items:
+                type: object
+              type: array
+            stale_accounts:
+              description: Accounts whose data is more than 3 days older than today.
+              items:
+                properties:
+                  data_through:
+                    format: date
+                    nullable: true
+                    type: string
+                  id:
+                    format: uuid
+                    type: string
+                  name:
+                    type: string
+                type: object
+              type: array
+            summary:
+              description: Totals for the selected accounts, such as `total_value`, `cash`, `unrealized`, `largest_weight`, `top5_weight`, `effective_positions`, `portfolio_beta`, `spy_shares` and `theta`.
+              type: object
+            underlyings:
+              description: The 10 largest underlyings by value.
+              items:
+                type: object
+              type: array
+          type: object
+      title: Portfolio holdings
+      type: object
+    Portfolio performance:
+      description: Returns, P&L and risk metrics of the selected accounts over `range`.
+      example:
+        data:
+          account: all accounts
+          from: 2026-01-01
+          pnl: 18250.4
+          range: ytd
+          returns:
+            ytd:
+              usd: 0.162
+          to: 2026-10-23
+      properties:
+        data:
+          properties:
+            account:
+              description: The account name, or `all accounts` when no `account` was given.
+              type: string
+            by_kind:
+              description: '`pnl` and `realized_pnl` of `stock` and `option` positions.'
+              type: object
+            data_through:
+              description: The last date with synced data in the selected accounts.
+              format: date
+              nullable: true
+              type: string
+            from:
+              format: date
+              type: string
+            metrics:
+              description: 'Daily-return metrics over `range`: `total_return`, `annual_return`, `volatility`, `sharpe`, `sortino`, `max_drawdown`, `current_drawdown`, `best_day`, `worst_day`, `day_win_rate`, streaks, `best_month`, `worst_month`, and `beta`, `alpha` and `correlation` against SPY.'
+              type: object
+            months:
+              description: One row per month with `month` (YYYY-MM), `pnl`, `return` and `realized_pnl`.
+              items:
+                type: object
+              type: array
+            pnl:
+              description: P&L in USD over `range`, net of deposits and withdrawals.
+              type: number
+            range:
+              type: string
+            realized_pnl:
+              type: number
+            returns:
+              description: Time-weighted returns for `ytd`, `one_month`, `three_month` and `one_year`, as fractions.
+              type: object
+            stale_accounts:
+              description: Accounts whose data is more than 3 days older than today.
+              items:
+                properties:
+                  data_through:
+                    format: date
+                    nullable: true
+                    type: string
+                  id:
+                    format: uuid
+                    type: string
+                  name:
+                    type: string
+                type: object
+              type: array
+            to:
+              format: date
+              type: string
+            total_value:
+              type: number
+          type: object
+      title: Portfolio performance
+      type: object
+    Portfolio ticker:
+      description: The trades and positions of the user in one ticker across all accounts.
+      example:
+        data:
+          summary:
+            pnl: 5120.0
+            trades: 31
+            win_rate: 0.65
+          ticker: NVDA
+      properties:
+        data:
+          properties:
+            by_hold:
+              items:
+                description: Closed-trade results of one group. Amounts are in USD and rates are fractions.
+                properties:
+                  avg_loss:
+                    nullable: true
+                    type: number
+                  avg_win:
+                    nullable: true
+                    type: number
+                  expectancy:
+                    description: '`pnl / trades`, the average P&L per trade.'
+                    nullable: true
+                    type: number
+                  gross_loss:
+                    description: The sum of losing trades, zero or negative.
+                    type: number
+                  gross_profit:
+                    type: number
+                  key:
+                    description: The group, such as `calls`, `NVDA` or `0DTE`.
+                    type: string
+                  losers:
+                    type: integer
+                  pnl:
+                    description: Realized P&L in USD.
+                    type: number
+                  profit_factor:
+                    description: '`gross_profit / abs(gross_loss)`. Null without losing trades.'
+                    nullable: true
+                    type: number
+                  trades:
+                    type: integer
+                  win_rate:
+                    description: '`winners / (winners + losers)`. Trades with zero P&L are left out. Null without decided trades.'
+                    nullable: true
+                    type: number
+                  winners:
+                    type: integer
+                type: object
+              type: array
+            by_side:
+              items:
+                description: Closed-trade results of one group. Amounts are in USD and rates are fractions.
+                properties:
+                  avg_loss:
+                    nullable: true
+                    type: number
+                  avg_win:
+                    nullable: true
+                    type: number
+                  expectancy:
+                    description: '`pnl / trades`, the average P&L per trade.'
+                    nullable: true
+                    type: number
+                  gross_loss:
+                    description: The sum of losing trades, zero or negative.
+                    type: number
+                  gross_profit:
+                    type: number
+                  key:
+                    description: The group, such as `calls`, `NVDA` or `0DTE`.
+                    type: string
+                  losers:
+                    type: integer
+                  pnl:
+                    description: Realized P&L in USD.
+                    type: number
+                  profit_factor:
+                    description: '`gross_profit / abs(gross_loss)`. Null without losing trades.'
+                    nullable: true
+                    type: number
+                  trades:
+                    type: integer
+                  win_rate:
+                    description: '`winners / (winners + losers)`. Trades with zero P&L are left out. Null without decided trades.'
+                    nullable: true
+                    type: number
+                  winners:
+                    type: integer
+                type: object
+              type: array
+            by_strategy:
+              items:
+                description: Closed-trade results of one group. Amounts are in USD and rates are fractions.
+                properties:
+                  avg_loss:
+                    nullable: true
+                    type: number
+                  avg_win:
+                    nullable: true
+                    type: number
+                  expectancy:
+                    description: '`pnl / trades`, the average P&L per trade.'
+                    nullable: true
+                    type: number
+                  gross_loss:
+                    description: The sum of losing trades, zero or negative.
+                    type: number
+                  gross_profit:
+                    type: number
+                  key:
+                    description: The group, such as `calls`, `NVDA` or `0DTE`.
+                    type: string
+                  losers:
+                    type: integer
+                  pnl:
+                    description: Realized P&L in USD.
+                    type: number
+                  profit_factor:
+                    description: '`gross_profit / abs(gross_loss)`. Null without losing trades.'
+                    nullable: true
+                    type: number
+                  trades:
+                    type: integer
+                  win_rate:
+                    description: '`winners / (winners + losers)`. Trades with zero P&L are left out. Null without decided trades.'
+                    nullable: true
+                    type: number
+                  winners:
+                    type: integer
+                type: object
+              type: array
+            company:
+              nullable: true
+              type: object
+            exposure:
+              nullable: true
+              type: object
+            from:
+              format: date
+              type: string
+            next_dividend:
+              nullable: true
+              type: object
+            next_earnings:
+              nullable: true
+              type: object
+            options:
+              description: Open option positions per account.
+              items:
+                type: object
+              type: array
+            recent_trades:
+              items:
+                type: object
+              type: array
+            stocks:
+              description: Open stock positions per account.
+              items:
+                type: object
+              type: array
+            summary:
+              description: Closed-trade results of one group. Amounts are in USD and rates are fractions.
+              properties:
+                avg_loss:
+                  nullable: true
+                  type: number
+                avg_win:
+                  nullable: true
+                  type: number
+                expectancy:
+                  description: '`pnl / trades`, the average P&L per trade.'
+                  nullable: true
+                  type: number
+                gross_loss:
+                  description: The sum of losing trades, zero or negative.
+                  type: number
+                gross_profit:
+                  type: number
+                key:
+                  description: The group, such as `calls`, `NVDA` or `0DTE`.
+                  type: string
+                losers:
+                  type: integer
+                pnl:
+                  description: Realized P&L in USD.
+                  type: number
+                profit_factor:
+                  description: '`gross_profit / abs(gross_loss)`. Null without losing trades.'
+                  nullable: true
+                  type: number
+                trades:
+                  type: integer
+                win_rate:
+                  description: '`winners / (winners + losers)`. Trades with zero P&L are left out. Null without decided trades.'
+                  nullable: true
+                  type: number
+                winners:
+                  type: integer
+              type: object
+            ticker:
+              type: string
+            tickers:
+              description: The ticker and its option roots.
+              items:
+                type: string
+              type: array
+            to:
+              format: date
+              type: string
+            trades_count:
+              type: integer
+          type: object
+      title: Portfolio ticker
+      type: object
+    Portfolio trades:
+      description: Closed trades of the selected accounts. Fills that close the same position on the same day form one trade.
+      example:
+        data:
+          account: all accounts
+          from: 2026-01-01
+          sort: worst
+          to: 2026-10-23
+          trades:
+            - date: 2026-03-09
+              kind: option
+              option_symbol: TSLA260320C00450000
+              realized_pnl: -4210.0
+              return: -0.82
+              side: long
+              ticker: TSLA
+          trades_count: 412
+      properties:
+        data:
+          properties:
+            account:
+              description: The account name, or `all accounts` when no `account` was given.
+              type: string
+            data_through:
+              description: The last date with synced data in the selected accounts.
+              format: date
+              nullable: true
+              type: string
+            from:
+              format: date
+              type: string
+            kind:
+              nullable: true
+              type: string
+            sort:
+              type: string
+            stale_accounts:
+              description: Accounts whose data is more than 3 days older than today.
+              items:
+                properties:
+                  data_through:
+                    format: date
+                    nullable: true
+                    type: string
+                  id:
+                    format: uuid
+                    type: string
+                  name:
+                    type: string
+                type: object
+              type: array
+            ticker:
+              nullable: true
+              type: string
+            to:
+              format: date
+              type: string
+            totals:
+              description: Closed-trade results of one group. Amounts are in USD and rates are fractions.
+              properties:
+                avg_loss:
+                  nullable: true
+                  type: number
+                avg_win:
+                  nullable: true
+                  type: number
+                expectancy:
+                  description: '`pnl / trades`, the average P&L per trade.'
+                  nullable: true
+                  type: number
+                gross_loss:
+                  description: The sum of losing trades, zero or negative.
+                  type: number
+                gross_profit:
+                  type: number
+                key:
+                  description: The group, such as `calls`, `NVDA` or `0DTE`.
+                  type: string
+                losers:
+                  type: integer
+                pnl:
+                  description: Realized P&L in USD.
+                  type: number
+                profit_factor:
+                  description: '`gross_profit / abs(gross_loss)`. Null without losing trades.'
+                  nullable: true
+                  type: number
+                trades:
+                  type: integer
+                win_rate:
+                  description: '`winners / (winners + losers)`. Trades with zero P&L are left out. Null without decided trades.'
+                  nullable: true
+                  type: number
+                winners:
+                  type: integer
+              type: object
+            trades:
+              items:
+                properties:
+                  date:
+                    description: The day the position was closed (ET).
+                    format: date
+                    type: string
+                  kind:
+                    enum:
+                      - stock
+                      - option
+                    type: string
+                  option_symbol:
+                    nullable: true
+                    type: string
+                  realized_pnl:
+                    type: number
+                  return:
+                    description: '`realized_pnl` divided by the cost.'
+                    nullable: true
+                    type: number
+                  side:
+                    enum:
+                      - long
+                      - short
+                    nullable: true
+                    type: string
+                  ticker:
+                    type: string
+                type: object
+              type: array
+            trades_count:
+              description: The number of closed trades before `limit`.
+              type: integer
+          type: object
+      title: Portfolio trades
+      type: object
     Positions:
       description: ''
       example: 5
@@ -14526,6 +15310,12 @@ components:
       format: date
       title: Stock Next Earnings Date
       type: string
+    Stock Next Earnings Date Confirmed:
+      description: True if the company confirmed the next earnings date, false if the date is an estimate. Null if there is no next earnings date or no earnings record for it.
+      example: true
+      nullable: true
+      title: Stock Next Earnings Date Confirmed
+      type: boolean
     Stock Off Lit Volume:
       description: The off lit stock volume (this only represents the FINRA operated exchanges).
       example: 22074116
@@ -16352,6 +17142,7 @@ components:
           logo: https://storage.googleapis.com/uwassets/logos/AAPL.png
           marketcap: '2776014233920'
           marketcap_size: big
+          next_earnings_confirmed: true
           next_earnings_date: 2023-10-26
           outstanding: '15634232000'
           sector: Technology
@@ -16384,6 +17175,8 @@ components:
           $ref: '#/components/schemas/Stock Marketcap AUM'
         marketcap_size:
           $ref: '#/components/schemas/Stock Marketcap Size'
+        next_earnings_confirmed:
+          $ref: '#/components/schemas/Stock Next Earnings Date Confirmed'
         next_earnings_date:
           $ref: '#/components/schemas/Stock Next Earnings Date'
         outstanding:
@@ -17515,6 +18308,19 @@ info:
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com](mailto:oskar@unusualwhales.com?cc=enterprise@unusualwhales.com,nastja.petrovic@unusualwhales.com).
     
     ## Changelog
+    
+    # 2026.11.09
+    - Added Trading Journal endpoints that return the Trading Journal accounts of the user that owns the API token. Every active API token can call them. Accounts are linked in the Trading Journal on unusualwhales.com, which needs a Max or professional plan, so a token whose owner has linked no accounts gets empty results. `account` limits a request to one account by `id` or exact `name`.
+      - [`/portfolio/accounts`](https://api.unusualwhales.com/docs/operations/PublicApi.PortfolioController.accounts): accounts with broker, sync status, last date with data and latest total value.
+      - [`/portfolio/holdings`](https://api.unusualwhales.com/docs/operations/PublicApi.PortfolioController.holdings): open positions with weights, unrealized P&L, sectors and options risk.
+      - [`/portfolio/performance`](https://api.unusualwhales.com/docs/operations/PublicApi.PortfolioController.performance): time-weighted returns, P&L, monthly returns and risk metrics over `range`.
+      - [`/portfolio/trades`](https://api.unusualwhales.com/docs/operations/PublicApi.PortfolioController.trades): closed trades between `from` and `to`, filtered by `ticker` and `kind` and sorted by `sort`.
+      - [`/portfolio/edge`](https://api.unusualwhales.com/docs/operations/PublicApi.PortfolioController.edge): win rate, profit factor and expectancy overall and per type, side, ticker, strategy, holding period, entry condition and hour.
+      - [`/portfolio/ticker/:ticker`](https://api.unusualwhales.com/docs/operations/PublicApi.PortfolioController.ticker): positions and trade results in one ticker.
+      - [`/portfolio/catalysts`](https://api.unusualwhales.com/docs/operations/PublicApi.PortfolioController.catalysts): earnings and ex-dividend dates in the next 30 days for holdings.
+      - [`/portfolio/rank`](https://api.unusualwhales.com/docs/operations/PublicApi.PortfolioController.rank): Trade Rank per period.
+    - Added MCP tools `get_my_accounts`, `get_my_holdings`, `get_my_performance`, `get_my_trades`, `get_my_edge`, `get_my_ticker`, `get_my_catalysts` and `get_my_rank` for the data of these endpoints.
+    - Added `next_earnings_confirmed` to [`/stock/{ticker}/info`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.info). It is true if the company confirmed `next_earnings_date` and false if the date is an estimate.
     
     # 2026.11.04
     - [`/stock/{ticker}/option-contracts`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.option_contracts) returns `delta`, `gamma`, `theta`, `vega` and `rho` as numbers instead of strings, for every `date`.
@@ -27907,6 +28713,491 @@ paths:
       summary: Politician's trades
       tags:
         - politics
+  /api/portfolio/accounts:
+    get:
+      callbacks: {}
+      description: |
+        Returns the Trading Journal accounts of the user with their broker, sync status, last date with data, latest total value and whether the data comes from the broker or from uploaded files.
+        
+        Returns only the Trading Journal accounts of the user that owns the API token. Every active API token can call this endpoint. Accounts are linked in the Trading Journal on unusualwhales.com, which needs a Max or professional plan, so a token whose owner has linked no accounts gets an empty result.
+      operationId: PublicApi.PortfolioController.accounts
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Portfolio accounts'
+          description: The accounts
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Portfolio accounts
+      tags:
+        - portfolio
+  /api/portfolio/catalysts:
+    get:
+      callbacks: {}
+      description: |
+        Returns earnings reports and ex-dividend dates in the next 30 days for the holdings of the user, with the shares held and the expected dividend income.
+        
+        Returns only the Trading Journal accounts of the user that owns the API token. Every active API token can call this endpoint. Accounts are linked in the Trading Journal on unusualwhales.com, which needs a Max or professional plan, so a token whose owner has linked no accounts gets an empty result.
+      operationId: PublicApi.PortfolioController.catalysts
+      parameters:
+        - description: Return only this account, by the `id` or the exact `name` from `/portfolio/accounts`. All accounts of the user are used when it is left out.
+          in: query
+          name: account
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Portfolio catalysts'
+          description: The catalysts
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid parameters
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Portfolio catalysts
+      tags:
+        - portfolio
+  /api/portfolio/edge:
+    get:
+      callbacks: {}
+      description: |
+        Returns closed-trade results of the user overall and broken down by calls, puts and stocks, long and short, ticker, option strategy, holding period, entry conditions and hour opened, with win rate, profit factor and expectancy per group. The range is limited to fifteen years.
+        
+        Returns only the Trading Journal accounts of the user that owns the API token. Every active API token can call this endpoint. Accounts are linked in the Trading Journal on unusualwhales.com, which needs a Max or professional plan, so a token whose owner has linked no accounts gets an empty result.
+      operationId: PublicApi.PortfolioController.edge
+      parameters:
+        - description: Return only this account, by the `id` or the exact `name` from `/portfolio/accounts`. All accounts of the user are used when it is left out.
+          in: query
+          name: account
+          required: false
+          schema:
+            type: string
+        - description: Include trades closed on or after this date (YYYY-MM-DD, ET). Defaults to January 1 of the current year.
+          in: query
+          name: from
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: Include trades closed on or before this date (YYYY-MM-DD, ET). Defaults to today.
+          in: query
+          name: to
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: Return only trades in this ticker or in options on it.
+          in: query
+          name: ticker
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Portfolio edge'
+          description: The edge
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid parameters
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Portfolio edge
+      tags:
+        - portfolio
+  /api/portfolio/holdings:
+    get:
+      callbacks: {}
+      description: |
+        Returns the open stock, option, crypto and bond positions of the user, sorted by absolute exposure, with a summary, the largest sectors and underlyings, and options risk totals.
+        
+        Returns only the Trading Journal accounts of the user that owns the API token. Every active API token can call this endpoint. Accounts are linked in the Trading Journal on unusualwhales.com, which needs a Max or professional plan, so a token whose owner has linked no accounts gets an empty result.
+      operationId: PublicApi.PortfolioController.holdings
+      parameters:
+        - description: Return only this account, by the `id` or the exact `name` from `/portfolio/accounts`. All accounts of the user are used when it is left out.
+          in: query
+          name: account
+          required: false
+          schema:
+            type: string
+        - description: The number of rows to return.
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 25
+            maximum: 100
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Portfolio holdings'
+          description: The holdings
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid parameters
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Portfolio holdings
+      tags:
+        - portfolio
+  /api/portfolio/performance:
+    get:
+      callbacks: {}
+      description: |
+        Returns time-weighted returns, P&L, stock and option P&L, monthly returns and risk metrics such as Sharpe ratio and drawdown. Returns are fractions, so `0.12` is 12%. Amounts are in USD.
+        
+        Returns only the Trading Journal accounts of the user that owns the API token. Every active API token can call this endpoint. Accounts are linked in the Trading Journal on unusualwhales.com, which needs a Max or professional plan, so a token whose owner has linked no accounts gets an empty result.
+      operationId: PublicApi.PortfolioController.performance
+      parameters:
+        - description: Return only this account, by the `id` or the exact `name` from `/portfolio/accounts`. All accounts of the user are used when it is left out.
+          in: query
+          name: account
+          required: false
+          schema:
+            type: string
+        - description: The period for P&L, months and metrics.
+          in: query
+          name: range
+          required: false
+          schema:
+            default: ytd
+            enum:
+              - 1d
+              - 7d
+              - 30d
+              - 60d
+              - 90d
+              - ytd
+              - 1y
+              - all
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Portfolio performance'
+          description: The performance
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid parameters
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Portfolio performance
+      tags:
+        - portfolio
+  /api/portfolio/rank:
+    get:
+      callbacks: {}
+      description: |
+        Returns how the return and Sharpe ratio of the user rank against other broker-verified traders over 3 months, the year to date and 1 year, with the reason when the user is not ranked.
+        
+        Returns only the Trading Journal accounts of the user that owns the API token. Every active API token can call this endpoint. Accounts are linked in the Trading Journal on unusualwhales.com, which needs a Max or professional plan, so a token whose owner has linked no accounts gets an empty result.
+      operationId: PublicApi.PortfolioController.rank
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Portfolio Trade Rank'
+          description: The Trade Rank
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Portfolio Trade Rank
+      tags:
+        - portfolio
+  /api/portfolio/ticker/{ticker}:
+    get:
+      callbacks: {}
+      description: |
+        Returns the open positions, closed-trade results and recent trades of the user in one ticker and its options across all accounts, with the next earnings and dividend dates. The range is limited to three years.
+        
+        Returns only the Trading Journal accounts of the user that owns the API token. Every active API token can call this endpoint. Accounts are linked in the Trading Journal on unusualwhales.com, which needs a Max or professional plan, so a token whose owner has linked no accounts gets an empty result.
+      operationId: PublicApi.PortfolioController.ticker
+      parameters:
+        - description: The ticker, for example `NVDA`.
+          in: path
+          name: ticker
+          required: true
+          schema:
+            type: string
+        - description: Include trades closed on or after this date (YYYY-MM-DD, ET). Defaults to January 1 of the current year.
+          in: query
+          name: from
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: Include trades closed on or before this date (YYYY-MM-DD, ET). Defaults to today.
+          in: query
+          name: to
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: The number of rows to return.
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 25
+            maximum: 100
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Portfolio ticker'
+          description: The ticker
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid parameters
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Portfolio ticker
+      tags:
+        - portfolio
+  /api/portfolio/trades:
+    get:
+      callbacks: {}
+      description: |
+        Returns the closed stock and option trades of the user between `from` and `to`, with totals such as win rate, profit factor and expectancy over every matching trade. Fills that close the same position on the same day form one trade.
+        
+        Returns only the Trading Journal accounts of the user that owns the API token. Every active API token can call this endpoint. Accounts are linked in the Trading Journal on unusualwhales.com, which needs a Max or professional plan, so a token whose owner has linked no accounts gets an empty result.
+      operationId: PublicApi.PortfolioController.trades
+      parameters:
+        - description: Return only this account, by the `id` or the exact `name` from `/portfolio/accounts`. All accounts of the user are used when it is left out.
+          in: query
+          name: account
+          required: false
+          schema:
+            type: string
+        - description: Include trades closed on or after this date (YYYY-MM-DD, ET). Defaults to January 1 of the current year.
+          in: query
+          name: from
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: Include trades closed on or before this date (YYYY-MM-DD, ET). Defaults to today.
+          in: query
+          name: to
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: Return only trades in this ticker or in options on it.
+          in: query
+          name: ticker
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: kind
+          required: false
+          schema:
+            enum:
+              - stock
+              - option
+            type: string
+        - description: Order trades by close date, newest first, or by realized P&L.
+          in: query
+          name: sort
+          required: false
+          schema:
+            default: recent
+            enum:
+              - recent
+              - best
+              - worst
+            type: string
+        - description: The number of rows to return.
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 25
+            maximum: 100
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Portfolio trades'
+          description: The trades
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Invalid parameters
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Portfolio trades
+      tags:
+        - portfolio
   /api/potus/posts:
     get:
       callbacks: {}
