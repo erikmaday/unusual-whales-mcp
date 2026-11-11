@@ -5441,13 +5441,38 @@ components:
                   type: object
                 nullable: true
                 type: array
+              main_fraction:
+                description: |
+                  CME's MainFraction for the contract, the number of parts of a whole point that `price_display` shows after the apostrophe: 32 for Treasury futures and 8 for corn, soybean, wheat and oat futures.
+                  Null when `price_display` shows decimals.
+                example: 32
+                nullable: true
+                type: integer
               nbbo_ask:
+                nullable: true
+                type: string
+              nbbo_ask_display:
+                description: '`nbbo_ask` in the format of `price_display`. Regular prints only.'
                 nullable: true
                 type: string
               nbbo_bid:
                 nullable: true
                 type: string
+              nbbo_bid_display:
+                description: '`nbbo_bid` in the format of `price_display`. Regular prints only.'
+                nullable: true
+                type: string
               price:
+                nullable: true
+                type: string
+              price_display:
+                description: |
+                  `price` as CME quotes it, in the fractions that CME's definition of the contract lists.
+                  Treasury futures show whole points and 32nds of a point after an apostrophe. A third digit shows the part of a 32nd for contracts that trade in parts of one: 106'025 is 106 and 2.5/32 for ZN, 102'006 is 102 and 0.625/32 for ZT, and 115'09 is 115 and 9/32 for ZB.
+                  Corn, soybean, wheat and oat futures show cents and eighths of a cent, for example 425'2 for 425.25.
+                  Other contracts show as many decimals as `tick_size`, for example 0.0063725 for 6J. Without a `tick_size`, the price keeps its own decimals and shows at least two.
+                  Null when `price` is null.
+                example: 106'025
                 nullable: true
                 type: string
               product:
@@ -5455,6 +5480,14 @@ components:
                 type: string
               qty:
                 description: Block rows only.
+                nullable: true
+                type: string
+              quote_ask_display:
+                description: '`quote_ask` in the format of `price_display`. Block rows only.'
+                nullable: true
+                type: string
+              quote_bid_display:
+                description: '`quote_bid` in the format of `price_display`. Block rows only.'
                 nullable: true
                 type: string
               reported_at:
@@ -5480,6 +5513,13 @@ components:
                 $ref: '#/components/schemas/Futures Contract Strategy'
               strategy_link_id:
                 description: Block rows only.
+                nullable: true
+                type: integer
+              sub_fraction:
+                description: |
+                  CME's SubFraction for the contract, the number of parts of one `main_fraction` part that the last digit of `price_display` shows: 2 for ZN and TN, 4 for ZF and 8 for ZT and Z3N.
+                  Null when `price_display` has no such digit.
+                example: 2
                 nullable: true
                 type: integer
               sym:
@@ -5590,19 +5630,52 @@ components:
                   type: object
                 nullable: true
                 type: array
+              main_fraction:
+                description: |
+                  CME's MainFraction for the contract, the number of parts of a whole point that `price_display` shows after the apostrophe: 32 for Treasury futures and 8 for corn, soybean, wheat and oat futures.
+                  Null when `price_display` shows decimals.
+                example: 32
+                nullable: true
+                type: integer
               nbbo_ask:
                 description: Regular prints only.
+                nullable: true
+                type: string
+              nbbo_ask_display:
+                description: '`nbbo_ask` in the format of `price_display`. Regular prints only.'
                 nullable: true
                 type: string
               nbbo_bid:
                 description: Regular prints only.
                 nullable: true
                 type: string
+              nbbo_bid_display:
+                description: '`nbbo_bid` in the format of `price_display`. Regular prints only.'
+                nullable: true
+                type: string
               price:
+                nullable: true
+                type: string
+              price_display:
+                description: |
+                  `price` as CME quotes it, in the fractions that CME's definition of the contract lists.
+                  Treasury futures show whole points and 32nds of a point after an apostrophe. A third digit shows the part of a 32nd for contracts that trade in parts of one: 106'025 is 106 and 2.5/32 for ZN, 102'006 is 102 and 0.625/32 for ZT, and 115'09 is 115 and 9/32 for ZB.
+                  Corn, soybean, wheat and oat futures show cents and eighths of a cent, for example 425'2 for 425.25.
+                  Other contracts show as many decimals as `tick_size`, for example 0.0063725 for 6J. Without a `tick_size`, the price keeps its own decimals and shows at least two.
+                  Null when `price` is null.
+                example: 106'025
                 nullable: true
                 type: string
               qty:
                 description: Block trades only.
+                nullable: true
+                type: string
+              quote_ask_display:
+                description: '`quote_ask` in the format of `price_display`. Block trades only.'
+                nullable: true
+                type: string
+              quote_bid_display:
+                description: '`quote_bid` in the format of `price_display`. Block trades only.'
                 nullable: true
                 type: string
               reported_at:
@@ -5632,6 +5705,19 @@ components:
                 description: Block trades only.
                 nullable: true
                 type: integer
+              sub_fraction:
+                description: |
+                  CME's SubFraction for the contract, the number of parts of one `main_fraction` part that the last digit of `price_display` shows: 2 for ZN and TN, 4 for ZF and 8 for ZT and Z3N.
+                  Null when `price_display` has no such digit.
+                example: 2
+                nullable: true
+                type: integer
+              tick_size:
+                description: |
+                  Smallest price step of the contract as a decimal string, in the same units as `price`, for example 0.25 for ES or 0.015625 (1/64 of a point) for ZN.
+                  Null for contracts whose CME security definition has not been loaded yet and for contracts with a variable tick.
+                nullable: true
+                type: string
               trade_id:
                 nullable: true
                 type: integer
@@ -18308,6 +18394,11 @@ info:
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com](mailto:oskar@unusualwhales.com?cc=enterprise@unusualwhales.com,nastja.petrovic@unusualwhales.com).
     
     ## Changelog
+    
+    # 2026.11.11
+    - Futures prices come formatted as CME quotes them, for example 106'025 for ZN and 425'2 for corn, with the fractions CME's security definition lists for the contract. `main_fraction` and `sub_fraction` are those fractions and are null when the prices show decimals.
+      - [`/futures/flow`](https://api.unusualwhales.com/docs/operations/PublicApi.FuturesController.flow) adds `price_display`, `nbbo_bid_display`, `nbbo_ask_display`, `quote_bid_display`, `quote_ask_display`, `main_fraction` and `sub_fraction`.
+      - [`/futures/{contract}/trades`](https://api.unusualwhales.com/docs/operations/PublicApi.FuturesController.trades) adds the same fields and `tick_size`.
     
     # 2026.11.09
     - Added Trading Journal endpoints that return the Trading Journal accounts of the user that owns the API token. Every active API token can call them. Accounts are linked in the Trading Journal on unusualwhales.com, which needs a Max or professional plan, so a token whose owner has linked no accounts gets empty results. `account` limits a request to one account by `id` or exact `name`.
