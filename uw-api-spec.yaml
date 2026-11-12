@@ -1021,12 +1021,11 @@ components:
           description: A plain description of the failure, written for a person.
           type: string
         reason:
-          description: Which authentication failure occurred. `missing_token` means the request carried no token. `malformed_token` means a token was supplied but is not a UUID. `unrecognized_token` means the token is a UUID that no active token matches, which happens after a token is revoked or regenerated, or when it belongs to a different account. `payment_failed` means the token was deactivated because the last payment for the API subscription failed. A successful payment restores access, and the active token is listed in the Unusual Whales dashboard.
+          description: Which authentication failure occurred. `missing_token` means the request carried no token. `malformed_token` means a token was supplied but is not a UUID. `unrecognized_token` means the token is a UUID that no active token matches, which happens after a token is revoked or regenerated, or when it belongs to a different account.
           enum:
             - missing_token
             - malformed_token
             - unrecognized_token
-            - payment_failed
           type: string
         request_id:
           description: Identifies this request in Unusual Whales logs. Quote it when contacting support. It matches the `x-request-id` response header, and is absent when no request id was assigned.
@@ -11328,6 +11327,50 @@ components:
           type: string
       title: Pagination Cursor
       type: object
+    Payment Required Error:
+      description: Returned with HTTP 402 when the API token was deactivated because the last payment for the API subscription failed and the subscription is still unpaid. A successful payment restores access with the same token. Once the subscription is canceled, the token returns the 401 `unrecognized_token` error instead. Branch on `reason` rather than on `message`, whose wording can change.
+      example:
+        code: payment_required
+        documentation_url: https://api.unusualwhales.com/docs
+        message: 'Subscription paused: payment failed. Update your card at https://unusualwhales.com/settings.'
+        reason: payment_failed
+        request_id: GNI_YTC1CRnw2LACGBvE
+        retryable: false
+        support_email: dev@unusualwhales.com
+        token_url: https://unusualwhales.com/dashboard/api
+      properties:
+        code:
+          description: Always `payment_required`.
+          enum:
+            - payment_required
+          type: string
+        documentation_url:
+          description: Where to read this API documentation.
+          type: string
+        message:
+          description: A plain description of the failure with the page where the card can be updated, written for a person.
+          type: string
+        reason:
+          description: Always `payment_failed`.
+          enum:
+            - payment_failed
+          type: string
+        request_id:
+          description: Identifies this request in Unusual Whales logs. Quote it when contacting support. It matches the `x-request-id` response header, and is absent when no request id was assigned.
+          type: string
+        retryable:
+          description: Always `false`. Replaying the same request returns the same error until a payment for the subscription succeeds.
+          enum:
+            - false
+          type: boolean
+        support_email:
+          description: Where to send questions about API access.
+          type: string
+        token_url:
+          description: Where to create and manage API tokens.
+          type: string
+      title: Payment Required Error
+      type: object
     People:
       description: Persons of interest in the institution.
       example:
@@ -18917,6 +18960,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -18990,6 +19039,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19075,6 +19130,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19128,6 +19189,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19194,6 +19261,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19280,6 +19353,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19376,6 +19455,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19416,6 +19501,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19492,6 +19583,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19549,6 +19646,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19595,6 +19698,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19641,6 +19750,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19687,6 +19802,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19733,6 +19854,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19786,6 +19913,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19867,6 +20000,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19927,6 +20066,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -19978,6 +20123,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20038,6 +20189,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20106,6 +20263,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20202,6 +20365,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20261,6 +20430,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20306,6 +20481,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20394,6 +20575,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20519,6 +20706,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20566,6 +20759,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20631,6 +20830,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20678,6 +20883,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20725,6 +20936,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20801,6 +21018,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20848,6 +21071,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -20951,6 +21180,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21082,6 +21317,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21137,6 +21378,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21200,6 +21447,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21267,6 +21520,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21328,6 +21587,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21389,6 +21654,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21444,6 +21715,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21535,6 +21812,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21582,6 +21865,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21617,6 +21906,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21665,6 +21960,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21700,6 +22001,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21747,6 +22054,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21886,6 +22199,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21934,6 +22253,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -21984,6 +22309,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22031,6 +22362,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22094,6 +22431,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22159,6 +22502,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22213,6 +22562,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22267,6 +22622,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22347,6 +22708,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22402,6 +22769,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22450,6 +22823,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22582,6 +22961,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22658,6 +23043,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22707,6 +23098,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22796,6 +23193,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22850,6 +23253,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -22898,6 +23307,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -23146,6 +23561,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -23218,6 +23639,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -23253,6 +23680,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -23302,6 +23735,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -23372,6 +23811,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -23477,6 +23922,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -23585,6 +24036,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -23657,6 +24114,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -23756,6 +24219,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -23853,6 +24322,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24050,6 +24525,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24129,6 +24610,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24220,6 +24707,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24331,6 +24824,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24403,6 +24902,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24447,6 +24952,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24488,6 +24999,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24584,6 +25101,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24626,6 +25149,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24724,6 +25253,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24764,6 +25299,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24828,6 +25369,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24866,6 +25413,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24921,6 +25474,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -24974,6 +25533,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -25028,6 +25593,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -25082,6 +25653,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -25188,6 +25765,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -25274,6 +25857,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -25389,6 +25978,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -25463,6 +26058,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -25526,6 +26127,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -25585,6 +26192,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -25639,6 +26252,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -26520,6 +27139,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -26634,6 +27259,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -27229,6 +27860,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -27287,6 +27924,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -27347,6 +27990,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -27650,6 +28299,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -27698,6 +28353,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -27751,6 +28412,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -27797,6 +28464,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -27882,6 +28555,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -27928,6 +28607,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -27991,6 +28676,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28046,6 +28737,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28089,6 +28786,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28193,6 +28896,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28249,6 +28958,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28330,6 +29045,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28397,6 +29118,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28466,6 +29193,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28528,6 +29261,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28667,6 +29406,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28783,6 +29528,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28826,6 +29577,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28875,6 +29632,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -28944,6 +29707,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29002,6 +29771,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29067,6 +29842,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29104,6 +29885,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29176,6 +29963,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29274,6 +30067,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29330,6 +30129,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29392,6 +30197,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29432,6 +30243,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29478,6 +30295,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29530,6 +30353,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29582,6 +30411,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29634,6 +30469,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29692,6 +30533,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29781,6 +30628,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29841,6 +30694,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29887,6 +30746,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -29933,6 +30798,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -30005,6 +30876,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -30055,6 +30932,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -30122,6 +31005,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -30183,6 +31072,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -30244,6 +31139,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -30319,6 +31220,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -30375,6 +31282,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -30424,6 +31337,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -30488,6 +31407,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -30566,6 +31491,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -31446,6 +32377,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -32430,6 +33367,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -32470,6 +33413,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -32511,6 +33460,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -32595,6 +33550,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -32642,6 +33603,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -32689,6 +33656,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -32771,6 +33744,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -32981,6 +33960,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33040,6 +34025,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33088,6 +34079,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33139,6 +34136,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33190,6 +34193,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33239,6 +34248,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33303,6 +34318,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33344,6 +34365,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33385,6 +34412,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33438,6 +34471,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33486,6 +34525,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33534,6 +34579,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33582,6 +34633,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33635,6 +34692,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33684,6 +34747,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33758,6 +34827,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33805,6 +34880,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33846,6 +34927,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33905,6 +34992,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -33968,6 +35061,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34022,6 +35121,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34113,6 +35218,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34196,6 +35307,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34249,6 +35366,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34302,6 +35425,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34361,6 +35490,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34417,6 +35552,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34467,6 +35608,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34523,6 +35670,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34602,6 +35755,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34650,6 +35809,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34697,6 +35862,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34751,6 +35922,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34809,6 +35986,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34868,6 +36051,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34931,6 +36120,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -34986,6 +36181,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35084,6 +36285,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35152,6 +36359,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35240,6 +36453,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35312,6 +36531,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35353,6 +36578,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35406,6 +36637,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35491,6 +36728,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35653,6 +36896,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35752,6 +37001,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35809,6 +37064,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35862,6 +37123,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35924,6 +37191,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -35987,6 +37260,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36042,6 +37321,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36091,6 +37376,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36176,6 +37467,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36279,6 +37576,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36392,6 +37695,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36473,6 +37782,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36531,6 +37846,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36589,6 +37910,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36694,6 +38021,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36744,6 +38077,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36798,6 +38137,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36852,6 +38197,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36916,6 +38267,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -36971,6 +38328,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37043,6 +38406,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37103,6 +38472,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37158,6 +38533,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37213,6 +38594,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37272,6 +38659,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37332,6 +38725,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37393,6 +38792,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37457,6 +38862,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37525,6 +38936,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37587,6 +39004,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37634,6 +39057,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37675,6 +39104,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37731,6 +39166,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37785,6 +39226,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37853,6 +39300,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37894,6 +39347,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -37950,6 +39409,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -38004,6 +39469,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -38072,6 +39543,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -38137,6 +39614,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
@@ -38200,6 +39683,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication Error'
           description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
         '403':
           content:
             application/json:
