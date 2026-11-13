@@ -1001,7 +1001,7 @@ components:
         reason: malformed_token
         request_id: GNI_YTC1CRnw2LACGBvE
         retryable: false
-        support_email: dev@unusualwhales.com
+        support_email: support@unusualwhales.com
         token_url: https://unusualwhales.com/dashboard/api
       properties:
         code:
@@ -2775,6 +2775,14 @@ components:
       maximum: 200
       minimum: 1
       title: Default 100 Max 200 Min 1
+      type: integer
+    Default 100 Max 500 Min 1:
+      default: 100
+      description: 'How many items to return. Default: 100. Max: 500. Min: 1.'
+      example: 10
+      maximum: 500
+      minimum: 1
+      title: Default 100 Max 500 Min 1
       type: integer
     Default 100, Max 1000 Min 1:
       default: 100
@@ -4835,7 +4843,7 @@ components:
         reason: route_not_permitted
         request_id: GNI_YTC1CRnw2LACGBvE
         retryable: false
-        support_email: dev@unusualwhales.com
+        support_email: support@unusualwhales.com
         token_url: https://unusualwhales.com/dashboard/api
       properties:
         code:
@@ -11328,15 +11336,15 @@ components:
       title: Pagination Cursor
       type: object
     Payment Required Error:
-      description: Returned with HTTP 402 when the API token was deactivated because the last payment for the API subscription failed and the subscription is still unpaid. A successful payment restores access with the same token. Once the subscription is canceled, the token returns the 401 `unrecognized_token` error instead. Branch on `reason` rather than on `message`, whose wording can change.
+      description: Returned with HTTP 402 when the API token was deactivated because a payment for the API subscription failed and the subscription is still unpaid. A successful payment restores access with the same token. Once the subscription is canceled, the token returns the 401 `unrecognized_token` error instead. Branch on `reason` rather than on `message`, whose wording can change.
       example:
         code: payment_required
         documentation_url: https://api.unusualwhales.com/docs
-        message: 'Subscription paused: payment failed. Update your card at https://unusualwhales.com/settings.'
+        message: This API token is paused because the payment for your API subscription failed. Update your card at https://unusualwhales.com/settings. The same token works again once a payment succeeds.
         reason: payment_failed
         request_id: GNI_YTC1CRnw2LACGBvE
         retryable: false
-        support_email: dev@unusualwhales.com
+        support_email: support@unusualwhales.com
         token_url: https://unusualwhales.com/dashboard/api
       properties:
         code:
@@ -18438,6 +18446,11 @@ info:
     
     ## Changelog
     
+    # 2026.11.12
+    - Congress trade endpoints return pages of trades. Each response adds `page`, the page returned, and `total_pages`, the number of pages for the given filters and `limit`. The maximum `limit` is 500 instead of 200.
+      - [`/congress/recent-trades`](https://api.unusualwhales.com/docs/operations/PublicApi.CongressController.congress_recent_trades) and [`/congress/late-reports`](https://api.unusualwhales.com/docs/operations/PublicApi.CongressController.congress_late_reports) add the `page` parameter.
+      - [`/congress/congress-trader`](https://api.unusualwhales.com/docs/operations/PublicApi.CongressController.congress_trader) already had `page`.
+    
     # 2026.11.11
     - Futures prices come formatted as CME quotes them, for example 106'025 for ZN and 425'2 for corn, with the fractions CME's security definition lists for the contract. `main_fraction` and `sub_fraction` are those fractions and are null when the prices show decimals.
       - [`/futures/flow`](https://api.unusualwhales.com/docs/operations/PublicApi.FuturesController.flow) adds `price_display`, `nbbo_bid_display`, `nbbo_ask_display`, `quote_bid_display`, `quote_ask_display`, `main_fraction` and `sub_fraction`.
@@ -18674,9 +18687,9 @@ info:
     
     # 2026.01.20
     - Updated interest-float endpoint with new version and deprecated old version
-    - [`/shorts/:ticker/interest-float/v2`](https://api.unusualwhales.com/docs#/operations/PublicApi.ShortController.short_interest_and_float_v2)
+    - [`/shorts/:ticker/interest-float/v2`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_interest_and_float_v2)
     - Added interest-float search screener endpoint
-    - [`/short_screener`](https://api.unusualwhales.com/docs#/operations/PublicApi.ShortController.short_screener)
+    - [`/short_screener`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_screener)
     
     # 2025.09.23
     
@@ -18684,62 +18697,62 @@ info:
     
     # 2025.09.22
     
-    - Added `newer_than` and `older_than` time filtering parameters to [`/alerts`](https://api.unusualwhales.com/docs#/operations/PublicApi.AlertsController.alerts) endpoint with 14-day maximum lookback period for custom alerts queries
+    - Added `newer_than` and `older_than` time filtering parameters to [`/alerts`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.alerts) endpoint with 14-day maximum lookback period for custom alerts queries
     
     # 2025.08.20
     
-    - Added [`/market/top-net-impact`](https://api.unusualwhales.com/docs#/operations/PublicApi.MarketController.top_net_impact) endpoint to get the top tickers by net premium (split between bullish and bearish). Supports filtering by `issue_types[]`, `date`, and `limit` (default 20, max 100).
+    - Added [`/market/top-net-impact`](https://api.unusualwhales.com/docs/operations/PublicApi.MarketController.top_net_impact) endpoint to get the top tickers by net premium (split between bullish and bearish). Supports filtering by `issue_types[]`, `date`, and `limit` (default 20, max 100).
     
     # 2025.06.18
     
-    - Added [`/market/:sector/sector-tide`](https://api.unusualwhales.com/docs#/operations/PublicApi.MarketController.sec_indst) endpoint to get the market tide for a specific sector
+    - Added [`/market/:sector/sector-tide`](https://api.unusualwhales.com/docs/operations/PublicApi.MarketController.sec_indst) endpoint to get the market tide for a specific sector
     
     # 2025.06.02
     
-    - Added [`/stock/:ticker/interpolated-iv`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.interpolated_iv) endpoint to get the interpolated iv for various days
+    - Added [`/stock/:ticker/interpolated-iv`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.interpolated_iv) endpoint to get the interpolated iv for various days
     
     
     # 2025.05.29
     
-    - Added [`/option-contract/:id/volume-profile`](https://api.unusualwhales.com/docs#/operations/PublicApi.OptionContractController.volume_profile) endpoint to get the volume profile of an option contract (volume by fill price)
+    - Added [`/option-contract/:id/volume-profile`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.volume_profile) endpoint to get the volume profile of an option contract (volume by fill price)
     
     # 2025.05.23
     
-    - Added [`/option-contract/:id/intraday`](https://api.unusualwhales.com/docs#/operations/PublicApi.OptionContractController.intraday) endpoint to get the volume, premium & OHLC for a contract in 1min ticks for a given trading day
+    - Added [`/option-contract/:id/intraday`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.intraday) endpoint to get the volume, premium & OHLC for a contract in 1min ticks for a given trading day
     
     # 2025.05.07
     
-    - Added `prev_close_price` field to [`/stock/:ticker/stock-state`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.last_stock_state) endpoint to provide the previous close price.
+    - Added `prev_close_price` field to [`/stock/:ticker/stock-state`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.last_stock_state) endpoint to provide the previous close price.
     
     # 2025.04.30
     
-    - Enhanced [`/option-trades/full-tape/{date}`](https://api.unusualwhales.com/docs#/operations/PublicApi.OptionTradeController.full_tape) to allow users with `websocket` scope to access the last two trading days of data
+    - Enhanced [`/option-trades/full-tape/{date}`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.full_tape) to allow users with `websocket` scope to access the last two trading days of data
     
     # 2025.04.23
     
-    - Added [`/net-flow/expiry`](https://api.unusualwhales.com/docs#/operations/PublicApi.NetFlowController.expiry) endpoint to track net premium flow by tide type, moneyness, and expiration categories. This powers charts like those found on the [zero-DTE dashboard](https://unusualwhales.com/zero-dte)
+    - Added [`/net-flow/expiry`](https://api.unusualwhales.com/docs/operations/PublicApi.NetFlowController.expiry) endpoint to track net premium flow by tide type, moneyness, and expiration categories. This powers charts like those found on the [zero-DTE dashboard](https://unusualwhales.com/zero-dte)
     
     # 2025.04.08
     
-    - Enhanced [`/market/correlations`](https://api.unusualwhales.com/docs#/operations/PublicApi.MarketController.correlations) endpoint with new date filtering options: `start_date` and `end_date` parameters to specify custom date ranges, complementing the existing `interval` parameter
+    - Enhanced [`/market/correlations`](https://api.unusualwhales.com/docs/operations/PublicApi.MarketController.correlations) endpoint with new date filtering options: `start_date` and `end_date` parameters to specify custom date ranges, complementing the existing `interval` parameter
     
     # 2025.03.23
-    - Updated [`/stock/{ticker}/net-prem-ticks`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.net_prem_ticks) endpoint to
+    - Updated [`/stock/{ticker}/net-prem-ticks`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.net_prem_ticks) endpoint to
     include `call_volume`, `put_volume`, `call_volume_bid_side`,  `put_volume_bid_side`, `call_volume_ask_side`,  `put_volume_ask_side` & `net_delta`.
     
     # 2025.03.10
     
-    - Added [`/news/headlines`](https://api.unusualwhales.com/docs#/operations/PublicApi.NewsController.headlines) endpoint to access financial news headlines with filtering capabilities
+    - Added [`/news/headlines`](https://api.unusualwhales.com/docs/operations/PublicApi.NewsController.headlines) endpoint to access financial news headlines with filtering capabilities
     - Added Shorts API endpoints:
-      - [`/shorts/:ticker/data`](https://api.unusualwhales.com/docs#/operations/PublicApi.ShortController.short_data)
-      - [`/shorts/:ticker/volumes-by-exchange`](https://api.unusualwhales.com/docs#/operations/PublicApi.ShortController.short_volume_by_exchange)
-      - [`/shorts/:ticker/ftds`](https://api.unusualwhales.com/docs#/operations/PublicApi.ShortController.failures_to_deliver)
-      - [`/shorts/:ticker/interest-float`](https://api.unusualwhales.com/docs#/operations/PublicApi.ShortController.short_interest_and_float)
-      - [`/shorts/:ticker/volume-and-ratio`](https://api.unusualwhales.com/docs#/operations/PublicApi.ShortController.short_volume_and_ratio)
+      - [`/shorts/:ticker/data`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_data)
+      - [`/shorts/:ticker/volumes-by-exchange`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_volume_by_exchange)
+      - [`/shorts/:ticker/ftds`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.failures_to_deliver)
+      - [`/shorts/:ticker/interest-float`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_interest_and_float)
+      - [`/shorts/:ticker/volume-and-ratio`](https://api.unusualwhales.com/docs/operations/PublicApi.ShortController.short_volume_and_ratio)
     
     # 2025.02.19
     
-    - The endpoint [`/stock/:ticker/spot-exposures/:expiry/strike`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_by_strike_expiry) has been deprecated and been replaced by [`/stock/:ticker/spot-exposures/expiry-strike`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_by_strike_expiry_v2)
+    - The endpoint [`/stock/:ticker/spot-exposures/:expiry/strike`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.spot_exposures_by_strike_expiry) has been deprecated and been replaced by [`/stock/:ticker/spot-exposures/expiry-strike`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.spot_exposures_by_strike_expiry_v2)
     
     To migrate over replace all your `/api/stock/:ticker/spot-exposures/:expiry/strike` calls with `/api/stock/:ticker/spot-exposures/expiry-strike?expirations[]=expiry`
     
@@ -18747,52 +18760,52 @@ info:
     - The endpoint `/congress/recent-reports` has been removed as it returns the same data as `/congress/recent-trades`.
     
     # 2025.02.05
-    - Enhanced [`/market/fda-calendar`](https://api.unusualwhales.com/docs#/operations/PublicApi.MarketController.fda_calendar) with better FDA data, additional fields (notes, outcomes, sources), and filtering by company metrics
+    - Enhanced [`/market/fda-calendar`](https://api.unusualwhales.com/docs/operations/PublicApi.MarketController.fda_calendar) with better FDA data, additional fields (notes, outcomes, sources), and filtering by company metrics
     
     # 2025.02.03
     - Updated dark pool/off lit endpoints to allow filtering for size, premium & consolidated volume
     
     # 2025.01.22
     - Added [`gex_strike_expiry:<TICKER>`](https://api.unusualwhales.com/docs/websocket/gex) channel to the websocket
-    - Added `call_option_symbol` & `put_option_symbol` to [`/stock/{ticker}/greeks`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.greeks)
+    - Added `call_option_symbol` & `put_option_symbol` to [`/stock/{ticker}/greeks`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.greeks)
     
     # 2025.01.16
-    - Added [`/stock/:ticker/spot-exposures/:expiry/strike`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.spot_exposures_by_strike_expiry)
+    - Added [`/stock/:ticker/spot-exposures/:expiry/strike`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.spot_exposures_by_strike_expiry)
     
     # 2024.12.11
-    - Added [`/alerts/configuration`](https://api.unusualwhales.com/docs#/operations/PublicApi.AlertsController.configs)
-    - Added [`/alerts`](https://api.unusualwhales.com/docs#/operations/PublicApi.AlertsController.alerts)
+    - Added [`/alerts/configuration`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.configs)
+    - Added [`/alerts`](https://api.unusualwhales.com/docs/operations/PublicApi.AlertsController.alerts)
     
     This allows one to grab all the alerts that have been triggerd for any alert that one has configured. With an existing unusualwhales account you can view and configure alerts directly on the [website](https://unusualwhales.com/custom-alerts)
     
     # 2024.12.02
-    - Added [`/stock/:ticker/oi-per-strike`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.oi_per_strike)
-    - Added [`/stock/:ticker/oi-per-expiry`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.oi_per_expiry)
+    - Added [`/stock/:ticker/oi-per-strike`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.oi_per_strike)
+    - Added [`/stock/:ticker/oi-per-expiry`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.oi_per_expiry)
     
     # 2024.11.19
     - Improved all earnings endpoint
     
     # 2024.11.09
-    - Added `perc_of_total` & `perc_of_share_value` to [`/institution/:name/holdings`](https://api.unusualwhales.com/docs#/operations/PublicApi.InstitutionController.holdings)
+    - Added `perc_of_total` & `perc_of_share_value` to [`/institution/:name/holdings`](https://api.unusualwhales.com/docs/operations/PublicApi.InstitutionController.holdings)
     
     # 2024.10.30
-    - Added [`/stock/:ticker/nope`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.nope)
+    - Added [`/stock/:ticker/nope`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.nope)
     
     # 2024.10.28
-    - Added [`/group-flow/:flow_group/greek-flow`](https://api.unusualwhales.com/docs#/operations/PublicApi.GroupFlowController.greek_flow)
-    - Added [`/group-flow/:flow_group/greek-flow/:expiry`](https://api.unusualwhales.com/docs#/operations/PublicApi.GroupFlowController.greek_flow_expiry)
-    - Added [`/stock/:ticker/greek-flow`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.greek_flow)
-    - Added [`/stock/:ticker/greek-flow/:epxiry`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.greek_flow_expiry)
+    - Added [`/group-flow/:flow_group/greek-flow`](https://api.unusualwhales.com/docs/operations/PublicApi.GroupFlowController.greek_flow)
+    - Added [`/group-flow/:flow_group/greek-flow/:expiry`](https://api.unusualwhales.com/docs/operations/PublicApi.GroupFlowController.greek_flow_expiry)
+    - Added [`/stock/:ticker/greek-flow`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.greek_flow)
+    - Added [`/stock/:ticker/greek-flow/:epxiry`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.greek_flow_expiry)
     
     # 2024.10.16
-    - Added etf inflow & outflow endpoint [`/etfs/:ticker/in_outflow`](PublicApi.EtfController.in_outflow)
+    - Added etf inflow & outflow endpoint [`/etfs/:ticker/in_outflow`](https://api.unusualwhales.com/docs/operations/PublicApi.EtfController.in_outflow)
     
     # 2024.10.15
-    - Added institutional latest filings endpoint [`/institution/latest_filings`](PublicApi.InstitutionController.latest_filings)
-    - Added institutional ownership endpoint [`/institution/:ticker/ownership`](PublicApi.InstitutionController.ownership)
+    - Added institutional latest filings endpoint [`/institution/latest_filings`](https://api.unusualwhales.com/docs/operations/PublicApi.InstitutionController.latest_filings)
+    - Added institutional ownership endpoint [`/institution/:ticker/ownership`](https://api.unusualwhales.com/docs/operations/PublicApi.InstitutionController.ownership)
     
     # 2024.10.14
-    - Added 2 new fields: `days_of_oi_increases` & `days_of_vol_greater_than_oi` to [`/market/oi-change`](PublicApi.MarketController.oi_change)
+    - Added 2 new fields: `days_of_oi_increases` & `days_of_vol_greater_than_oi` to [`/market/oi-change`](https://api.unusualwhales.com/docs/operations/PublicApi.MarketController.oi_change)
     ```
     days_of_oi_increases: The number of consecutive days that the open interest has increased for this contract. If on any day the open interest decreases or does not change the count will reset.
     
@@ -18802,56 +18815,56 @@ info:
     <br/>
     
     # 2024.10.10
-    - Added institutional activity endpoint [`/institution/:name/activity`](PublicApi.InstitutionController.activity)
+    - Added institutional activity endpoint [`/institution/:name/activity`](https://api.unusualwhales.com/docs/operations/PublicApi.InstitutionController.activity)
     
     # 2024.10.09
-    - Added institutional list endpoint [`institutions`](PublicApi.InstitutionController.list)
-    - Added institutional holdings endpoint [`/institution/:name/holdings`](PublicApi.InstitutionController.holdings)
-    - Added institutional sector exposure endpoint [`/institution/:name/sectors`](PublicApi.InstitutionController.sectors)
+    - Added institutional list endpoint [`institutions`](https://api.unusualwhales.com/docs/operations/PublicApi.InstitutionController.list)
+    - Added institutional holdings endpoint [`/institution/:name/holdings`](https://api.unusualwhales.com/docs/operations/PublicApi.InstitutionController.holdings)
+    - Added institutional sector exposure endpoint [`/institution/:name/sectors`](https://api.unusualwhales.com/docs/operations/PublicApi.InstitutionController.sectors)
     
     # 2024.08.01
-    - Added new flow per strike intraday endpoint [`/stock/:ticker/flow-per-strike-intraday`](PublicApi.TickerController.flow_per_strike_intraday)
+    - Added new flow per strike intraday endpoint [`/stock/:ticker/flow-per-strike-intraday`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.flow_per_strike_intraday)
     
     # 2024.07.11
-    - Added new correlation endpoint [`/market/correlations?tickers=SPY,QQQ,JPM,BAC`](PublicApi.MarketController.correlations)
+    - Added new correlation endpoint [`/market/correlations?tickers=SPY,QQQ,JPM,BAC`](https://api.unusualwhales.com/docs/operations/PublicApi.MarketController.correlations)
     
     # 2024.05.30
-    - Added the ability to filter [`/darkpool/:ticker`](PublicApi.DarkPoolController.darkpool_ticker) by timestamps through the two new query parameters `older_than` and `newer_than`
+    - Added the ability to filter [`/darkpool/:ticker`](https://api.unusualwhales.com/docs/operations/PublicApi.DarkPoolController.darkpool_ticker) by timestamps through the two new query parameters `older_than` and `newer_than`
     
     # 2024.05.21
-    - Added directionalized volume fields to [`/stock/:ticker/spot-exposures`](PublicApi.TickerController.spot_exposures_one_minute) and [`/stock/:ticker/spot-exposures/strike`](PublicApi.TickerController.spot_exposures_by_strike)
+    - Added directionalized volume fields to [`/stock/:ticker/spot-exposures`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.spot_exposures_one_minute) and [`/stock/:ticker/spot-exposures/strike`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.spot_exposures_by_strike)
     
     # 2024.05.17
     - Added the channels `gex:TICKER` & `gex_strike:TICKER` to the [websocket](https://api.unusualwhales.com/docs/websocket)
     
     # 2024.05.07
-    - Added the ability to filter [`/option-trades/flow-alerts`](PublicApi.OptionTradeController.flow_alerts) by timestamps through the two new query parameters `older_than` and `newer_than`
+    - Added the ability to filter [`/option-trades/flow-alerts`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alerts) by timestamps through the two new query parameters `older_than` and `newer_than`
     
     # 2024.05.06
-    - Added endpoint [`/stock/:ticker/stock-state`](PublicApi.TickerController.last_stock_state) to retrieve the last stock price & volume
-    - Added endpoint [`/stock/:ticker/volatility/realized`](PublicApi.TickerController.realized_volatility) to retrieve a stock's realized volatility
+    - Added endpoint [`/stock/:ticker/stock-state`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.last_stock_state) to retrieve the last stock price & volume
+    - Added endpoint [`/stock/:ticker/volatility/realized`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.realized_volatility) to retrieve a stock's realized volatility
     
     # 2024.05.03
     - The data returned by /stock/:ticker/option-contracts has been limited to 500 results
     
     # 2024.05.02
-    - Added endpoint [`/market/:ticker/etf-tide`](PublicApi.MarketController.etf_tide)
+    - Added endpoint [`/market/:ticker/etf-tide`](https://api.unusualwhales.com/docs/operations/PublicApi.MarketController.etf_tide)
     
     # 2024.05.01
-    - Added endpoint [`/stock/:ticker/spot-exposures/strike`](PublicApi.TickerController.spot_exposures_by_strike)
+    - Added endpoint [`/stock/:ticker/spot-exposures/strike`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.spot_exposures_by_strike)
     - Added new channel [`price:TICKER`](https://api.unusualwhales.com/docs/websocket) to the websocket. The channel will push live price updates for the given ticker.
     
     # 2024.04.25
-    - Added endpoint [`/stock/:ticker/greek-exposure/strike`](PublicApi.TickerController.greek_exposure_by_strike)
-    - Added endpoint [`/stock/:ticker/greek-exposure/expiry`](PublicApi.TickerController.greek_exposure_by_expiry)
-    - Added endpoint [`/stock/:ticker/greek-exposure/strike-expiry`](PublicApi.TickerController.greek_exposure_by_strike_expiry)
+    - Added endpoint [`/stock/:ticker/greek-exposure/strike`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.greek_exposure_by_strike)
+    - Added endpoint [`/stock/:ticker/greek-exposure/expiry`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.greek_exposure_by_expiry)
+    - Added endpoint [`/stock/:ticker/greek-exposure/strike-expiry`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.greek_exposure_by_strike_expiry)
     
     # 2024.03.28
-    - Fixed field name volatility -> risk_reversal for endpoint [`/stock/:ticker/historical_risk_reversal_skew`](PublicApi.TickerController.historical_risk_reversal_skew)
+    - Fixed field name volatility -> risk_reversal for endpoint [`/stock/:ticker/historical_risk_reversal_skew`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.historical_risk_reversal_skew)
     
     # 2024.03.26
-    - Added endpoint [`/stock/:ticker/greeks`](PublicApi.TickerController.greeks)
-    - Added endpoint [`/stock/:ticker/historical_risk_reversal_skew`](PublicApi.TickerController.historical_risk_reversal_skew)
+    - Added endpoint [`/stock/:ticker/greeks`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.greeks)
+    - Added endpoint [`/stock/:ticker/historical_risk_reversal_skew`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.historical_risk_reversal_skew)
     
     # 2024.03.23
     - BREAKING CHANGE:
@@ -18860,21 +18873,21 @@ info:
     a single trading day.
     
     # 2024.03.06
-    - Added endpoint [`/option-trades/flow-alerts`](PublicApi.OptionTradeController.flow_alerts)
+    - Added endpoint [`/option-trades/flow-alerts`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alerts)
     - Added flow-alerts streaming to the WebSocket.
     
     # 2024.03.04
-    - Added endpoint [`/stock/:ticker/max-pain`](https://api.unusualwhales.com/docs#/operations/PublicApi.TickerController.max_pain)
+    - Added endpoint [`/stock/:ticker/max-pain`](https://api.unusualwhales.com/docs/operations/PublicApi.TickerController.max_pain)
     
     # 2024.02.16
-    - Added new endpoint section [`Seasonality`](https://api.unusualwhales.com/docs#/operations/PublicApi.SeasonalityController.market_seasonality) with new endpoints:
-        - [`/seasonality/market`](https://api.unusualwhales.com/docs#/operations/PublicApi.SeasonalityController.market_seasonality)
-        - [`/seasonality/:month/performers`](https://api.unusualwhales.com/docs#/operations/PublicApi.SeasonalityController.month_performers)
-        - [`/seasonality/:ticker/monthly`](https://api.unusualwhales.com/docs#/operations/PublicApi.SeasonalityController.monthly)
-        - [`/seasonality/:ticker/year-month`](https://api.unusualwhales.com/docs#/operations/PublicApi.SeasonalityController.year_month)
+    - Added new endpoint section [`Seasonality`](https://api.unusualwhales.com/docs/operations/PublicApi.SeasonalityController.market_seasonality) with new endpoints:
+        - [`/seasonality/market`](https://api.unusualwhales.com/docs/operations/PublicApi.SeasonalityController.market_seasonality)
+        - [`/seasonality/:month/performers`](https://api.unusualwhales.com/docs/operations/PublicApi.SeasonalityController.month_performers)
+        - [`/seasonality/:ticker/monthly`](https://api.unusualwhales.com/docs/operations/PublicApi.SeasonalityController.monthly)
+        - [`/seasonality/:ticker/year-month`](https://api.unusualwhales.com/docs/operations/PublicApi.SeasonalityController.year_month)
     
     # 2024.02.07
-    - Added endpoints [`/stock/:ticker/expiry-breakdown`](https://api.unusualwhales.com/docs#/operations/PublicApi.OptionContractController.expiry_breakdown) & [`/stock/:ticker/option-contracts`](https://api.unusualwhales.com/docs#/operations/PublicApi.OptionContractController.option_contracts). These 2 endpoints allow access to the data located here: [https://unusualwhales.com/stock/AAPL/option-chains](https://unusualwhales.com/stock/AAPL/option-chains)
+    - Added endpoints [`/stock/:ticker/expiry-breakdown`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.expiry_breakdown) & [`/stock/:ticker/option-contracts`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.option_contracts). These 2 endpoints allow access to the data located here: [https://unusualwhales.com/stock/AAPL/option-chains](https://unusualwhales.com/stock/AAPL/option-chains)
   title: UnusualWhales Api
   version: '1.0'
 openapi: 3.0.0
@@ -19946,7 +19959,8 @@ paths:
       description: |
         Returns the recent reports by the given congress member.
         
-        Supports pagination via `page` (1-indexed) and `limit` parameters.
+        Trades are sorted by transaction date, newest first, and split into pages of `limit` trades. Use `page` to request a page.
+        The response includes `page`, the page returned, and `total_pages`, the number of pages for the given filters and `limit`.
         Date range filtering: use `date` for upper bound and `date_from` for lower bound.
         To query a single day, set both to the same date (e.g. `?date_from=2025-06-15&date=2025-06-15`).
       operationId: PublicApi.CongressController.congress_trader
@@ -19956,7 +19970,7 @@ paths:
           name: limit
           required: false
           schema:
-            $ref: '#/components/schemas/Default 100 Max 200 Min 1'
+            $ref: '#/components/schemas/Default 100 Max 500 Min 1'
         - description: ''
           in: query
           name: date
@@ -19969,18 +19983,18 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Optional Ticker'
+        - description: 'Page number, starting at 1. Use with `limit`. Default: 1.'
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
         - description: ''
           in: query
           name: name
           required: false
           schema:
             $ref: '#/components/schemas/Congress Member'
-        - description: ''
-          in: query
-          name: page
-          required: false
-          schema:
-            $ref: '#/components/schemas/Page'
         - description: ''
           in: query
           name: date_from
@@ -20033,6 +20047,9 @@ paths:
       description: |
         Returns the recent late reports by congress members.
         If a date is given, will only return recent late reports, which's report date is <= the given input date.
+        
+        Trades are sorted by transaction date, newest first, and split into pages of `limit` trades. Use `page` to request a page.
+        The response includes `page`, the page returned, and `total_pages`, the number of pages for the given filters and `limit`.
       operationId: PublicApi.CongressController.congress_late_reports
       parameters:
         - description: ''
@@ -20040,7 +20057,7 @@ paths:
           name: limit
           required: false
           schema:
-            $ref: '#/components/schemas/Default 100 Max 200 Min 1'
+            $ref: '#/components/schemas/Default 100 Max 500 Min 1'
         - description: ''
           in: query
           name: date
@@ -20053,6 +20070,12 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Optional Ticker'
+        - description: 'Page number, starting at 1. Use with `limit`. Default: 1.'
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
       responses:
         '200':
           content:
@@ -20156,6 +20179,9 @@ paths:
       description: |
         Returns the latest transacted trades by congress members.
         If a date is given, will only return reports, which's transaction date is <= the given input date.
+        
+        Trades are sorted by transaction date, newest first, and split into pages of `limit` trades. Use `page` to request a page.
+        The response includes `page`, the page returned, and `total_pages`, the number of pages for the given filters and `limit`.
       operationId: PublicApi.CongressController.congress_recent_trades
       parameters:
         - description: ''
@@ -20163,7 +20189,7 @@ paths:
           name: limit
           required: false
           schema:
-            $ref: '#/components/schemas/Default 100 Max 200 Min 1'
+            $ref: '#/components/schemas/Default 100 Max 500 Min 1'
         - description: ''
           in: query
           name: date
@@ -20176,6 +20202,12 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Optional Ticker'
+        - description: 'Page number, starting at 1. Use with `limit`. Default: 1.'
+          in: query
+          name: page
+          required: false
+          schema:
+            $ref: '#/components/schemas/Page'
       responses:
         '200':
           content:
