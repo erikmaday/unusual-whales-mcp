@@ -2176,6 +2176,26 @@ components:
         total_supply:
           example: '12345.67'
           type: string
+        trades_1h:
+          description: Number of swaps of the token over the last hour, across every pool it trades in.
+          example: 412
+          type: integer
+        trades_24h:
+          description: Number of swaps of the token over the last 24 hours, across every pool it trades in.
+          example: 9105
+          type: integer
+        trades_6h:
+          description: Number of swaps of the token over the last 6 hours, across every pool it trades in.
+          example: 2380
+          type: integer
+        volume_1h:
+          description: Volume in USD over the last hour, across every pool the token trades in.
+          example: '15230.50'
+          type: string
+        volume_6h:
+          description: Volume in USD over the last 6 hours, across every pool the token trades in.
+          example: '84321.07'
+          type: string
       title: Crypto API Token Metadata
       type: object
     Crypto API Transaction:
@@ -18445,6 +18465,9 @@ info:
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com](mailto:oskar@unusualwhales.com?cc=enterprise@unusualwhales.com,nastja.petrovic@unusualwhales.com).
     
     ## Changelog
+    
+    # 2026.11.17
+    - [`/crypto/token/:token`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.get_token) and [`/crypto/list_tokens`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.list_tokens) add `volume_1h` and `volume_6h`, the volume in USD over the last 1 and 6 hours, and `trades_1h`, `trades_6h` and `trades_24h`, the number of swaps over the last 1, 6 and 24 hours. Each counts every pool the token trades in. `sort` on `/crypto/list_tokens` accepts these five fields.
     
     # 2026.11.12
     - Congress trade endpoints return pages of trades. Each response adds `page`, the page returned, and `total_pages`, the number of pages for the given filters and `limit`. The maximum `limit` is 500 instead of 200.
