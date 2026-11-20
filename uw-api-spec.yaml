@@ -2326,6 +2326,183 @@ components:
           type: array
       title: Crypto OHLC Response
       type: object
+    Crypto Option:
+      description: The latest scraped state of one option.
+      properties:
+        ask:
+          example: 0.022
+          nullable: true
+          type: number
+        bid:
+          example: 0.021
+          nullable: true
+          type: number
+        delta:
+          example: 0.48
+          nullable: true
+          type: number
+        gamma:
+          example: 0.0001
+          nullable: true
+          type: number
+        implied_volatility:
+          description: Mark implied volatility in percent.
+          example: 42.1
+          nullable: true
+          type: number
+        last_price:
+          description: Last trade price, or the mark price when the option hasn't traded. BTC and ETH options are priced in the underlying, SOL options in USDC.
+          example: 0.0215
+          type: number
+        open_interest:
+          description: Open interest in contracts.
+          example: 152.3
+          type: number
+        theta:
+          example: -95.4
+          nullable: true
+          type: number
+        underlying_price:
+          description: Price of the future the option's expiry settles against.
+          example: 63214.9
+          type: number
+        vega:
+          example: 61.2
+          nullable: true
+          type: number
+        volume:
+          description: 24 hour volume in USD.
+          example: 125000.5
+          type: number
+      title: Crypto Option
+      type: object
+    Crypto Options Chain Response:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Crypto Options Chain Strike'
+          type: array
+      title: Crypto Options Chain Response
+      type: object
+    Crypto Options Chain Strike:
+      description: The call and put at one strike and expiry. Either is null when Deribit doesn't list it.
+      properties:
+        call:
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/Crypto Option'
+            - type: 'null'
+        exchange:
+          example: Deribit
+          type: string
+        expiry:
+          example: 2026-11-27T08:00:00Z
+          format: date-time
+          type: string
+        put:
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/Crypto Option'
+            - type: 'null'
+        strike:
+          example: 6.4e4
+          type: number
+        symbol:
+          example: BTC
+          type: string
+      title: Crypto Options Chain Strike
+      type: object
+    Crypto Options Instrument:
+      description: An underlying with options listed on Deribit.
+      properties:
+        atm_iv:
+          description: Average implied volatility in percent of the options within 5% of their expiry's forward and updated in the last 5 minutes. Null when there are none.
+          example: 41.85
+          nullable: true
+          type: number
+        exchange:
+          example: Deribit
+          type: string
+        open_interest:
+          description: Average open interest per option updated in the last 24 hours, in contracts.
+          example: 397.04
+          type: number
+        symbol:
+          example: BTC
+          type: string
+        underlying_price:
+          description: Spot price of the underlying in USD, from Deribit's index.
+          example: 63134.63
+          type: number
+        updated_at:
+          description: When the underlying's latest option was scraped.
+          example: 2026-11-18T17:23:05.612483Z
+          format: date-time
+          type: string
+        volume_24h:
+          description: Sum of the 24 hour USD volume of the underlying's options updated in the last 24 hours.
+          example: 48282142.65
+          type: number
+      title: Crypto Options Instrument
+      type: object
+    Crypto Options Instruments Response:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Crypto Options Instrument'
+          type: array
+      title: Crypto Options Instruments Response
+      type: object
+    Crypto Options Symbol:
+      description: Underlying of the options.
+      enum:
+        - BTC
+        - ETH
+        - SOL
+      example: BTC
+      title: Crypto Options Symbol
+      type: string
+    Crypto Options Term Structure Response:
+      properties:
+        data:
+          description: One `[expiry, implied_volatility]` pair per expiry, with implied volatility in percent.
+          example:
+            - - 2026-11-27T08:00:00Z
+              - 42.1
+            - - 2026-12-25T08:00:00Z
+              - 44.8
+          items:
+            items:
+              oneOf:
+                - format: date-time
+                  type: string
+                - type: number
+            maxItems: 2
+            minItems: 2
+            type: array
+          type: array
+      title: Crypto Options Term Structure Response
+      type: object
+    Crypto Options Volatility Surface Response:
+      properties:
+        data:
+          description: One `[strike, days_to_expiry, implied_volatility]` triple per option, with implied volatility in percent.
+          example:
+            - - 6.4e4
+              - 8.53
+              - 42.1
+            - - 6.4e4
+              - 36.53
+              - 44.8
+          items:
+            items:
+              type: number
+            maxItems: 3
+            minItems: 3
+            type: array
+          type: array
+      title: Crypto Options Volatility Surface Response
+      type: object
     Crypto Pair State:
       description: Rolling 24-hour state for a crypto pair. Prices and volume are numeric strings.
       properties:
@@ -2396,6 +2573,49 @@ components:
           example: QEREAFDFEEE=
           type: string
       title: Crypto Transactions List Response
+      type: object
+    Crypto Volatility Indexes:
+      description: Volatility indexes of an underlying, calculated from its options.
+      properties:
+        atm_vol:
+          description: Average implied volatility in percent of the options near the money.
+          example: 41.9
+          nullable: true
+          type: number
+        dvol:
+          description: Implied volatility in percent of the out of the money options, weighted by their closeness to the money.
+          example: 43.2
+          nullable: true
+          type: number
+        index_price:
+          description: Spot price of the underlying in USD from Deribit's index when the indexes were calculated. Null for indexes calculated before November 2026.
+          example: 63134.63
+          nullable: true
+          type: number
+        skew:
+          example: 1.02
+          nullable: true
+          type: number
+        symbol:
+          example: BTC
+          type: string
+        term_structure:
+          example: 0.95
+          nullable: true
+          type: number
+        timestamp:
+          example: 2026-11-18T19:12:57.163230Z
+          format: date-time
+          type: string
+      title: Crypto Volatility Indexes
+      type: object
+    Crypto Volatility Indexes Response:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Crypto Volatility Indexes'
+          type: array
+      title: Crypto Volatility Indexes Response
       type: object
     Crypto Whale Trade:
       description: A large ('whale') crypto trade. Price, size, and total are numeric strings.
@@ -18466,6 +18686,13 @@ info:
     
     ## Changelog
     
+    # 2026.11.18
+    - Added crypto options endpoints for the BTC, ETH and SOL options listed on Deribit:
+      - [`/crypto/options/instruments`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoOptionsController.instruments) returns each underlying's spot price from Deribit's index, 24 hour volume, open interest and at the money implied volatility.
+      - [`/crypto/options/chain`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoOptionsController.chain) returns the unexpired options of an underlying, with the call and put of each strike and expiry.
+      - [`/crypto/options/volatility/term-structure`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoOptionsController.term_structure) and [`/crypto/options/volatility/surface`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoOptionsController.volatility_surface) return implied volatility by expiry, and by strike and expiry.
+      - [`/crypto/options/volatility/latest`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoOptionsController.latest_volatility_metrics) returns the latest volatility indexes of each underlying.
+    
     # 2026.11.17
     - [`/crypto/token/:token`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.get_token) and [`/crypto/list_tokens`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.list_tokens) add `volume_1h` and `volume_6h`, the volume in USD over the last 1 and 6 hours, and `trades_1h`, `trades_6h` and `trades_24h`, the number of swaps over the last 1, 6 and 24 hours. Each counts every pool the token trades in. `sort` on `/crypto/list_tokens` accepts these five fields.
     
@@ -20786,6 +21013,258 @@ paths:
                 $ref: '#/components/schemas/Error Message on an internal server error.'
           description: Internal Server Error
       summary: Get a list of tokens.
+      tags:
+        - crypto
+  /api/crypto/options/chain:
+    get:
+      callbacks: {}
+      description: |
+        Returns the unexpired options of an underlying on Deribit, one row per strike and expiry with the call and the put,
+        ordered by expiry and strike. Each option shows its latest scraped state, which is at most a few minutes old.
+      operationId: PublicApi.CryptoOptionsController.chain
+      parameters:
+        - description: ''
+          in: query
+          name: symbol
+          required: true
+          schema:
+            $ref: '#/components/schemas/Crypto Options Symbol'
+        - description: Only the options of this expiry.
+          in: query
+          name: expiry
+          required: false
+          schema:
+            $ref: '#/components/schemas/CryptoDateTime'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Crypto Options Chain Response'
+          description: Crypto Options Chain
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Crypto Options Chain
+      tags:
+        - crypto
+  /api/crypto/options/instruments:
+    get:
+      callbacks: {}
+      description: |
+        Returns the underlyings with options listed on Deribit (BTC, ETH and SOL), ordered by 24 hour volume.
+        `underlying_price` is the spot price from Deribit's index.
+      operationId: PublicApi.CryptoOptionsController.instruments
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Crypto Options Instruments Response'
+          description: Crypto Options Instruments
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Crypto Options Instruments
+      tags:
+        - crypto
+  /api/crypto/options/volatility/latest:
+    get:
+      callbacks: {}
+      description: |
+        Returns the latest volatility indexes of each underlying, ordered by symbol.
+        The indexes are recalculated from the options every few minutes.
+      operationId: PublicApi.CryptoOptionsController.latest_volatility_metrics
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Crypto Volatility Indexes Response'
+          description: Crypto Volatility Indexes
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Crypto Volatility Indexes
+      tags:
+        - crypto
+  /api/crypto/options/volatility/surface:
+    get:
+      callbacks: {}
+      description: |
+        Returns the implied volatility of each unexpired option of an underlying that has one, ordered by strike and expiry.
+      operationId: PublicApi.CryptoOptionsController.volatility_surface
+      parameters:
+        - description: ''
+          in: query
+          name: symbol
+          required: true
+          schema:
+            $ref: '#/components/schemas/Crypto Options Symbol'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Crypto Options Volatility Surface Response'
+          description: Crypto Options Volatility Surface
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Crypto Options Volatility Surface
+      tags:
+        - crypto
+  /api/crypto/options/volatility/term-structure:
+    get:
+      callbacks: {}
+      description: |
+        Returns the average implied volatility of each unexpired expiry of an underlying, ordered by expiry.
+        Each expiry averages its options with a strike within 5% of the expiry's forward price.
+        Expiries with fewer than 2 such options are left out.
+      operationId: PublicApi.CryptoOptionsController.term_structure
+      parameters:
+        - description: ''
+          in: query
+          name: symbol
+          required: true
+          schema:
+            $ref: '#/components/schemas/Crypto Options Symbol'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Crypto Options Term Structure Response'
+          description: Crypto Options Term Structure
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication Error'
+          description: Unauthorized
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment Required Error'
+          description: Payment Required
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error Message'
+          description: Unprocessable Entity
+        '500':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error Message on an internal server error.'
+          description: Internal Server Error
+      summary: Crypto Options Term Structure
       tags:
         - crypto
   /api/crypto/token/{token}:
