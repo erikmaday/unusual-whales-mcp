@@ -2578,12 +2578,12 @@ components:
       description: Volatility indexes of an underlying, calculated from its options.
       properties:
         atm_vol:
-          description: Average implied volatility in percent of the options near the money.
+          description: Average implied volatility in percent of the 10 unexpired options closest to their expiry's forward.
           example: 41.9
           nullable: true
           type: number
         dvol:
-          description: Implied volatility in percent of the out of the money options, weighted by their closeness to the money.
+          description: Composite of the other indexes in percent, calculated as `atm_vol * (1 + (skew - 1) * 0.3 + (term_structure - 1) * 0.2)`. This is not Deribit's DVOL index.
           example: 43.2
           nullable: true
           type: number
@@ -2593,6 +2593,7 @@ components:
           nullable: true
           type: number
         skew:
+          description: Average implied volatility of up to 5 out of the money puts divided by that of up to 5 out of the money calls, taken from the 100 options closest to the money. 1 when either side is missing.
           example: 1.02
           nullable: true
           type: number
@@ -2600,6 +2601,7 @@ components:
           example: BTC
           type: string
         term_structure:
+          description: Average implied volatility of the 11th to 15th options closest to the money divided by that of the 5 closest. 1 when there are fewer than 11 options.
           example: 0.95
           nullable: true
           type: number
