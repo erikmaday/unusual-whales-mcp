@@ -2424,8 +2424,8 @@ components:
           example: Deribit
           type: string
         open_interest:
-          description: Average open interest per option updated in the last 24 hours, in contracts.
-          example: 397.04
+          description: Total open interest of the underlying's unexpired options updated in the last 24 hours, in contracts.
+          example: 415380.5
           type: number
         symbol:
           example: BTC
@@ -18687,6 +18687,9 @@ info:
     For custom enterprise pricing, redistribution licenses, or bespoke solutions, email [oskar@unusualwhales.com, enterprise@unusualwhales.com or nastja.petrovic@unusualwhales.com](mailto:oskar@unusualwhales.com?cc=enterprise@unusualwhales.com,nastja.petrovic@unusualwhales.com).
     
     ## Changelog
+    
+    # 2026.11.20
+    - [`/crypto/options/instruments`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoOptionsController.instruments) returns `open_interest` as the total open interest of the underlying's unexpired options instead of the average per option.
     
     # 2026.11.18
     - Added crypto options endpoints for the BTC, ETH and SOL options listed on Deribit:
