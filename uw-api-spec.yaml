@@ -1369,6 +1369,12 @@ components:
       example: '56.79'
       title: Candle Close
       type: string
+    Candle Date:
+      description: The trading date of a `1d` or `1w` candle (ISO 8601).
+      example: 2023-09-07
+      format: date
+      title: Candle Date
+      type: string
     Candle End time:
       description: The end time of the candle as UTC timestamp.
       example: 2023-09-07T20:07:00Z
@@ -1429,6 +1435,8 @@ components:
       properties:
         close:
           $ref: '#/components/schemas/Candle Close'
+        date:
+          $ref: '#/components/schemas/Candle Date'
         end_time:
           $ref: '#/components/schemas/Candle End time'
         high:
@@ -36925,7 +36933,14 @@ paths:
         first. The most recent intraday candle is still forming, and its `start_time` is the start of the current
         bucket. Select the latest bar by the maximum `start_time`, not by array position.
         
-        Note: If you select 1d or 1w as a candle_size then the candles won't have a start & end time. For 1w, the `date` field is the Monday of the ISO week.
+        Time fields: intraday candles have `start_time` and `end_time`, the UTC boundaries of the candle. `1d` and `1w` candles have
+        `date` instead, and no `start_time` or `end_time`. For `1w`, `date` is the Monday of the ISO week. `market_time` is the session
+        of the candle (`pr` premarket, `r` regular, `po` postmarket). The response has no publication, as-of or last-updated timestamp
+        beyond these candle boundaries. A candle that has just closed can still change when late or corrected data arrives, and no
+        field marks a candle as final.
+        
+        Index tickers such as SPX and VIX: candles are built from the index values Cboe calculates, which have no trade volume, so
+        `volume` and `total_volume` are 0. `market_time` is always `r`.
         
         Note: Suppose you enter end_date value 2024-11-25 which was a Monday. Your response will include 1-2 hours of data from Tuesday 2024-11-26 due to UTC date rollover.
         Rest-assured, the response data covers the full trading day (based on Eastern time) according to your entered end_date.
