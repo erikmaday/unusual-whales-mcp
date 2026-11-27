@@ -15109,9 +15109,8 @@ components:
       type: string
     Short Screener:
       description: |
-        Short interest data and float information for percentage calculations based of filter parameters.
-        This endpoint provides information about the relationship between short interest and the float,
-        including the percentage of the float that is shorted and the days to cover metric.
+        Short interest, shares outstanding and days to cover for the tickers that match the filter parameters.
+        `si_float` is short interest as a ratio of shares outstanding, not of free float.
       example:
         data:
           days_to_cover: '2.1'
@@ -15144,16 +15143,16 @@ components:
           description: The short shares available.
           type: date
         si_float:
-          description: The short interest float ratio.
+          description: Short interest divided by `total_float` (shares outstanding).
           type: string
         si_float_with_synth_long_pct_of_total_shares:
-          description: The short interest float ratio with volume of shares sold short added to total float.
+          description: Short interest divided by the sum of short interest and `total_float`.
           type: string
         symbol:
           description: The ticker symbol.
           type: string
         total_float:
-          description: The float (available shares for trading).
+          description: Shares outstanding from the latest company report whose period ends on or before `market_date`, or the company's current count when no such report exists, as known when the row was loaded. This is not the free float.
           type: integer
       title: Short Screener
       type: object
@@ -18142,9 +18141,8 @@ components:
       type: object
     V2 Short Interest and Float:
       description: |
-        Short interest data and float information for percentage calculations for a specific ticker.
-        This endpoint provides information about the relationship between short interest and the float,
-        including the percentage of the float that is shorted and the days to cover metric.
+        Short interest, shares outstanding and days to cover for a specific ticker.
+        `si_float` is short interest as a ratio of shares outstanding, not of free float.
       example:
         data:
           days_to_cover: '2.1'
@@ -18177,16 +18175,16 @@ components:
           description: The short shares available.
           type: date
         si_float:
-          description: The short interest float ratio.
+          description: Short interest divided by `total_float` (shares outstanding).
           type: string
         si_float_with_synth_long_pct_of_total_shares:
-          description: The short interest float ratio with volume of shares sold short added to total float.
+          description: Short interest divided by the sum of short interest and `total_float`.
           type: string
         symbol:
           description: The ticker symbol.
           type: string
         total_float:
-          description: The float (available shares for trading).
+          description: Shares outstanding from the latest company report whose period ends on or before `market_date`, or the company's current count when no such report exists, as known when the row was loaded. This is not the free float.
           type: integer
       title: V2 Short Interest and Float
       type: object
@@ -18696,6 +18694,9 @@ info:
     
     ## Changelog
     
+    # 2026.11.27
+    - [`/stock/{ticker}/option-contracts`](https://api.unusualwhales.com/docs/operations/PublicApi.OptionContractController.option_contracts) counts `min_dte` and `max_dte` from `date` instead of from today. Without `date`, they count from the last trading date.
+    
     # 2026.11.20
     - [`/crypto/options/instruments`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoOptionsController.instruments) returns `open_interest` as the total open interest of the underlying's unexpired options instead of the average per option.
     
@@ -18707,6 +18708,7 @@ info:
       - [`/crypto/options/volatility/latest`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoOptionsController.latest_volatility_metrics) returns the latest volatility indexes of each underlying.
     
     # 2026.11.17
+    - The websocket channels [`flow-alerts`](https://api.unusualwhales.com/docs/websocket/flow-alerts), [`interval_flow`](https://api.unusualwhales.com/docs/websocket/ticker-interval-flow) and [`custom_alerts`](https://api.unusualwhales.com/docs/websocket/custom-alerts) no longer carry CBOE index price levels. For index tickers such as SPX and VIX, these fields are `null`: `underlying_price` on `flow-alerts`, `open` and `close` on `interval_flow`, and `meta.underlying_price` on `custom_alerts`.
     - [`/crypto/token/:token`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.get_token) and [`/crypto/list_tokens`](https://api.unusualwhales.com/docs/operations/PublicApi.CryptoController.list_tokens) add `volume_1h` and `volume_6h`, the volume in USD over the last 1 and 6 hours, and `trades_1h`, `trades_6h` and `trades_24h`, the number of swaps over the last 1, 6 and 24 hours. Each counts every pool the token trades in. `sort` on `/crypto/list_tokens` accepts these five fields.
     
     # 2026.11.12
@@ -34310,9 +34312,7 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returns short interest and float data for percentage calculations based off search params.
-        This endpoint provides information about the percentage of float that is shorted,
-        the float size, and the days to cover metric.
+        Returns short interest, shares outstanding (`total_float`), days to cover, and short interest as a ratio of shares outstanding (`si_float`) for the tickers that match the search params. `total_float` is not the free float.
       operationId: PublicApi.ShortController.short_screener
       parameters:
         - description: ''
@@ -34379,7 +34379,7 @@ paths:
           name: min_si_float
           required: false
           schema:
-            description: The min short interest float ratio.
+            description: The min ratio of short interest to shares outstanding.
             example: 0.1
             type: integer
         - description: ''
@@ -34387,7 +34387,7 @@ paths:
           name: max_si_float
           required: false
           schema:
-            description: The max short interest float ratio.
+            description: The max ratio of short interest to shares outstanding.
             example: 0.05
             type: integer
         - description: ''
@@ -34411,7 +34411,7 @@ paths:
           name: min_total_float
           required: false
           schema:
-            description: The min total float.
+            description: The min total_float (shares outstanding).
             example: 10000000
             type: integer
         - description: ''
@@ -34419,7 +34419,7 @@ paths:
           name: max_total_float
           required: false
           schema:
-            description: The max total float.
+            description: The max total_float (shares outstanding).
             example: 100000000
             type: integer
         - description: ''
@@ -34714,7 +34714,7 @@ paths:
     get:
       callbacks: {}
       description: |
-        Returns short interest, float size, days-to-cover, and related percentage calculations for a given ticker.
+        Returns short interest, shares outstanding (`total_float`), days to cover, and short interest as a ratio of shares outstanding (`si_float`) for a given ticker. `total_float` is not the free float.
         
         Broker-dealers report short interest to FINRA twice per month then FINRA publishes the aggregated results approximately one week after each submission window closes. Because updates arrive on this fixed schedule, data in the response from this endpoint can lag the current date by several weeks. This is a FINRA reporting constraint, not a data delivery issue or bug.
         
@@ -37338,6 +37338,9 @@ paths:
         To fetch a single contract, pass its symbol in `option_symbol[]`, for example
         `option_symbol[]=AAPL261218C00250000`.
         
+        Contracts are sorted by `volume`, highest first. Use `order` and `direction` to sort by another field,
+        for example `order=atm_proximity&direction=asc` to return the contracts nearest the money first.
+        
         To receive every NBBO change as it happens instead of calling this endpoint repeatedly, subscribe to
         the [`option-quotes`](https://api.unusualwhales.com/docs/kafka/topics/option-quotes) Kafka topic.
       operationId: PublicApi.OptionContractController.option_contracts
@@ -37348,6 +37351,12 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/SingleTicker'
+        - description: ''
+          in: query
+          name: date
+          required: false
+          schema:
+            $ref: '#/components/schemas/Optional Market Date'
         - description: ''
           in: query
           name: expiry
@@ -37405,18 +37414,34 @@ paths:
           required: false
           schema:
             type: boolean
-        - description: Minimum days to expiration (expiry at least this many days from today).
+        - description: Return contracts that expire at least this many days after `date`. Ignored when `min_expiry` is set.
           in: query
           name: min_dte
           required: false
           schema:
             type: integer
-        - description: Maximum days to expiration (expiry at most this many days from today).
+        - description: Return contracts that expire at most this many days after `date`. Ignored when `max_expiry` is set.
           in: query
           name: max_dte
           required: false
           schema:
             type: integer
+        - description: Return contracts that expire on or after this date, in the format YYYY-MM-DD.
+          example: 2026-12-18
+          in: query
+          name: min_expiry
+          required: false
+          schema:
+            format: date
+            type: string
+        - description: Return contracts that expire on or before this date, in the format YYYY-MM-DD.
+          example: 2027-01-15
+          in: query
+          name: max_expiry
+          required: false
+          schema:
+            format: date
+            type: string
         - description: Return only these option contracts. Pass one symbol to fetch a single contract.
           in: query
           name: option_symbol[]
@@ -37425,6 +37450,39 @@ paths:
             items:
               type: string
             type: array
+        - description: |
+            The field to sort the contracts by:
+            
+            - `volume` (default): the contract's `volume`.
+            - `oi`: the contract's `open_interest`.
+            - `prem`: the contract's `total_premium`.
+            - `vol_oi_ratio`: `volume` divided by `open_interest`, or 0 when `open_interest` is 0.
+            - `expiry`: the expiry date, then the strike. `direction` applies to both, so `direction=asc` starts
+              with the lowest strike of the nearest expiry.
+            - `atm_proximity`: the absolute difference between the strike and the underlying price, which is the
+              ticker's most recent daily close as of `date`. The difference does not depend on the expiry, so
+              pass `expiry` to sort the strikes of a single expiry. If no underlying price is available, the
+              request fails with status 404.
+          example: atm_proximity
+          in: query
+          name: order
+          required: false
+          schema:
+            default: volume
+            enum:
+              - volume
+              - oi
+              - prem
+              - vol_oi_ratio
+              - expiry
+              - atm_proximity
+            type: string
+        - description: Sort descending (`desc`, the default) or ascending (`asc`). With `order=atm_proximity`, pass `asc` to return the contracts nearest the money first.
+          in: query
+          name: direction
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderDirection'
         - description: ''
           in: query
           name: limit
